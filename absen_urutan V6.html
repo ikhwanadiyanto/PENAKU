@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Absensi Urutan Kehadiran Siswa</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<!-- Library Face Recognition (face-api.js) via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:linear-gradient(135deg,#667eea,#764ba2,#ff6b6b);padding:20px;min-height:100vh}
+
+.container{max-width:1250px;margin:auto;}
+.table-wrap,.panel{background:#fff;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+
+.header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    padding: 20px 25px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.header h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 50%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+}
+.header p { color: #4b5563; font-size: 13px; font-weight: 600; margin-top: 4px; }
+
+.app-page { display: block; }
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:15px}
+.stat{padding:15px;border-radius:16px;color:#fff;text-align:center}
+.stat b{font-size:24px}
+.h{background:#10b981}.i{background:#f59e0b}.s{background:#3b82f6}.a{background:#ef4444}
+.table-wrap{padding:20px;overflow:auto;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+th{background:#4f46e5;color:#fff;padding:12px; font-size: 14px;}
+td{padding:10px;border-bottom:1px solid #eee;text-align:center;vertical-align:middle; font-size: 14px;}
+
+button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;margin-top:10px;margin-right:5px}
+.reset{background:#ef4444}
+
+.section-title {margin: 20px 0 10px 0; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-size: 18px;}
+
+/* KONTROL HARIAN */
+.kontrol-harian-tambahan {
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 15px 20px; border-radius: 24px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.6);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+.kontrol-harian-tambahan .grup-kiri { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.label-tanggal-eksotis { font-size: 13px; font-weight: 700; color: #3730a3; text-transform: uppercase; }
+
+.tanggal-nav-wrapper {
+    display: flex; align-items: center; background: #ffffff; border: 2px solid #e0e7ff; border-radius: 14px; padding: 2px 6px;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.05);
+}
+.input-tanggal-kustom { padding: 6px 10px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px; color: #312e81; outline: none; cursor: pointer; }
+.btn-nav-tgl { width: 28px; height: 28px; border: none; border-radius: 8px; color: #4f46e5; background: #eeebff; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; margin: 0 2px; }
+.btn-nav-tgl:hover { background: #4f46e5; color: #ffffff; }
+
+#labelNamaHari {
+    font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 30px; 
+    background: #e0e7ff; color: #3730a3; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #c7d2fe;
+}
+#labelNamaHari.hari-minggu { background: #fef2f2 !important; color: #dc2626 !important; border-color: #fca5a5 !important; }
+#labelNamaHari.hari-jumat { background: #f0fdf4 !important; color: #16a34a !important; border-color: #86efac !important; }
+
+.action-buttons-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.kembali-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #475569, #1e293b); text-decoration: none; margin-top:0;}
+.face-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #8b5cf6, #6366f1); margin-top:0; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);}
+.scan-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #10b981, #059669); margin-top:0;}
+.rekap-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #1d4ed8); margin-top:0;}
+.cert-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #d946ef, #a855f7); margin-top:0;}
+.terlambat-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #f59e0b, #d97706); margin-top:0;}
+.adjust-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #0ea5e9, #0284c7); margin-top:0;}
+.cetak-hari-ini-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #0d9488, #0f766e); margin-top:0;}
+
+.btn-hapus-baris { padding: 5px 10px; background: #ef4444; color: #fff; border-radius: 8px; font-size: 12px; margin: 0; }
+
+/* PANEL INPUT & FITUR COUNT + ABSEN */
+.panel-input-urutan { background: #fff; padding: 20px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.15); transition: opacity 0.3s; }
+.panel-input-urutan.is-locked { opacity: 0.6; pointer-events: none; }
+.panel-input-urutan h3 { font-size: 16px; color: #1e1b4b; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.form-input-nomor-absen { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; background: #f8fafc; padding: 12px; border-radius: 16px; border: 1px solid #e2e8f0; flex-wrap: wrap;}
+.input-no-absen { padding: 10px 14px; border: 2px solid #cbd5e1; border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; outline: none; width: 140px; }
+.btn-input-no { background: linear-gradient(135deg, #4f46e5, #4338ca); color: #fff; padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 0; }
+
+/* STYLE ANIMASI COUNT & BUTTON ABSEN BARU */
+.counter-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.counter-box.pulse {
+    animation: countPulse 0.35s ease-in-out;
+}
+@keyframes countPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+.btn-absen-link {
+    background: linear-gradient(135deg, #ec4899, #d946ef);
+    color: #ffffff !important;
+    padding: 9px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+    transition: all 0.2s ease;
+}
+.btn-absen-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+}
+
+.bubble-container { display: flex; flex-wrap: wrap; gap: 8px; max-height: 150px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+.siswa-bubble { background: #e0e7ff; color: #3730a3; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #c7d2fe; transition: all 0.2s; user-select: none; }
+.siswa-bubble:hover { background: #4f46e5; color: #fff; transform: translateY(-2px); }
+.siswa-bubble.terpilih { background: #10b981; color: #fff; border-color: #059669; }
+.siswa-bubble.disabled { pointer-events: none; opacity: 0.5; }
+
+/* AVATAR FOTO SISWA */
+.cell-siswa-foto { display: flex; align-items: center; gap: 12px; text-align: left; }
+.avatar-siswa { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #6366f1; background: #e0e7ff; flex-shrink: 0; }
+
+/* MODAL CONTAINER GENERAL */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
+.modal-box { background: #fff; width: 100%; max-width: 750px; border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; }
+.modal-header h3 { color: #1e1b4b; font-size: 20px; font-weight: 700; }
+.close-modal { background: none; border: none; font-size: 20px; color: #ef4444; cursor: pointer; padding: 0; margin: 0; }
+
+/* MODAL SCANNER FULLSCREEN CUSTOM */
+#modalScanner, #modalFaceScan {
+    background: #000;
+    padding: 0;
+    z-index: 99999;
+}
+.modal-box-scan-full {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+#reader, #faceVideoContainer {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+}
+#reader video, #faceVideo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+#faceCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.scan-overlay-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.scan-overlay-header h3 { font-size: 16px; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 8px;}
+.btn-close-scan-full {
+    background: rgba(239, 68, 68, 0.85);
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+.scan-controls-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.mode-switch-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.mode-switch-btn.active {
+    background: #8b5cf6;
+    border-color: #a855f7;
+}
+
+#scanResult, #faceStatusOverlay {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    text-align: center;
+    max-width: 90%;
+}
+
+/* PANEL DEDIKASI REGISTRASI WAJAH DI OVERLAY */
+.face-reg-panel {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(12px);
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 90%;
+    max-width: 480px;
+}
+.face-reg-panel select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.9);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+}
+.btn-capture-face {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* TOP 5 BOARD */
+.top5-board { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-radius: 20px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); border: 1px solid rgba(255, 255, 255, 0.8); }
+.top5-title { text-align: center; font-size: 16px; font-weight: 800; color: #1e1b4b; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.top5-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.top5-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px 10px; border-radius: 16px; background: #ffffff; border: 2px solid #f1f5f9; }
+.top5-card.rank-1 { background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%); border-color: #fde047; }
+.top5-card.rank-2 { background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); border-color: #cbd5e1; }
+.top5-card.rank-3 { background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%); border-color: #fdba74; }
+.top5-badge-container { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.top5-rank-badge { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; color: #fff; }
+.rank-1 .top5-rank-badge { background: linear-gradient(135deg, #eab308, #ca8a04); }
+.rank-2 .top5-rank-badge { background: linear-gradient(135deg, #94a3b8, #64748b); }
+.rank-3 .top5-rank-badge { background: linear-gradient(135deg, #f97316, #c2410c); }
+.rank-4 .top5-rank-badge, .rank-5 .top5-rank-badge { background: linear-gradient(135deg, #6366f1, #4338ca); }
+.top5-nama { font-size: 12px; font-weight: 700; color: #1e293b; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.top5-poin-box { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.85); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.06); font-weight: 800; font-size: 11px; color: #059669; margin-top: 6px; }
+
+/* KOP SURAT TEKS TANPA LOGO */
+.kop-surat-cetak { width: 100%; margin-bottom: 15px; text-align: center; }
+.kop-teks h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; color: #000; margin: 0; line-height: 1.2; }
+.kop-teks h3 { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #000; margin: 3px 0; line-height: 1.2; }
+.kop-teks p { font-size: 11px; font-weight: 500; color: #333; margin: 0; line-height: 1.3; }
+.garis-kop { border: none; border-top: 3px solid #000; border-bottom: 1px solid #000; height: 3px; margin-top: 6px; margin-bottom: 15px; }
+
+/* SERTIFIKAT */
+.sertifikat-item {
+    width: 100%; max-width: 950px; margin: 0 auto 35px auto; background: #fffdf9; padding: 25px;
+    border-radius: 4px; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); box-sizing: border-box;
+}
+.sertifikat-border-outer { border: 3px solid #b45309; padding: 8px; position: relative; }
+.sertifikat-border-inner {
+    border: 1px solid #d97706; padding: 35px 40px; text-align: center; position: relative;
+    background: radial-gradient(circle, rgba(255,253,249,1) 0%, rgba(254,243,199,0.25) 100%);
+}
+.sertifikat-header-text { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 800; color: #78350f; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4px; }
+.sertifikat-sub-header { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #92400e; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 25px; }
+.sertifikat-body-p { font-size: 14px; color: #4b5563; line-height: 1.6; margin-bottom: 10px; }
+.sertifikat-nama-penerima { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 800; color: #1e1b4b; display: inline-block; padding: 0 30px 6px 30px; border-bottom: 2px solid #d97706; }
+
+/* TANDA TANGAN WALI KELAS */
+.area-ttd-cetak { display: flex; justify-content: flex-end; margin-top: 35px; page-break-inside: avoid; }
+.box-ttd { width: 250px; text-align: center; font-size: 12px; font-weight: 500; color: #000; }
+.nama-wali-kelas { margin-top: 60px; font-weight: 700; text-decoration: underline; }
+.nip-wali-kelas { font-weight: 600; font-size: 11px; }
+
+/* STYLE PENYESUAIAN POIN DENGAN PENGEQUALIAN */
+.kecuali-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 8px;
+    max-height: 140px;
+    overflow-y: auto;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 10px;
+}
+.kecuali-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1e293b;
+    cursor: pointer;
+}
+.kecuali-item input[type="checkbox"] {
+    accent-color: #ef4444;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* CSS PRINT HANYA MENCETAK MODAL TERBUKA */
+@media print {
+    @page { size: A4 portrait; margin: 1.2cm 1.5cm; }
+    body * { visibility: hidden !important; }
+    .modal-overlay[style*="display: flex"], .modal-overlay[style*="display: flex"] * { visibility: visible !important; }
+    .modal-overlay { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: transparent !important; backdrop-filter: none !important; padding: 0 !important; margin: 0 !important; }
+    .modal-box { width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: transparent !important; overflow: visible !important; }
+    .no-print, button, .modal-header { display: none !important; }
+    .judul-laporan-cetak { text-align: center; margin-bottom: 15px; }
+    .judul-laporan-cetak h2 { font-size: 15px; font-weight: 800; text-transform: uppercase; color: #000; margin: 0; }
+    .judul-laporan-cetak p { font-size: 11px; font-weight: 600; color: #333; margin-top: 2px; }
+    table { width: 100% !important; border-collapse: collapse !important; margin-top: 10px !important; }
+    th { background-color: #f1f5f9 !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 6px 8px !important; font-size: 11px !important; border: 1px solid #000 !important; font-weight: 700 !important; text-transform: uppercase; }
+    td { padding: 6px 8px !important; font-size: 11px !important; border: 1px solid #000 !important; color: #000 !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📋 Daftar Hadir Siswa Berdasarkan Urutan Kehadiran</h1>
+        <p>Catatan Absensi Harian Kelas VI</p>
+    </div>
+
+    <div class="top5-board">
+        <div class="top5-title">
+            <i class="fa-solid fa-trophy" style="color:#eab308;"></i>
+            <span>TOP 5 PERINGKAT POIN HARIAN</span>
+            <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
+        </div>
+        <div id="top5Grid" class="top5-grid"></div>
+    </div>
+
+    <div id="page-absensi" class="app-page">
+        <div class="kontrol-harian-tambahan">
+            <div class="grup-kiri">
+                <span class="label-tanggal-eksotis">Tanggal:</span>
+                <div class="tanggal-nav-wrapper">
+                    <button type="button" class="btn-nav-tgl" onclick="geserTanggal(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <input type="date" id="tgl" class="input-tanggal-kustom">
+                    <button type="button" class="btn-nav-tgl" onclick="geserTanggal(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                
+                <span id="labelNamaHari">
+                    <i class="fa-solid fa-calendar-day"></i> <span id="teksNamaHari">-</span>
+                </span>
+            </div>
+
+            <div class="action-buttons-group">
+                <a href="PENA MANTAP V6.html" class="kembali-btn-head"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                <button type="button" class="face-btn-head" onclick="bukaModalFaceScan()"><i class="fa-solid fa-user-gear"></i> Scan Wajah</button>
+                <button type="button" class="scan-btn-head" onclick="bukaModalScanner()"><i class="fa-solid fa-barcode"></i> Scan Barcode</button>
+                <button type="button" class="terlambat-btn-head" onclick="bukaModalTerlambat()"><i class="fa-solid fa-clock-rotate-left"></i> Top Telat</button>
+                <button type="button" class="rekap-btn-head" onclick="bukaModalRekap()"><i class="fa-solid fa-medal"></i> Rekap Terajin</button>
+                <button type="button" class="adjust-btn-head" onclick="bukaModalPenyesuaian()"><i class="fa-solid fa-sliders"></i> Penyesuaian Poin</button>
+                <button type="button" class="cert-btn-head" onclick="bukaModalSertifikat()"><i class="fa-solid fa-award"></i> Cetak Sertifikat</button>
+                <button type="button" class="cetak-hari-ini-btn-head" onclick="bukaModalCetakHariIni()"><i class="fa-solid fa-print"></i> Cetak Hari Ini</button>
+            </div>
+        </div>
+
+        <div class="panel-input-urutan" id="panelInputUrutan">
+            <h3><i class="fa-solid fa-fingerprint" style="color: #4f46e5;"></i> Input Berdasarkan Nomor Absen / Klik Nama</h3>
+            <div class="form-input-nomor-absen">
+                <div style="font-size: 13px; font-weight: 700; color: #3730a3;"><i class="fa-solid fa-keyboard"></i> No. Absen:</div>
+                <input type="number" id="inputNoAbsen" class="input-no-absen" placeholder="Contoh: 1" min="1" onkeydown="handleKeyDownNoAbsen(event)">
+                <button type="button" id="btnProsesNoAbsen" class="btn-input-no" onclick="prosesInputNoAbsen()"><i class="fa-solid fa-circle-plus"></i> Masukkan</button>
+                
+                <div id="counterContainer" class="counter-box">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span id="txtCountAbsen">0 / 0</span>
+                </div>
+
+                <a href="PENA MANTAP V6.html" class="btn-absen-link"><i class="fa-solid fa-pen-to-square"></i> ABSEN</a>
+            </div>
+            <div id="bubbleContainer" class="bubble-container"></div>
+            <button type="button" class="reset" id="btnResetUrutan" style="margin-top:0;" onclick="resetUrutanHariIni()"><i class="fa-solid fa-rotate-right"></i> Reset Urutan Hari Ini</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat h">Hadir<br><b id="hadir">0</b></div>
+            <div class="stat i">Izin<br><b id="izin">0</b></div>
+            <div class="stat s">Sakit<br><b id="sakit">0</b></div>
+            <div class="stat a">Alpa<br><b id="alpa">0</b></div>
+        </div>
+        
+        <h2 class="section-title">✍️ Riwayat Kehadiran Berdasarkan Urutan Input</h2>
+
+        <div class="table-wrap">
+            <table id="tabelInputUtama">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Urutan</th>
+                        <th style="width: 75px;">No. Absen</th>
+                        <th style="width: 95px;">NIS</th>
+                        <th>Siswa</th>
+                        <th style="width: 110px;">Poin Hari Ini</th>
+                        <th style="width: 100px;">Status</th>
+                        <th style="width: 90px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tb"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<template id="tplKopSurat">
+    <div class="kop-surat-cetak">
+        <div class="kop-teks">
+            <h4>PEMERINTAH KABUPATEN BREBES</h4>
+            <h3>SD NEGERI KRAMAT 01</h3>
+            <p>Alamat: Jl. Raya Kramat, Kec. Kramat, Kab. Brebes, Jawa Tengah</p>
+        </div>
+        <div class="garis-kop"></div>
+    </div>
+</template>
+
+<template id="tplTtdWaliKelas">
+    <div class="area-ttd-cetak">
+        <div class="box-ttd">
+            <div>Guru / Wali Kelas VI</div>
+            <div class="nama-wali-kelas">Ikhwan Adi Yanto, S.Pd.</div>
+            <div class="nip-wali-kelas">NIP. 19890802 202221 1 013</div>
+        </div>
+    </div>
+</template>
+
+<!-- MODAL SCANNER BARCODE FULLSCREEN -->
+<div id="modalScanner" class="modal-overlay">
+    <div class="modal-box-scan-full">
+        <div class="scan-overlay-header">
+            <h3><i class="fa-solid fa-qrcode" style="color: #10b981;"></i> Scan Barcode Absensi</h3>
+            <button type="button" class="btn-close-scan-full" onclick="tutupModalScanner()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="reader"></div>
+        <div id="scanResult">Arahkan kamera ke Barcode / QR Code...</div>
+    </div>
+</div>
+
+<!-- MODAL FACE RECOGNITION FULLSCREEN -->
+<div id="modalFaceScan" class="modal-overlay">
+    <div class="modal-box-scan-full">
+        <div class="scan-overlay-header">
+            <h3><i class="fa-solid fa-user-check" style="color: #8b5cf6;"></i> Scan Wajah Siswa</h3>
+            <div class="scan-controls-top">
+                <button type="button" class="mode-switch-btn active" id="btnModePresensi" onclick="setFaceScanMode('presensi')"><i class="fa-solid fa-camera"></i> Presensi Otomatis</button>
+                <button type="button" class="mode-switch-btn" id="btnModeRegistrasi" onclick="setFaceScanMode('registrasi')"><i class="fa-solid fa-user-plus"></i> Registrasi Wajah</button>
+                <button type="button" class="btn-close-scan-full" onclick="tutupModalFaceScan()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        
+        <div id="faceVideoContainer">
+            <video id="faceVideo" autoplay muted playsinline></video>
+            <canvas id="faceCanvas"></canvas>
+        </div>
+
+        <div id="panelFaceReg" class="face-reg-panel" style="display: none;">
+            <select id="selectSiswaFaceReg">
+                <option value="">-- Pilih Siswa untuk Registrasi Wajah --</option>
+            </select>
+            <button type="button" class="btn-capture-face" onclick="ambilSampelWajahSiswa()"><i class="fa-solid fa-expand"></i> Ambil & Simpan Sampel Wajah</button>
+        </div>
+
+        <div id="faceStatusOverlay">Memuat Model Pengenal Wajah (AI)... Mohon tunggu.</div>
+    </div>
+</div>
+
+<!-- MODAL PENYESUAIAN POIN SISWA -->
+<div id="modalPenyesuaian" class="modal-overlay">
+    <div class="modal-box" style="max-width: 650px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-sliders" style="color: #6366f1;"></i> Penyesuaian Poin Siswa (Tambah / Kurang)</h3>
+            <button type="button" class="close-modal" onclick="tutupModal('modalPenyesuaian')">&times;</button>
+        </div>
+        <div style="font-size: 13px; color: #4b5563; margin-bottom: 15px;">
+            Gunakan menu ini jika ada penambahan poin/koreksi nilai siswa secara manual (poin tertinggal, bonus keaktifan, bonus massal, dll).
+        </div>
+        
+        <form onsubmit="simpanPenyesuaianPoin(event)">
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px; color:#1e1b4b;">Target Penerima Poin:</label>
+                <select id="selectSiswaAdjust" style="width:100%; padding:10px; border-radius:10px; border:2px solid #cbd5e1; font-family:'Poppins',sans-serif; font-size:14px; outline:none;" onchange="toggleOpsiPengecualian()" required>
+                    <option value="">-- Pilih Target Siswa --</option>
+                    <option value="ALL">🌐 Semua Siswa (Massal)</option>
+                </select>
+            </div>
+
+            <div id="containerKecuali" style="display:none; margin-bottom: 15px; background: #eef2ff; padding: 12px; border-radius: 12px; border: 1px dashed #6366f1;">
+                <label style="display:block; font-weight:700; font-size:13px; margin-bottom:6px; color:#3730a3;">
+                    <i class="fa-solid fa-user-slash" style="color:#ef4444;"></i> Kecuali (Siswa yang TIDAK dapat poin):
+                </label>
+                <div id="gridKecualiSiswa" class="kecuali-checkbox-grid"></div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div>
+                    <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px; color:#1e1b4b;">Jenis Penyesuaian:</label>
+                    <select id="selectTipeAdjust" style="width:100%; padding:10px; border-radius:10px; border:2px solid #cbd5e1; font-family:'Poppins',sans-serif; font-size:14px; outline:none;">
+                        <option value="tambah">➕ Tambah Poin (+)</option>
+                        <option value="kurang">➖ Kurangi Poin (-)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px; color:#1e1b4b;">Jumlah Poin:</label>
+                    <input type="number" id="inputJumlahPoinAdjust" min="1" max="1000" placeholder="Contoh: 10" style="width:100%; padding:10px; border-radius:10px; border:2px solid #cbd5e1; font-family:'Poppins',sans-serif; font-size:14px; outline:none;" required>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px; color:#1e1b4b;">Keterangan / Alasan:</label>
+                <input type="text" id="inputAlasanAdjust" placeholder="Misal: Bonus tugas tambahan / Lomba kelas" style="width:100%; padding:10px; border-radius:10px; border:2px solid #cbd5e1; font-family:'Poppins',sans-serif; font-size:14px; outline:none;" required>
+            </div>
+
+            <button type="submit" class="scan-btn-head" style="width:100%; justify-content:center; padding: 12px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Penyesuaian Poin</button>
+        </form>
+
+        <h4 style="margin-top: 25px; font-size: 15px; color: #1e1b4b; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px;">📋 Riwayat Penyesuaian Poin</h4>
+        <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
+            <table style="width: 100%; font-size: 12px;">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Siswa</th>
+                        <th>Poin</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBodyRiwayatAdjust"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalCetakHariIni" class="modal-overlay">
+    <div class="modal-box" style="max-width: 850px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-print" style="color: #0d9488;"></i> Pratinjau Cetak Riwayat Kehadiran Harian</h3>
+            <button type="button" class="close-modal" onclick="tutupModal('modalCetakHariIni')">&times;</button>
+        </div>
+        
+        <div id="areaCetakHariIni" class="print-area">
+            <div id="wrapperKopCetakHariIni"></div>
+
+            <div class="judul-laporan-cetak">
+                <h2>LAPORAN KEHADIRAN SISWA HARIAN</h2>
+                <p id="labelCetakTgl"></p>
+            </div>
+            
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Urutan</th>
+                        <th style="width: 75px;">No. Absen</th>
+                        <th style="width: 95px;">NIS</th>
+                        <th style="text-align: left; padding-left: 10px;">Nama Siswa</th>
+                        <th style="width: 90px;">Poin</th>
+                        <th style="width: 90px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBodyCetakHariIni"></tbody>
+            </table>
+
+            <div id="wrapperTtdHariIni"></div>
+        </div>
+
+        <button type="button" class="cetak-hari-ini-btn-head no-print" style="width:100%; justify-content:center; margin-top:15px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan Hari Ini</button>
+    </div>
+</div>
+
+<div id="modalRekap" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> Rekap Akumulasi Siswa Terajin</h3>
+            <button type="button" class="close-modal" onclick="tutupModal('modalRekap')">&times;</button>
+        </div>
+        <div id="areaCetakRekap" class="print-area">
+            <div id="wrapperKopRekap"></div>
+
+            <div class="judul-laporan-cetak">
+                <h2>REKAPITULASI AKUMULASI POIN SISWA TERAJIN</h2>
+                <p>Kelas VI Semester Aktif</p>
+            </div>
+            
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Rank</th>
+                        <th style="text-align: left; padding-left: 10px;">Nama Siswa</th>
+                        <th style="width: 100px;">Total Poin</th>
+                        <th style="width: 100px;">Kehadiran</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBodyRekap"></tbody>
+            </table>
+
+            <div id="wrapperTtdRekap"></div>
+        </div>
+        <button type="button" class="rekap-btn-head no-print" style="width:100%; justify-content:center; margin-top:15px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Rekapitulasi</button>
+    </div>
+</div>
+
+<div id="modalTerlambat" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i> Top 5 Siswa Sering Terlambat</h3>
+            <button type="button" class="close-modal" onclick="tutupModal('modalTerlambat')">&times;</button>
+        </div>
+        <div id="areaCetakTerlambat" class="print-area">
+            <div id="wrapperKopTerlambat"></div>
+
+            <div class="judul-laporan-cetak">
+                <h2>LAPORAN EVALUASI KEDISIPLINAN (SISWA SERING TERLAMBAT)</h2>
+                <p>Kelas VI</p>
+            </div>
+
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Rank</th>
+                        <th style="width: 70px;">No. Absen</th>
+                        <th style="text-align: left; padding-left: 10px;">Nama Siswa</th>
+                        <th style="width: 100px;">Total Telat</th>
+                        <th style="width: 100px;">Persentase</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBodyTerlambat"></tbody>
+            </table>
+
+            <div id="wrapperTtdTerlambat"></div>
+        </div>
+        <button type="button" class="terlambat-btn-head no-print" style="width:100%; justify-content:center; margin-top:15px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan Terlambat</button>
+    </div>
+</div>
+
+<div id="modalSertifikat" class="modal-overlay">
+    <div class="modal-box" style="max-width: 980px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-award" style="color: #8b5cf6;"></i> Cetak Sertifikat 5 Siswa Terajin</h3>
+            <button type="button" class="close-modal" onclick="tutupModal('modalSertifikat')">&times;</button>
+        </div>
+        <div id="areaCetakSertifikat" class="print-area"></div>
+        <button type="button" class="cert-btn-head no-print" style="width:100%; justify-content:center; margin-top:15px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak 5 Sertifikat (PDF)</button>
+    </div>
+</div>
+
+<script>
+let siswa = []; 
+let dbAbsensiUrutan = {};
+let dbFotoSiswa = {};
+let dbPenyesuaianPoin = [];
+let dbFotoWajahSiswa = {};
+
+const tb = document.getElementById('tb');
+const tglInput = document.getElementById('tgl');
+const bubbleContainer = document.getElementById('bubbleContainer');
+const inputNoAbsen = document.getElementById('inputNoAbsen');
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%236366f1'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+
+let html5QrCode = null;
+let faceModelsLoaded = false;
+let faceScanStream = null;
+let faceScanInterval = null;
+let faceMatcher = null;
+let faceScanMode = 'presensi';
+let lastDetectedNis = null;
+let lastDetectedTime = 0;
+
+if(tglInput) tglInput.valueAsDate = new Date();
+
+// =========================================================
+// INTEGRASI REAL-TIME INDEXEDDB DENGAN "AplikasiKelasVIDB"
+// =========================================================
+let indexedDBInstance = null;
+
+function bukaIndexedDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("AplikasiKelasVIDB", 1);
+
+        request.onerror = (event) => {
+            console.error("Gagal membuka IndexedDB AplikasiKelasVIDB:", event.target.error);
+            reject(event.target.error);
+        };
+
+        request.onsuccess = (event) => {
+            indexedDBInstance = event.target.result;
+            resolve(indexedDBInstance);
+        };
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains("pengaturan")) {
+                db.createObjectStore("pengaturan");
+            }
+            if (!db.objectStoreNames.contains("dataSiswaStore")) {
+                db.createObjectStore("dataSiswaStore");
+            }
+        };
+    });
+}
+
+async function muatDataRealtimeDariDB() {
+    try {
+        const db = await bukaIndexedDB();
+        const transaction = db.transaction(["pengaturan"], "readonly");
+        const store = transaction.objectStore("pengaturan");
+
+        const reqMaster = store.get("dbMasterSiswa");
+        reqMaster.onsuccess = (event) => {
+            const savedMaster = event.target.result;
+            if (savedMaster && Array.isArray(savedMaster) && savedMaster.length > 0) {
+                siswa = savedMaster;
+            }
+            renderTabelDanBubble();
+        };
+
+        const reqAbsen = store.get("dbAbsensiUrutan");
+        reqAbsen.onsuccess = (e) => { if (e.target.result) dbAbsensiUrutan = e.target.result; };
+
+        const reqPenyesuaian = store.get("dbPenyesuaianPoin");
+        reqPenyesuaian.onsuccess = (e) => { if (e.target.result) dbPenyesuaianPoin = e.target.result; };
+
+        const reqWajah = store.get("dbFotoWajahSiswa");
+        reqWajah.onsuccess = (e) => { if (e.target.result) dbFotoWajahSiswa = e.target.result; };
+
+        const reqFoto = store.get("dbFotoSiswa");
+        reqFoto.onsuccess = (e) => { if (e.target.result) dbFotoSiswa = e.target.result; };
+
+    } catch (err) {
+        console.log("Gagal memuat data real-time IndexedDB:", err);
+        renderTabelDanBubble();
+    }
+}
+
+function simpanKeIndexedDBPermanen() {
+    if (!indexedDBInstance) return;
+    try {
+        const transaction = indexedDBInstance.transaction(["pengaturan"], "readwrite");
+        const store = transaction.objectStore("pengaturan");
+
+        store.put(dbAbsensiUrutan, "dbAbsensiUrutan");
+        store.put(dbPenyesuaianPoin, "dbPenyesuaianPoin");
+        store.put(dbFotoWajahSiswa, "dbFotoWajahSiswa");
+        store.put(dbFotoSiswa, "dbFotoSiswa");
+    } catch (e) {
+        console.error("Gagal menyimpan ke IndexedDB:", e);
+    }
+}
+
+// =========================================================
+// AUDIO & UTILITY
+// =========================================================
+function mainkanSuaraBerhasil() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        
+        const audioCtx = new AudioContext();
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(1046.50, audioCtx.currentTime); 
+        gain1.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(audioCtx.currentTime);
+        osc1.stop(audioCtx.currentTime + 0.15);
+
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.1); 
+        gain2.gain.setValueAtTime(0.2, audioCtx.currentTime + 0.1);
+        gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(audioCtx.currentTime + 0.1);
+        osc2.stop(audioCtx.currentTime + 0.35);
+    } catch (e) {
+        console.log("Audio Web API tidak dapat dijalankan.", e);
+    }
+}
+
+function playTetTotSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+
+        const audioCtx = new AudioContext();
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(150, audioCtx.currentTime);
+        gain1.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(audioCtx.currentTime);
+        osc1.stop(audioCtx.currentTime + 0.15);
+
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(100, audioCtx.currentTime + 0.2);
+        gain2.gain.setValueAtTime(0.2, audioCtx.currentTime + 0.2);
+        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(audioCtx.currentTime + 0.2);
+        osc2.stop(audioCtx.currentTime + 0.4);
+    } catch (e) {
+        console.log("Audio Web API tidak dapat dijalankan.", e);
+    }
+}
+
+function pasangKopSurat(targetId) {
+    const wrapper = document.getElementById(targetId);
+    if (!wrapper) return;
+    const tpl = document.getElementById('tplKopSurat').content.cloneNode(true);
+    wrapper.innerHTML = '';
+    wrapper.appendChild(tpl);
+}
+
+function pasangTtdWaliKelas(targetId) {
+    const wrapper = document.getElementById(targetId);
+    if (!wrapper) return;
+    const tpl = document.getElementById('tplTtdWaliKelas').content.cloneNode(true);
+    wrapper.innerHTML = '';
+    wrapper.appendChild(tpl);
+}
+
+function geserTanggal(hari) {
+    if (!tglInput.value) return;
+    const tglAktif = new Date(tglInput.value);
+    tglAktif.setDate(tglAktif.getDate() + hari);
+    tglInput.valueAsDate = tglAktif;
+    renderTabelDanBubble();
+}
+
+function getUrutanHariIni() {
+    const tgl = tglInput.value;
+    if (!dbAbsensiUrutan[tgl]) dbAbsensiUrutan[tgl] = [];
+    return dbAbsensiUrutan[tgl];
+}
+
+function getAvatarSiswaUrl(nis) {
+    return (dbFotoSiswa && dbFotoSiswa[nis]) ? dbFotoSiswa[nis] : DEFAULT_AVATAR;
+}
+
+function renderTabelDanBubble() {
+    if(!tb || !bubbleContainer) return;
+    const tanggalTerpilih = tglInput.value;
+    const urutanHariIni = getUrutanHariIni();
+
+    if (tanggalTerpilih) {
+        const daftarHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const parts = tanggalTerpilih.split('-');
+        const objTanggal = new Date(parts[0], parts[1] - 1, parts[2]);
+        const indeksHari = objTanggal.getDay();
+
+        const elemTeksHari = document.getElementById('teksNamaHari');
+        const elemLabelHari = document.getElementById('labelNamaHari');
+
+        if (elemTeksHari && elemLabelHari) {
+            elemTeksHari.innerText = daftarHari[indeksHari];
+            elemLabelHari.classList.remove('hari-minggu', 'hari-jumat');
+            if (indeksHari === 0) elemLabelHari.classList.add('hari-minggu');
+            else if (indeksHari === 5) elemLabelHari.classList.add('hari-jumat');
+        }
+    }
+
+    bubbleContainer.innerHTML = '';
+    const isHariMinggu = new Date(tglInput.value).getDay() === 0;
+
+    if (siswa.length === 0) {
+        bubbleContainer.innerHTML = `<span style="font-size:12px; color:#64748b; padding:5px;">Belum ada data siswa. Silahkan isi melalui Data Siswa V6.</span>`;
+    }
+
+    siswa.forEach((s, idx) => {
+        let isTerpilih = urutanHariIni.includes(s[0]);
+        let kelasAktif = isTerpilih ? 'siswa-bubble terpilih' : 'siswa-bubble';
+        if (isHariMinggu) kelasAktif += ' disabled';
+        bubbleContainer.innerHTML += `<div class="${kelasAktif}" onclick="pilihSiswaHadir('${s[0]}')">${idx + 1}. ${s[1]}</div>`;
+    });
+
+    tb.innerHTML = '';
+    if (urutanHariIni.length === 0) {
+        tb.innerHTML = `<tr><td colspan="7" style="color: #6b7280; padding: 20px;">Belum ada siswa yang diinput hadir hari ini.</td></tr>`;
+    } else {
+        urutanHariIni.forEach((nis, index) => {
+            let dataSiswa = siswa.find(x => x[0] === nis);
+            if (!dataSiswa) return;
+            let indexSiswaAsli = siswa.findIndex(x => x[0] === nis);
+            let nomorAbsenSiswa = indexSiswaAsli !== -1 ? indexSiswaAsli + 1 : '-';
+            let poinHariIni = Math.max(1, (siswa.length - index));
+
+            tb.innerHTML += `<tr>
+                <td><b>#${index + 1}</b></td>
+                <td><b>${nomorAbsenSiswa}</b></td>
+                <td>${dataSiswa[0]}</td>
+                <td>
+                    <div class="cell-siswa-foto">
+                        <img src="${getAvatarSiswaUrl(dataSiswa[0])}" class="avatar-siswa" onerror="this.src='${DEFAULT_AVATAR}'">
+                        <b>${dataSiswa[1]}</b>
+                    </div>
+                </td>
+                <td><b style="color: #10b981;">+${poinHariIni}</b></td>
+                <td><span style="color:#10b981; font-weight:700;">Hadir</span></td>
+                <td><button type="button" class="btn-hapus-baris" onclick="hapusSiswaDariUrutan('${nis}')" ${isHariMinggu ? 'disabled' : ''}><i class="fa-solid fa-trash"></i></button></td>
+            </tr>`;
+        });
+    }
+
+    if(document.getElementById('hadir')) document.getElementById('hadir').innerText = urutanHariIni.length;
+    
+    const counterText = document.getElementById('txtCountAbsen');
+    const counterBox = document.getElementById('counterContainer');
+    if (counterText && counterBox) {
+        counterText.innerText = `${urutanHariIni.length} / ${siswa.length}`;
+        counterBox.classList.remove('pulse');
+        void counterBox.offsetWidth;
+        counterBox.classList.add('pulse');
+    }
+
+    renderTop5Board();
+}
+
+function pilihSiswaHadir(nis) {
+    if (new Date(tglInput.value).getDay() === 0) return alert("Sistem terkunci pada hari Minggu!");
+    let urutan = getUrutanHariIni();
+    let idx = urutan.indexOf(nis);
+    if (idx > -1) {
+        urutan.splice(idx, 1);
+    } else {
+        urutan.push(nis);
+        mainkanSuaraBerhasil();
+    }
+    simpanKeIndexedDBPermanen();
+    renderTabelDanBubble();
+}
+
+function hapusSiswaDariUrutan(nis) { pilihSiswaHadir(nis); }
+
+function prosesInputNoAbsen() {
+    if (new Date(tglInput.value).getDay() === 0) return alert("Sistem terkunci pada hari Minggu!");
+    let noAbsen = parseInt(inputNoAbsen.value);
+    if (isNaN(noAbsen) || noAbsen < 1 || noAbsen > siswa.length) return alert("Nomor absen tidak valid atau siswa belum dimuat!");
+    
+    let target = siswa[noAbsen - 1];
+    let urutan = getUrutanHariIni();
+
+    if (urutan.includes(target[0])) {
+        playTetTotSound();
+        alert(`⚠️ ${target[1]} (No. Absen ${noAbsen}) sudah diinput absen!`);
+        inputNoAbsen.value = '';
+        return;
+    }
+
+    urutan.push(target[0]);
+    simpanKeIndexedDBPermanen();
+    renderTabelDanBubble();
+    mainkanSuaraBerhasil();
+    inputNoAbsen.value = '';
+}
+
+function handleKeyDownNoAbsen(e) {
+    if (e.key === 'Enter') { e.preventDefault(); prosesInputNoAbsen(); }
+}
+
+function resetUrutanHariIni() {
+    if (confirm("Reset data kehadiran hari ini?")) {
+        dbAbsensiUrutan[tglInput.value] = [];
+        simpanKeIndexedDBPermanen();
+        renderTabelDanBubble();
+    }
+}
+
+/* =========================================================
+   MODUL FACE RECOGNITION (FACE-API.JS)
+   ========================================================= */
+
+async function muatModelFaceApi() {
+    if (faceModelsLoaded) return true;
+    const statusOverlay = document.getElementById('faceStatusOverlay');
+    if (statusOverlay) statusOverlay.innerText = "⏳ Memuat AI Model Pengenal Wajah...";
+
+    try {
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+        await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+            faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+            faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+        ]);
+        faceModelsLoaded = true;
+        if (statusOverlay) statusOverlay.innerText = "✅ AI Model berhasil dimuat!";
+        return true;
+    } catch (e) {
+        console.error("Gagal memuat model face-api", e);
+        if (statusOverlay) statusOverlay.innerText = "❌ Gagal memuat AI Model Pengenal Wajah.";
+        return false;
+    }
+}
+
+function updateFaceMatcher() {
+    const labeledDescriptors = [];
+
+    for (let nis in dbFotoWajahSiswa) {
+        let sampleList = dbFotoWajahSiswa[nis];
+        if (sampleList && sampleList.length > 0) {
+            let descriptorsArray = sampleList.map(item => new Float32Array(item.descriptor));
+            if (descriptorsArray.length > 0) {
+                labeledDescriptors.push(new faceapi.LabeledFaceDescriptors(nis, descriptorsArray));
+            }
+        }
+    }
+
+    if (labeledDescriptors.length > 0) {
+        faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5);
+    } else {
+        faceMatcher = null;
+    }
+}
+
+async function bukaModalFaceScan() {
+    document.getElementById('modalFaceScan').style.display = 'flex';
+    const statusOverlay = document.getElementById('faceStatusOverlay');
+    statusOverlay.innerText = "Mempersiapkan modul kamera...";
+
+    const select = document.getElementById('selectSiswaFaceReg');
+    select.innerHTML = `<option value="">-- Pilih Siswa untuk Registrasi Wajah --</option>`;
+    siswa.forEach((s, idx) => {
+        let isRegistered = dbFotoWajahSiswa[s[0]] && dbFotoWajahSiswa[s[0]].length > 0;
+        select.innerHTML += `<option value="${s[0]}">${idx + 1}. ${s[1]} ${isRegistered ? '✅' : '❌'}</option>`;
+    });
+
+    let loaded = await muatModelFaceApi();
+    if (!loaded) return;
+
+    updateFaceMatcher();
+    mulaiKameraWajah();
+}
+
+async function mulaiKameraWajah() {
+    const video = document.getElementById('faceVideo');
+    const statusOverlay = document.getElementById('faceStatusOverlay');
+
+    try {
+        faceScanStream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+            audio: false
+        });
+        video.srcObject = faceScanStream;
+        await video.play();
+
+        statusOverlay.innerText = faceScanMode === 'presensi' 
+            ? "Arahkan wajah siswa ke kamera..." 
+            : "Pilih nama siswa, lalu klik 'Ambil & Simpan Sampel Wajah'.";
+
+        mulaiDeteksiWajahLoop();
+    } catch (err) {
+        console.error("Gagal membuka kamera:", err);
+        statusOverlay.innerText = "❌ Kamera tidak dapat diakses atau diblokir izinnya.";
+    }
+}
+
+function setFaceScanMode(mode) {
+    faceScanMode = mode;
+    document.getElementById('btnModePresensi').classList.toggle('active', mode === 'presensi');
+    document.getElementById('btnModeRegistrasi').classList.toggle('active', mode === 'registrasi');
+
+    const panelReg = document.getElementById('panelFaceReg');
+    const statusOverlay = document.getElementById('faceStatusOverlay');
+
+    if (mode === 'registrasi') {
+        panelReg.style.display = 'flex';
+        statusOverlay.innerText = "Mode Registrasi: Pilih siswa dan atur posisi wajah, lalu klik ambil sampel.";
+    } else {
+        panelReg.style.display = 'none';
+        statusOverlay.innerText = "Mode Presensi: Arahkan wajah ke kamera untuk absen otomatis.";
+    }
+}
+
+function mulaiDeteksiWajahLoop() {
+    const video = document.getElementById('faceVideo');
+    const canvas = document.getElementById('faceCanvas');
+    const statusOverlay = document.getElementById('faceStatusOverlay');
+
+    if (faceScanInterval) clearInterval(faceScanInterval);
+
+    faceScanInterval = setInterval(async () => {
+        if (!video || video.paused || video.ended || !faceModelsLoaded) return;
+
+        const displaySize = { width: video.clientWidth || video.videoWidth, height: video.clientHeight || video.videoHeight };
+        if (displaySize.width === 0 || displaySize.height === 0) return;
+
+        faceapi.matchDimensions(canvas, displaySize);
+
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+
+        const resizedDetections = faceapi.resizeResults(detections, displaySize);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (faceScanMode === 'presensi') {
+            if (resizedDetections.length === 0) {
+                statusOverlay.innerText = "Mencari wajah...";
+                return;
+            }
+
+            if (!faceMatcher) {
+                statusOverlay.innerText = "⚠️ Belum ada data wajah siswa terdaftar. Silahkan lakukan registrasi wajah terlebih dahulu.";
+                return;
+            }
+
+            resizedDetections.forEach(detection => {
+                const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
+                const box = detection.detection.box;
+                let textLabel = "Tidak Dikenal";
+                let boxColor = "#ef4444";
+
+                if (bestMatch.label !== 'unknown') {
+                    let nisMatch = bestMatch.label;
+                    let objSiswa = siswa.find(s => s[0] === nisMatch);
+                    if (objSiswa) {
+                        textLabel = `${objSiswa[1]} (${nisMatch})`;
+                        boxColor = "#10b981";
+
+                        let sekarang = Date.now();
+                        if (lastDetectedNis !== nisMatch || (sekarang - lastDetectedTime) > 4000) {
+                            lastDetectedNis = nisMatch;
+                            lastDetectedTime = sekarang;
+
+                            let urutan = getUrutanHariIni();
+                            if (!urutan.includes(nisMatch)) {
+                                urutan.push(nisMatch);
+                                simpanKeIndexedDBPermanen();
+                                renderTabelDanBubble();
+                                mainkanSuaraBerhasil();
+                                statusOverlay.innerText = `✅ Presensi Berhasil: ${objSiswa[1]}`;
+                            } else {
+                                statusOverlay.innerText = `⚠️ ${objSiswa[1]} sudah tercatat dalam daftar presensi hari ini.`;
+                            }
+                        }
+                    }
+                }
+
+                const drawBox = new faceapi.draw.DrawBox(box, { label: textLabel, boxColor: boxColor });
+                drawBox.draw(canvas);
+            });
+        } else {
+            if (resizedDetections.length > 0) {
+                faceapi.draw.drawDetections(canvas, resizedDetections);
+            }
+        }
+    }, 250);
+}
+
+async function ambilSampelWajahSiswa() {
+    const select = document.getElementById('selectSiswaFaceReg');
+    const nis = select.value;
+    const statusOverlay = document.getElementById('faceStatusOverlay');
+
+    if (!nis) return alert("Pilih siswa terlebih dahulu untuk merekam data wajah!");
+
+    const video = document.getElementById('faceVideo');
+    statusOverlay.innerText = "⏳ Menganalisis & merekam sampel wajah...";
+
+    const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.6 }))
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+
+    if (!detection) {
+        playTetTotSound();
+        alert("❌ Wajah tidak terdeteksi dengan jelas. Posisikan wajah tepat di tengah kamera dan pencahayaan yang cukup!");
+        statusOverlay.innerText = "❌ Gagal: Wajah tidak terdeteksi. Coba lagi.";
+        return;
+    }
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = video.videoWidth || 640;
+    tempCanvas.height = video.videoHeight || 480;
+    const ctx = tempCanvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+    const photoDataUrl = tempCanvas.toDataURL('image/jpeg', 0.8);
+
+    if (!dbFotoWajahSiswa[nis]) dbFotoWajahSiswa[nis] = [];
+
+    dbFotoWajahSiswa[nis].push({
+        descriptor: Array.from(detection.descriptor),
+        timestamp: Date.now()
+    });
+
+    if (!dbFotoSiswa[nis]) {
+        dbFotoSiswa[nis] = photoDataUrl;
+    }
+
+    simpanKeIndexedDBPermanen();
+    updateFaceMatcher();
+    mainkanSuaraBerhasil();
+
+    let objSiswa = siswa.find(s => s[0] === nis);
+    let namaSiswa = objSiswa ? objSiswa[1] : nis;
+    alert(`✅ Berhasil menyimpan sampel wajah untuk: ${namaSiswa}`);
+
+    statusOverlay.innerText = `✅ Registrasi wajah berhasil untuk ${namaSiswa}. Total Sampel: ${dbFotoWajahSiswa[nis].length}`;
+
+    const opt = select.querySelector(`option[value="${nis}"]`);
+    if (opt && !opt.innerText.includes('✅')) opt.innerText = opt.innerText.replace('❌', '✅');
+}
+
+function tutupModalFaceScan() {
+    if (faceScanInterval) {
+        clearInterval(faceScanInterval);
+        faceScanInterval = null;
+    }
+
+    if (faceScanStream) {
+        faceScanStream.getTracks().forEach(track => track.stop());
+        faceScanStream = null;
+    }
+
+    const canvas = document.getElementById('faceCanvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    document.getElementById('modalFaceScan').style.display = 'none';
+}
+
+/* FUNGSIONALITAS PENYESUAIAN POIN SISWA */
+function renderTabelRiwayatAdjust() {
+    const tbody = document.getElementById('tabelBodyRiwayatAdjust');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (!dbPenyesuaianPoin || dbPenyesuaianPoin.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#6b7280;">Belum ada riwayat penyesuaian poin.</td></tr>`;
+        return;
+    }
+
+    dbPenyesuaianPoin.slice().reverse().forEach(item => {
+        let namaSiswa = 'Siswa Tidak Ditemukan';
+        if (item.nis === 'ALL') {
+            namaSiswa = '🌐 Semua Siswa';
+            if (item.kecuali && Array.isArray(item.kecuali) && item.kecuali.length > 0) {
+                namaSiswa += ` (Kecuali: ${item.kecuali.length} siswa)`;
+            }
+        } else {
+            let s = siswa.find(x => x[0] === item.nis);
+            if (s) namaSiswa = s[1];
+        }
+
+        let poinVal = parseInt(item.poin) || 0;
+        let warnaPoin = poinVal >= 0 ? '#10b981' : '#ef4444';
+        let tandaPoin = poinVal >= 0 ? `+${poinVal}` : `${poinVal}`;
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.tanggal || '-'}</td>
+                <td style="text-align:left; padding-left:8px;"><b>${namaSiswa}</b></td>
+                <td><b style="color: ${warnaPoin};">${tandaPoin}</b></td>
+                <td style="text-align:left; padding-left:8px;">${item.alasan || '-'}</td>
+                <td><button type="button" class="btn-hapus-baris" onclick="hapusRiwayatAdjust(${item.id})"><i class="fa-solid fa-trash"></i></button></td>
+            </tr>
+        `;
+    });
+}
+
+function toggleOpsiPengecualian() {
+    const targetSelect = document.getElementById('selectSiswaAdjust');
+    if (!targetSelect) return;
+    
+    const containerKecuali = document.getElementById('containerKecuali');
+    if (!containerKecuali) return;
+
+    if (targetSelect.value === 'ALL') {
+        containerKecuali.style.display = 'block';
+    } else {
+        containerKecuali.style.display = 'none';
+    }
+}
+
+function bukaModalPenyesuaian() {
+    const select = document.getElementById('selectSiswaAdjust');
+    if (!select) return;
+
+    select.innerHTML = `
+        <option value="">-- Pilih Target Siswa --</option>
+        <option value="ALL">🌐 Semua Siswa (Massal)</option>
+    `;
+    
+    const gridKecuali = document.getElementById('gridKecualiSiswa');
+    if (gridKecuali) gridKecuali.innerHTML = '';
+
+    siswa.forEach((s, idx) => {
+        select.innerHTML += `<option value="${s[0]}">${idx + 1}. ${s[1]} (NIS: ${s[0]})</option>`;
+        
+        if (gridKecuali) {
+            gridKecuali.innerHTML += `
+                <label class="kecuali-item">
+                    <input type="checkbox" class="chk-kecuali-siswa" value="${s[0]}">
+                    <span>${idx + 1}. ${s[1]}</span>
+                </label>
+            `;
+        }
+    });
+
+    toggleOpsiPengecualian();
+    renderTabelRiwayatAdjust();
+    
+    const modal = document.getElementById('modalPenyesuaian');
+    if (modal) modal.style.display = 'flex';
+}
+
+function simpanPenyesuaianPoin(e) {
+    e.preventDefault();
+    const selectTarget = document.getElementById('selectSiswaAdjust');
+    const selectTipe = document.getElementById('selectTipeAdjust');
+    const inputJumlah = document.getElementById('inputJumlahPoinAdjust');
+    const inputAlasan = document.getElementById('inputAlasanAdjust');
+
+    if (!selectTarget || !selectTipe || !inputJumlah || !inputAlasan) return;
+
+    const nisTarget = selectTarget.value;
+    const tipe = selectTipe.value;
+    let jumlah = parseInt(inputJumlah.value);
+    const alasan = inputAlasan.value.trim();
+
+    if (!nisTarget || isNaN(jumlah) || !alasan) {
+        alert("⚠️ Lengkapi semua data penyesuaian poin!");
+        return;
+    }
+
+    if (tipe === 'kurang') jumlah = -Math.abs(jumlah);
+    else jumlah = Math.abs(jumlah);
+
+    let daftarKecuali = [];
+    if (nisTarget === 'ALL') {
+        const checkboxes = document.querySelectorAll('.chk-kecuali-siswa:checked');
+        checkboxes.forEach(chk => daftarKecuali.push(chk.value));
+    }
+
+    const record = {
+        id: Date.now(),
+        tanggal: new Date().toISOString().split('T')[0],
+        nis: nisTarget,
+        kecuali: daftarKecuali,
+        poin: jumlah,
+        alasan: alasan
+    };
+
+    if (!Array.isArray(dbPenyesuaianPoin)) dbPenyesuaianPoin = [];
+    dbPenyesuaianPoin.push(record);
+    
+    simpanKeIndexedDBPermanen();
+    renderTabelDanBubble();
+    renderTabelRiwayatAdjust();
+
+    inputJumlah.value = '';
+    inputAlasan.value = '';
+    
+    document.querySelectorAll('.chk-kecuali-siswa').forEach(chk => chk.checked = false);
+    
+    alert("✅ Penyesuaian poin berhasil disimpan!");
+}
+
+function hapusRiwayatAdjust(id) {
+    if (confirm("Hapus catatan penyesuaian poin ini?")) {
+        dbPenyesuaianPoin = dbPenyesuaianPoin.filter(item => item.id !== id);
+        simpanKeIndexedDBPermanen();
+        renderTabelDanBubble();
+        renderTabelRiwayatAdjust();
+    }
+}
+
+/* FUNGSIONALITAS SCANNER BARCODE FULLSCREEN */
+function bukaModalScanner() {
+    document.getElementById('modalScanner').style.display = 'flex';
+    document.getElementById('scanResult').innerText = "Arahkan kamera ke Barcode / QR Code...";
+
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+    }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const scanBoxSize = Math.min(width, height) * 0.6;
+
+    const config = { 
+        fps: 15, 
+        qrbox: { width: Math.floor(scanBoxSize), height: Math.floor(scanBoxSize) },
+        aspectRatio: width / height
+    };
+
+    html5QrCode.start(
+        { facingMode: "environment" }, 
+        config,
+        onScanSuccess
+    ).catch(err => {
+        document.getElementById('scanResult').innerText = "Kamera tidak dapat diakses atau diblokir.";
+    });
+}
+
+function onScanSuccess(decodedText) {
+    let scannedValue = decodedText.trim();
+    let siswaFound = siswa.find(s => s[0] === scannedValue);
+
+    if (!siswaFound) {
+        let noAbsen = parseInt(scannedValue);
+        if (!isNaN(noAbsen) && noAbsen >= 1 && noAbsen <= siswa.length) {
+            siswaFound = siswa[noAbsen - 1];
+        }
+    }
+
+    if (siswaFound) {
+        let urutan = getUrutanHariIni();
+        
+        if (urutan.includes(siswaFound[0])) {
+            playTetTotSound();
+            document.getElementById('scanResult').innerText = `⚠️ ${siswaFound[1]} SUDAH ABSEN!`;
+        } else {
+            urutan.push(siswaFound[0]);
+            simpanKeIndexedDBPermanen();
+            renderTabelDanBubble();
+            mainkanSuaraBerhasil();
+
+            document.getElementById('scanResult').innerText = `✅ Berhasil: ${siswaFound[1]} masuk presensi!`;
+        }
+    } else {
+        playTetTotSound();
+        document.getElementById('scanResult').innerText = `❌ Code: "${scannedValue}" tidak terdaftar!`;
+    }
+}
+
+function tutupModalScanner() {
+    if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().then(() => {
+            document.getElementById('modalScanner').style.display = 'none';
+        }).catch(() => {
+            document.getElementById('modalScanner').style.display = 'none';
+        });
+    } else {
+        document.getElementById('modalScanner').style.display = 'none';
+    }
+}
+
+function hitungPoinSiswa() {
+    let rekapPoin = {};
+    siswa.forEach(s => rekapPoin[s[0]] = { nis: s[0], nama: s[1], totalPoin: 0, totalHadir: 0 });
+
+    for (let tgl in dbAbsensiUrutan) {
+        let urutan = dbAbsensiUrutan[tgl];
+        if (Array.isArray(urutan)) {
+            urutan.forEach((nis, idx) => {
+                if (rekapPoin[nis]) {
+                    rekapPoin[nis].totalPoin += Math.max(1, (siswa.length - idx));
+                    rekapPoin[nis].totalHadir += 1;
+                }
+            });
+        }
+    }
+
+    if (dbPenyesuaianPoin && Array.isArray(dbPenyesuaianPoin)) {
+        dbPenyesuaianPoin.forEach(adj => {
+            let poinVal = parseInt(adj.poin) || 0;
+            if (adj.nis === 'ALL') {
+                let daftarPengecualian = Array.isArray(adj.kecuali) ? adj.kecuali : [];
+                siswa.forEach(s => {
+                    let nisSiswa = s[0];
+                    if (!daftarPengecualian.includes(nisSiswa) && rekapPoin[nisSiswa]) {
+                        rekapPoin[nisSiswa].totalPoin += poinVal;
+                    }
+                });
+            } else {
+                if (rekapPoin[adj.nis]) {
+                    rekapPoin[adj.nis].totalPoin += poinVal;
+                }
+            }
+        });
+    }
+
+    return Object.values(rekapPoin).sort((a, b) => b.totalPoin - a.totalPoin);
+}
+
+function renderTop5Board() {
+    const top5Container = document.getElementById('top5Grid');
+    if (!top5Container) return;
+
+    let dataPoin = hitungPoinSiswa().slice(0, 5);
+    top5Container.innerHTML = '';
+
+    if (dataPoin.length === 0 || dataPoin[0].totalPoin === 0) {
+        top5Container.style.display = 'block';
+        top5Container.innerHTML = `<div style="text-align:center; padding: 10px; color: #64748b; font-size:13px;">Belum ada akumulasi poin.</div>`;
+        return;
+    }
+
+    top5Container.style.display = 'grid';
+
+    dataPoin.forEach((item, index) => {
+        top5Container.innerHTML += `
+            <div class="top5-card rank-${index + 1}">
+                <div class="top5-badge-container">
+                    <div class="top5-rank-badge">#${index + 1}</div>
+                </div>
+                <img src="${getAvatarSiswaUrl(item.nis)}" class="avatar-siswa" style="width:36px; height:36px;" onerror="this.src='${DEFAULT_AVATAR}'">
+                <div class="top5-nama" title="${item.nama}">${item.nama}</div>
+                <div class="top5-poin-box">
+                    <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
+                    <span>${item.totalPoin} Poin</span>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function bukaModalCetakHariIni() {
+    pasangKopSurat('wrapperKopCetakHariIni');
+    pasangTtdWaliKelas('wrapperTtdHariIni');
+    const tbody = document.getElementById('tabelBodyCetakHariIni');
+    const labelTgl = document.getElementById('labelCetakTgl');
+    tbody.innerHTML = '';
+
+    const tanggalTerpilih = tglInput.value;
+    const urutanHariIni = getUrutanHariIni();
+
+    if (tanggalTerpilih) {
+        const parts = tanggalTerpilih.split('-');
+        const objTanggal = new Date(parts[0], parts[1] - 1, parts[2]);
+        labelTgl.innerText = `Hari/Tanggal: ${objTanggal.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+    }
+
+    if (urutanHariIni.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; text-align: center;">Belum ada data kehadiran.</td></tr>`;
+    } else {
+        urutanHariIni.forEach((nis, index) => {
+            let dataSiswa = siswa.find(x => x[0] === nis);
+            if (!dataSiswa) return;
+            let indexSiswaAsli = siswa.findIndex(x => x[0] === nis);
+            let nomorAbsenSiswa = indexSiswaAsli !== -1 ? indexSiswaAsli + 1 : '-';
+            let poinHariIni = Math.max(1, (siswa.length - index));
+
+            tbody.innerHTML += `<tr>
+                <td><b>#${index + 1}</b></td>
+                <td><b>${nomorAbsenSiswa}</b></td>
+                <td>${dataSiswa[0]}</td>
+                <td style="text-align: left; padding-left: 10px;"><b>${dataSiswa[1]}</b></td>
+                <td>+${poinHariIni}</td>
+                <td>Hadir</td>
+            </tr>`;
+        });
+    }
+
+    document.getElementById('modalCetakHariIni').style.display = 'flex';
+}
+
+function bukaModalRekap() {
+    pasangKopSurat('wrapperKopRekap');
+    pasangTtdWaliKelas('wrapperTtdRekap');
+    const tbody = document.getElementById('tabelBodyRekap');
+    tbody.innerHTML = '';
+    let dataSorted = hitungPoinSiswa();
+
+    dataSorted.forEach((item, index) => {
+        tbody.innerHTML += `<tr>
+            <td><b>#${index + 1}</b></td>
+            <td style="text-align: left; padding-left: 10px;"><b>${item.nama}</b></td>
+            <td><b>${item.totalPoin} Poin</b></td>
+            <td>${item.totalHadir} Hari</td>
+        </tr>`;
+    });
+
+    document.getElementById('modalRekap').style.display = 'flex';
+}
+
+function bukaModalTerlambat() {
+    pasangKopSurat('wrapperKopTerlambat');
+    pasangTtdWaliKelas('wrapperTtdTerlambat');
+    const tbody = document.getElementById('tabelBodyTerlambat');
+    tbody.innerHTML = '';
+    let dataTerlambat = [];
+
+    siswa.forEach((s, idx) => {
+        let totalTelat = 0;
+        let totalHadir = 0;
+
+        for (let tgl in dbAbsensiUrutan) {
+            let list = dbAbsensiUrutan[tgl];
+            let pos = Array.isArray(list) ? list.indexOf(s[0]) : -1;
+            if (pos !== -1) {
+                totalHadir++;
+                if (pos >= Math.floor(siswa.length * 0.8)) totalTelat++;
+            }
+        }
+
+        let persentase = totalHadir > 0 ? ((totalTelat / totalHadir) * 100).toFixed(1) : 0;
+        if (totalTelat > 0) {
+            dataTerlambat.push({ noAbsen: idx + 1, nama: s[1], totalTelat: totalTelat, persentase: persentase });
+        }
+    });
+
+    dataTerlambat.sort((a, b) => b.persentase - a.persentase || b.totalTelat - a.totalTelat);
+    let top5 = dataTerlambat.slice(0, 5);
+
+    if (top5.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px;">Belum ada catatan keterlambatan.</td></tr>`;
+    } else {
+        top5.forEach((item, index) => {
+            tbody.innerHTML += `<tr>
+                <td><b>#${index + 1}</b></td>
+                <td><b>${item.noAbsen}</b></td>
+                <td style="text-align: left; padding-left: 10px;">${item.nama}</td>
+                <td>${item.totalTelat}x</td>
+                <td>${item.persentase}%</td>
+            </tr>`;
+        });
+    }
+
+    document.getElementById('modalTerlambat').style.display = 'flex';
+}
+
+function bukaModalSertifikat() {
+    const container = document.getElementById('areaCetakSertifikat');
+    container.innerHTML = '';
+    let top5 = hitungPoinSiswa().slice(0, 5);
+
+    if (top5.length === 0 || top5[0].totalPoin === 0) {
+        container.innerHTML = `<p style="text-align:center; padding:20px; color:#6b7280;">Belum ada data untuk sertifikat.</p>`;
+    } else {
+        top5.forEach((item, index) => {
+            container.innerHTML += `
+            <div class="sertifikat-item">
+                <div class="sertifikat-border-outer">
+                    <div class="sertifikat-border-inner">
+                        <div class="sertifikat-header-text">Sertifikat Penghargaan</div>
+                        <div class="sertifikat-sub-header">Kedisiplinan & Kehadiran Terajin</div>
+                        <p class="sertifikat-body-p">Diberikan kepada:</p>
+                        <div class="sertifikat-nama-penerima">${item.nama}</div>
+                        <p class="sertifikat-body-p" style="margin-top:15px;">Atas pencapaian peringkat <b>#${index + 1} Siswa Terajin</b> dengan perolehan <b>${item.totalPoin} Poin Kehadiran</b>.</p>
+                    </div>
+                </div>
+            </div>`;
+        });
+    }
+    document.getElementById('modalSertifikat').style.display = 'flex';
+}
+
+function tutupModal(id) { 
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = 'none'; 
+}
+
+if(tglInput) tglInput.addEventListener('change', renderTabelDanBubble);
+
+window.addEventListener('DOMContentLoaded', () => {
+    muatDataRealtimeDariDB();
+});
+</script>
+</body>
+</html>

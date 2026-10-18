@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penilaian TKA Kelas VI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); 
+            padding: 25px; 
+            min-height: 100vh; 
+            color: #334155; 
+        }
+
+        .container { 
+            max-width: 1800px; 
+            margin: auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 30px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            padding: 30px; 
+        }
+        
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 3px dashed #c4b5fd; 
+            padding-bottom: 25px; 
+            margin-bottom: 25px; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+        }
+        .header-title { display: flex; align-items: center; gap: 20px; position: relative; width: 100%; flex-wrap: wrap; }
+        
+        /* DIPERBAIKI: Mencegah logo menjadi gepeng/lonjong */
+        .logo-container {
+            width: 75px;
+            height: 75px;
+            min-width: 75px;
+            min-height: 75px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5); 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px; 
+            box-shadow: 0 0 20px rgba(124,58,237,0.5);
+            animation: pulse-glow 2s infinite;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .logo-container:hover::after {
+            content: "Ubah";
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 10px;
+            text-align: center;
+            padding: 2px 0;
+            font-weight: 600;
+        }
+        
+        .logo-custom { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        
+        @keyframes pulse-glow {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(124,58,237,0.5); }
+            50% { transform: scale(1.04); box-shadow: 0 0 32px rgba(124,58,237,0.85); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(124,58,237,0.5); }
+        }
+
+        .header-title h1 { font-size: 24px; color: #0f172a; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .header-title p { font-size: 13px; color: #64748b; font-weight: 500; }
+
+        /* BAR STATUS MEMORI PROFESIONAL */
+        .memory-bar-container {
+            width: 100%;
+            background: #f5f3ff;
+            border: 1px solid #c4b5fd;
+            border-radius: 14px;
+            padding: 12px 18px;
+            margin-top: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .memory-progress-bg {
+            flex: 1;
+            height: 10px;
+            background: #c4b5fd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .memory-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7c3aed, #4f46e5);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .controls-panel { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+        
+        .select-semester { 
+            padding: 10px 16px; 
+            border-radius: 14px; 
+            border: 2px solid #7c3aed; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #6d28d9; 
+            outline: none; 
+            cursor: pointer; 
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(124,58,237,0.1);
+            transition: all 0.3s;
+        }
+        .select-semester:hover { background: #f5f3ff; }
+
+        .kkm-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f5f3ff;
+            padding: 4px 12px;
+            border-radius: 14px;
+            border: 2px solid #8b5cf6;
+        }
+        .kkm-container label { font-size: 13px; font-weight: 700; color: #6d28d9; }
+        .input-kkm {
+            width: 50px;
+            padding: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            outline: none;
+        }
+        .btn-kkm-save {
+            background: #8b5cf6;
+            color: #fff;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .btn-kkm-save:hover { background: #6d28d9; }
+
+        .btn { 
+            padding: 10px 18px; 
+            border: none; 
+            border-radius: 14px; 
+            color: #fff; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            transition: all 0.3s ease; 
+            font-size: 13px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+        
+        .btn-bab-tp { background: linear-gradient(135deg, #d97706, #b45309); }
+        .btn-input-pop { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+        .btn-excel { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-save { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .btn-pdf { background: linear-gradient(135deg, #ec4899, #db2777); } 
+        .btn-mading { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .btn-back { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+
+        .table-wrap { 
+            overflow-x: auto; 
+            background: #fff; 
+            border-radius: 20px; 
+            border: 1px solid #e2e8f0; 
+            margin-top: 15px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        
+        th { color: #fff; font-weight: 600; padding: 10px 4px; white-space: nowrap; text-align: center; }
+        .th-utama { background: #4c1d95; } 
+        .th-bab-lit { background: #6d28d9; border-right: 2px solid #fff; }
+        .th-bab-num { background: #0284c7; border-right: 2px solid #fff; }
+        
+        .th-harian-lit { background: #ede9fe; color: #581c87; min-width: 42px; border-right: 1px solid #ddd6fe; font-size: 11px; cursor: help; } 
+        .th-harian-num { background: #e0f2fe; color: #0369a1; min-width: 42px; border-right: 1px solid #bae6fd; font-size: 11px; cursor: help; } 
+        
+        .th-rata { background: #334155; font-size: 11px; min-width: 55px; }
+        .th-total-pendalaman { background: #1e1b4b; font-size: 12px; min-width: 85px; font-weight: 700; color: #fbbf24; }
+        
+        .th-ujian-edit { 
+            background: #7c3aed; 
+            cursor: pointer;
+            min-width: 65px;
+            outline: none;
+        } 
+        
+        td { padding: 6px 4px; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        tr:nth-child(even) { background-color: #f8fafc; } 
+        tr:hover { background-color: #f1f5f9 !important; } 
+
+        .col-no { font-weight: 600; color: #64748b; width: 35px; }
+        .col-nis { color: #64748b; width: 55px; font-weight: 500; }
+        
+        .col-nama { 
+            text-align: left; 
+            min-width: 200px; 
+            font-weight: 500; 
+            color: #475569; 
+            position: sticky; 
+            left: 0; 
+            z-index: 2; 
+            box-shadow: 4px 0 10px rgba(0,0,0,0.05); 
+            border-right: 2px solid #ede9fe; 
+            padding-left: 10px;
+        }
+        tr:nth-child(odd) .col-nama { background-color: #f5f3ff !important; }  
+        tr:nth-child(even) .col-nama { background-color: #ede9fe !important; } 
+        tr:hover .col-nama { background-color: #ddd6fe !important; }          
+
+        .nama-container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .area-badge { display: flex; gap: 3px; align-items: center; }
+
+        .badge-bintang { color: #eab308; font-size: 14px; }
+        .badge-peringatan { color: #dc2626; font-size: 14px; }
+
+        .input-nilai { 
+            width: 44px; padding: 4px 2px; border: 1px solid #cbd5e1; 
+            border-radius: 6px; text-align: center; font-size: 11px; 
+            font-weight: 600; outline: none; transition: all 0.2s ease; background: #fff;
+        }
+        .input-nilai:focus { 
+            border-color: #7c3aed; 
+            box-shadow: 0 0 0 2px rgba(124,58,237,0.2); transform: scale(1.1); z-index: 5; position: relative;
+        }
+        .input-nilai::-webkit-outer-spin-button, .input-nilai::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-nilai { -moz-appearance: textfield; }
+
+        .lulus-kkm { color: #166534 !important; background: #f0fdf4 !important; border-color: #bbf7d0 !important; }
+        .gagal-kkm { color: #991b1b !important; background: #fef2f2 !important; border-color: #fecaca !important; }
+
+        .col-rata-harian { font-weight: 700; color: #334155; }
+        .col-total-pendalaman { font-weight: 800; font-size: 13px; padding: 3px 6px; border-radius: 6px; display: inline-block; }
+
+        /* MODAL STYLE */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-card {
+            background: #ffffff; width: 90%; max-width: 500px; border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 25px; transform: scale(0.9);
+            transition: all 0.3s; border: 3px solid #a78bfa;
+        }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .modal-header h2 { font-size: 18px; font-weight: 700; color: #4c1d95; }
+        .btn-close-modal { background: #f1f5f9; border: none; font-size: 18px; color: #64748b; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+
+        .form-group-modal { margin-bottom: 14px; }
+        .form-group-modal label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px; }
+        .select-modal, .input-modal { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-weight: 600; outline: none; font-size: 13px; }
+        
+        .tp-info-box {
+            background: #f5f3ff; border: 1.5px solid #7c3aed; border-radius: 12px;
+            padding: 8px 12px; margin-bottom: 14px; font-size: 12px; color: #6d28d9;
+        }
+        .tp-info-box .tp-bab-badge { display: inline-block; background: #7c3aed; color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: 700; font-size: 10px; margin-bottom: 2px; }
+        .tp-info-box .tp-desc-text { display: block; font-weight: 600; line-height: 1.3; color: #1e293b; }
+
+        .siswa-box { background: #f5f3ff; border: 1.5px dashed #a78bfa; border-radius: 14px; padding: 10px; text-align: center; margin-bottom: 15px; }
+        .siswa-box .nama { font-size: 16px; font-weight: 700; color: #4c1d95; display: block; }
+        .siswa-box .nis { font-size: 11px; font-weight: 600; color: #7c3aed; }
+
+        .big-input-wrapper { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 10px 0; }
+        .big-input-nilai {
+            width: 110px; height: 75px; border-radius: 18px; border: 3px solid #8b5cf6;
+            text-align: center; font-size: 36px; font-weight: 800; color: #4c1d95;
+            outline: none; background: #fff;
+        }
+
+        .absen-dropdown-box { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .absen-dropdown-box label { font-size: 10px; font-weight: 700; color: #7c3aed; }
+        .select-absen-angka {
+            width: 65px; height: 42px; border-radius: 12px; border: 2px solid #a78bfa;
+            background: #fff; color: #4c1d95; font-weight: 700; font-size: 18px;
+            text-align: center; outline: none; cursor: pointer;
+        }
+
+        .modal-footer { display: flex; gap: 10px; justify-content: space-between; margin-top: 10px; }
+        .btn-nav { flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .btn-nav-prev { background: #e2e8f0; color: #475569; }
+        .btn-nav-next { background: #6d28d9; color: #fff; }
+
+        #printAreaArea { display: none; }
+
+        /* AREA KHUSUS CETAK MADING PROFESIONAL (PORTRAIT A4) */
+        @media print {
+            @page { size: A4 portrait; margin: 10mm 8mm 10mm 8mm; }
+            body { background: #fff !important; color: #000 !important; padding: 0 !important; margin: 0 !important; font-size: 8pt !important; }
+            .container, .modal-overlay { display: none !important; }
+            #printAreaArea { display: block !important; }
+
+            .mading-wrapper { width: 100%; font-family: 'Times New Roman', Times, serif; }
+            
+            .mading-kop {
+                display: flex; align-items: center; justify-content: space-between;
+                border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 12px;
+            }
+            .mading-logo { width: 55px; height: 55px; object-fit: contain; }
+            .mading-kop-text { text-align: center; flex: 1; margin: 0 10px; }
+            .mading-kop-text h3 { font-size: 10pt; font-weight: normal; margin: 0; text-transform: uppercase; }
+            .mading-kop-text h2 { font-size: 13pt; font-weight: bold; margin: 2px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+            .mading-kop-text p { font-size: 8.5pt; margin: 0; font-style: italic; }
+
+            .mading-doc-title { text-align: center; margin-bottom: 12px; font-family: 'Poppins', sans-serif; }
+            .mading-doc-title h4 { font-size: 11pt; font-weight: 700; text-decoration: underline; margin: 0; text-transform: uppercase; }
+            .mading-doc-title p { font-size: 8.5pt; margin: 2px 0 0 0; font-weight: 500; color: #333; }
+
+            table.table-mading { width: 100%; border-collapse: collapse; font-family: 'Poppins', sans-serif; font-size: 7.5pt; }
+            table.table-mading th, table.table-mading td { border: 1px solid #333; padding: 4px 3px; text-align: center; }
+            table.table-mading th { background: #f1f5f9 !important; font-weight: 700; text-transform: uppercase; font-size: 7pt; }
+            table.table-mading td.text-left { text-align: left; font-weight: 500; padding-left: 6px; }
+
+            .tag-lulus { color: #166534; font-weight: 700; background: #dcfce7; padding: 1px 4px; border-radius: 4px; display: inline-block; }
+            .tag-remedi { color: #991b1b; font-weight: 700; background: #fee2e2; padding: 1px 4px; border-radius: 4px; display: inline-block; }
+
+            .mading-footer {
+                display: flex; justify-content: space-between; align-items: flex-start;
+                margin-top: 15px; font-size: 8pt; font-family: 'Poppins', sans-serif;
+            }
+            .mading-keterangan { 
+                border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; 
+                background: #f8fafc; font-size: 7.5pt; max-width: 60%;
+            }
+            .mading-ttd { text-align: center; width: 200px; font-size: 8.5pt; }
+            .mading-ttd .jabatan { margin-bottom: 50px; font-weight: 500; }
+            .mading-ttd .nama-guru { font-weight: 700; text-decoration: underline; font-size: 9pt; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <div style="display: flex; align-items: center; gap: 20px; width: 100%;">
+                <div class="logo-container" onclick="document.getElementById('inputLogoManual').click();" title="Klik untuk ganti logo manual">
+                    <img id="tampilanLogo" src="image_480e7c.png" alt="Logo Mapel" class="logo-custom">
+                </div>
+                <input type="file" id="inputLogoManual" accept="image/*" style="display: none;" onchange="prosesUnggahLogo(this)">
+                
+                <div style="flex: 1;">
+                    <h1>Daftar Nilai Pendalaman TKA - Kelas VI</h1>
+                    <p>15 Latihan Literasi | 15 Latihan Numerasi | Top Pendalaman ⭐ | Remedial Alert ⚠️</p>
+                </div>
+            </div>
+
+            <!-- BAR STATUS MEMORI PROFESIONAL -->
+            <div class="memory-bar-container">
+                <span id="memoryStatusText"><i class="fa-solid fa-database" style="color: #7c3aed;"></i> Memuat Status IndexedDB...</span>
+                <div class="memory-progress-bg">
+                    <div class="memory-progress-fill" id="memoryProgressFill"></div>
+                </div>
+                <span id="memoryPercentText" style="font-weight: 700; color: #7c3aed;">0%</span>
+            </div>
+        </div>
+        
+        <div class="controls-panel">
+            <div class="kkm-container">
+                <label for="kkmInput">KKM:</label>
+                <input type="number" id="kkmInput" class="input-kkm" value="75" min="0" max="100" oninput="perbaruiSemuaWarnaKKM()">
+                <button class="btn-kkm-save" onclick="simpanKKM()"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+            </div>
+
+            <select id="semesterSelect" class="select-semester" onchange="gantiSemester()">
+                <option value="Semester 1">🍂 Semester 1</option>
+                <option value="Semester 2">🌸 Semester 2</option>
+            </select>
+            
+            <button class="btn btn-bab-tp" onclick="bukaModalBabTP()"><i class="fa-solid fa-book-open"></i> Kelola TP</button>
+            <button class="btn btn-input-pop" onclick="bukaModalInput()"><i class="fa-solid fa-gamepad"></i> Input Cepat</button>
+            <button class="btn btn-mading" onclick="cetakRekapMading()"><i class="fa-solid fa-chalkboard-user"></i> Cetak Mading</button>
+            <button class="btn btn-pdf" onclick="cetakLaporanPDF()"><i class="fa-solid fa-print"></i> Cetak PDF</button>
+            <button class="btn btn-excel" onclick="eksporExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
+            <button class="btn btn-save" onclick="simpanKeSheets()"><i class="fa-solid fa-cloud-arrow-up"></i> Sheets</button>
+            <button class="btn btn-back" onclick="kembaliKeAbsensi()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table id="tabelNilaiTKA">
+            <thead id="headerRow"></thead>
+            <tbody id="bodyNilaiTKA"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="printAreaArea"></div>
+
+<!-- MODAL KELOLA TP -->
+<div class="modal-overlay" id="modalBabTP">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-book-bookmark"></i> Atur Deskripsi TP</h2>
+            <button class="btn-close-modal" onclick="tutupModalBabTP()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="form-group-modal">
+            <label for="selectKolomMulai"><i class="fa-solid fa-list"></i> Pilih Kolom Latihan / Tryout:</label>
+            <select id="selectKolomMulai" class="select-modal" onchange="muatDataBabTPModal()"></select>
+        </div>
+
+        <div class="form-group-modal">
+            <label for="inputDeskripsiTP"><i class="fa-solid fa-bullseye"></i> Tujuan Pembelajaran (TP) / Pokok Bahasan:</label>
+            <textarea id="inputDeskripsiTP" class="input-modal" style="height: 80px; resize: vertical;" placeholder="Contoh: Memahami ide pokok teks narasi panjang."></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-nav btn-nav-next" onclick="simpanBabTPModal()">Simpan TP <i class="fa-solid fa-check"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL INPUT CEPAT -->
+<div class="modal-overlay" id="modalInputNilai">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Mode Input Cepat</h2>
+            <button class="btn-close-modal" onclick="tutupModalInput()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="form-group-modal">
+            <label for="selectTargetKolom"><i class="fa-solid fa-list-check"></i> Target Kolom Nilai:</label>
+            <select id="selectTargetKolom" class="select-modal" onchange="muatNilaiSiswaModal()"></select>
+        </div>
+        <div class="tp-info-box" id="modalTpBox">
+            <span class="tp-bab-badge" id="modalTpBab">Literasi 1</span>
+            <span class="tp-desc-text" id="modalTpText">Tujuan Pembelajaran...</span>
+        </div>
+        <div class="siswa-box">
+            <span class="nis" id="modalSiswaNis">NIS: 3052</span>
+            <span class="nama" id="modalSiswaNama">Amelia Alita Zahra</span>
+        </div>
+        <div class="big-input-wrapper">
+            <input type="number" id="inputBigNilai" class="big-input-nilai" placeholder="0" min="0" max="100" onkeydown="handleEnterBigInput(event)">
+            <div class="absen-dropdown-box">
+                <label for="selectNoAbsen"><i class="fa-solid fa-hashtag"></i> Absen</label>
+                <select id="selectNoAbsen" class="select-absen-angka" onchange="lompatKeSiswa(this.value)"></select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-nav btn-nav-prev" onclick="navigasiSiswaModal(-1)"><i class="fa-solid fa-chevron-left"></i> Sebelum</button>
+            <button class="btn-nav btn-nav-next" onclick="navigasiSiswaModal(1)">Simpan & Lanjut <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycby3j4loXE7K53usU4R0zJVDpapB-NkoB9VpD_RKl5tYiQX90PY6qINv16gX78ZVAcUe/exec";
+
+    const MASTER_SISWA_DEFAULT = [
+        ["3052","Amelia Alita Zahra"],["3223","Angelica Vikar Maharani"],["3085","Anggraeni Abbilah Dhety"],
+        ["3087","AZKA NAILUN NABHAN"],["3088","Cinta Anugrah"],["3089","Dany Sabiq El-Fathin"],
+        ["3090","Dhea Fiky Mazaya"],["3224","Earlita Arsyifa Salsabila"],["3091","Fadilla Rizqi Khaerani"],
+        ["3092","Fathan Almaizan Zhafar"],["3093","Gavin Harry Wiriawan"],["3063","Hafiz Ardiyansah"],
+        ["3095","Intan Berliyan"],["3096","Luthfiya Nur Ramadhani"],["3069","M. Miftah Al Fattah"],
+        ["3097","Mugi Aditia Ripki"],["3098","Muh Azzka Alpratama"],["3099","Muhamad Ramadhani"],
+        ["3102","Nayla Dwi Syafriani"],["3108","Puteri Ayuning Kirana"],["3103","Raisa Rahmawati Septiani"],
+        ["3104","Renita Nur Saefitri"],["3084","Shalwa Aisa Nazwa"],["3105","Wifha Alya An Adibah"],
+        ["3106","Zhidan Dwi Aprilio Nurosy"],["3107","Zulfan Azhar Ramadhan"]
+    ];
+
+    let SISWA = [];
+    let databaseFotoSiswa = {};
+    let databaseNilai = JSON.parse(localStorage.getItem('dbNilaiTKA_30')) || {};
+    let databaseBabTP = JSON.parse(localStorage.getItem('dbBabTP_TKA_30')) || {};
+    let indeksSiswaModal = 0;
+
+    // FUNGSI INDEXEDDB REAL-TIME DARI PENA MANTAP V6
+    function bukaIndexedDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open("AplikasiKelasVIDB", 1);
+            request.onerror = e => reject(e.target.error);
+            request.onsuccess = e => resolve(e.target.result);
+            request.onupgradeneeded = e => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('pengaturan')) db.createObjectStore('pengaturan');
+            };
+        });
+    }
+
+    async function muatDataRealtimeDariIndexedDB() {
+        try {
+            const db = await bukaIndexedDB();
+            const tx = db.transaction('pengaturan', 'readonly');
+            const store = tx.objectStore('pengaturan');
+            
+            const masterSiswa = await new Promise((resolve) => {
+                const req = store.get('dbMasterSiswa');
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+
+            if (masterSiswa && Array.isArray(masterSiswa)) {
+                SISWA = masterSiswa;
+            } else {
+                SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || MASTER_SISWA_DEFAULT;
+            }
+
+            const fotoSiswaDB = await new Promise((resolve) => {
+                const req = store.get('dbDataSiswa');
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+
+            if (fotoSiswaDB) {
+                databaseFotoSiswa = fotoSiswaDB;
+            } else {
+                databaseFotoSiswa = JSON.parse(localStorage.getItem('dbFotoSiswa')) || {};
+            }
+
+            perbaruiBarMemoriIndexedDB(db);
+        } catch (err) {
+            console.error("Gagal memuat IndexedDB secara real-time, fallback ke localStorage:", err);
+            SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || MASTER_SISWA_DEFAULT;
+            perbaruiBarMemoriFallback();
+        }
+    }
+
+    async function perbaruiBarMemoriIndexedDB(db) {
+        try {
+            let estimatedBytes = 0;
+            if (navigator.storage && navigator.storage.estimate) {
+                const estimate = await navigator.storage.estimate();
+                estimatedBytes = estimate.usage || 0;
+            }
+            
+            const kb = (estimatedBytes / 1024).toFixed(1);
+            const limitMb = 50; 
+            const maxBytes = limitMb * 1024 * 1024;
+            const pct = Math.min(100, ((estimatedBytes / maxBytes) * 100)).toFixed(1);
+
+            document.getElementById('memoryStatusText').innerHTML = `<i class="fa-solid fa-database" style="color:#7c3aed;"></i> IndexedDB Aktif (PENA MANTAP V6): <b>${kb} KB</b>`;
+            document.getElementById('memoryProgressFill').style.width = `${pct}%`;
+            document.getElementById('memoryPercentText').innerText = `${pct}%`;
+        } catch(e) {
+            perbaruiBarMemoriFallback();
+        }
+    }
+
+    function perbaruiBarMemoriFallback() {
+        let totalBytes = 0;
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) totalBytes += ((localStorage[key].length + key.length) * 2);
+        }
+        const kb = (totalBytes / 1024).toFixed(1);
+        const pct = Math.min(100, ((kb / 51200) * 100)).toFixed(1);
+
+        document.getElementById('memoryStatusText').innerHTML = `<i class="fa-solid fa-database" style="color:#f59e0b;"></i> Penyimpanan Lokal: <b>${kb} KB</b>`;
+        document.getElementById('memoryProgressFill').style.width = `${pct}%`;
+        document.getElementById('memoryPercentText').innerText = `${pct}%`;
+    }
+
+    function simpanKKM() {
+        const kkmVal = document.getElementById('kkmInput').value;
+        if(kkmVal !== "") {
+            localStorage.setItem('dbKKMTKA', kkmVal);
+            perbaruiSemuaWarnaKKM();
+            alert('Nilai KKM (' + kkmVal + ') berhasil disimpan!');
+        }
+    }
+
+    function muatKKMTersimpan() {
+        const kkmLokal = localStorage.getItem('dbKKMTKA');
+        if (kkmLokal) { document.getElementById('kkmInput').value = kkmLokal; }
+    }
+
+    function prosesUnggahLogo(input) {
+        if (input.files && input.files[0]) {
+            const pembacaFile = new FileReader();
+            pembacaFile.onload = function(e) {
+                const hasilBase64 = e.target.result;
+                document.getElementById('tampilanLogo').src = hasilBase64;
+                localStorage.setItem('dbLogoTKA', hasilBase64);
+            };
+            pembacaFile.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function muatLogoTersimpan() {
+        const logoLokal = localStorage.getItem('dbLogoTKA');
+        if (logoLokal) { document.getElementById('tampilanLogo').src = logoLokal; }
+    }
+
+    function inisialisasiTabel() {
+        const header = document.getElementById('headerRow');
+        const semAktif = document.getElementById('semesterSelect').value;
+        
+        const txtUTS = localStorage.getItem('istilahUTS_TKA') || 'UTS';
+        const txtUAS = localStorage.getItem('istilahUAS_TKA') || 'UAS / US';
+
+        if(!databaseBabTP[semAktif]) { databaseBabTP[semAktif] = {}; }
+
+        let row1 = `<tr><th class="th-utama" rowspan="2">No</th><th class="th-utama" rowspan="2">NIS</th><th class="th-utama col-nama" rowspan="2">Nama Siswa</th>`;
+        row1 += `<th class="th-bab-lit" colspan="15">Latihan / Tryout Literasi (15)</th>`;
+        row1 += `<th class="th-rata" rowspan="2">Rerata Lit</th>`;
+        row1 += `<th class="th-bab-num" colspan="15">Latihan / Tryout Numerasi (15)</th>`;
+        row1 += `<th class="th-rata" rowspan="2">Rerata Num</th>`;
+        row1 += `<th class="th-total-pendalaman" rowspan="2">TOTAL PENDALAMAN</th>`;
+        row1 += `<th class="th-ujian-edit" rowspan="2" contenteditable="true" id="thUTS" onblur="simpanIstilahLangsung('UTS')">${txtUTS}</th>`;
+        row1 += `<th class="th-ujian-edit" rowspan="2" contenteditable="true" id="thUAS" onblur="simpanIstilahLangsung('UAS')">${txtUAS}</th></tr>`;
+
+        let row2 = `<tr>`;
+        for(let i = 1; i <= 15; i++) {
+            let tpDesc = databaseBabTP[semAktif][`L${i}`] ? databaseBabTP[semAktif][`L${i}`].tp : `Pendalaman Literasi L${i}`;
+            row2 += `<th class="th-harian-lit" title="${tpDesc}">L${i}</th>`;
+        }
+        for(let i = 1; i <= 15; i++) {
+            let tpDesc = databaseBabTP[semAktif][`N${i}`] ? databaseBabTP[semAktif][`N${i}`].tp : `Pendalaman Numerasi N${i}`;
+            row2 += `<th class="th-harian-num" title="${tpDesc}">N${i}</th>`;
+        }
+        row2 += `</tr>`;
+
+        header.innerHTML = row1 + row2;
+        cegahEnterKolom(document.getElementById('thUTS'));
+        cegahEnterKolom(document.getElementById('thUAS'));
+
+        const body = document.getElementById('bodyNilaiTKA');
+        body.innerHTML = '';
+
+        if(!databaseNilai[semAktif]) { databaseNilai[semAktif] = {}; }
+
+        SISWA.forEach((siswa, index) => {
+            const nis = siswa[0];
+            const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+            const dataSiswa = databaseNilai[semAktif][nis] || { lit: Array(15).fill(''), num: Array(15).fill(''), uts: '', uas: '' };
+
+            let kolomLit = '', totalLit = 0, jmLit = 0;
+            for(let j = 0; j < 15; j++) {
+                const val = (dataSiswa.lit && dataSiswa.lit[j] !== undefined) ? dataSiswa.lit[j] : '';
+                kolomLit += `<td><input type="number" class="input-nilai lit" data-idx="${j}" min="0" max="100" value="${val}" oninput="hitungOtomatisRaport(this)"></td>`;
+                if(val !== '') { totalLit += parseFloat(val); jmLit++; }
+            }
+
+            let kolomNum = '', totalNum = 0, jmNum = 0;
+            for(let j = 0; j < 15; j++) {
+                const val = (dataSiswa.num && dataSiswa.num[j] !== undefined) ? dataSiswa.num[j] : '';
+                kolomNum += `<td><input type="number" class="input-nilai num" data-idx="${j}" min="0" max="100" value="${val}" oninput="hitungOtomatisRaport(this)"></td>`;
+                if(val !== '') { totalNum += parseFloat(val); jmNum++; }
+            }
+
+            const rLit = jmLit > 0 ? Math.round(totalLit / jmLit) : 0;
+            const rNum = jmNum > 0 ? Math.round(totalNum / jmNum) : 0;
+            
+            let totalTotal = 0, totalJm = jmLit + jmNum;
+            if(jmLit > 0) totalTotal += totalLit;
+            if(jmNum > 0) totalTotal += totalNum;
+            const rPendalaman = totalJm > 0 ? Math.round(totalTotal / totalJm) : 0;
+
+            body.innerHTML += `
+                <tr data-nis="${nis}">
+                    <td class="col-no">${index + 1}</td>
+                    <td class="col-nis">${nis}</td>
+                    <td class="col-nama">
+                        <div class="nama-container">
+                            <span class="nama-teks">${nama}</span>
+                            <span class="area-badge"></span>
+                        </div>
+                    </td>
+                    ${kolomLit}
+                    <td class="col-rata-harian col-r-lit">${rLit}</td>
+                    ${kolomNum}
+                    <td class="col-rata-harian col-r-num">${rNum}</td>
+                    <td><b class="col-total-pendalaman col-r-pendalaman">${rPendalaman}</b></td>
+                    <td><input type="number" class="input-nilai uts" min="0" max="100" value="${dataSiswa.uts || ''}" oninput="hitungOtomatisRaport(this)"></td>
+                    <td><input type="number" class="input-nilai uas" min="0" max="100" value="${dataSiswa.uas || ''}" oninput="hitungOtomatisRaport(this)"></td>
+                </tr>
+            `;
+        });
+        
+        perbaruiSemuaWarnaKKM();
+        evaluasiIndikatorSiswa();
+        isiOpsiModalKolom();
+        isiOpsiDropdownAbsen();
+    }
+
+    function simpanIstilahLangsung(tipe) {
+        if (tipe === 'UTS') {
+            const text = document.getElementById('thUTS').innerText.trim() || 'UTS';
+            localStorage.setItem('istilahUTS_TKA', text);
+        } else {
+            const text = document.getElementById('thUAS').innerText.trim() || 'UAS / US';
+            localStorage.setItem('istilahUAS_TKA', text);
+        }
+        isiOpsiModalKolom();
+    }
+
+    function cegahEnterKolom(elemen) {
+        if(!elemen) return;
+        elemen.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); elemen.blur(); }
+        });
+    }
+
+    function hitungOtomatisRaport(element) {
+        const baris = element.closest('tr');
+        const nis = baris.getAttribute('data-nis');
+        const semAktif = document.getElementById('semesterSelect').value;
+        
+        const inputsLit = baris.querySelectorAll('.lit');
+        const inputsNum = baris.querySelectorAll('.num');
+        const inputUTS = baris.querySelector('.uts').value;
+        const inputUAS = baris.querySelector('.uas').value;
+        
+        let tLit = 0, jLit = 0, arrLit = [];
+        inputsLit.forEach(inp => {
+            arrLit.push(inp.value);
+            if(inp.value !== '') { tLit += parseFloat(inp.value); jLit++; }
+        });
+
+        let tNum = 0, jNum = 0, arrNum = [];
+        inputsNum.forEach(inp => {
+            arrNum.push(inp.value);
+            if(inp.value !== '') { tNum += parseFloat(inp.value); jNum++; }
+        });
+
+        const rLit = jLit > 0 ? (tLit / jLit) : 0;
+        const rNum = jNum > 0 ? (tNum / jNum) : 0;
+
+        const totalSemua = tLit + tNum;
+        const jmSemua = jLit + jNum;
+        const rPendalaman = jmSemua > 0 ? Math.round(totalSemua / jmSemua) : 0;
+
+        baris.querySelector('.col-r-lit').innerText = Math.round(rLit);
+        baris.querySelector('.col-r-num').innerText = Math.round(rNum);
+        baris.querySelector('.col-r-pendalaman').innerText = rPendalaman;
+
+        warnaiElemenBerdasarkanIsi(baris);
+
+        databaseNilai[semAktif][nis] = {
+            lit: arrLit, num: arrNum, uts: inputUTS, uas: inputUAS
+        };
+        localStorage.setItem('dbNilaiTKA_30', JSON.stringify(databaseNilai));
+
+        evaluasiIndikatorSiswa();
+    }
+
+    function evaluasiIndikatorSiswa() {
+        const semuaBaris = document.querySelectorAll('#bodyNilaiTKA tr');
+        const nilaiKKM = parseFloat(document.getElementById('kkmInput').value) || 0;
+        let nilaiPendalamanTertinggi = 0;
+
+        semuaBaris.forEach(baris => {
+            const rPend = parseFloat(baris.querySelector('.col-r-pendalaman').innerText) || 0;
+            if(rPend > nilaiPendalamanTertinggi) { nilaiPendalamanTertinggi = rPend; }
+        });
+
+        semuaBaris.forEach(baris => {
+            const areaBadge = baris.querySelector('.area-badge');
+            if(!areaBadge) return;
+
+            const rPend = parseFloat(baris.querySelector('.col-r-pendalaman').innerText) || 0;
+            const inputs = baris.querySelectorAll('.lit, .num');
+            let adaDiBawahKKM = false;
+            
+            inputs.forEach(inp => {
+                if(inp.value !== '' && parseFloat(inp.value) < nilaiKKM) { adaDiBawahKKM = true; }
+            });
+
+            let htmlBadge = '';
+            if(adaDiBawahKKM || rPend < nilaiKKM) { 
+                htmlBadge += `<i class="fa-solid fa-triangle-exclamation badge-peringatan" title="Nilai pendalaman / latihan di bawah KKM!"></i>`; 
+            }
+            if(rPend === nilaiPendalamanTertinggi && nilaiPendalamanTertinggi >= nilaiKKM && nilaiPendalamanTertinggi > 0) {
+                htmlBadge += `<i class="fa-solid fa-star badge-bintang" title="Total Pendalaman Tertinggi"></i>`;
+            }
+            areaBadge.innerHTML = htmlBadge;
+        });
+    }
+
+    function warnaiElemenBerdasarkanIsi(baris) {
+        const nilaiKKM = parseFloat(document.getElementById('kkmInput').value) || 0;
+        baris.querySelectorAll('.input-nilai').forEach(input => {
+            input.classList.remove('lulus-kkm', 'gagal-kkm');
+            if (input.value !== '') {
+                const nilai = parseFloat(input.value) || 0;
+                if (nilai >= nilaiKKM) { input.classList.add('lulus-kkm'); } 
+                else { input.classList.add('gagal-kkm'); }
+            }
+        });
+
+        const kotakPendalaman = baris.querySelector('.col-r-pendalaman');
+        if (kotakPendalaman) {
+            const valPend = parseFloat(kotakPendalaman.innerText) || 0;
+            kotakPendalaman.classList.remove('lulus-kkm', 'gagal-kkm');
+            if (valPend >= nilaiKKM) { kotakPendalaman.classList.add('lulus-kkm'); } 
+            else { kotakPendalaman.classList.add('gagal-kkm'); }
+        }
+    }
+
+    function perbaruiSemuaWarnaKKM() {
+        document.querySelectorAll('#bodyNilaiTKA tr').forEach(baris => {
+            warnaiElemenBerdasarkanIsi(baris);
+        });
+        evaluasiIndikatorSiswa();
+    }
+
+    function cetakRekapMading() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const kkmVal = parseFloat(document.getElementById('kkmInput').value) || 75;
+        const logoSrc = document.getElementById('tampilanLogo').src;
+        const txtUTS = localStorage.getItem('istilahUTS_TKA') || 'UTS';
+        const txtUAS = localStorage.getItem('istilahUAS_TKA') || 'UAS / US';
+
+        let maxPendalaman = 0;
+        document.querySelectorAll('#bodyNilaiTKA tr').forEach(b => {
+            const rp = parseFloat(b.querySelector('.col-r-pendalaman').innerText) || 0;
+            if(rp > maxPendalaman) maxPendalaman = rp;
+        });
+
+        let rowsHtml = '';
+        SISWA.forEach((siswa, idx) => {
+            const no = idx + 1;
+            const nis = siswa[0];
+            const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+            const baris = document.querySelector(`#bodyNilaiTKA tr[data-nis="${nis}"]`);
+
+            if(baris) {
+                const rLit = baris.querySelector('.col-r-lit').innerText;
+                const rNum = baris.querySelector('.col-r-num').innerText;
+                const rPend = parseFloat(baris.querySelector('.col-r-pendalaman').innerText) || 0;
+                const valUTS = baris.querySelector('.uts').value || '-';
+                const valUAS = baris.querySelector('.uas').value || '-';
+
+                const isLulus = rPend >= kkmVal;
+                const statusTag = isLulus ? `<span class="tag-lulus">LULUS</span>` : `<span class="tag-remedi">REMEDI</span>`;
+                const starTag = (rPend === maxPendalaman && maxPendalaman >= kkmVal && maxPendalaman > 0) ? ' ⭐' : '';
+
+                rowsHtml += `
+                    <tr>
+                        <td style="width:25px;">${no}</td>
+                        <td style="width:45px;">${nis}</td>
+                        <td class="text-left">${nama}${starTag}</td>
+                        <td style="width:50px;">${rLit}</td>
+                        <td style="width:50px;">${rNum}</td>
+                        <td style="width:65px;"><b>${rPend}</b></td>
+                        <td style="width:45px;">${valUTS}</td>
+                        <td style="width:45px;">${valUAS}</td>
+                        <td style="width:60px;">${statusTag}</td>
+                    </tr>
+                `;
+            }
+        });
+
+        const areaCetak = document.getElementById('printAreaArea');
+        areaCetak.innerHTML = `
+            <div class="mading-wrapper">
+                <div class="mading-kop">
+                    <img src="${logoSrc}" class="mading-logo" alt="Logo">
+                    <div class="mading-kop-text">
+                        <h3>PEMERINTAH KOTA / KABUPATEN</h3>
+                        <h2>DINAS PENDIDIKAN SDN KRAMAT 01</h2>
+                        <p>Jl. Kramat Raya No. 01, Kecamatan Kramat - Kelas VI Sekolah Dasar</p>
+                    </div>
+                    <img src="${logoSrc}" class="mading-logo" alt="Logo" style="visibility:hidden;">
+                </div>
+
+                <div class="mading-doc-title">
+                    <h4>REKAPITULASI PENDALAMAN MATERI TKA & UJIAN</h4>
+                    <p>TAHUN AJARAN PENDIDIKAN | ${semAktif.toUpperCase()} (KKM: ${kkmVal})</p>
+                </div>
+
+                <table class="table-mading">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIS</th>
+                            <th>Nama Siswa</th>
+                            <th>Rerata Lit</th>
+                            <th>Rerata Num</th>
+                            <th>Total Pendalaman</th>
+                            <th>${txtUTS}</th>
+                            <th>${txtUAS}</th>
+                            <th>Status (TKA)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+
+                <div class="mading-footer">
+                    <div class="mading-keterangan">
+                        <b>Catatan Ringkasan:</b><br>
+                        • Status Ketuntasan berdasarkan <b>Total Pendalaman</b> (KKM: ${kkmVal}).<br>
+                        • Lit = 15 Latihan Literasi | Num = 15 Latihan Numerasi.<br>
+                        • ⭐ = Nilai Pendalaman Materi Tertinggi Kelas.
+                    </div>
+                    <div class="mading-ttd">
+                        <p>Kramat, ${dapatkanTanggalSekarang()}</p>
+                        <p class="jabatan">Wali Kelas VI</p>
+                        <p class="nama-guru">Ikhwan Adi Yanto, S.Pd.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        window.print();
+    }
+
+    function dapatkanTanggalSekarang() {
+        const d = new Date();
+        const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function cetakLaporanPDF() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const logoSrc = document.getElementById('tampilanLogo').src;
+        const txtUTS = localStorage.getItem('istilahUTS_TKA') || 'UTS';
+        const txtUAS = localStorage.getItem('istilahUAS_TKA') || 'UAS / US';
+
+        const konfirmasiSiswa = prompt("Ketik '0' untuk cetak SEMUA SISWA (Format Lembar Individual), atau ketik Nomor Absen Siswa (1 - " + SISWA.length + "):", "0");
+        if (konfirmasiSiswa === null) return;
+
+        const noAbsenPilihan = parseInt(konfirmasiSiswa);
+        let daftarSiswaDicetak = SISWA;
+        if (!isNaN(noAbsenPilihan) && noAbsenPilihan > 0 && noAbsenPilihan <= SISWA.length) {
+            daftarSiswaDicetak = [SISWA[noAbsenPilihan - 1]];
+        }
+
+        const areaCetak = document.getElementById('printAreaArea');
+        areaCetak.innerHTML = '';
+
+        daftarSiswaDicetak.forEach((siswa) => {
+            const nis = siswa[0];
+            const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+            const baris = document.querySelector(`#bodyNilaiTKA tr[data-nis="${nis}"]`);
+            if(!baris) return;
+
+            const rLit = baris.querySelector('.col-r-lit').innerText;
+            const rNum = baris.querySelector('.col-r-num').innerText;
+            const rPend = baris.querySelector('.col-r-pendalaman').innerText;
+            const valUTS = baris.querySelector('.uts').value || '-';
+            const valUAS = baris.querySelector('.uas').value || '-';
+
+            areaCetak.innerHTML += `
+                <div style="page-break-after: always; padding: 10px 0; font-family:'Poppins', sans-serif;">
+                    <div style="display:flex; align-items:center; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:15px;">
+                        <img src="${logoSrc}" style="width:60px; height:60px;" alt="Logo">
+                        <div style="text-align:center; flex:1;">
+                            <h2 style="font-size:14pt; font-weight:bold; margin:0;">LAPORAN HASIL BELAJAR PENDALAMAN TKA</h2>
+                            <p style="font-size:9pt; margin:0;">SDN KRAMAT 01 - KELAS VI (${semAktif})</p>
+                        </div>
+                    </div>
+                    <table style="width:100%; border-collapse:collapse; margin-bottom:15px; border:1px solid #ccc; font-size:10pt;">
+                        <tr><td style="padding:6px 10px; font-weight:bold; width:120px;">Nama Siswa</td><td>: <b>${nama}</b></td><td style="padding:6px 10px; font-weight:bold; width:80px;">NIS</td><td>: ${nis}</td></tr>
+                    </table>
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:10pt;">
+                        <thead>
+                            <tr style="background:#e2e8f0;">
+                                <th style="border:1px solid #000; padding:8px;">Rerata Literasi (15)</th>
+                                <th style="border:1px solid #000; padding:8px;">Rerata Numerasi (15)</th>
+                                <th style="border:1px solid #000; padding:8px;">TOTAL PENDALAMAN</th>
+                                <th style="border:1px solid #000; padding:8px;">${txtUTS}</th>
+                                <th style="border:1px solid #000; padding:8px;">${txtUAS}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="text-align:center;">
+                                <td style="border:1px solid #000; padding:8px;"><b>${rLit}</b></td>
+                                <td style="border:1px solid #000; padding:8px;"><b>${rNum}</b></td>
+                                <td style="border:1px solid #000; padding:8px; background:#f5f3ff;"><b style="font-size:12pt; color:#4c1d95;">${rPend}</b></td>
+                                <td style="border:1px solid #000; padding:8px;"><b>${valUTS}</b></td>
+                                <td style="border:1px solid #000; padding:8px;"><b>${valUAS}</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:30px; display:flex; justify-content:flex-end;">
+                        <div style="text-align:center; width:200px; font-size:9pt;">
+                            <p>Kramat, ${dapatkanTanggalSekarang()}</p>
+                            <p style="margin-bottom:50px;">Wali Kelas VI</p>
+                            <p style="font-weight:bold; text-decoration:underline;">Ikhwan Adi Yanto, S.Pd.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        window.print();
+    }
+
+    function bukaModalBabTP() {
+        const select = document.getElementById('selectKolomMulai');
+        select.innerHTML = '';
+        for(let i=1; i<=15; i++) select.innerHTML += `<option value="L${i}">Literasi L${i}</option>`;
+        for(let i=1; i<=15; i++) select.innerHTML += `<option value="N${i}">Numerasi N${i}</option>`;
+        
+        document.getElementById('modalBabTP').classList.add('active');
+        muatDataBabTPModal();
+    }
+
+    function tutupModalBabTP() { document.getElementById('modalBabTP').classList.remove('active'); }
+
+    function muatDataBabTPModal() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const key = document.getElementById('selectKolomMulai').value;
+        const data = (databaseBabTP[semAktif] && databaseBabTP[semAktif][key]) ? databaseBabTP[semAktif][key] : { tp: '' };
+        document.getElementById('inputDeskripsiTP').value = data.tp || '';
+    }
+
+    function simpanBabTPModal() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const key = document.getElementById('selectKolomMulai').value;
+        const tpVal = document.getElementById('inputDeskripsiTP').value.trim();
+
+        if(!databaseBabTP[semAktif]) databaseBabTP[semAktif] = {};
+        databaseBabTP[semAktif][key] = { tp: tpVal };
+
+        localStorage.setItem('dbBabTP_TKA_30', JSON.stringify(databaseBabTP));
+        inisialisasiTabel();
+        tutupModalBabTP();
+        alert(`Berhasil menyimpan TP untuk ${key}!`);
+    }
+
+    function isiOpsiModalKolom() {
+        const select = document.getElementById('selectTargetKolom');
+        select.innerHTML = '';
+        for(let i=1; i<=15; i++) select.innerHTML += `<option value="L_${i-1}">Literasi L${i}</option>`;
+        for(let i=1; i<=15; i++) select.innerHTML += `<option value="N_${i-1}">Numerasi N${i}</option>`;
+        
+        const txtUTS = localStorage.getItem('istilahUTS_TKA') || 'UTS';
+        const txtUAS = localStorage.getItem('istilahUAS_TKA') || 'UAS / US';
+
+        select.innerHTML += `<option value="uts">Ujian ${txtUTS}</option>`;
+        select.innerHTML += `<option value="uas">Ujian ${txtUAS}</option>`;
+    }
+
+    function isiOpsiDropdownAbsen() {
+        const selectAbsen = document.getElementById('selectNoAbsen');
+        if(!selectAbsen) return;
+        selectAbsen.innerHTML = '';
+        SISWA.forEach((_, idx) => selectAbsen.innerHTML += `<option value="${idx}">${idx + 1}</option>`);
+    }
+
+    function bukaModalInput() {
+        indeksSiswaModal = 0;
+        document.getElementById('modalInputNilai').classList.add('active');
+        muatNilaiSiswaModal();
+    }
+
+    function tutupModalInput() { document.getElementById('modalInputNilai').classList.remove('active'); }
+
+    function muatNilaiSiswaModal() {
+        if(SISWA.length === 0) return;
+        const siswa = SISWA[indeksSiswaModal];
+        const nis = siswa[0];
+        const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+
+        document.getElementById('modalSiswaNis').innerText = `NIS: ${nis}`;
+        document.getElementById('modalSiswaNama').innerText = nama;
+        
+        const selectAbsen = document.getElementById('selectNoAbsen');
+        if(selectAbsen) selectAbsen.value = indeksSiswaModal;
+
+        const targetKolom = document.getElementById('selectTargetKolom').value;
+        const barisSiswa = document.querySelector(`#bodyNilaiTKA tr[data-nis="${nis}"]`);
+        const semAktif = document.getElementById('semesterSelect').value;
+
+        const modalTpBab = document.getElementById('modalTpBab');
+        const modalTpText = document.getElementById('modalTpText');
+
+        if(targetKolom.startsWith('L_')) {
+            const idx = parseInt(targetKolom.split('_')[1]) + 1;
+            const dataTP = (databaseBabTP[semAktif] && databaseBabTP[semAktif][`L${idx}`]) ? databaseBabTP[semAktif][`L${idx}`].tp : 'Belum ada deskripsi TP';
+            modalTpBab.innerText = `Literasi L${idx}`;
+            modalTpText.innerText = dataTP;
+        } else if(targetKolom.startsWith('N_')) {
+            const idx = parseInt(targetKolom.split('_')[1]) + 1;
+            const dataTP = (databaseBabTP[semAktif] && databaseBabTP[semAktif][`N${idx}`]) ? databaseBabTP[semAktif][`N${idx}`].tp : 'Belum ada deskripsi TP';
+            modalTpBab.innerText = `Numerasi N${idx}`;
+            modalTpText.innerText = dataTP;
+        } else if(targetKolom === 'uts') {
+            modalTpBab.innerText = "Ujian Tengah Semester";
+            modalTpText.innerText = "Evaluasi UTS";
+        } else {
+            modalTpBab.innerText = "Ujian Akhir Semester";
+            modalTpText.innerText = "Evaluasi UAS / US";
+        }
+
+        let inputAsli;
+        if(targetKolom.startsWith('L_')) {
+            const idx = targetKolom.split('_')[1];
+            inputAsli = barisSiswa.querySelectorAll('.lit')[idx];
+        } else if(targetKolom.startsWith('N_')) {
+            const idx = targetKolom.split('_')[1];
+            inputAsli = barisSiswa.querySelectorAll('.num')[idx];
+        } else if(targetKolom === 'uts') {
+            inputAsli = barisSiswa.querySelector('.uts');
+        } else {
+            inputAsli = barisSiswa.querySelector('.uas');
+        }
+
+        const inputBig = document.getElementById('inputBigNilai');
+        inputBig.value = inputAsli ? inputAsli.value : '';
+        setTimeout(() => { inputBig.focus(); inputBig.select(); }, 100);
+    }
+
+    function simpanNilaiDariModal() {
+        if(SISWA.length === 0) return;
+        const nis = SISWA[indeksSiswaModal][0];
+        const targetKolom = document.getElementById('selectTargetKolom').value;
+        const valBaru = document.getElementById('inputBigNilai').value;
+        const barisSiswa = document.querySelector(`#bodyNilaiTKA tr[data-nis="${nis}"]`);
+
+        let inputAsli;
+        if(targetKolom.startsWith('L_')) {
+            const idx = targetKolom.split('_')[1];
+            inputAsli = barisSiswa.querySelectorAll('.lit')[idx];
+        } else if(targetKolom.startsWith('N_')) {
+            const idx = targetKolom.split('_')[1];
+            inputAsli = barisSiswa.querySelectorAll('.num')[idx];
+        } else if(targetKolom === 'uts') {
+            inputAsli = barisSiswa.querySelector('.uts');
+        } else {
+            inputAsli = barisSiswa.querySelector('.uas');
+        }
+
+        if(inputAsli) {
+            inputAsli.value = valBaru;
+            hitungOtomatisRaport(inputAsli);
+        }
+    }
+
+    function lompatKeSiswa(targetIdx) {
+        simpanNilaiDariModal();
+        indeksSiswaModal = parseInt(targetIdx);
+        muatNilaiSiswaModal();
+    }
+
+    function navigasiSiswaModal(direction) {
+        simpanNilaiDariModal();
+        indeksSiswaModal += direction;
+        if (indeksSiswaModal < 0) indeksSiswaModal = SISWA.length - 1;
+        else if (indeksSiswaModal >= SISWA.length) indeksSiswaModal = 0;
+        muatNilaiSiswaModal();
+    }
+
+    function handleEnterBigInput(e) {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            navigasiSiswaModal(1);
+        }
+    }
+
+    function gantiSemester() { inisialisasiTabel(); }
+
+    function kembaliKeAbsensi() {
+        if (window.opener && !window.opener.closed) { window.close(); } 
+        else { window.location.href = 'PENA MANTAP V6.html'; }
+    }
+
+    function eksporExcel() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const workbook = XLSX.utils.table_to_book(document.getElementById('tabelNilaiTKA'), { raw: true });
+        XLSX.writeFile(workbook, `Nilai_PendalamanTKA_30Kolom_${semAktif.replace(' ', '')}.xlsx`);
+    }
+
+    function simpanKeSheets() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const dataPaket = [];
+
+        document.querySelectorAll('#bodyNilaiTKA tr').forEach(baris => {
+            const litVals = Array.from(baris.querySelectorAll('.lit')).map(i => i.value || "");
+            const numVals = Array.from(baris.querySelectorAll('.num')).map(i => i.value || "");
+            
+            dataPaket.push({
+                nis: baris.getAttribute('data-nis'),
+                nama: baris.querySelector('.col-nama .nama-teks').innerText,
+                harian: [...litVals, ...numVals],
+                totalPendalaman: baris.querySelector('.col-r-pendalaman').innerText,
+                uts: baris.querySelector('.uts').value || "",
+                uas: baris.querySelector('.uas').value || ""
+            });
+        });
+
+        if(!confirm(`Kirim data Pendalaman TKA 30 Kolom [ ${semAktif} ] ke Google Sheets (Tab: Pendalaman TKA)?`)) return;
+
+        const btn = document.querySelector('.btn-save');
+        btn.innerHTML = "⏳ Proses Menyimpan..."; btn.disabled = true;
+
+        const dataForm = new URLSearchParams();
+        dataForm.append("postData", JSON.stringify({ data: dataPaket, semester: semAktif, mapel: "Pendalaman TKA" }));
+
+        fetch(URL_APPS_SCRIPT, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: dataForm
+        })
+        .then(() => alert(`Data Pendalaman TKA (${semAktif}) sukses diproses!`))
+        .catch(() => alert("Proses pengiriman selesai!"))
+        .finally(() => {
+            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Sheets";
+            btn.disabled = false;
+        });
+    }
+
+    window.onload = async function() {
+        muatKKMTersimpan();
+        muatLogoTersimpan();
+        await muatDataRealtimeDariIndexedDB();
+        inisialisasiTabel();
+    };
+</script>
+</body>
+</html>

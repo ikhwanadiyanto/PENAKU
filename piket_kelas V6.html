@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piket Kelas - Sistem Integrasi V6</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:linear-gradient(135deg,#667eea,#764ba2,#ff6b6b);padding:20px;min-height:100vh}
+
+.container{max-width:1250px;margin:auto;}
+.table-wrap,.panel{background:#fff;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+
+.header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    padding: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 50%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+}
+.header p { color: #4b5563; font-size: 14px; font-weight: 600; margin-top: 5px; }
+
+/* STATUS BAR MEMORI INDEXEDDB */
+.storage-status-box {
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 14px 18px; margin-top: 15px;
+    cursor: pointer; transition: all 0.2s ease; text-align: left;
+}
+.storage-status-box:hover {
+    border-color: #6366f1; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.15); transform: translateY(-2px);
+}
+.storage-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px; }
+.storage-title { font-size: 12px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; }
+.storage-badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #dcfce7; color: #15803d; }
+.storage-progress-bg { width: 100%; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden; position: relative; }
+.storage-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #6366f1); border-radius: 10px; transition: width 0.5s ease; }
+.storage-details { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11.5px; color: #64748b; font-weight: 600; }
+
+.app-page { display: block; }
+
+.table-wrap{padding:20px;overflow:auto;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+th{background:#4f46e5;color:#fff;padding:12px; font-size: 14px;}
+td{padding:10px;border-bottom:1px solid #eee;text-align:center;vertical-align:middle; font-size: 14px;}
+.nama{text-align:left}
+
+button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;margin-top:10px;margin-right:5px}
+.print{background:#3b82f6}
+
+.btn-input-no {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-input-no:hover {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.section-title {margin: 20px 0 10px 0; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-size: 18px;}
+
+/* KONTROL HARIAN */
+.kontrol-harian-tambahan {
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 20px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.6);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+.kontrol-harian-tambahan .grup-kiri { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.label-tanggal-eksotis { font-size: 14px; font-weight: 700; color: #3730a3; text-transform: uppercase; }
+
+.tanggal-nav-wrapper {
+    display: flex; align-items: center; background: #ffffff; border: 2px solid #e0e7ff; border-radius: 14px; padding: 2px 6px;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.05);
+}
+.input-tanggal-kustom { padding: 8px 12px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: #312e81; outline: none; cursor: pointer; }
+.btn-nav-tgl { width: 30px; height: 30px; border: none; border-radius: 8px; color: #4f46e5; background: #eeebff; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; margin: 0 2px; }
+.btn-nav-tgl:hover { background: #4f46e5; color: #ffffff; }
+
+#labelNamaHari {
+    font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 30px; 
+    background: #e0e7ff; color: #3730a3; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #c7d2fe;
+}
+#labelNamaHari.hari-minggu { background: #fef2f2 !important; color: #dc2626 !important; border-color: #fca5a5 !important; }
+#labelNamaHari.hari-jumat { background: #f0fdf4 !important; color: #16a34a !important; border-color: #86efac !important; }
+
+#statusMemoriHarian { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 30px; display: inline-flex; align-items: center; gap: 6px; }
+
+.action-buttons-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.save-btn-head { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #10b981, #059669); margin-top:0;}
+.rekap-btn-head { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #1d4ed8); margin-top:0;}
+.cert-btn-head { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #8b5cf6, #6d28d9); margin-top:0;}
+.back-btn-head { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #ef4444, #dc2626); margin-top:0; text-decoration: none; transition: all 0.2s;}
+.back-btn-head:hover { background: linear-gradient(135deg, #f87171, #ef4444); color: white; transform: translateY(-1px); }
+.upload-logo-btn-head { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #f59e0b, #d97706); margin-top:0;}
+
+.save-btn-head:hover { background: linear-gradient(135deg, #34d399, #10b981); }
+.rekap-btn-head:hover { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+.cert-btn-head:hover { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+
+.btn-hapus-baris {
+    background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 5px 10px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 0;
+}
+.btn-hapus-baris:hover { background: #dc2626; color: #ffffff; }
+
+/* STYLING TAB REGU PIKET HARIAN */
+.panel-regu-piket { background: #fff; padding: 20px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.15); }
+.tabs-regu { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
+.tab-regu-btn {
+    padding: 8px 18px; border-radius: 12px; font-weight: 700; font-size: 13px; color: #475569;
+    background: #f1f5f9; border: 1px solid #cbd5e1; cursor: pointer; transition: all 0.2s; white-space: nowrap; margin-top: 0;
+}
+.tab-regu-btn:hover { background: #e2e8f0; }
+.tab-regu-btn.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+.regu-content { display: none; background: #f8fafc; padding: 15px; border-radius: 16px; border: 1px solid #e2e8f0; }
+.regu-content.active { display: block; }
+
+/* PODIUM WIDGETS */
+.podium-widgets-wrapper { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; width: 100%; margin-bottom: 10px; }
+.top-siswa-widget {
+    display: flex; align-items: center; gap: 8px; flex: 1;
+    background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #fbbf24;
+    padding: 8px 10px; border-radius: 18px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15); min-width: 0;
+}
+.top-siswa-widget.rank-2 { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-color: #94a3b8; }
+.top-siswa-widget.rank-3 { background: linear-gradient(135deg, #ffedd5, #fed7aa); border-color: #f97316; }
+.top-siswa-widget.rank-4 { background: linear-gradient(135deg, #e0f2fe, #bae6fd); border-color: #38bdf8; }
+.top-siswa-widget.rank-5 { background: linear-gradient(135deg, #fce7f3, #fbcfe8); border-color: #f472b6; }
+
+.top-siswa-avatar-wrap {
+    width: 38px; height: 38px; border-radius: 10px; border: 2px solid #d97706; overflow: hidden; background: #fff;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px;
+}
+.rank-2 .top-siswa-avatar-wrap { border-color: #64748b; }
+.rank-3 .top-siswa-avatar-wrap { border-color: #c2410c; }
+.rank-4 .top-siswa-avatar-wrap { border-color: #0284c7; }
+.rank-5 .top-siswa-avatar-wrap { border-color: #db2777; }
+
+.top-siswa-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.top-siswa-info { display: flex; flex-direction: column; justify-content: center; min-width: 0; flex-grow: 1; }
+.top-siswa-badge-title { font-size: 8.5px; font-weight: 800; text-transform: uppercase; color: #92400e; white-space: nowrap; }
+.rank-2 .top-siswa-badge-title { color: #475569; }
+.rank-3 .top-siswa-badge-title { color: #9a3412; }
+.rank-4 .top-siswa-badge-title { color: #0369a1; }
+.rank-5 .top-siswa-badge-title { color: #9d174d; }
+
+.top-siswa-nama { font-size: 11px; font-weight: 700; color: #78350f; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank-2 .top-siswa-nama { color: #334155; }
+.rank-3 .top-siswa-nama { color: #7c2d12; }
+.rank-4 .top-siswa-nama { color: #0c4a6e; }
+.rank-5 .top-siswa-nama { color: #831843; }
+
+.top-siswa-poin { font-size: 9.5px; font-weight: 700; color: #b45309; background: rgba(255,255,255,0.7); padding: 1px 5px; border-radius: 8px; width: fit-content; margin-top: 1px; }
+
+/* CARD KELOMPOK SISWA */
+.regu-cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.siswa-card-item {
+    background: #ffffff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative;
+}
+.siswa-card-item:hover { transform: translateY(-2px); border-color: #4f46e5; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.12); }
+
+.siswa-card-item.terpilih { background: #ecfdf5; border-color: #10b981; }
+.siswa-card-item.tidak-hadir { background: #fef2f2; border-color: #fca5a5; opacity: 0.85; }
+
+.siswa-card-foto {
+    width: 46px; height: 46px; border-radius: 12px; border: 2px solid #64748b; overflow: hidden;
+    background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 20px;
+    color: #64748b; flex-shrink: 0; box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+.siswa-card-item.terpilih .siswa-card-foto { border-color: #10b981; }
+.siswa-card-item.tidak-hadir .siswa-card-foto { border-color: #ef4444; }
+.siswa-card-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+.siswa-card-info { flex-grow: 1; min-width: 0; }
+.siswa-card-no { font-size: 11px; font-weight: 700; color: #64748b; }
+.siswa-card-item.terpilih .siswa-card-no { color: #059669; }
+.siswa-card-item.tidak-hadir .siswa-card-no { color: #dc2626; }
+.siswa-card-nama { font-size: 12.5px; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.siswa-card-btn-hapus { color: #ef4444; font-size: 16px; font-weight: bold; cursor: pointer; padding: 2px 6px; border-radius: 6px; }
+.siswa-card-btn-hapus:hover { background: #fee2e2; }
+
+/* PENILAIAN POIN */
+.penilaian-poin-box {
+    background: #eef2ff; border: 2px dashed #818cf8; border-radius: 16px; padding: 15px; margin-top: 15px;
+}
+.penilaian-poin-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 10px;
+}
+.penilaian-item { background: #fff; padding: 10px; border-radius: 10px; border: 1px solid #c7d2fe; text-align: center; }
+.penilaian-item label { font-size: 12px; font-weight: 700; color: #3730a3; display: block; margin-bottom: 5px; }
+.penilaian-item input { width: 100%; text-align: center; padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: bold; }
+
+/* FRAME FOTO TABEL UTAMA */
+.siswa-foto-container { width: 42px; height: 42px; position: relative; margin: auto; display: flex; align-items: center; justify-content: center; }
+.siswa-img-box { width: 40px; height: 40px; border-radius: 10px; border: 2px solid #4f46e5; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.siswa-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+/* MODAL STYLING */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
+.modal-box { background: #fff; width: 100%; max-width: 750px; border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; }
+.modal-header h3 { color: #1e1b4b; font-size: 20px; font-weight: 700; }
+.close-modal { background: none; border: none; font-size: 20px; color: #ef4444; cursor: pointer; padding: 0; margin: 0; }
+
+.print-kop-surat, .print-kop-rekap, .print-ttd-section, .print-meta-info, .print-ttd-rekap, .print-certificate-container { display: none; }
+
+.kop-layout { display: flex; align-items: center; gap: 15px; }
+.kop-logo { width: 85px; height: 85px; object-fit: contain; flex-shrink: 0; }
+.kop-text { flex-grow: 1; text-align: center; }
+
+.single-certificate-page {
+    width: 100%; height: 185mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;
+    background: linear-gradient(135deg, #fffdfa 0%, #f7f3e9 100%); color: #1e1b4b; border: 8px solid #1e1b4b; outline: 3px solid #d97706; outline-offset: -18px;
+    padding: 30px 45px; text-align: center; page-break-after: always; break-after: page; overflow: hidden;
+}
+
+@media print {
+    @page { size: A4 portrait; margin: 10mm; }
+    html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; background: #ffffff !important; overflow: visible !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    body:not(.rekap-printing-active):not(.cert-printing-active) .container,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .modal-overlay { display: none !important; }
+
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-kop-surat { display: block !important; border-bottom: 3px double #000; padding-bottom: 8px; margin-bottom: 12px; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-kop-surat h2 { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-kop-surat h3 { font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-kop-surat p { font-size: 8pt; color: #333; margin-bottom: 0; }
+
+    body:not(.rekap-printing-active):not(.cert-printing-active) .container { display: block !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .header,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .kontrol-harian-tambahan,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .panel-regu-piket,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .section-title,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .kolom-foto,
+    body:not(.rekap-printing-active):not(.cert-printing-active) .kolom-aksi-hapus { display: none !important; }
+
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-meta-info { display: flex !important; justify-content: space-between; font-weight: bold; font-size: 9.5pt; margin-bottom: 8px; color: #000 !important; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .table-wrap { padding: 0 !important; box-shadow: none !important; background: transparent !important; overflow: visible !important; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #000 !important; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) th { background: #e2e8f0 !important; color: #000 !important; border: 1px solid #000 !important; padding: 4px 5px !important; font-size: 9.5pt !important; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) td { border: 1px solid #000 !important; padding: 3px 5px !important; color: #000 !important; font-size: 9.5pt !important; }
+
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-ttd-section { display: flex !important; justify-content: space-between; margin-top: 20px; page-break-inside: avoid; break-inside: avoid; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-ttd-box { text-align: center; width: 170px; font-size: 9.5pt; }
+    body:not(.rekap-printing-active):not(.cert-printing-active) .print-ttd-space { height: 45px; }
+
+    /* REKAP PRINT MODE */
+    body.rekap-printing-active > .container, body.rekap-printing-active .modal-overlay:not(#modalRekap) { display: none !important; }
+    body.rekap-printing-active { background: #ffffff !important; padding: 0 !important; margin: 0 !important; }
+    body.rekap-printing-active #modalRekap { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: transparent !important; display: block !important; padding: 0 !important; margin: 0 !important; backdrop-filter: none !important; }
+    body.rekap-printing-active #modalRekap .modal-box { background: transparent !important; width: 100% !important; max-width: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; border-radius: 0 !important; overflow: visible !important; }
+    body.rekap-printing-active .modal-header, body.rekap-printing-active #btnCetakRekapModal, body.rekap-printing-active .filter-rekap-container { display: none !important; }
+    body.rekap-printing-active .print-kop-rekap { display: block !important; border-bottom: 3px double #000; padding-bottom: 8px; margin-bottom: 12px; }
+    body.rekap-printing-active .print-kop-rekap h2 { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
+    body.rekap-printing-active .print-kop-rekap h3 { font-size: 11pt; font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
+    body.rekap-printing-active .print-kop-rekap p { font-size: 8pt; color: #333; margin-bottom: 0; }
+    body.rekap-printing-active .table-wrap table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #000 !important; }
+    body.rekap-printing-active .table-wrap th { background: #f1f5f9 !important; color: #000 !important; border: 1px solid #000 !important; padding: 6px !important; font-size: 10pt !important; }
+    body.rekap-printing-active .table-wrap td { border: 1px solid #000 !important; padding: 5px !important; color: #000 !important; font-size: 9.5pt !important; }
+    body.rekap-printing-active .print-ttd-rekap { display: flex !important; justify-content: space-between; margin-top: 30px; page-break-inside: avoid; break-inside: avoid; }
+    body.rekap-printing-active .print-ttd-box { text-align: center; width: 200px; font-size: 10pt; }
+    body.rekap-printing-active .print-ttd-space { height: 50px; }
+
+    /* SERTIFIKAT PRINT MODE */
+    body.cert-printing-active > .container, body.cert-printing-active .modal-overlay:not(#modalSertifikat) { display: none !important; }
+    body.cert-printing-active { background: #ffffff !important; padding: 0 !important; margin: 0 !important; }
+    body.cert-printing-active #modalSertifikat { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: transparent !important; display: block !important; padding: 0 !important; margin: 0 !important; backdrop-filter: none !important; }
+    body.cert-printing-active #modalSertifikat .modal-box { background: transparent !important; width: 100% !important; max-width: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; border-radius: 0 !important; overflow: visible !important; }
+    body.cert-printing-active .modal-header, body.cert-printing-active #modalSertifikat .modal-box > p, body.cert-printing-active #modalSertifikat div[style*="background: #f8fafc"], body.cert-printing-active #btnCetakSertifikatModal { display: none !important; }
+    body.cert-printing-active .print-certificate-container { display: block !important; width: 100% !important; }
+    body.cert-printing-active .single-certificate-page { width: 100% !important; height: 185mm !important; box-sizing: border-box !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; page-break-after: always !important; break-after: page !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 !important; }
+}
+</style>
+<style id="dynamicPrintStyle"></style>
+</head>
+<body>
+
+<div class="container">
+    <div class="print-kop-surat">
+        <div class="kop-layout">
+            <img id="logoPrintAbsen" class="kop-logo" src="" alt="Logo Sekolah" style="display:none;" onerror="this.style.display='none'">
+            <div class="kop-text">
+                <h2>PEMERINTAH KABUPATEN / DINAS PENDIDIKAN</h2>
+                <h3>DAFTAR HADIR PIKET KELAS VI</h3>
+                <p>Catatan Kehadiran dan Ketepatan Waktu Piket Kelas</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JUDUL UTAMA & BAR STATUS MEMORI DI HEADER -->
+    <div class="header">
+        <h1>🧹 PIKET KELAS V6</h1>
+        <p>Sistem Pengelolaan & Absensi Piket Harian Siswa Kelas VI (IndexedDB Real-Time)</p>
+
+        <!-- BAR STATUS MEMORI INDEXEDDB -->
+        <div class="storage-status-box" onclick="bukaModalMemori()" title="Klik untuk melihat detail & opsi reset memori IndexedDB">
+            <div class="storage-status-header">
+                <div class="storage-title">
+                    <i class="fa-solid fa-hard-drive" style="color: #4f46e5; font-size: 14px;"></i>
+                    <span>Status Memori IndexedDB (AplikasiKelasVIDB) — <i>(Klik untuk Kelola)</i></span>
+                </div>
+                <span class="storage-badge" id="storageBadge">Aman</span>
+            </div>
+            <div class="storage-progress-bg">
+                <div class="storage-progress-fill" id="storageProgressFill"></div>
+            </div>
+            <div class="storage-details">
+                <span id="storageUsedText">0 KB terpakai dari ~50 MB</span>
+                <span id="storagePercentText">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-absensi" class="app-page">
+        <div class="kontrol-harian-tambahan">
+            <div class="grup-kiri">
+                <span class="label-tanggal-eksotis">Tanggal:</span>
+                <div class="tanggal-nav-wrapper">
+                    <button type="button" class="btn-nav-tgl" onclick="geserTanggal(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <input type="date" id="tgl" class="input-tanggal-kustom">
+                    <button type="button" class="btn-nav-tgl" onclick="geserTanggal(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                
+                <span id="labelNamaHari">
+                    <i class="fa-solid fa-calendar-day"></i> <span id="teksNamaHari">-</span>
+                </span>
+                
+                <span id="statusMemoriHarian"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</span>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <div class="podium-widgets-wrapper">
+                    <div id="widgetTop1" class="top-siswa-widget">
+                        <div class="top-siswa-avatar-wrap" id="avatarRank1">👤</div>
+                        <div class="top-siswa-info">
+                            <div class="top-siswa-badge-title">#1 Terajin</div>
+                            <div class="top-siswa-nama" id="namaRank1">Belum Ada</div>
+                            <div class="top-siswa-poin" id="poinRank1">0 Poin</div>
+                        </div>
+                    </div>
+                    <div id="widgetTop2" class="top-siswa-widget rank-2">
+                        <div class="top-siswa-avatar-wrap" id="avatarRank2">🥈</div>
+                        <div class="top-siswa-info">
+                            <div class="top-siswa-badge-title">#2 Terajin</div>
+                            <div class="top-siswa-nama" id="namaRank2">Belum Ada</div>
+                            <div class="top-siswa-poin" id="poinRank2">0 Poin</div>
+                        </div>
+                    </div>
+                    <div id="widgetTop3" class="top-siswa-widget rank-3">
+                        <div class="top-siswa-avatar-wrap" id="avatarRank3">🥉</div>
+                        <div class="top-siswa-info">
+                            <div class="top-siswa-badge-title">#3 Terajin</div>
+                            <div class="top-siswa-nama" id="namaRank3">Belum Ada</div>
+                            <div class="top-siswa-poin" id="poinRank3">0 Poin</div>
+                        </div>
+                    </div>
+                    <div id="widgetTop4" class="top-siswa-widget rank-4">
+                        <div class="top-siswa-avatar-wrap" id="avatarRank4">🏅</div>
+                        <div class="top-siswa-info">
+                            <div class="top-siswa-badge-title">#4 Terajin</div>
+                            <div class="top-siswa-nama" id="namaRank4">Belum Ada</div>
+                            <div class="top-siswa-poin" id="poinRank4">0 Poin</div>
+                        </div>
+                    </div>
+                    <div id="widgetTop5" class="top-siswa-widget rank-5">
+                        <div class="top-siswa-avatar-wrap" id="avatarRank5">🏅</div>
+                        <div class="top-siswa-info">
+                            <div class="top-siswa-badge-title">#5 Terajin</div>
+                            <div class="top-siswa-nama" id="namaRank5">Belum Ada</div>
+                            <div class="top-siswa-poin" id="poinRank5">0 Poin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="file" id="inputUploadLogo" accept="image/*" style="display: none;" onchange="prosesUploadLogo(event)">
+                        <button type="button" class="upload-logo-btn-head" onclick="document.getElementById('inputUploadLogo').click()"><i class="fa-solid fa-image"></i> Upload Logo Sekolah</button>
+                        <span id="infoStatusLogo" style="font-size: 11px; font-weight: 600; color: #4b5563;"></span>
+                    </div>
+
+                    <div class="action-buttons-group">
+                        <a href="PENA MANTAP V6.html" class="back-btn-head"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                        <button class="cert-btn-head" onclick="bukaModalSertifikat()"><i class="fa-solid fa-certificate"></i> Cetak Sertifikat Regu</button>
+                        <button class="rekap-btn-head" onclick="bukaModalRekap()"><i class="fa-solid fa-medal"></i> Rekap Siswa Terajin</button>
+                        <button class="save-btn-head" id="btnSimpanAbsen" onclick="simpanAbsen()"><i class="fa-solid fa-floppy-disk"></i> Simpan Absen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL TAB REGU PIKET HARIAN -->
+        <div class="panel-regu-piket">
+            <h3 style="font-size: 16px; color: #1e1b4b; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-people-group" style="color: #4f46e5;"></i> Daftar Kelompok Siswa Berdasarkan Hari Piket
+            </h3>
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">
+                💡 <b>Petunjuk:</b> Riwayat Kerja Piket <b>HANYA BISA</b> diisi oleh anggota regu yang terdaftar pada hari tersebut. Klik pada kartu anggota regu untuk menandai status Hadir.
+            </p>
+            
+            <div class="tabs-regu">
+                <button type="button" class="tab-regu-btn active" onclick="pilihTabHari('Senin')">📌 Regu Senin</button>
+                <button type="button" class="tab-regu-btn" onclick="pilihTabHari('Selasa')">📌 Regu Selasa</button>
+                <button type="button" class="tab-regu-btn" onclick="pilihTabHari('Rabu')">📌 Regu Rabu</button>
+                <button type="button" class="tab-regu-btn" onclick="pilihTabHari('Kamis')">📌 Regu Kamis</button>
+                <button type="button" class="tab-regu-btn" onclick="pilihTabHari('Jumat')">📌 Regu Jumat</button>
+                <button type="button" class="tab-regu-btn" onclick="pilihTabHari('Sabtu')">📌 Regu Sabtu</button>
+            </div>
+
+            <div id="containerTabKontenRegu"></div>
+        </div>
+        
+        <h2 class="section-title">✍️ Riwayat Kerja Piket</h2>
+        
+        <div class="print-meta-info" id="printMetaInfo">
+            <span>Hari / Tanggal: -</span>
+            <span>Kelas: VI (Enam)</span>
+        </div>
+
+        <div class="table-wrap">
+            <table id="tabelInputUtama">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Urutan</th>
+                        <th class="kolom-foto" style="width: 70px;">Foto</th>
+                        <th style="width: 75px;">No. Absen</th>
+                        <th style="width: 95px;">NIS</th>
+                        <th>Nama Siswa</th>
+                        <th style="width: 100px;">Score / Poin</th>
+                        <th style="width: 100px;">Status</th>
+                        <th class="kolom-aksi-hapus" style="width: 90px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tb">
+                    <tr><td colspan="8" style="color: #6b7280; padding: 20px;">Memuat data siswa secara real-time...</td></tr>
+                </tbody>
+            </table>
+            
+            <div class="print-ttd-section">
+                <div class="print-ttd-box">
+                    <p>Mengetahui,</p>
+                    <p>Kepala Sekolah</p>
+                    <div class="print-ttd-space"></div>
+                    <p><b>( ......................................... )</b></p>
+                    <p>NIP. ...................................</p>
+                </div>
+                <div class="print-ttd-box">
+                    <p>Guru Kelas / Piket,</p>
+                    <div class="print-ttd-space" style="height: 62px;"></div>
+                    <p><b>( ......................................... )</b></p>
+                    <p>NIP. ...................................</p>
+                </div>
+            </div>
+
+            <button class="print" onclick="cetakKehadiranHariIni()"><i class="fa-solid fa-print"></i> Cetak Daftar Hadir Piket Resmi</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL KELOLA STATUS MEMORI INDEXEDDB -->
+<div id="modalBubbleMemoriOverlay" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px; text-align: left;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-hard-drive" style="color: #4f46e5;"></i> Manajemen Status Memori IndexedDB</h3>
+            <button class="close-modal" onclick="tutupModalMemori()">&times;</button>
+        </div>
+        <div style="font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 15px;">
+            <p><b>Lokasi Penyimpanan:</b> Database IndexedDB `AplikasiKelasVIDB` (`pengaturan`).</p>
+            <p id="modalMemoriRinciDetail" style="margin-top: 6px; font-weight: 600; color: #1e1b4b;"></p>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="font-size: 14px; color: #1e1b4b; margin-bottom: 8px;"><i class="fa-solid fa-download"></i> Unduh History Web (Backup JSON)</h4>
+            <button class="print" style="margin-top:0; font-size:12px; padding:8px 12px;" onclick="unduhHistoryLocalStorage()"><i class="fa-solid fa-file-arrow-down"></i> Unduh Data Backup</button>
+        </div>
+
+        <div class="modal-footer" style="margin-top: 15px;">
+            <button class="btn-modal-cancel" style="padding: 8px 15px; background: #64748b; border: none; border-radius: 8px; color: #fff; cursor: pointer;" onclick="tutupModalMemori()">Tutup</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CETAK SERTIFIKAT PROFESIONAL PER REGU -->
+<div id="modalSertifikat" class="modal-overlay">
+    <div class="modal-box" style="max-width: 800px; text-align: center;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-certificate" style="color: #8b5cf6;"></i> Cetak Sertifikat Penghargaan Regu Piket</h3>
+            <button class="close-modal" onclick="tutupModalSertifikat()">&times;</button>
+        </div>
+        
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 15px;">
+            Cetak Sertifikat Apresiasi Resmi untuk Seluruh Anggota <b>Regu <span id="labelModalReguCert">Senin</span></b>.
+        </p>
+
+        <div style="background: #f8fafc; padding: 15px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 20px; text-align: left; display: flex; flex-direction: column; gap: 10px;">
+            <div>
+                <label style="font-size: 12px; font-weight: 700; color: #3730a3; display: block; margin-bottom: 4px;">Nama Sekolah / Instansi:</label>
+                <input type="text" id="inputSekolahSertifikat" value="SD NEGERI UTAMA" style="width: 100%; padding: 8px 12px; border: 2px solid #cbd5e1; border-radius: 8px; font-weight: 600; font-size: 13px;" oninput="renderKoleksiSertifikat()">
+            </div>
+            <div>
+                <label style="font-size: 12px; font-weight: 700; color: #3730a3; display: block; margin-bottom: 4px;">Predikat / Apresiasi Khusus:</label>
+                <input type="text" id="inputPredikatSertifikat" value="Regu Piket Terbersih dan Terdisiplin" style="width: 100%; padding: 8px 12px; border: 2px solid #cbd5e1; border-radius: 8px; font-weight: 600; font-size: 13px;" oninput="renderKoleksiSertifikat()">
+            </div>
+        </div>
+
+        <div class="print-certificate-container" id="printSertifikatArea"></div>
+
+        <button id="btnCetakSertifikatModal" class="print" style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #8b5cf6, #6d28d9);" onclick="cetakSertifikatResmi()"><i class="fa-solid fa-print"></i> Cetak Sertifikat Seluruh Anggota Regu</button>
+    </div>
+</div>
+
+<!-- MODAL REKAP SISWA TERAJIN PER KELOMPOK REGU -->
+<div id="modalRekap" class="modal-overlay">
+    <div class="modal-box">
+        <div class="print-kop-rekap">
+            <div class="kop-layout">
+                <img id="logoPrintRekap" class="kop-logo" src="" alt="Logo Sekolah" style="display:none;" onerror="this.style.display='none'">
+                <div class="kop-text">
+                    <h2>PEMERINTAH KABUPATEN / DINAS PENDIDIKAN</h2>
+                    <h3>REKAPITULASI SISWA TERAJIN PIKET KELAS VI</h3>
+                    <p id="subjudulCetakRekap">Akumulasi Poin Ketepatan Waktu dan Kedisiplinan Piket Peserta Didik</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-medal" style="color: #f59e0b;"></i> Rekap Siswa Terajin Piket Kelas</h3>
+            <button class="close-modal" onclick="tutupModalRekap()">&times;</button>
+        </div>
+        
+        <!-- FILTER PER KELOMPOK REGU -->
+        <div class="filter-rekap-container" style="background: #f1f5f9; padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <label style="font-size: 13px; font-weight: 700; color: #334155;">
+                <i class="fa-solid fa-filter" style="color: #4f46e5;"></i> Tampilkan Berdasarkan Kelompok:
+            </label>
+            <select id="selectFilterReguRekap" onchange="renderTabelRekapModal()" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 13px; outline: none; background: #fff;">
+                <option value="SEMUA">🌐 Semua Siswa (Seluruh Regu)</option>
+                <option value="Senin">📌 Kelompok Regu Senin</option>
+                <option value="Selasa">📌 Kelompok Regu Selasa</option>
+                <option value="Rabu">📌 Kelompok Regu Rabu</option>
+                <option value="Kamis">📌 Kelompok Regu Kamis</option>
+                <option value="Jumat">📌 Kelompok Regu Jumat</option>
+                <option value="Sabtu">📌 Kelompok Regu Sabtu</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 10px; font-size: 12px; font-weight: 600; color: #475569;" id="infoWaktuCetakRekap"></div>
+
+        <div class="table-wrap" style="padding: 0; box-shadow: none; margin-bottom: 15px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Peringkat</th>
+                        <th style="width: 75px;">No. Absen</th>
+                        <th style="width: 95px;">NIS</th>
+                        <th>Nama Siswa</th>
+                        <th style="width: 110px;">Kelompok</th>
+                        <th style="width: 110px;">Skor Piket</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBodyRekap"></tbody>
+            </table>
+        </div>
+
+        <div class="print-ttd-rekap">
+            <div class="print-ttd-box">
+                <p>Mengetahui,</p>
+                <p>Kepala Sekolah</p>
+                <div class="print-ttd-space"></div>
+                <p><b>( ......................................... )</b></p>
+                <p>NIP. ...................................</p>
+            </div>
+            <div class="print-ttd-box">
+                <p>Guru Kelas / Piket,</p>
+                <div class="print-ttd-space"></div>
+                <p><b>( ......................................... )</b></p>
+                <p>NIP. ...................................</p>
+            </div>
+        </div>
+
+        <button id="btnCetakRekapModal" class="print" style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="cetakRekapResmi()"><i class="fa-solid fa-print"></i> Cetak Hasil Siswa Terajin</button>
+    </div>
+</div>
+
+<script>
+/* INISIALISASI INDEXEDDB APLIKASI KELAS VI */
+let dbIndexedDB = null;
+let siswa = [];
+let dbFotoSiswa = {};
+let databaseSiswaDetailGlobal = {};
+let dbPiketHarianRegu = {};
+let dbReguPiket = {};
+let dbPoinRegu = {};
+let activeTabHari = 'Senin';
+
+function bukaDatabaseIndexedDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("AplikasiKelasVIDB", 1);
+        request.onerror = (e) => reject(e.target.error);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains("pengaturan")) db.createObjectStore("pengaturan");
+            if (!db.objectStoreNames.contains("akunKredensial")) db.createObjectStore("akunKredensial");
+        };
+        request.onsuccess = (e) => {
+            dbIndexedDB = e.target.result;
+            resolve(dbIndexedDB);
+        };
+    });
+}
+
+function simpanKeIndexedDB(key, value) {
+    return new Promise((resolve, reject) => {
+        if (!dbIndexedDB) return reject("IndexedDB belum siap");
+        const transaction = dbIndexedDB.transaction(["pengaturan"], "readwrite");
+        const store = transaction.objectStore("pengaturan");
+        const request = store.put(value, key);
+        request.onsuccess = () => {
+            hitungStatusMemori();
+            resolve(true);
+        };
+        request.onerror = (e) => reject(e.target.error);
+    });
+}
+
+function ambilDariIndexedDB(key) {
+    return new Promise((resolve, reject) => {
+        if (!dbIndexedDB) return reject("IndexedDB belum siap");
+        const transaction = dbIndexedDB.transaction(["pengaturan"], "readonly");
+        const store = transaction.objectStore("pengaturan");
+        const request = store.get(key);
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = (e) => reject(e.target.error);
+    });
+}
+
+async function hitungStatusMemori() {
+    try {
+        let totalBytes = 0;
+        if (dbIndexedDB) {
+            const master = await ambilDariIndexedDB('dbMasterSiswa') || [];
+            const dSiswa = await ambilDariIndexedDB('dbDataSiswa') || {};
+            const piket = await ambilDariIndexedDB('dbPiketHarianRegu') || {};
+            totalBytes = new Blob([JSON.stringify(master), JSON.stringify(dSiswa), JSON.stringify(piket)]).size;
+        }
+
+        const totalKB = (totalBytes / 1024).toFixed(2);
+        const limitKB = 50 * 1024; // ~50 MB Kuota estimasi IndexedDB
+        const persentase = Math.min(100, ((totalKB / limitKB) * 100)).toFixed(1);
+
+        const fillElem = document.getElementById('storageProgressFill');
+        const textUsed = document.getElementById('storageUsedText');
+        const textPercent = document.getElementById('storagePercentText');
+        const badgeElem = document.getElementById('storageBadge');
+
+        if(fillElem) fillElem.style.width = `${persentase}%`;
+        if(textUsed) textUsed.innerText = `${totalKB < 1024 ? totalKB + ' KB' : (totalKB / 1024).toFixed(2) + ' MB'} terpakai dari ~50 MB`;
+        if(textPercent) textPercent.innerText = `${persentase}%`;
+        if(badgeElem) {
+            badgeElem.innerText = persentase > 80 ? "Hampir Penuh" : "Aman (IndexedDB)";
+        }
+    } catch (e) {
+        console.error("Gagal menghitung memori:", e);
+    }
+}
+
+function bukaModalMemori() {
+    hitungStatusMemori();
+    document.getElementById('modalBubbleMemoriOverlay').style.display = 'flex';
+}
+function tutupModalMemori() {
+    document.getElementById('modalBubbleMemoriOverlay').style.display = 'none';
+}
+
+function generateDefaultReguPiket() {
+    let listHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    let regu = {};
+    listHari.forEach(h => regu[h] = []);
+    siswa.forEach((s, idx) => {
+        let hariTarget = listHari[idx % listHari.length];
+        regu[hariTarget].push(s[0]);
+    });
+    return regu;
+}
+
+async function simpanReguPiketKeDB() {
+    await simpanKeIndexedDB('dbReguPiket', dbReguPiket);
+}
+async function simpanPoinReguKeDB() {
+    await simpanKeIndexedDB('dbPoinRegu', dbPoinRegu);
+}
+async function simpanPiketHarianKeDB() {
+    await simpanKeIndexedDB('dbPiketHarianRegu', dbPiketHarianRegu);
+}
+
+/* PEMUATAN DATA UTAMA REAL-TIME SAAT HALAMAN DIBUKA */
+async function muatDataDariIndexedDBRealtime() {
+    try {
+        await bukaDatabaseIndexedDB();
+        
+        // 1. Tarik Data Master Siswa V6
+        const savedMaster = await ambilDariIndexedDB('dbMasterSiswa');
+        if (Array.isArray(savedMaster) && savedMaster.length > 0) {
+            siswa = savedMaster;
+        } else {
+            // Fallback default jika belum ada
+            siswa = [
+                ["3052","Amelia Alita Zahra"],["3223","Angelica Vikar Maharani"],["3085","Anggraeni Abbilah Dhety"],
+                ["3087","AZKA NAILUN NABHAN"],["3088","Cinta Anugrah"],["3089","Dany Sabiq El-Fathin"],
+                ["3090","Dhea Fiky Mazaya"],["3224","Earlita Arsyifa Salsabila"],["3091","Fadilla Rizqi Khaerani"],
+                ["3092","Fathan Almaizan Zhafar"],["3093","Gavin Harry Wiriawan"],["3063","Hafiz Ardiyansah"],
+                ["3095","Intan Berliyan"],["3096","Luthfiya Nur Ramadhani"],["3069","M. Miftah Al Fattah"],
+                ["3097","Mugi Aditia Ripki"],["3098","Muh Azzka Alpratama"],["3099","Muhamad Ramadhani"],
+                ["3102","Nayla Dwi Syafriani"],["3108","Puteri Ayuning Kirana"],["3103","Raisa Rahmawati Septiani"],
+                ["3104","Renita Nur Saefitri"],["3084","Shalwa Aisa Nazwa"],["3105","Wifha Alya An Adibah"],
+                ["3106","Zhidan Dwi Aprilio Nurosy"],["3107","Zulfan Azhar Ramadhan"]
+            ];
+            await simpanKeIndexedDB('dbMasterSiswa', siswa);
+        }
+
+        // 2. Tarik Data Detail & Foto Real-Time dari PENA MANTAP V6
+        const savedDetail = await ambilDariIndexedDB('dbDataSiswa') || {};
+        databaseSiswaDetailGlobal = savedDetail;
+        let semesterAktif = localStorage.getItem('semesterAktif') || 'Semester 1';
+        let dataSemSiswa = savedDetail[semesterAktif] || {};
+        
+        dbFotoSiswa = {};
+        for (let nis in dataSemSiswa) {
+            if (dataSemSiswa[nis] && dataSemSiswa[nis].foto) {
+                dbFotoSiswa[nis] = dataSemSiswa[nis].foto;
+            }
+        }
+
+        // 3. Tarik Riwayat Piket, Regu, dan Poin
+        dbPiketHarianRegu = await ambilDariIndexedDB('dbPiketHarianRegu') || {};
+        dbReguPiket = await ambilDariIndexedDB('dbReguPiket') || generateDefaultReguPiket();
+        dbPoinRegu = await ambilDariIndexedDB('dbPoinRegu') || {};
+
+        hitungStatusMemori();
+        muatLogoSekolah();
+        sinkronkanTabDenganTanggal();
+        initDefaultHadirForTanggal(tglInput.value);
+        renderTabelDanBubble();
+
+    } catch (err) {
+        console.error("Gagal memuat database IndexedDB secara real-time:", err);
+    }
+}
+
+function muatLogoSekolah() {
+    const logoSekolahBase64 = localStorage.getItem('logo.png');
+    if (logoSekolahBase64) {
+        const logoAbsen = document.getElementById('logoPrintAbsen');
+        const logoRekap = document.getElementById('logoPrintRekap');
+        const infoStatusLogo = document.getElementById('infoStatusLogo');
+        
+        if (logoAbsen) { logoAbsen.src = logoSekolahBase64; logoAbsen.style.display = 'block'; }
+        if (logoRekap) { logoRekap.src = logoSekolahBase64; logoRekap.style.display = 'block'; }
+        if (infoStatusLogo) { infoStatusLogo.innerText = "✓ Logo Aktif"; }
+    }
+}
+
+function prosesUploadLogo(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            localStorage.setItem('logo.png', e.target.result);
+            muatLogoSekolah();
+            alert("✅ Logo sekolah berhasil diunggah dan disimpan!");
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+const tb = document.getElementById('tb');
+const tglInput = document.getElementById('tgl');
+const hariIni = new Date();
+if(tglInput) tglInput.valueAsDate = hariIni;
+
+function geserTanggal(hari) {
+    if (!tglInput.value) return;
+    const parts = tglInput.value.split('-');
+    const tglAktif = new Date(parts[0], parts[1] - 1, parts[2]);
+    tglAktif.setDate(tglAktif.getDate() + hari);
+    
+    tglInput.value = `${tglAktif.getFullYear()}-${String(tglAktif.getMonth() + 1).padStart(2, '0')}-${String(tglAktif.getDate()).padStart(2, '0')}`;
+    
+    sinkronkanTabDenganTanggal();
+    initDefaultHadirForTanggal(tglInput.value);
+    renderTabelDanBubble();
+}
+
+function sinkronkanTabDenganTanggal() {
+    if (!tglInput.value) return;
+    const daftarHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const parts = tglInput.value.split('-');
+    const objTanggal = new Date(parts[0], parts[1] - 1, parts[2]);
+    const namaHari = daftarHari[objTanggal.getDay()];
+
+    if (namaHari !== "Minggu") {
+        activeTabHari = namaHari;
+        document.querySelectorAll('.tab-regu-btn').forEach(btn => {
+            if (btn.innerText.includes(namaHari)) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+}
+
+function initDefaultHadirForTanggal(tgl) {
+    if (!dbPiketHarianRegu[tgl]) {
+        dbPiketHarianRegu[tgl] = [];
+        simpanPiketHarianKeDB();
+    }
+}
+
+function getUrutanHariIni() {
+    const tgl = tglInput.value;
+    if (!dbPiketHarianRegu[tgl]) initDefaultHadirForTanggal(tgl);
+    return dbPiketHarianRegu[tgl];
+}
+
+function hitungSkorSemuaSiswa() {
+    let skorSiswa = {};
+    siswa.forEach((s, idx) => {
+        let reguSiswa = "-";
+        for (let r in dbReguPiket) {
+            if (dbReguPiket[r].includes(s[0])) { reguSiswa = r; break; }
+        }
+        skorSiswa[s[0]] = { noAbsen: idx + 1, nis: s[0], nama: s[1], regu: reguSiswa, skor: 0 };
+    });
+
+    for (let tgl in dbPiketHarianRegu) {
+        let daftarHadirUrutan = dbPiketHarianRegu[tgl];
+        daftarHadirUrutan.forEach((nis, idx) => {
+            if (skorSiswa[nis]) {
+                let bobot = Math.max(1, (siswa.length - idx));
+                skorSiswa[nis].skor += bobot;
+            }
+        });
+    }
+    return skorSiswa;
+}
+
+function updateWidgetTopSiswa() {
+    let skorSiswa = hitungSkorSemuaSiswa();
+    let arrayHasil = Object.values(skorSiswa).sort((a, b) => b.skor - a.skor);
+    for(let i = 1; i <= 5; i++) {
+        updateSinglePodiumWidget(i, arrayHasil[i-1]);
+    }
+}
+
+function updateSinglePodiumWidget(rank, dataSiswa) {
+    const namaEl = document.getElementById(`namaRank${rank}`);
+    const poinEl = document.getElementById(`poinRank${rank}`);
+    const avatarEl = document.getElementById(`avatarRank${rank}`);
+    const defaultIcons = { 1: '👤', 2: '🥈', 3: '🥉', 4: '🏅', 5: '🏅' };
+
+    if (dataSiswa && dataSiswa.skor > 0) {
+        namaEl.innerText = dataSiswa.nama;
+        poinEl.innerText = `${dataSiswa.skor} Poin`;
+        let fotoProfil = dbFotoSiswa[dataSiswa.nis];
+        if (fotoProfil) {
+            avatarEl.innerHTML = `<img src="${fotoProfil}" onerror="this.src='https://via.placeholder.com/45?text=👤'">`;
+        } else {
+            avatarEl.innerHTML = defaultIcons[rank];
+        }
+    } else {
+        namaEl.innerText = "Belum Ada";
+        poinEl.innerText = "0 Poin";
+        avatarEl.innerHTML = defaultIcons[rank];
+    }
+}
+
+function pilihTabHari(namaHari) {
+    activeTabHari = namaHari;
+    document.querySelectorAll('.tab-regu-btn').forEach(btn => {
+        if(btn.innerText.includes(namaHari)) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+
+    const daftarHari = ["minggu", "senin", "selasa", "rabu", "kamis", "jumat", "sabtu"];
+    const indexHariTarget = daftarHari.indexOf(namaHari.toLowerCase());
+
+    if (indexHariTarget !== -1) {
+        const skr = tglInput.value ? new Date(tglInput.value.split('-')[0], tglInput.value.split('-')[1]-1, tglInput.value.split('-')[2]) : new Date();
+        const indexHariIni = skr.getDay();
+        let selisih = indexHariIni - indexHariTarget;
+        if (selisih < 0) selisih += 7;
+
+        const tglTarget = new Date(skr);
+        tglTarget.setDate(skr.getDate() - selisih);
+        
+        if (tglInput) {
+            tglInput.value = `${tglTarget.getFullYear()}-${String(tglTarget.getMonth() + 1).padStart(2, '0')}-${String(tglTarget.getDate()).padStart(2, '0')}`;
+        }
+    }
+
+    initDefaultHadirForTanggal(tglInput.value);
+    renderTabelDanBubble();
+}
+
+function renderTabReguPiket() {
+    const container = document.getElementById('containerTabKontenRegu');
+    if(!container) return;
+
+    let nisAnggota = dbReguPiket[activeTabHari] || [];
+    let urutanHariIni = getUrutanHariIni();
+
+    let listHtml = nisAnggota.map(nis => {
+        let dataS = siswa.find(s => s[0] === nis);
+        if(!dataS) return '';
+        let idxAsli = siswa.findIndex(s => s[0] === nis);
+        let noAbsen = idxAsli !== -1 ? idxAsli + 1 : '-';
+        let isHadir = urutanHariIni.includes(nis);
+
+        let fotoProfil = dbFotoSiswa[nis];
+        let tagFoto = fotoProfil ? `<img src="${fotoProfil}" onerror="this.src='https://via.placeholder.com/45?text=👤'">` : `<i class="fa-solid fa-user"></i>`;
+        let statusBadge = isHadir ? `<span style="color:#059669;">✓ Hadir (+Poin)</span>` : `<span style="color:#dc2626;">✖ Tidak Hadir (0 Poin)</span>`;
+
+        return `
+        <div class="siswa-card-item ${isHadir ? 'terpilih' : 'tidak-hadir'}" onclick="pilihSiswaHadir('${nis}')" title="Klik untuk mengubah status kehadiran ${dataS[1]}">
+            <div class="siswa-card-foto">${tagFoto}</div>
+            <div class="siswa-card-info">
+                <div class="siswa-card-no">No. ${noAbsen} • ${statusBadge}</div>
+                <div class="siswa-card-nama" title="${dataS[1]}">${dataS[1]}</div>
+            </div>
+            <span class="siswa-card-btn-hapus" onclick="event.stopPropagation(); hapusSiswaDariRegu('${activeTabHari}', '${nis}')" title="Hapus dari Kelompok">&times;</span>
+        </div>`;
+    }).join('');
+
+    let semuaSiswaTerdaftar = [];
+    for (let h in dbReguPiket) semuaSiswaTerdaftar = semuaSiswaTerdaftar.concat(dbReguPiket[h]);
+    let opsiSiswaLain = siswa.filter(s => !semuaSiswaTerdaftar.includes(s[0])).map(s => `<option value="${s[0]}">${s[1]}</option>`).join('');
+
+    let poinData = dbPoinRegu[activeTabHari] || { kebersihan: 20, kerapian: 20, kelengkapan: 20, kedisiplinan: 20 };
+    dbPoinRegu[activeTabHari] = poinData;
+    
+    let totalPoinRegu = parseInt(poinData.kebersihan||0) + parseInt(poinData.kerapian||0) + parseInt(poinData.kelengkapan||0) + parseInt(poinData.kedisiplinan||0);
+
+    container.innerHTML = `
+        <div class="regu-content active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <h4 style="color: #3730a3; font-size: 14px;">
+                    <i class="fa-solid fa-calendar-check"></i> Anggota Regu Piket Hari ${activeTabHari} 
+                    <span style="font-size: 12px; color: #4f46e5; background: #e0e7ff; padding: 2px 8px; border-radius: 12px; margin-left: 6px;">${nisAnggota.length} Siswa</span>
+                </h4>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <select id="selectTambahKeRegu" style="padding: 6px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 12px; outline: none;">
+                        <option value="">-- Tambah Anggota Regu --</option>
+                        ${opsiSiswaLain}
+                    </select>
+                    <button type="button" class="btn-input-no" style="padding: 6px 12px; font-size: 12px; margin-top:0;" onclick="tambahSiswaKeRegu()">
+                        <i class="fa-solid fa-plus"></i> Tambah
+                    </button>
+                </div>
+            </div>
+
+            <div class="regu-cards-container">
+                ${listHtml || '<div style="grid-column: 1/-1; text-align:center; padding:15px; font-size: 12px; color: #6b7280;">Belum ada anggota piket pada hari ini.</div>'}
+            </div>
+
+            <div class="penilaian-poin-box">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h5 style="color:#312e81; font-size:13px; font-weight:700;">
+                        <i class="fa-solid fa-star-half-stroke" style="color:#f59e0b;"></i> Penilaian Poin Kelompok Regu ${activeTabHari}
+                    </h5>
+                    <span style="font-size:12px; font-weight:800; background:#4f46e5; color:#fff; padding:3px 10px; border-radius:12px;">Total Score: ${totalPoinRegu} Poin</span>
+                </div>
+                <div class="penilaian-poin-grid">
+                    <div class="penilaian-item"><label>Kebersihan (0-25)</label><input type="number" min="0" max="25" value="${poinData.kebersihan}" onchange="updatePoinRegu('kebersihan', this.value)"></div>
+                    <div class="penilaian-item"><label>Kerapian (0-25)</label><input type="number" min="0" max="25" value="${poinData.kerapian}" onchange="updatePoinRegu('kerapian', this.value)"></div>
+                    <div class="penilaian-item"><label>Kelengkapan (0-25)</label><input type="number" min="0" max="25" value="${poinData.kelengkapan}" onchange="updatePoinRegu('kelengkapan', this.value)"></div>
+                    <div class="penilaian-item"><label>Kedisiplinan (0-25)</label><input type="number" min="0" max="25" value="${poinData.kedisiplinan}" onchange="updatePoinRegu('kedisiplinan', this.value)"></div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function updatePoinRegu(kategori, nilai) {
+    if(!dbPoinRegu[activeTabHari]) dbPoinRegu[activeTabHari] = { kebersihan: 20, kerapian: 20, kelengkapan: 20, kedisiplinan: 20 };
+    dbPoinRegu[activeTabHari][kategori] = parseInt(nilai) || 0;
+    simpanPoinReguKeDB();
+    renderTabReguPiket();
+    renderTabelDanBubble();
+}
+
+function tambahSiswaKeRegu() {
+    let select = document.getElementById('selectTambahKeRegu');
+    if(!select || !select.value) return;
+    if(!dbReguPiket[activeTabHari]) dbReguPiket[activeTabHari] = [];
+    let nis = select.value;
+    if(!dbReguPiket[activeTabHari].includes(nis)) {
+        dbReguPiket[activeTabHari].push(nis);
+        simpanReguPiketKeDB();
+        renderTabReguPiket();
+        renderTabelDanBubble();
+    }
+}
+
+function hapusSiswaDariRegu(hari, nis) {
+    if(dbReguPiket[hari]) {
+        dbReguPiket[hari] = dbReguPiket[hari].filter(x => x !== nis);
+        simpanReguPiketKeDB();
+        let urutanHariIni = getUrutanHariIni();
+        let idx = urutanHariIni.indexOf(nis);
+        if(idx > -1) urutanHariIni.splice(idx, 1);
+        simpanPiketHarianKeDB();
+        renderTabReguPiket();
+        renderTabelDanBubble();
+    }
+}
+
+function renderTabelDanBubble() {
+    if(!tb) return;
+    const tanggalTerpilih = tglInput.value;
+    const tombolSimpan = document.querySelector('.save-btn-head');
+    const urutanHariIni = getUrutanHariIni();
+    let namaHariAktif = "-";
+
+    if (tanggalTerpilih) {
+        const daftarHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const parts = tanggalTerpilih.split('-');
+        const objTanggal = new Date(parts[0], parts[1] - 1, parts[2]);
+        const indeksHari = objTanggal.getDay();
+        namaHariAktif = daftarHari[indeksHari];
+
+        const printMetaInfo = document.getElementById('printMetaInfo');
+        if(printMetaInfo) {
+            printMetaInfo.innerHTML = `<span>Hari, Tanggal: ${namaHariAktif}, ${tanggalTerpilih}</span><span>Kelas: VI (Enam)</span>`;
+        }
+
+        const elemTeksHari = document.getElementById('teksNamaHari');
+        const elemLabelHari = document.getElementById('labelNamaHari');
+
+        if (elemTeksHari && elemLabelHari) {
+            elemTeksHari.innerText = namaHariAktif;
+            elemLabelHari.classList.remove('hari-minggu', 'hari-jumat');
+
+            if (indeksHari === 0) {
+                elemLabelHari.classList.add('hari-minggu');
+                if(tombolSimpan) {
+                    tombolSimpan.disabled = true;
+                    tombolSimpan.innerHTML = '<i class="fa-solid fa-lock"></i> Terkunci (Hari Minggu)';
+                }
+            } else {
+                if (indeksHari === 5) elemLabelHari.classList.add('hari-jumat');
+                if(tombolSimpan) {
+                    tombolSimpan.disabled = false;
+                    tombolSimpan.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Absen';
+                }
+            }
+        }
+    }
+
+    const infoMemori = document.getElementById('statusMemoriHarian');
+    if(urutanHariIni.length > 0) {
+        infoMemori.style.background = "rgba(16, 185, 129, 0.1)"; infoMemori.style.color = "#065f46"; infoMemori.style.border = "1px solid rgba(16, 185, 129, 0.2)";
+        infoMemori.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10b981;"></i> ${urutanHariIni.length} Siswa Hadir`;
+    } else {
+        infoMemori.style.background = "rgba(245, 158, 11, 0.1)"; infoMemori.style.color = "#92400e"; infoMemori.style.border = "1px solid rgba(245, 158, 11, 0.2)";
+        infoMemori.innerHTML = `<i class="fa-solid fa-folder-open" style="color: #f59e0b;"></i> Belum Diisi`;
+    }
+
+    tb.innerHTML = '';
+    if (urutanHariIni.length === 0) {
+        tb.innerHTML = `<tr><td colspan="8" style="color: #6b7280; padding: 20px;">Belum ada anggota regu yang diinput hadir piket. Klik kartu anggota regu di atas!</td></tr>`;
+    } else {
+        urutanHariIni.forEach((nis, index) => {
+            let dataSiswa = siswa.find(x => x[0] === nis);
+            if (!dataSiswa) return;
+            
+            let indexSiswaAsli = siswa.findIndex(x => x[0] === nis);
+            let nomorAbsenSiswa = indexSiswaAsli !== -1 ? indexSiswaAsli + 1 : '-';
+
+            let fotoProfil = dbFotoSiswa[nis];
+            let isiFoto = fotoProfil ? `<img src="${fotoProfil}" onerror="this.src='https://via.placeholder.com/45?text=👤'">` : '👤';
+            let poinHariIni = Math.max(1, (siswa.length - index));
+
+            tb.innerHTML += `<tr>
+                <td><b>#${index + 1}</b></td>
+                <td class="kolom-foto">
+                    <div class="siswa-foto-container">
+                        <div class="siswa-img-box">${isiFoto}</div>
+                    </div>
+                </td>
+                <td><b>${nomorAbsenSiswa}</b></td>
+                <td>${dataSiswa[0]}</td>
+                <td class="nama">${dataSiswa[1]}</td>
+                <td><b style="color:#4f46e5; background:#e0e7ff; padding: 2px 8px; border-radius:10px;">+${poinHariIni} Poin</b></td>
+                <td><b style="color:#10b981;">Hadir</b></td>
+                <td class="kolom-aksi-hapus">
+                    <button type="button" class="btn-hapus-baris" onclick="hapusSiswaDariUrutan('${nis}')" title="Tandai Tidak Hadir">
+                        <i class="fa-solid fa-trash-can"></i> Hapus
+                    </button>
+                </td>
+            </tr>`;
+        });
+    }
+    
+    updateWidgetTopSiswa();
+    renderTabReguPiket();
+}
+
+function pilihSiswaHadir(nis) {
+    let anggotaReguAktif = dbReguPiket[activeTabHari] || [];
+    if (!anggotaReguAktif.includes(nis)) {
+        alert(`⚠️ Gagal: Siswa ini bukan anggota Regu ${activeTabHari}. Riwayat kerja piket HANYA BISA diisi oleh anggota regu yang bertugas!`);
+        return;
+    }
+
+    let urutanHariIni = getUrutanHariIni();
+    let indexCek = urutanHariIni.indexOf(nis);
+    if (indexCek > -1) urutanHariIni.splice(indexCek, 1);
+    else urutanHariIni.push(nis);
+
+    simpanPiketHarianKeDB();
+    renderTabelDanBubble();
+}
+
+function hapusSiswaDariUrutan(nis) {
+    let urutanHariIni = getUrutanHariIni();
+    let indexCek = urutanHariIni.indexOf(nis);
+    if (indexCek > -1) {
+        urutanHariIni.splice(indexCek, 1);
+        simpanPiketHarianKeDB();
+        renderTabelDanBubble();
+    }
+}
+
+function simpanAbsen() {
+    const tanggalTerpilih = tglInput.value;
+    if(!tanggalTerpilih) return alert("Silakan pilih tanggal!");
+    simpanPiketHarianKeDB();
+    alert(`✅ Data absensi piket tanggal ${tanggalTerpilih} berhasil tersimpan ke IndexedDB!`);
+}
+
+function cetakKehadiranHariIni() {
+    if(!tglInput.value) return alert("Silakan tentukan tanggal!");
+    const originalTitle = document.title; 
+    document.title = "Daftar_Hadir_Piket_" + tglInput.value;
+    document.getElementById('dynamicPrintStyle').innerHTML = '@page { size: A4 portrait; margin: 10mm; }';
+    document.body.classList.remove('rekap-printing-active', 'cert-printing-active');
+    window.print();
+    document.title = originalTitle;
+}
+
+function bukaModalRekap() {
+    const selectFilter = document.getElementById('selectFilterReguRekap');
+    if(selectFilter) selectFilter.value = activeTabHari || "SEMUA";
+    renderTabelRekapModal();
+    document.getElementById('modalRekap').style.display = 'flex';
+}
+
+function renderTabelRekapModal() {
+    const tbodyRekap = document.getElementById('tabelBodyRekap');
+    const filterRegu = document.getElementById('selectFilterReguRekap').value;
+    const subjudulCetak = document.getElementById('subjudulCetakRekap');
+    tbodyRekap.innerHTML = '';
+
+    const skr = new Date();
+    document.getElementById('infoWaktuCetakRekap').innerText = `Dicetak pada: ${skr.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+    let skorSiswa = hitungSkorSemuaSiswa();
+    let arrayHasil = Object.values(skorSiswa);
+
+    if (filterRegu !== 'SEMUA') {
+        arrayHasil = arrayHasil.filter(s => s.regu === filterRegu);
+        if(subjudulCetak) subjudulCetak.innerText = `Rekapitulasi Siswa Terajin Kelompok Regu Piket Hari ${filterRegu}`;
+    }
+
+    arrayHasil.sort((a, b) => b.skor - a.skor);
+
+    if (arrayHasil.length === 0) {
+        tbodyRekap.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #6b7280; padding: 20px;">Belum ada data anggota/skor pada kelompok ini.</td></tr>`;
+    } else {
+        arrayHasil.forEach((item, index) => {
+            let labelReguHtml = `<span style="font-size:11px; background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:10px; font-weight:bold;">${item.regu}</span>`;
+            tbodyRekap.innerHTML += `<tr>
+                <td><b>#${index + 1}</b></td>
+                <td><b>${item.noAbsen}</b></td>
+                <td>${item.nis}</td>
+                <td class="nama">${item.nama}</td>
+                <td>${labelReguHtml}</td>
+                <td><b style="color: ${item.skor > 0 ? '#10b981' : '#ef4444'};">${item.skor} Poin</b></td>
+            </tr>`;
+        });
+    }
+}
+
+function tutupModalRekap() { document.getElementById('modalRekap').style.display = 'none'; }
+function cetakRekapResmi() {
+    const originalTitle = document.title;
+    document.title = "Rekap_Siswa_Terajin_Piket";
+    document.getElementById('dynamicPrintStyle').innerHTML = '@page { size: A4 portrait; margin: 10mm; }';
+    document.body.classList.add('rekap-printing-active');
+    window.print();
+    document.body.classList.remove('rekap-printing-active');
+    document.title = originalTitle;
+}
+
+function bukaModalSertifikat() {
+    document.getElementById('labelModalReguCert').innerText = activeTabHari;
+    renderKoleksiSertifikat();
+    document.getElementById('modalSertifikat').style.display = 'flex';
+}
+function tutupModalSertifikat() { document.getElementById('modalSertifikat').style.display = 'none'; }
+
+function renderKoleksiSertifikat() {
+    let namaSekolah = document.getElementById('inputSekolahSertifikat').value || "SD NEGERI UTAMA";
+    let predikat = document.getElementById('inputPredikatSertifikat').value || "Regu Piket Terbersih dan Terdisiplin";
+    let nisAnggota = dbReguPiket[activeTabHari] || [];
+    let printArea = document.getElementById('printSertifikatArea');
+    printArea.innerHTML = '';
+
+    let logoSekolahBase64 = localStorage.getItem('logo.png');
+    let logoTag = logoSekolahBase64 ? `<img src="${logoSekolahBase64}" style="width: 100px; height: 100px; object-fit: contain;">` : '';
+
+    if(nisAnggota.length === 0) {
+        printArea.innerHTML = `<p style="padding: 20px; color: #ef4444; font-weight: bold;">Tidak ada anggota siswa pada Regu ${activeTabHari}.</p>`;
+        return;
+    }
+
+    nisAnggota.forEach(nis => {
+        let sData = siswa.find(x => x[0] === nis);
+        let namaSiswa = sData ? sData[1] : nis;
+        let isiFoto = dbFotoSiswa[nis] ? `<img src="${dbFotoSiswa[nis]}" style="width:100%; height:100%; object-fit:cover;">` : '👤';
+
+        printArea.innerHTML += `
+            <div class="single-certificate-page">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div style="font-size: 11pt; font-weight: bold; color: #4338ca; text-transform: uppercase;">${namaSekolah}</div>
+                    <div style="height: 100px; display: flex; align-items: center; justify-content: center;">${logoTag}</div>
+                    <div style="font-size: 11pt; font-weight: bold; color: #4338ca; text-transform: uppercase;">REGU ${activeTabHari.toUpperCase()}</div>
+                </div>
+                <div style="margin-top: 5px;">
+                    <h1 style="font-family: 'Playfair Display', serif; font-size: 26pt; font-weight: 800; color: #1e1b4b; text-transform: uppercase;">SERTIFIKAT PENGHARGAAN</h1>
+                    <p style="font-size: 10pt; font-weight: 700; color: #d97706; text-transform: uppercase;">${predikat}</p>
+                </div>
+                <div style="margin: 5px 0;">
+                    <p style="font-size: 10pt; color: #4b5563; font-style: italic; margin-bottom: 6px;">Diberikan sebagai Apresiasi Kepada:</p>
+                    <div style="width: 75px; height: 75px; border-radius: 18px; border: 3px solid #d97706; margin: 0 auto 8px auto; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 30px;">${isiFoto}</div>
+                    <h2 style="font-size: 20pt; font-weight: 800; color: #1e1b4b; border-bottom: 2px solid #4f46e5; display: inline-block; padding: 0 20px 4px 20px;">${namaSiswa}</h2>
+                    <p style="font-size: 9pt; font-weight: 600; color: #6b7280; margin-top: 4px;">NIS: ${nis} | Anggota Piket Regu ${activeTabHari}</p>
+                </div>
+                <div style="background: rgba(79, 70, 229, 0.06); border-left: 4px solid #4f46e5; padding: 8px 16px; border-radius: 6px; width: 100%; text-align: center;">
+                    <p style="font-size: 9pt; font-style: italic; color: #312e81; margin: 0;">💡 "Terima kasih atas dedikasi dan konsistensi Anda dalam menjaga kebersihan lingkungan kelas."</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; margin-top: 10px;">
+                    <div style="text-align: center; font-size: 9.5pt; width: 200px;"><p>Kepala Sekolah</p><div style="height: 45px;"></div><p><b>( ......................................... )</b></p></div>
+                    <div style="text-align: center; font-size: 9.5pt; width: 200px;"><p>Guru Kelas / Piket</p><div style="height: 45px;"></div><p><b>( ......................................... )</b></p></div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function cetakSertifikatResmi() {
+    const originalTitle = document.title;
+    document.title = "Sertifikat_Piket_Regu_" + activeTabHari;
+    document.getElementById('dynamicPrintStyle').innerHTML = '@page { size: A4 landscape; margin: 10mm; }';
+    document.body.classList.add('cert-printing-active');
+    window.print();
+    document.body.classList.remove('cert-printing-active');
+    document.title = originalTitle;
+}
+
+if(tglInput) {
+    tglInput.addEventListener('change', function() {
+        sinkronkanTabDenganTanggal();
+        initDefaultHadirForTanggal(this.value);
+        renderTabelDanBubble();
+    });
+}
+
+// Inisialisasi dijalankan saat dokumen siap
+document.addEventListener("DOMContentLoaded", async function() {
+    await muatDataDariIndexedDBRealtime();
+});
+</script>
+</body>
+</html>

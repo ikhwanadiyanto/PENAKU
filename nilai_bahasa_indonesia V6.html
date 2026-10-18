@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penilaian Bahasa Indonesia Kelas VI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%); 
+            padding: 25px; 
+            min-height: 100vh; 
+            color: #334155; 
+        }
+
+        .container { 
+            max-width: 1600px; 
+            margin: auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 30px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            padding: 30px; 
+        }
+        
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 3px dashed #fecdd3; 
+            padding-bottom: 25px; 
+            margin-bottom: 25px; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+        }
+        .header-title { display: flex; align-items: center; gap: 20px; position: relative; width: 100%; flex-wrap: wrap; }
+        
+        .logo-container {
+            width: 75px; height: 75px;
+            background: linear-gradient(135deg, #be123c, #e11d48); 
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            padding: 2px; box-shadow: 0 0 20px rgba(225,29,72,0.5);
+            animation: pulse-glow 2s infinite; overflow: hidden; cursor: pointer; position: relative;
+        }
+        .logo-container:hover::after {
+            content: "Ubah"; position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 10px; text-align: center; padding: 2px 0; font-weight: 600;
+        }
+        .logo-custom { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        
+        @keyframes pulse-glow {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(225,29,72,0.5); }
+            50% { transform: scale(1.04); box-shadow: 0 0 32px rgba(225,29,72,0.85); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(225,29,72,0.5); }
+        }
+
+        .header-title h1 { font-size: 26px; color: #1e1b4b; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .header-title p { font-size: 14px; color: #64748b; font-weight: 500; }
+
+        /* BAR STATUS MEMORI PROFESIONAL */
+        .memory-bar-container {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 18px;
+            margin-top: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .memory-progress-bg {
+            flex: 1;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .memory-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #10b981, #e11d48);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .indo-icons-bar {
+            display: inline-flex;
+            gap: 12px;
+            font-size: 22px;
+            vertical-align: middle;
+        }
+        .indo-icon {
+            display: inline-block;
+            animation: bounce-indo 1.8s ease-in-out infinite alternate;
+        }
+        .indo-icon:nth-child(2) { animation-delay: 0.3s; }
+        .indo-icon:nth-child(3) { animation-delay: 0.6s; }
+        .indo-icon:nth-child(4) { animation-delay: 0.9s; }
+        .indo-icon:nth-child(5) { animation-delay: 1.2s; }
+
+        @keyframes bounce-indo {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-6px) rotate(8deg) scale(1.15); filter: drop-shadow(0 4px 6px rgba(225,29,72,0.4)); }
+            100% { transform: translateY(0) rotate(-6deg) scale(1); }
+        }
+        
+        .controls-panel { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+        
+        .select-semester { 
+            padding: 12px 20px; border-radius: 16px; border: 2px solid #e11d48; 
+            font-size: 14px; font-weight: 600; color: #9f1239; outline: none; cursor: pointer; background: #fff;
+            box-shadow: 0 4px 10px rgba(225,29,72,0.1); transition: all 0.3s;
+        }
+        .select-semester:hover { background: #fff1f2; transform: translateY(-1px); }
+
+        .kkm-container {
+            display: flex; align-items: center; gap: 8px; background: #fff1f2; padding: 6px 14px;
+            border-radius: 16px; border: 2px solid #e11d48; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.1);
+        }
+        .kkm-container label { font-size: 14px; font-weight: 700; color: #9f1239; }
+        .input-kkm {
+            width: 55px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px;
+            text-align: center; font-size: 14px; font-weight: 700; color: #334155; outline: none;
+        }
+        .btn-kkm-save {
+            background: #e11d48; color: #fff; border: none; padding: 6px 10px; border-radius: 8px;
+            cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-kkm-save:hover { background: #9f1239; transform: scale(1.05); }
+
+        .btn { 
+            padding: 12px 22px; border: none; border-radius: 16px; color: #fff; font-weight: 600; 
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 14px; box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .btn:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        
+        .btn-bab-tp { background: linear-gradient(135deg, #d97706, #b45309); }
+        .btn-input-pop { background: linear-gradient(135deg, #e11d48, #9f1239); animation: bounce-subtle 2s infinite; }
+        .btn-import { background: linear-gradient(135deg, #0284c7, #0369a1); }
+        .btn-excel { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-save { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .btn-pull { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .btn-pdf { background: linear-gradient(135deg, #7c3aed, #5b21b6); } 
+        .btn-back { background: linear-gradient(135deg, #475569, #334155); }
+
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .table-wrap { 
+            overflow-x: auto; background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; 
+            margin-top: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        
+        th { color: #fff; font-weight: 600; padding: 12px 8px; white-space: nowrap; text-align: center; }
+        .th-utama { background: #9f1239; } 
+        .th-bab { background: #be123c; font-size: 12px; border-right: 1px solid #fecdd3; border-bottom: 1px solid #fecdd3; }
+        .th-harian { background: #e11d48; font-size: 12px; min-width: 44px; border-right: 1px solid #475569; cursor: help; } 
+        .th-harian:nth-child(even) { background: #be123c; } 
+        
+        .th-ujian-edit { background: #f59e0b; cursor: pointer; position: relative; min-width: 80px; outline: none; transition: background 0.2s; color: #fff; } 
+        .th-ujian-edit:hover { background: #d97706; }
+        .th-raport { background: #0f172a; font-size: 15px; } 
+        
+        td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        tr:nth-child(even) { background-color: #f8fafc; } 
+        tr:hover { background-color: #f1f5f9 !important; } 
+
+        .col-no { font-weight: 600; color: #64748b; width: 45px; }
+        .col-nis { color: #64748b; width: 65px; font-weight: 500; }
+        
+        .col-nama { 
+            text-align: left; min-width: 240px; font-weight: 500; color: #475569; 
+            position: sticky; left: 0; z-index: 2; box-shadow: 4px 0 10px rgba(225, 29, 72, 0.08); 
+            border-right: 2px solid #fecdd3; padding-left: 15px;
+        }
+        tr:nth-child(odd) .col-nama { background-color: #fff1f2 !important; }  
+        tr:nth-child(even) .col-nama { background-color: #ffe4e6 !important; } 
+        tr:hover .col-nama { background-color: #fecdd3 !important; }          
+
+        .nama-container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .area-badge { display: flex; gap: 4px; align-items: center; }
+
+        .badge-bintang {
+            color: #eab308; font-size: 16px; display: inline-block;
+            animation: bintang-animasi 1.5s ease-in-out infinite alternate; text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+        }
+        .badge-bintang-ungu {
+            color: #f59e0b; font-size: 16px; display: inline-block;
+            animation: bintang-animasi 1.5s ease-in-out infinite alternate-reverse; text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+        }
+        @keyframes bintang-animasi {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.25) rotate(15deg); }
+        }
+
+        .badge-peringatan {
+            color: #dc2626; font-size: 16px; display: inline-block;
+            animation: peringatan-animasi 0.8s ease-in-out infinite alternate; text-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+        }
+        @keyframes peringatan-animasi {
+            0% { transform: scale(0.95); opacity: 0.6; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .input-nilai { 
+            width: 44px; padding: 6px 4px; border: 1px solid #cbd5e1; border-radius: 8px; 
+            text-align: center; font-size: 12px; font-weight: 600; outline: none; transition: all 0.2s ease; background: #f8fafc;
+        }
+        .input-nilai:focus { 
+            border-color: #e11d48; background: #fff; box-shadow: 0 0 0 3px rgba(225,29,72,0.2); transform: scale(1.08);
+        }
+        .input-nilai::-webkit-outer-spin-button, .input-nilai::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-nilai { -moz-appearance: textfield; }
+
+        .lulus-kkm { color: #9f1239 !important; background: #fff1f2 !important; border-color: #fca5a5 !important; }
+        .gagal-kkm { color: #dc2626 !important; background: #fee2e2 !important; border-color: #fca5a5 !important; }
+
+        .nilai-raport { font-size: 15px; font-weight: 700; padding: 4px 8px; border-radius: 8px; display: inline-block; min-width: 38px; transition: all 0.3s ease; }
+        .th-rata-harian, .col-rata-harian { display: none; }
+        .kolom-tersembunyi { display: none !important; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-card {
+            background: linear-gradient(145deg, #ffffff, #fff1f2);
+            width: 90%; max-width: 560px; border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35); padding: 30px; 
+            transform: scale(0.8) translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #fca5a5; position: relative; overflow: hidden;
+        }
+        .modal-overlay.active .modal-card { transform: scale(1) translateY(0); }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h2 { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #e11d48, #9f1239); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-close-modal { background: #f1f5f9; border: none; font-size: 20px; color: #64748b; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .btn-close-modal:hover { background: #fecdd3; color: #e11d48; }
+
+        .form-group-modal { margin-bottom: 16px; }
+        .form-group-modal label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 6px; }
+        .select-modal, .input-modal { width: 100%; padding: 12px; border-radius: 14px; border: 2px solid #cbd5e1; font-weight: 600; outline: none; font-size: 14px; background: #fff; transition: 0.2s; }
+        .select-modal:focus, .input-modal:focus { border-color: #e11d48; box-shadow: 0 0 0 3px rgba(225,29,72,0.2); }
+        
+        .input-locked { background: #e2e8f0 !important; color: #64748b !important; cursor: not-allowed; }
+
+        .status-terisi-info {
+            background: #fffbeb; border: 1.5px solid #f59e0b; padding: 8px 12px; border-radius: 10px;
+            font-size: 12px; color: #b45309; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn-unlock-edit {
+            background: #f59e0b; color: #fff; border: none; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .btn-unlock-edit:hover { background: #d97706; }
+
+        .modal-action-bar {
+            display: flex; gap: 8px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #cbd5e1;
+        }
+        .btn-sub-modal {
+            flex: 1; padding: 8px 10px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
+        }
+        .btn-download-tp { background: #0284c7; }
+        .btn-download-tp:hover { background: #0369a1; }
+        .btn-import-tp { background: #e11d48; }
+        .btn-import-tp:hover { background: #9f1239; }
+
+        .tp-info-box {
+            background: #fff1f2; border: 2px solid #e11d48; border-radius: 14px; padding: 10px 14px;
+            margin-bottom: 16px; font-size: 12px; color: #9f1239; box-shadow: 0 2px 6px rgba(225,29,72,0.1);
+        }
+        .tp-info-box .tp-bab-badge { display: inline-block; background: #e11d48; color: #fff; padding: 2px 8px; border-radius: 8px; font-weight: 700; font-size: 11px; margin-bottom: 4px; }
+        .tp-info-box .tp-desc-text { display: block; font-weight: 600; line-height: 1.4; color: #1e293b; }
+
+        .siswa-box { background: #fff1f2; border: 2px dashed #fca5a5; border-radius: 16px; padding: 12px 16px; text-align: center; margin-bottom: 20px; }
+        .siswa-box .nama { font-size: 18px; font-weight: 800; color: #9f1239; display: block; }
+        .siswa-box .nis { font-size: 12px; font-weight: 600; color: #be123c; }
+
+        .big-input-wrapper { display: flex; justify-content: center; align-items: center; gap: 18px; margin: 15px 0; }
+        .big-input-nilai {
+            width: 130px; height: 90px; border-radius: 24px; border: 4px solid #e11d48; text-align: center; font-size: 44px; font-weight: 800; color: #9f1239; background: #fff; box-shadow: inset 0 4px 8px rgba(0,0,0,0.05), 0 10px 20px rgba(225,29,72,0.15); outline: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .big-input-nilai:focus { transform: scale(1.05); border-color: #f59e0b; box-shadow: 0 0 25px rgba(245,158,11,0.35); }
+
+        .absen-dropdown-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .absen-dropdown-box label { font-size: 11px; font-weight: 700; color: #e11d48; text-transform: uppercase; letter-spacing: 0.5px; }
+        .select-absen-angka {
+            width: 75px; height: 50px; border-radius: 16px; border: 3px solid #fca5a5; background: #fff; color: #9f1239; font-weight: 800; font-size: 22px; text-align: center; text-align-last: center; outline: none; cursor: pointer; box-shadow: 0 4px 10px rgba(252,165,165,0.15); transition: all 0.2s;
+        }
+
+        .modal-footer { display: flex; gap: 10px; justify-content: space-between; margin-top: 15px; }
+        .btn-nav { flex: 1; padding: 12px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-nav-prev { background: #e2e8f0; color: #475569; }
+        .btn-nav-next { background: linear-gradient(135deg, #e11d48, #9f1239); color: #fff; box-shadow: 0 4px 12px rgba(225,29,72,0.3); }
+
+        .dropdown-print { position: relative; display: inline-block; }
+        .dropdown-print-content {
+            display: none; position: absolute; right: 0; top: 100%; margin-top: 5px; background-color: #ffffff; min-width: 220px; box-shadow: 0px 8px 24px rgba(0,0,0,0.2); border-radius: 16px; z-index: 1000; overflow: hidden; border: 1px solid #e2e8f0;
+        }
+        .dropdown-print-content button {
+            color: #1e293b; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; width: 100%; border: none; background: none; font-size: 13px; font-weight: 600; cursor: pointer; text-align: left; transition: background 0.2s;
+        }
+        .dropdown-print-content button:hover { background-color: #f1f5f9; color: #e11d48; }
+        .dropdown-print:hover .dropdown-print-content { display: block; }
+
+        #printAreaIndividual { display: none; }
+
+        @media print {
+            @page { size: A4 portrait; margin: 10mm 15mm 10mm 15mm; }
+            body { background: #fff !important; color: #000 !important; padding: 0 !important; margin: 0 !important; font-size: 10.5pt !important; font-family: 'Times New Roman', Times, serif !important; }
+            .container, .modal-overlay { display: none !important; }
+            #printAreaIndividual { display: block !important; }
+            .page-break { page-break-after: always; page-break-inside: avoid; padding-top: 2px; }
+            .page-break:last-child { page-break-after: auto; }
+            
+            .print-kop { 
+                display: flex; 
+                align-items: center; 
+                justify-content: space-between; 
+                border-bottom: 4px double #000; 
+                padding-bottom: 8px; 
+                margin-bottom: 14px; 
+            }
+            .print-kop img { width: 75px; height: 75px; object-fit: contain; }
+            .print-kop-text { text-align: center; flex: 1; margin: 0 10px; line-height: 1.25; }
+            .print-kop-text .kop-baris-1 { font-size: 9.5pt; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
+            .print-kop-text .kop-baris-2 { font-size: 11pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.8px; }
+            .print-kop-text .kop-baris-3 { font-size: 14.5pt; font-weight: bold; text-transform: uppercase; margin: 2px 0; letter-spacing: 1px; }
+            .print-kop-text .kop-baris-4 { font-size: 9pt; font-style: italic; margin-top: 1px; }
+
+            .print-title-wrapper { text-align: center; margin-bottom: 12px; }
+            .print-title { display: inline-block; font-size: 11.5pt; font-weight: bold; text-transform: uppercase; border-bottom: 1.5px solid #000; padding-bottom: 2px; letter-spacing: 0.3px; }
+
+            .print-biodata-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+            .print-biodata { width: 72%; border-collapse: collapse; margin-left: 0; }
+            .print-biodata td { padding: 3px 0; font-size: 10pt; vertical-align: top; border: none; text-align: left !important; }
+            .print-biodata td.label { width: 140px; font-weight: bold; text-align: left !important; }
+            .print-biodata td.titik { width: 15px; text-align: center !important; font-weight: bold; }
+            .print-biodata td.val { text-align: left !important; }
+
+            .foto-box {
+                width: 3cm; height: 4cm; border: 1px solid #000; display: flex; align-items: center; justify-content: center; font-size: 8pt; color: #555; text-align: center; overflow: hidden; background: #fff;
+            }
+            .foto-box img { width: 100%; height: 100%; object-fit: cover; }
+
+            .print-section-title { font-size: 10pt; font-weight: bold; margin: 8px 0 4px 0; text-transform: uppercase; text-align: left; }
+            
+            table.table-print { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 9pt; }
+            table.table-print th, table.table-print td { border: 1px solid #000; padding: 4px 6px; text-align: center; }
+            table.table-print th { background: #f2f2f2 !important; font-weight: bold; color: #000; }
+            table.table-print td.text-left { text-align: left; }
+
+            .print-ttd-container { 
+                margin-top: 22px; 
+                display: flex; 
+                justify-content: space-between; 
+                width: 100%; 
+                page-break-inside: avoid; 
+            }
+            .ttd-box { 
+                text-align: center; 
+                width: 34%; 
+                font-size: 9.5pt; 
+                line-height: 1.35; 
+            }
+            .ttd-space { height: 62px; }
+            .ttd-nama { font-weight: bold; text-decoration: underline; }
+            .status-lulus { color: #000; font-weight: bold; }
+            .status-remedi { color: #000; font-style: italic; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <div style="display: flex; align-items: center; gap: 20px; width: 100%;">
+                <div class="logo-container" onclick="document.getElementById('inputLogoManual').click();" title="Klik untuk ganti logo manual">
+                    <img id="tampilanLogo" src="image_480e7c.png" alt="Logo Mapel" class="logo-custom">
+                </div>
+                <input type="file" id="inputLogoManual" accept="image/*" style="display: none;" onchange="prosesUnggahLogo(this)">
+                
+                <div style="flex: 1;">
+                    <h1>
+                        Daftar Nilai Bahasa Indonesia - Kelas VI 
+                        <span class="indo-icons-bar">
+                            <span class="indo-icon" title="Buku Terbuka">📖</span>
+                            <span class="indo-icon" title="Pena">✒️</span>
+                            <span class="indo-icon" title="Gulungan Kertas">📜</span>
+                            <span class="indo-icon" title="Kacamata Baca">👓</span>
+                            <span class="indo-icon" title="Mikrofon Pidato">🎙️</span>
+                        </span>
+                    </h1>
+                    <p>Mata Pelajaran: Bahasa Indonesia | Top Raport ⭐ | Top Harian ⭐ | Ada Harian &lt; KKM ⚠️</p>
+                </div>
+            </div>
+
+            <!-- BAR STATUS MEMORI PROFESIONAL -->
+            <div class="memory-bar-container">
+                <span id="memoryStatusText"><i class="fa-solid fa-database" style="color: #e11d48;"></i> Memuat Status IndexedDB...</span>
+                <div class="memory-progress-bg">
+                    <div class="memory-progress-fill" id="memoryProgressFill"></div>
+                </div>
+                <span id="memoryPercentText" style="font-weight: 700; color: #9f1239;">0%</span>
+            </div>
+        </div>
+        
+        <div class="controls-panel">
+            <div class="kkm-container">
+                <label for="kkmInput">KKM:</label>
+                <input type="number" id="kkmInput" class="input-kkm" value="75" min="0" max="100" oninput="perbaruiSemuaWarnaKKM()">
+                <button class="btn-kkm-save" onclick="simpanKKM()"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+            </div>
+
+            <select id="semesterSelect" class="select-semester" onchange="gantiSemester()">
+                <option value="Semester 1">🍂 Semester 1</option>
+                <option value="Semester 2">🌸 Semester 2</option>
+            </select>
+            
+            <button class="btn btn-bab-tp" onclick="bukaModalBabTP()"><i class="fa-solid fa-book-open"></i> Kelola Bab & TP</button>
+            <button class="btn btn-input-pop" onclick="bukaModalInput()"><i class="fa-solid fa-gamepad"></i> Input Cepat</button>
+            
+            <button class="btn btn-import" onclick="document.getElementById('inputExcelImport').click()"><i class="fa-solid fa-file-import"></i> Import Nilai</button>
+            <input type="file" id="inputExcelImport" accept=".xlsx, .xls, .csv" style="display: none;" onchange="prosesImportNilai(this)">
+
+            <div class="dropdown-print">
+                <button class="btn btn-pdf"><i class="fa-solid fa-print"></i> Cetak Raport <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="dropdown-print-content">
+                    <button onclick="cetakLaporanPDF('PTS')"><i class="fa-solid fa-file-lines"></i> Raport Tengah Semester (PTS)</button>
+                    <button onclick="cetakLaporanPDF('PAS')"><i class="fa-solid fa-file-circle-check"></i> Raport Akhir Semester (PAS)</button>
+                </div>
+            </div>
+
+            <button class="btn btn-excel" onclick="eksporExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
+            <button class="btn btn-save" onclick="simpanKeSheets()"><i class="fa-solid fa-cloud-arrow-up"></i> Sheets</button>
+            <button class="btn btn-pull" onclick="tarikDariSheets()"><i class="fa-solid fa-cloud-arrow-down"></i> Tarik Data</button>
+            <button class="btn btn-back" onclick="kembaliKeAbsensi()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table id="tabelNilaiBahasaIndonesia">
+            <thead id="headerRow"></thead>
+            <tbody id="bodyNilaiBahasaIndonesia"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="printAreaIndividual"></div>
+
+<div class="modal-overlay" id="modalBabTP">
+    <div class="modal-card" style="border-color: #e11d48;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-book-bookmark"></i> Atur Bab & TP</h2>
+            <button class="btn-close-modal" onclick="tutupModalBabTP()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="modal-action-bar">
+            <button class="btn-sub-modal btn-download-tp" onclick="unduhFormatTP()"><i class="fa-solid fa-download"></i> Unduh Format TP</button>
+            <button class="btn-sub-modal btn-import-tp" onclick="document.getElementById('fileImportTP').click()"><i class="fa-solid fa-file-arrow-up"></i> Import TP Excel</button>
+            <input type="file" id="fileImportTP" accept=".xlsx, .xls, .csv" style="display: none;" onchange="prosesImportTP(this)">
+        </div>
+
+        <div id="infoStatusTerisiContainer"></div>
+
+        <div style="display: flex; gap: 10px;">
+            <div class="form-group-modal" style="flex: 1;">
+                <label for="selectKolomMulai"><i class="fa-solid fa-angles-right"></i> Dari Kolom:</label>
+                <select id="selectKolomMulai" class="select-modal" onchange="muatDataBabTPModal()"></select>
+            </div>
+            <div class="form-group-modal" style="flex: 1;">
+                <label for="selectKolomSelesai"><i class="fa-solid fa-angles-left"></i> Sampai Kolom:</label>
+                <select id="selectKolomSelesai" class="select-modal"></select>
+            </div>
+        </div>
+
+        <div class="form-group-modal">
+            <label for="inputJudulBab"><i class="fa-solid fa-layer-group"></i> Label Bab / Topik:</label>
+            <input type="text" id="inputJudulBab" class="input-modal" placeholder="Contoh: Bab 1 Bangga Menjadi Anak Indonesia">
+        </div>
+        <div class="form-group-modal">
+            <label for="inputDeskripsiTP"><i class="fa-solid fa-bullseye"></i> Tujuan Pembelajaran (TP):</label>
+            <textarea id="inputDeskripsiTP" class="input-modal" style="height: 75px; resize: vertical;" placeholder="Contoh: Menemukan informasi penting dan ide pokok dalam teks laporan."></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-nav btn-nav-next" style="background: linear-gradient(135deg, #e11d48, #9f1239);" onclick="simpanBabTPModal()">Simpan Bab & TP <i class="fa-solid fa-check"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalInputNilai">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Mode Input Seru</h2>
+            <button class="btn-close-modal" onclick="tutupModalInput()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="form-group-modal">
+            <label for="selectTargetKolom"><i class="fa-solid fa-list-check"></i> Pilih Kolom Target Nilai:</label>
+            <select id="selectTargetKolom" class="select-modal" onchange="muatNilaiSiswaModal()"></select>
+        </div>
+        <div class="tp-info-box" id="modalTpBox">
+            <span class="tp-bab-badge" id="modalTpBab">Bab 1</span>
+            <span class="tp-desc-text" id="modalTpText">Tujuan Pembelajaran 1</span>
+        </div>
+        <div class="siswa-box">
+            <span class="nis" id="modalSiswaNis">NIS: 3052</span>
+            <span class="nama" id="modalSiswaNama">Amelia Alita Zahra</span>
+        </div>
+        <div class="big-input-wrapper">
+            <input type="number" id="inputBigNilai" class="big-input-nilai" placeholder="0" min="0" max="100" onkeydown="handleEnterBigInput(event)">
+            <div class="absen-dropdown-box">
+                <label for="selectNoAbsen"><i class="fa-solid fa-hashtag"></i> Absen</label>
+                <select id="selectNoAbsen" class="select-absen-angka" onchange="lompatKeSiswa(this.value)"></select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-nav btn-nav-prev" onclick="navigasiSiswaModal(-1)"><i class="fa-solid fa-chevron-left"></i> Sebelum</button>
+            <button class="btn-nav btn-nav-next" onclick="navigasiSiswaModal(1)">Simpan & Lanjut <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwaBnr8XxscO6NLydAhr8DgGaYNv0nSCdJy6vyNpXgkPm2W-p-1etdouKzv3Qudjrd6/exec";
+
+    let SISWA = [];
+    let databaseFotoSiswa = {};
+    let databaseNilai = JSON.parse(localStorage.getItem('dbNilaiBahasaIndonesia')) || {};
+    let databaseBabTP = JSON.parse(localStorage.getItem('dbBabTP_BahasaIndonesia')) || {};
+    let indeksSiswaModal = 0;
+    let modeEditAktif = false;
+
+    // FUNGSI INDEXEDDB REAL-TIME UNTUK PENA MANTAP V6
+    function bukaIndexedDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open("AplikasiKelasVIDB", 1);
+            request.onerror = e => reject(e.target.error);
+            request.onsuccess = e => resolve(e.target.result);
+            request.onupgradeneeded = e => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('pengaturan')) db.createObjectStore('pengaturan');
+            };
+        });
+    }
+
+    async function muatDataRealtimeDariIndexedDB() {
+        try {
+            const db = await bukaIndexedDB();
+            const tx = db.transaction('pengaturan', 'readonly');
+            const store = tx.objectStore('pengaturan');
+            
+            // Tarik data master siswa secara real-time dari PENA MANTAP V6
+            const masterSiswa = await new Promise((resolve) => {
+                const req = store.get('dbMasterSiswa');
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+
+            if (masterSiswa && Array.isArray(masterSiswa)) {
+                SISWA = masterSiswa;
+            } else {
+                SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || [];
+            }
+
+            // Tarik data foto siswa secara real-time dari PENA MANTAP V6
+            const fotoSiswaDB = await new Promise((resolve) => {
+                const req = store.get('dbDataSiswa');
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+
+            if (fotoSiswaDB) {
+                databaseFotoSiswa = fotoSiswaDB;
+            } else {
+                databaseFotoSiswa = JSON.parse(localStorage.getItem('dbFotoSiswa')) || {};
+            }
+
+            perbaruiBarMemoriIndexedDB(db);
+        } catch (err) {
+            console.error("Gagal memuat IndexedDB secara real-time, fallback ke localStorage:", err);
+            SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || [];
+            perbaruiBarMemoriFallback();
+        }
+    }
+
+    async function perbaruiBarMemoriIndexedDB(db) {
+        try {
+            let estimatedBytes = 0;
+            if (navigator.storage && navigator.storage.estimate) {
+                const estimate = await navigator.storage.estimate();
+                estimatedBytes = estimate.usage || 0;
+            }
+            
+            const kb = (estimatedBytes / 1024).toFixed(1);
+            const limitMb = 50; // Kuota estimasi IndexedDB
+            const maxBytes = limitMb * 1024 * 1024;
+            const pct = Math.min(100, ((estimatedBytes / maxBytes) * 100)).toFixed(1);
+
+            document.getElementById('memoryStatusText').innerHTML = `<i class="fa-solid fa-database" style="color:#10b981;"></i> IndexedDB Aktif (PENA MANTAP V6): <b>${kb} KB</b>`;
+            document.getElementById('memoryProgressFill').style.width = `${pct}%`;
+            document.getElementById('memoryPercentText').innerText = `${pct}%`;
+        } catch(e) {
+            perbaruiBarMemoriFallback();
+        }
+    }
+
+    function perbaruiBarMemoriFallback() {
+        let totalBytes = 0;
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) totalBytes += ((localStorage[key].length + key.length) * 2);
+        }
+        const kb = (totalBytes / 1024).toFixed(1);
+        const pct = Math.min(100, ((kb / 51200) * 100)).toFixed(1);
+
+        document.getElementById('memoryStatusText').innerHTML = `<i class="fa-solid fa-database" style="color:#f59e0b;"></i> Penyimpanan Lokal: <b>${kb} KB</b>`;
+        document.getElementById('memoryProgressFill').style.width = `${pct}%`;
+        document.getElementById('memoryPercentText').innerText = `${pct}%`;
+    }
+
+    function cariNISNLokal(nisCari) {
+        let dbMaster = SISWA;
+        for (let s of dbMaster) {
+            if (Array.isArray(s)) {
+                if (s.length >= 3 && String(s[0]).trim() === String(nisCari).trim()) {
+                    return String(s[1]).trim();
+                }
+                if (String(s[0]).trim() === String(nisCari).trim() && s.length > 2 && s[2] && String(s[2]).trim() !== '-') {
+                    return String(s[2]).trim();
+                }
+                if (String(s[1]).trim() === String(nisCari).trim() && s.length > 2 && s[2] && String(s[2]).trim() !== '-') {
+                    return String(s[2]).trim();
+                }
+            } else if (typeof s === 'object' && s !== null) {
+                let nisVal = String(s.NIS || s.nis || '').trim();
+                if (nisVal === String(nisCari).trim()) {
+                    let nisnVal = s.NISN || s.nisn || s.nomor_induk_siswa_nasional;
+                    if (nisnVal && String(nisnVal).trim() !== '') return String(nisnVal).trim();
+                }
+            }
+        }
+        return '-';
+    }
+
+    function simpanKKM() {
+        const kkmVal = document.getElementById('kkmInput').value;
+        if(kkmVal !== "") {
+            localStorage.setItem('dbKKMBahasaIndonesia', kkmVal);
+            perbaruiSemuaWarnaKKM();
+            alert('Nilai KKM Bahasa Indonesia (' + kkmVal + ') berhasil disimpan!');
+        }
+    }
+
+    function muatKKMTersimpan() {
+        const kkmLokal = localStorage.getItem('dbKKMBahasaIndonesia');
+        if (kkmLokal) { document.getElementById('kkmInput').value = kkmLokal; }
+    }
+
+    function prosesUnggahLogo(input) {
+        if (input.files && input.files[0]) {
+            const pembacaFile = new FileReader();
+            pembacaFile.onload = function(e) {
+                const hasilBase64 = e.target.result;
+                document.getElementById('tampilanLogo').src = hasilBase64;
+                localStorage.setItem('dbLogoBahasaIndonesia', hasilBase64);
+                localStorage.setItem('logoSekolahBase64', hasilBase64);
+            };
+            pembacaFile.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function muatLogoTersimpan() {
+        const logoLokal = localStorage.getItem('logoSekolahBase64') || localStorage.getItem('dbLogoBahasaIndonesia');
+        if (logoLokal) { document.getElementById('tampilanLogo').src = logoLokal; }
+    }
+
+    function inisialisasiTabel() {
+        const header = document.getElementById('headerRow');
+        const semAktif = document.getElementById('semesterSelect').value;
+        
+        const txtUTS = localStorage.getItem('istilahUTS_BahasaIndonesia') || 'PTS';
+        const txtUAS = localStorage.getItem('istilahUAS_BahasaIndonesia') || 'PAS / US';
+
+        if(!databaseBabTP[semAktif]) { databaseBabTP[semAktif] = {}; }
+
+        let statusKolomAktif = [];
+        for(let i = 1; i <= 30; i++) {
+            statusKolomAktif[i] = (databaseBabTP[semAktif][i] && databaseBabTP[semAktif][i].bab && databaseBabTP[semAktif][i].bab.trim() !== "");
+        }
+
+        let row1 = `<tr><th class="th-utama" rowspan="2">No</th><th class="th-utama" rowspan="2">NIS</th><th class="th-utama col-nama" rowspan="2">Nama Siswa</th>`;
+        
+        let colIdx = 1;
+        while(colIdx <= 30) {
+            if (!statusKolomAktif[colIdx]) {
+                colIdx++;
+                continue;
+            }
+            let currentBab = databaseBabTP[semAktif][colIdx].bab;
+            let span = 1;
+            while(colIdx + span <= 30) {
+                if (!statusKolomAktif[colIdx + span]) break;
+                let nextBab = databaseBabTP[semAktif][colIdx + span].bab;
+                if(nextBab === currentBab) { span++; } else { break; }
+            }
+            row1 += `<th class="th-bab" colspan="${span}">${currentBab}</th>`;
+            colIdx += span;
+        }
+
+        row1 += `<th class="th-rata-harian" rowspan="2">Rata-rata Harian</th>`;
+        row1 += `<th class="th-ujian-edit" rowspan="2" contenteditable="true" id="thUTS" onblur="simpanIstilahLangsung('UTS')">${txtUTS}</th>`;
+        row1 += `<th class="th-ujian-edit" rowspan="2" contenteditable="true" id="thUAS" onblur="simpanIstilahLangsung('UAS')">${txtUAS}</th>`;
+        row1 += `<th class="th-raport" rowspan="2">RAPORT</th></tr>`;
+
+        let row2 = `<tr>`;
+        for(let i = 1; i <= 30; i++) {
+            let tpDesc = databaseBabTP[semAktif][i] ? databaseBabTP[semAktif][i].tp : `Tujuan Pembelajaran ${i}`;
+            let classHidden = statusKolomAktif[i] ? '' : ' kolom-tersembunyi';
+            row2 += `<th class="th-harian${classHidden}" title="${tpDesc}" data-kolom-harian="${i}">${i}</th>`;
+        }
+        row2 += `</tr>`;
+
+        header.innerHTML = row1 + row2;
+        cegahEnterKolom(document.getElementById('thUTS'));
+        cegahEnterKolom(document.getElementById('thUAS'));
+
+        const body = document.getElementById('bodyNilaiBahasaIndonesia');
+        body.innerHTML = '';
+
+        if(!databaseNilai[semAktif]) { databaseNilai[semAktif] = {}; }
+
+        SISWA.forEach((siswa, index) => {
+            const nis = siswa[0];
+            const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+            
+            const dataSiswa = databaseNilai[semAktif][nis] || { harian: Array(30).fill(''), uts: '', uas: '', raport: '0' };
+            if (!dataSiswa.harian) { dataSiswa.harian = Array(30).fill(''); }
+
+            let kolomHarian = '';
+            let totalNH = 0, jumlahNH = 0;
+            for(let j = 0; j < 30; j++) {
+                const noKolom = j + 1;
+                const nilaiHarianTerisi = dataSiswa.harian[j] !== undefined ? dataSiswa.harian[j] : '';
+                let classHiddenCell = statusKolomAktif[noKolom] ? '' : ' kolom-tersembunyi';
+                
+                kolomHarian += `<td class="col-harian-cell${classHiddenCell}" data-kolom-harian="${noKolom}"><input type="number" class="input-nilai nh" data-index="${j}" min="0" max="100" value="${nilaiHarianTerisi}" oninput="hitungOtomatisRaport(this)" onkeydown="navigasiEnterBawah(event, this)"></td>`;
+                
+                if(statusKolomAktif[noKolom] && nilaiHarianTerisi !== '') { 
+                    totalNH += parseFloat(nilaiHarianTerisi); 
+                    jumlahNH++; 
+                }
+            }
+            const rerataHarianSiswa = jumlahNH > 0 ? Math.round(totalNH / jumlahNH) : 0;
+            const nilaiRaportTeks = dataSiswa.raport || 0;
+
+            body.innerHTML += `
+                <tr data-nis="${nis}">
+                    <td class="col-no">${index + 1}</td>
+                    <td class="col-nis">${nis}</td>
+                    <td class="col-nama">
+                        <div class="nama-container">
+                            <span class="nama-teks">${nama}</span>
+                            <span class="area-badge"></span>
+                        </div>
+                    </td>
+                    ${kolomHarian}
+                    <td class="col-rata-harian">${rerataHarianSiswa}</td>
+                    <td><input type="number" class="input-nilai uts" min="0" max="100" value="${dataSiswa.uts || ''}" oninput="hitungOtomatisRaport(this)" onkeydown="navigasiEnterBawah(event, this)"></td>
+                    <td><input type="number" class="input-nilai uas" min="0" max="100" value="${dataSiswa.uas || ''}" oninput="hitungOtomatisRaport(this)" onkeydown="navigasiEnterBawah(event, this)"></td>
+                    <td><b class="nilai-raport">${nilaiRaportTeks}</b></td>
+                </tr>
+            `;
+        });
+        
+        perbaruiSemuaWarnaKKM();
+        evaluasiIndikatorSiswa();
+        isiOpsiModalKolom();
+        isiOpsiDropdownAbsen();
+    }
+
+    function unduhFormatTP() {
+        const dataFormat = [
+            ["No Kolom", "Label Bab / Topik", "Deskripsi Tujuan Pembelajaran (TP)"],
+            [1, "Bab 1", "Menemukan informasi penting dan ide pokok dalam teks laporan"],
+            [2, "Bab 1", "Menulis surat resmi dan surat pribadi dengan struktur yang tepat"],
+            [3, "Bab 2", "Mengidentifikasi unsur intrinsik cerita fiksi/novel anak"],
+            [4, "Bab 2", "Menyajikan hasil wawancara dalam bentuk laporan tertulis"],
+            [5, "Bab 3", "Berpidato dengan intonasi dan pelafalan yang baik dan benar"],
+            [6, "Bab 3", "Menyusun teks pidato persuasif secara runtut dan kreatif"]
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet(dataFormat);
+        ws['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 50 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Format_TP");
+        XLSX.writeFile(wb, "Format_Pengisian_Bab_TP_BahasaIndonesia.xlsx");
+    }
+
+    function prosesImportTP(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonResult = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (jsonResult.length < 2) {
+                alert("File Excel format TP kosong atau tidak valid!");
+                return;
+            }
+
+            const semAktif = document.getElementById('semesterSelect').value;
+            if (!databaseBabTP[semAktif]) databaseBabTP[semAktif] = {};
+
+            let jumlahMasuk = 0;
+            for (let i = 1; i < jsonResult.length; i++) {
+                const baris = jsonResult[i];
+                if (!baris || baris.length < 3) continue;
+
+                const noKolom = parseInt(baris[0]);
+                const babVal = String(baris[1] || '').trim();
+                const tpVal = String(baris[2] || '').trim();
+
+                if (!isNaN(noKolom) && noKolom >= 1 && noKolom <= 30 && babVal !== '') {
+                    databaseBabTP[semAktif][noKolom] = { bab: babVal, tp: tpVal };
+                    jumlahMasuk++;
+                }
+            }
+
+            localStorage.setItem('dbBabTP_BahasaIndonesia', JSON.stringify(databaseBabTP));
+            inisialisasiTabel();
+            tutupModalBabTP();
+            alert(`Berhasil meng-import ${jumlahMasuk} data Bab & TP Bahasa Indonesia untuk ${semAktif}!`);
+            input.value = '';
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    function navigasiEnterBawah(e, input) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const barisSekarang = input.closest('tr');
+            const barisBerikutnya = barisSekarang.nextElementSibling;
+            if (barisBerikutnya) {
+                let targetInput;
+                if (input.classList.contains('nh')) {
+                    const idx = input.getAttribute('data-index');
+                    targetInput = barisBerikutnya.querySelector(`.nh[data-index="${idx}"]`);
+                } else if (input.classList.contains('uts')) {
+                    targetInput = barisBerikutnya.querySelector('.uts');
+                } else if (input.classList.contains('uas')) {
+                    targetInput = barisBerikutnya.querySelector('.uas');
+                }
+                if (targetInput) { targetInput.focus(); targetInput.select(); }
+            }
+        }
+    }
+
+    function simpanIstilahLangsung(tipe) {
+        if (tipe === 'UTS') {
+            const text = document.getElementById('thUTS').innerText.trim() || 'PTS';
+            localStorage.setItem('istilahUTS_BahasaIndonesia', text);
+        } else {
+            const text = document.getElementById('thUAS').innerText.trim() || 'PAS / US';
+            localStorage.setItem('istilahUAS_BahasaIndonesia', text);
+        }
+        isiOpsiModalKolom();
+    }
+
+    function cegahEnterKolom(elemen) {
+        if(!elemen) return;
+        elemen.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); elemen.blur(); }
+        });
+    }
+
+    function hitungOtomatisRaport(element) {
+        const baris = element.closest('tr');
+        const nis = baris.getAttribute('data-nis');
+        const semAktif = document.getElementById('semesterSelect').value;
+        
+        const inputsNH = baris.querySelectorAll('.nh');
+        const inputUTS = baris.querySelector('.uts').value;
+        const inputUAS = baris.querySelector('.uas').value;
+        
+        let totalNH = 0, jumlahNH = 0, susunanNH = [];
+
+        inputsNH.forEach((inp, idx) => {
+            const noKolom = idx + 1;
+            const val = inp.value;
+            susunanNH.push(val);
+            
+            const isAktif = (databaseBabTP[semAktif] && databaseBabTP[semAktif][noKolom] && databaseBabTP[semAktif][noKolom].bab && databaseBabTP[semAktif][noKolom].bab.trim() !== "");
+            if(isAktif && val !== '') { totalNH += parseFloat(val); jumlahNH++; }
+        });
+
+        const rataRataNH = jumlahNH > 0 ? (totalNH / jumlahNH) : 0;
+        const nilaiUTS = inputUTS !== '' ? parseFloat(inputUTS) : 0;
+        const nilaiUAS = inputUAS !== '' ? parseFloat(inputUAS) : 0;
+
+        let hasilRaport = Math.round((rataRataNH * 2 + nilaiUTS + nilaiUAS) / 4);
+        if(jumlahNH === 0 && inputUTS === '' && inputUAS === '') hasilRaport = 0;
+
+        baris.querySelector('.nilai-raport').innerText = hasilRaport;
+        baris.querySelector('.col-rata-harian').innerText = Math.round(rataRataNH);
+
+        warnaiElemenBerdasarkanIsi(baris);
+
+        if(!databaseNilai[semAktif]) databaseNilai[semAktif] = {};
+        databaseNilai[semAktif][nis] = { harian: susunanNH, uts: inputUTS, uas: inputUAS, raport: hasilRaport };
+        localStorage.setItem('dbNilaiBahasaIndonesia', JSON.stringify(databaseNilai));
+
+        evaluasiIndikatorSiswa();
+    }
+
+    function evaluasiIndikatorSiswa() {
+        const semuaBaris = document.querySelectorAll('#bodyNilaiBahasaIndonesia tr');
+        const nilaiKKM = parseFloat(document.getElementById('kkmInput').value) || 0;
+        const semAktif = document.getElementById('semesterSelect').value;
+        
+        let nilaiRaportTertinggi = 0, rataHarianTertinggi = 0;
+
+        semuaBaris.forEach(baris => {
+            const areaBadge = baris.querySelector('.area-badge');
+            if(areaBadge) areaBadge.innerHTML = ''; 
+            const nr = parseFloat(baris.querySelector('.nilai-raport').innerText) || 0;
+            const rh = parseFloat(baris.querySelector('.col-rata-harian').innerText) || 0;
+            if(nr > nilaiRaportTertinggi) nilaiRaportTertinggi = nr;
+            if(rh > rataHarianTertinggi) rataHarianTertinggi = rh;
+        });
+
+        semuaBaris.forEach(baris => {
+            const areaBadge = baris.querySelector('.area-badge');
+            if(!areaBadge) return;
+
+            const nr = parseFloat(baris.querySelector('.nilai-raport').innerText) || 0;
+            const rh = parseFloat(baris.querySelector('.col-rata-harian').innerText) || 0;
+            const inputsNH = baris.querySelectorAll('.nh');
+            let adaHarianDiBawahKKM = false;
+            
+            inputsNH.forEach((inp, idx) => {
+                const noKolom = idx + 1;
+                const isAktif = (databaseBabTP[semAktif] && databaseBabTP[semAktif][noKolom] && databaseBabTP[semAktif][noKolom].bab && databaseBabTP[semAktif][noKolom].bab.trim() !== "");
+                if(isAktif && inp.value !== '') {
+                    if((parseFloat(inp.value) || 0) < nilaiKKM) adaHarianDiBawahKKM = true;
+                }
+            });
+
+            let htmlBadge = '';
+            if(adaHarianDiBawahKKM) htmlBadge += `<i class="fa-solid fa-triangle-exclamation badge-peringatan" title="Ada nilai harian siswa dibawah KKM!"></i>`;
+            if(rh === rataHarianTertinggi && rataHarianTertinggi > 0) htmlBadge += `<i class="fa-solid fa-star badge-bintang-ungu" title="Rata-rata Harian Tertinggi"></i>`;
+            if(nr === nilaiRaportTertinggi && nilaiRaportTertinggi >= nilaiKKM && nilaiRaportTertinggi > 0) htmlBadge += `<i class="fa-solid fa-star badge-bintang" title="Nilai Raport Tertinggi"></i>`;
+            areaBadge.innerHTML = htmlBadge;
+        });
+    }
+
+    function warnaiElemenBerdasarkanIsi(baris) {
+        const nilaiKKM = parseFloat(document.getElementById('kkmInput').value) || 0;
+        baris.querySelectorAll('.input-nilai').forEach(input => {
+            input.classList.remove('lulus-kkm', 'gagal-kkm');
+            if (input.value !== '') {
+                if ((parseFloat(input.value) || 0) >= nilaiKKM) input.classList.add('lulus-kkm');
+                else input.classList.add('gagal-kkm');
+            }
+        });
+
+        const kotakRaport = baris.querySelector('.nilai-raport');
+        if (kotakRaport) {
+            const nilaiRaport = parseFloat(kotakRaport.innerText) || 0;
+            kotakRaport.classList.remove('lulus-kkm', 'gagal-kkm');
+            if (nilaiRaport >= nilaiKKM) kotakRaport.classList.add('lulus-kkm');
+            else kotakRaport.classList.add('gagal-kkm');
+        }
+    }
+
+    function perbaruiSemuaWarnaKKM() {
+        document.querySelectorAll('#bodyNilaiBahasaIndonesia tr').forEach(baris => warnaiElemenBerdasarkanIsi(baris));
+        evaluasiIndikatorSiswa();
+    }
+
+    function cariFotoSiswaLokal(nis) {
+        if (databaseFotoSiswa && databaseFotoSiswa[nis]) {
+            let f = databaseFotoSiswa[nis];
+            if (typeof f === 'string') return f;
+            if (f.foto) return f.foto;
+        }
+        const namaStorageFoto = ['dbFotoSiswa', 'dbFoto_Siswa', 'fotoSiswa', 'dbFoto', 'dbSiswaFoto'];
+        for (let key of namaStorageFoto) {
+            const dataFoto = JSON.parse(localStorage.getItem(key)) || {};
+            if (dataFoto[nis]) {
+                let f = dataFoto[nis];
+                if (typeof f === 'string') return f;
+                if (f.foto) return f.foto;
+            }
+        }
+        return '';
+    }
+
+    function cetakLaporanPDF(modeCetak = 'PAS') {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const kkmVal = parseFloat(document.getElementById('kkmInput').value) || 75;
+        const logoSrc = document.getElementById('tampilanLogo').src;
+        const txtUTS = localStorage.getItem('istilahUTS_BahasaIndonesia') || 'PTS';
+        const txtUAS = localStorage.getItem('istilahUAS_BahasaIndonesia') || 'PAS / US';
+
+        const kopBaris1 = localStorage.getItem('barisKop1') || 'PEMERINTAH KABUPATEN BREBES';
+        const kopBaris2 = localStorage.getItem('barisKop2') || 'KORWILCAM BIDANG PENDIDIKAN KEC. SIRAMPOG';
+        const kopBaris3 = localStorage.getItem('barisKop3') || localStorage.getItem('namaSekolah') || 'SD NEGERI 01 BUMIAYU';
+        const kopBaris4 = localStorage.getItem('barisKop4') || 'Jl. P. Diponegoro No. 1 Bumiayu Kode Pos 52273';
+
+        const namaWaliKelasCetak = localStorage.getItem('namaWaliKelas_Ujian') || localStorage.getItem('namaWaliKelas') || 'GURU KELAS VI, S.Pd.';
+        const nipWaliKelasCetak = localStorage.getItem('nipWaliKelas_Ujian') || localStorage.getItem('nipWaliKelas') || '19850101 201001 1 001';
+        const namaKepsekCetak = localStorage.getItem('namaKepsek') || localStorage.getItem('namaKepsek_Ujian') || 'KEPALA SEKOLAH, M.Pd.';
+        const nipKepsekCetak = localStorage.getItem('nipKepsek') || localStorage.getItem('nipKepsek_Ujian') || '19720315 199802 2 002';
+
+        const konfirmasiSiswa = prompt("Ketik '0' untuk cetak SEMUA SISWA, atau ketik Nomor Absen Siswa (1 - " + SISWA.length + "):", "0");
+        if (konfirmasiSiswa === null) return;
+
+        const noAbsenPilihan = parseInt(konfirmasiSiswa);
+        let daftarSiswaDicetak = SISWA;
+        if (!isNaN(noAbsenPilihan) && noAbsenPilihan > 0 && noAbsenPilihan <= SISWA.length) {
+            daftarSiswaDicetak = [SISWA[noAbsenPilihan - 1]];
+        }
+
+        const petaBab = {};
+        for(let col = 1; col <= 30; col++) {
+            if (databaseBabTP[semAktif] && databaseBabTP[semAktif][col] && databaseBabTP[semAktif][col].bab && databaseBabTP[semAktif][col].bab.trim() !== "") {
+                const babName = databaseBabTP[semAktif][col].bab;
+                const tpDesc = databaseBabTP[semAktif][col].tp;
+                if(!petaBab[babName]) petaBab[babName] = [];
+                petaBab[babName].push({ colIndex: col - 1, tp: tpDesc });
+            }
+        }
+
+        const areaCetak = document.getElementById('printAreaIndividual');
+        areaCetak.innerHTML = '';
+
+        daftarSiswaDicetak.forEach((siswa) => {
+            const nis = siswa[0];
+            const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+            const nisnSiswa = cariNISNLokal(nis);
+
+            const baris = document.querySelector(`#bodyNilaiBahasaIndonesia tr[data-nis="${nis}"]`);
+            if(!baris) return;
+
+            const fotoSrc = cariFotoSiswaLokal(nis);
+            const htmlFoto = fotoSrc ? `<img src="${fotoSrc}" alt="Foto Siswa">` : `Pas Foto<br>3 x 4 cm`;
+
+            const inputsNH = baris.querySelectorAll('.nh');
+            const valUTS = baris.querySelector('.uts').value !== '' ? parseFloat(baris.querySelector('.uts').value) : 0;
+            const valUAS = baris.querySelector('.uas').value !== '' ? parseFloat(baris.querySelector('.uas').value) : 0;
+            const valRerataHarian = parseFloat(baris.querySelector('.col-rata-harian').innerText) || 0;
+
+            let valRaportHitung = (modeCetak === 'PTS') ? Math.round((valRerataHarian * 2 + valUTS) / 3) : Math.round((valRerataHarian * 2 + valUTS + valUAS) / 4);
+
+            let htmlBarisBab = '';
+            let noBab = 1;
+            for(let namaBab in petaBab) {
+                const daftarTP = petaBab[namaBab];
+                let sumNilai = 0, countNilai = 0, rincianTPText = [];
+
+                daftarTP.forEach((item, tIdx) => {
+                    const nilaiVal = inputsNH[item.colIndex].value;
+                    if(nilaiVal !== '') {
+                        sumNilai += parseFloat(nilaiVal);
+                        countNilai++;
+                        rincianTPText.push(`• ${item.tp || 'TP ' + (tIdx+1)}: <b>${nilaiVal}</b>`);
+                    }
+                });
+
+                const rataBab = countNilai > 0 ? Math.round(sumNilai / countNilai) : '-';
+                const statusBab = (rataBab !== '-' && rataBab >= kkmVal) ? `<span class="status-lulus">Tuntas</span>` : `<span class="status-remedi">Perlu Bimbingan</span>`;
+
+                htmlBarisBab += `
+                    <tr>
+                        <td style="width: 35px;">${noBab++}</td>
+                        <td class="text-left"><b>${namaBab}</b></td>
+                        <td class="text-left">${rincianTPText.length > 0 ? rincianTPText.join('<br>') : 'Belum Ada Penilaian'}</td>
+                        <td style="width: 80px;"><b>${rataBab}</b></td>
+                        <td style="width: 110px;">${statusBab}</td>
+                    </tr>
+                `;
+            }
+
+            const sebutanJudulRaport = modeCetak === 'PTS' ? 'TENGAH SEMESTER' : 'AKHIR SEMESTER';
+
+            areaCetak.innerHTML += `
+                <div class="page-break">
+                    <div class="print-kop">
+                        <img src="${logoSrc}" alt="Logo Sekolah">
+                        <div class="print-kop-text">
+                            <div class="kop-baris-1">${kopBaris1}</div>
+                            <div class="kop-baris-2">${kopBaris2}</div>
+                            <div class="kop-baris-3">${kopBaris3}</div>
+                            <div class="kop-baris-4">${kopBaris4}</div>
+                        </div>
+                    </div>
+
+                    <div class="print-title-wrapper">
+                        <div class="print-title">LAPORAN HASIL EVALUASI BELAJAR SISWA (${sebutanJudulRaport})</div>
+                    </div>
+
+                    <div class="print-biodata-container">
+                        <table class="print-biodata">
+                            <tr><td class="label">Nama Siswa</td><td class="titik">:</td><td class="val"><b>${nama}</b></td></tr>
+                            <tr><td class="label">NIS / NISN</td><td class="titik">:</td><td class="val">${nis} / ${nisnSiswa}</td></tr>
+                            <tr><td class="label">Kelas / Semester</td><td class="titik">:</td><td class="val">VI (Enam) / ${semAktif}</td></tr>
+                            <tr><td class="label">Mata Pelajaran</td><td class="titik">:</td><td class="val">Bahasa Indonesia</td></tr>
+                        </table>
+                        <div class="foto-box">${htmlFoto}</div>
+                    </div>
+
+                    <div class="print-section-title">A. Pencapaian Competency / Hasil Pembelajaran Per Bab</div>
+                    <table class="table-print">
+                        <thead>
+                            <tr><th>No</th><th>Unit / Bab</th><th>Capaian Tujuan Pembelajaran (TP)</th><th>Rata-Rata</th><th>Hasil</th></tr>
+                        </thead>
+                        <tbody>${htmlBarisBab}</tbody>
+                    </table>
+
+                    <div class="print-section-title">B. Rekapitulasi Penilaian ${sebutanJudulRaport}</div>
+                    <table class="table-print">
+                        <thead>
+                            <tr>
+                                <th>Rata-Rata Harian (NH)</th>
+                                <th>${txtUTS}</th>
+                                ${modeCetak === 'PAS' ? `<th>${txtUAS}</th>` : ''}
+                                <th>NILAI RAPORT FINAL</th>
+                                <th>KETERANGAN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>${valRerataHarian}</b></td>
+                                <td><b>${valUTS || '-'}</b></td>
+                                ${modeCetak === 'PAS' ? `<td><b>${valUAS || '-'}</b></td>` : ''}
+                                <td style="font-size: 12pt; background:#f9f9f9;"><b>${valRaportHitung}</b></td>
+                                <td><b>${valRaportHitung >= kkmVal ? 'TUNTAS' : 'TIDAK TUNTAS'}</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="print-ttd-container">
+                        <div class="ttd-box">
+                            <p style="margin-bottom: 2px;">Mengetahui,</p>
+                            <p>Orang Tua / Wali Siswa</p>
+                            <div class="ttd-space"></div>
+                            <p class="ttd-nama">( ........................................ )</p>
+                        </div>
+                        <div class="ttd-box">
+                            <p style="margin-bottom: 2px;">&nbsp;</p>
+                            <p>Wali Kelas VI</p>
+                            <div class="ttd-space"></div>
+                            <p class="ttd-nama">${namaWaliKelasCetak}</p>
+                            <p>NIP. ${nipWaliKelasCetak}</p>
+                        </div>
+                        <div class="ttd-box">
+                            <p style="margin-bottom: 2px;">Brebes, 18 Oktober 2026</p>
+                            <p>Kepala Sekolah</p>
+                            <div class="ttd-space"></div>
+                            <p class="ttd-nama">${namaKepsekCetak}</p>
+                            <p>NIP. ${nipKepsekCetak}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        window.print();
+    }
+
+    function prosesImportNilai(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonResult = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (jsonResult.length < 2) {
+                alert("File Excel/CSV tidak memiliki data nilai yang valid!");
+                return;
+            }
+
+            const semAktif = document.getElementById('semesterSelect').value;
+            let barisDiperbarui = 0;
+
+            for (let i = 1; i < jsonResult.length; i++) {
+                const baris = jsonResult[i];
+                if (!baris || baris.length < 2) continue;
+
+                const nisImport = String(baris[0] || '').trim();
+                const namaImport = String(baris[1] || '').trim().toLowerCase();
+
+                let elemBaris = document.querySelector(`#bodyNilaiBahasaIndonesia tr[data-nis="${nisImport}"]`);
+                if (!elemBaris) {
+                    document.querySelectorAll('#bodyNilaiBahasaIndonesia tr').forEach(r => {
+                        const namaTeks = r.querySelector('.col-nama .nama-teks').innerText.trim().toLowerCase();
+                        if (namaTeks === namaImport) elemBaris = r;
+                    });
+                }
+
+                if (elemBaris) {
+                    const inputsNH = elemBaris.querySelectorAll('.nh');
+                    let idxColData = 2;
+
+                    inputsNH.forEach((inp) => {
+                        if (baris[idxColData] !== undefined && baris[idxColData] !== '') inp.value = baris[idxColData];
+                        idxColData++;
+                    });
+
+                    if (baris[idxColData] !== undefined && baris[idxColData] !== '') elemBaris.querySelector('.uts').value = baris[idxColData];
+                    if (baris[idxColData + 1] !== undefined && baris[idxColData + 1] !== '') elemBaris.querySelector('.uas').value = baris[idxColData + 1];
+
+                    hitungOtomatisRaport(elemBaris.querySelector('.nh'));
+                    barisDiperbarui++;
+                }
+            }
+            alert(`Import Nilai Bahasa Indonesia Selesai! Sebanyak ${barisDiperbarui} data siswa berhasil diperbarui.`);
+            input.value = '';
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function bukaModalBabTP() {
+        const selectMulai = document.getElementById('selectKolomMulai');
+        const selectSelesai = document.getElementById('selectKolomSelesai');
+        selectMulai.innerHTML = ''; selectSelesai.innerHTML = '';
+        
+        for (let i = 1; i <= 30; i++) {
+            selectMulai.innerHTML += `<option value="${i}">Kolom ${i}</option>`;
+            selectSelesai.innerHTML += `<option value="${i}">Kolom ${i}</option>`;
+        }
+        selectSelesai.value = "1";
+        modeEditAktif = false;
+        document.getElementById('modalBabTP').classList.add('active');
+        muatDataBabTPModal();
+    }
+
+    function tutupModalBabTP() { document.getElementById('modalBabTP').classList.remove('active'); }
+
+    function muatDataBabTPModal() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const colIdx = document.getElementById('selectKolomMulai').value;
+        const selectSelesai = document.getElementById('selectKolomSelesai');
+        selectSelesai.value = colIdx;
+
+        const data = (databaseBabTP[semAktif] && databaseBabTP[semAktif][colIdx]) ? databaseBabTP[semAktif][colIdx] : { bab: '', tp: '' };
+
+        const inputBab = document.getElementById('inputJudulBab');
+        const inputTP = document.getElementById('inputDeskripsiTP');
+        const containerInfo = document.getElementById('infoStatusTerisiContainer');
+
+        inputBab.value = data.bab;
+        inputTP.value = data.tp;
+        const sudahTerisi = (data.bab && data.bab.trim() !== "");
+
+        if (sudahTerisi && !modeEditAktif) {
+            inputBab.classList.add('input-locked'); inputTP.classList.add('input-locked'); selectSelesai.classList.add('input-locked');
+            inputBab.readOnly = true; inputTP.readOnly = true; selectSelesai.disabled = true;
+            containerInfo.innerHTML = `
+                <div class="status-terisi-info">
+                    <span><i class="fa-solid fa-lock"></i> Kolom ini sudah terisi Bab & TP. Terkunci.</span>
+                    <button class="btn-unlock-edit" onclick="aktifkanModeEdit()"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                </div>
+            `;
+        } else {
+            inputBab.classList.remove('input-locked'); inputTP.classList.remove('input-locked'); selectSelesai.classList.remove('input-locked');
+            inputBab.readOnly = false; inputTP.readOnly = false; selectSelesai.disabled = false;
+            containerInfo.innerHTML = (sudahTerisi && modeEditAktif) ? `<div class="status-terisi-info" style="background:#fff1f2; border-color:#e11d48; color:#9f1239;"><span><i class="fa-solid fa-unlock"></i> Mode Edit Aktif.</span></div>` : '';
+        }
+    }
+
+    function aktifkanModeEdit() { modeEditAktif = true; muatDataBabTPModal(); }
+
+    function simpanBabTPModal() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const colMulai = parseInt(document.getElementById('selectKolomMulai').value);
+        const colSelesai = parseInt(document.getElementById('selectKolomSelesai').value);
+        const babVal = document.getElementById('inputJudulBab').value.trim();
+        const tpVal = document.getElementById('inputDeskripsiTP').value.trim();
+
+        if (colMulai > colSelesai) { alert("Kolom 'Dari' tidak boleh lebih besar dari 'Sampai'!"); return; }
+
+        if(!databaseBabTP[semAktif]) databaseBabTP[semAktif] = {};
+        for (let i = colMulai; i <= colSelesai; i++) {
+            databaseBabTP[semAktif][i] = { bab: babVal, tp: tpVal };
+        }
+
+        localStorage.setItem('dbBabTP_BahasaIndonesia', JSON.stringify(databaseBabTP));
+        inisialisasiTabel();
+        tutupModalBabTP();
+        alert(`Berhasil memperbarui Bab & TP Bahasa Indonesia untuk rentang Kolom ${colMulai} sampai ${colSelesai}!`);
+    }
+
+    function isiOpsiModalKolom() {
+        const select = document.getElementById('selectTargetKolom');
+        select.innerHTML = '';
+        for (let i = 1; i <= 30; i++) {
+            select.innerHTML += `<option value="harian_${i-1}">Kolom Harian Ke-${i}</option>`;
+        }
+        const txtUTS = localStorage.getItem('istilahUTS_BahasaIndonesia') || 'PTS';
+        const txtUAS = localStorage.getItem('istilahUAS_BahasaIndonesia') || 'PAS / US';
+        select.innerHTML += `<option value="uts">31. Ujian PTS (${txtUTS})</option>`;
+        select.innerHTML += `<option value="uas">32. Ujian PAS / US (${txtUAS})</option>`;
+    }
+
+    function isiOpsiDropdownAbsen() {
+        const selectAbsen = document.getElementById('selectNoAbsen');
+        if(!selectAbsen) return;
+        selectAbsen.innerHTML = '';
+        SISWA.forEach((_, idx) => { selectAbsen.innerHTML += `<option value="${idx}">${idx + 1}</option>`; });
+    }
+
+    function bukaModalInput() { indeksSiswaModal = 0; document.getElementById('modalInputNilai').classList.add('active'); muatNilaiSiswaModal(); }
+    function tutupModalInput() { document.getElementById('modalInputNilai').classList.remove('active'); }
+
+    function muatNilaiSiswaModal() {
+        if(SISWA.length === 0) return;
+        const siswa = SISWA[indeksSiswaModal];
+        const namaSiswa = siswa.length >= 3 ? siswa[2] : siswa[1];
+        document.getElementById('modalSiswaNis').innerText = `NIS: ${siswa[0]}`;
+        document.getElementById('modalSiswaNama').innerText = namaSiswa;
+        
+        const selectAbsen = document.getElementById('selectNoAbsen');
+        if(selectAbsen) selectAbsen.value = indeksSiswaModal;
+
+        const targetKolom = document.getElementById('selectTargetKolom').value;
+        const barisSiswa = document.querySelector(`#bodyNilaiBahasaIndonesia tr[data-nis="${siswa[0]}"]`);
+        const semAktif = document.getElementById('semesterSelect').value;
+
+        const modalTpBab = document.getElementById('modalTpBab');
+        const modalTpText = document.getElementById('modalTpText');
+
+        if(targetKolom.startsWith('harian_')) {
+            const colNum = parseInt(targetKolom.split('_')[1]) + 1;
+            const dataBabTP = (databaseBabTP[semAktif] && databaseBabTP[semAktif][colNum]) ? databaseBabTP[semAktif][colNum] : { bab: 'Belum Diatur', tp: 'Belum ada Tujuan Pembelajaran' };
+            modalTpBab.innerText = `${dataBabTP.bab || 'Belum Diatur'} - Kolom ${colNum}`;
+            modalTpText.innerText = dataBabTP.tp || 'Belum diisi guru';
+        } else if(targetKolom === 'uts') {
+            modalTpBab.innerText = "Penilaian Tengah Semester"; modalTpText.innerText = "Penilaian Evaluasi PTS";
+        } else {
+            modalTpBab.innerText = "Penilaian Akhir Semester"; modalTpText.innerText = "Penilaian Evaluasi PAS / US";
+        }
+
+        let inputAsli = targetKolom.startsWith('harian_') ? barisSiswa.querySelectorAll('.nh')[targetKolom.split('_')[1]] : barisSiswa.querySelector(`.${targetKolom}`);
+        const inputBig = document.getElementById('inputBigNilai');
+        inputBig.value = inputAsli ? inputAsli.value : '';
+        setTimeout(() => { inputBig.focus(); inputBig.select(); }, 100);
+    }
+
+    function simpanNilaiDariModal() {
+        if(SISWA.length === 0) return;
+        const nis = SISWA[indeksSiswaModal][0];
+        const targetKolom = document.getElementById('selectTargetKolom').value;
+        const valBaru = document.getElementById('inputBigNilai').value;
+        const barisSiswa = document.querySelector(`#bodyNilaiBahasaIndonesia tr[data-nis="${nis}"]`);
+
+        let inputAsli = targetKolom.startsWith('harian_') ? barisSiswa.querySelectorAll('.nh')[targetKolom.split('_')[1]] : barisSiswa.querySelector(`.${targetKolom}`);
+        if(inputAsli) { inputAsli.value = valBaru; hitungOtomatisRaport(inputAsli); }
+    }
+
+    function lompatKeSiswa(targetIdx) { simpanNilaiDariModal(); indeksSiswaModal = parseInt(targetIdx); muatNilaiSiswaModal(); }
+    function navigasiSiswaModal(direction) {
+        simpanNilaiDariModal();
+        indeksSiswaModal += direction;
+        if (indeksSiswaModal < 0) indeksSiswaModal = SISWA.length - 1;
+        else if (indeksSiswaModal >= SISWA.length) indeksSiswaModal = 0;
+        muatNilaiSiswaModal();
+    }
+    function handleEnterBigInput(e) { if(e.key === 'Enter') { e.preventDefault(); navigasiSiswaModal(1); } }
+
+    function gantiSemester() { inisialisasiTabel(); }
+    
+    // Tautan kembali langsung mengarah ke PENA MANTAP V6.html
+    function kembaliKeAbsensi() {
+        if (window.opener && !window.opener.closed) window.close(); 
+        else window.location.href = 'PENA MANTAP V6.html';
+    }
+
+    function eksporExcel() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const workbook = XLSX.utils.table_to_book(document.getElementById('tabelNilaiBahasaIndonesia'), { raw: true });
+        XLSX.writeFile(workbook, `Nilai_BahasaIndonesia_Kelas6_${semAktif.replace(' ', '')}.xlsx`);
+    }
+
+    function simpanKeSheets() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const dataPaket = [];
+
+        document.querySelectorAll('#bodyNilaiBahasaIndonesia tr').forEach(baris => {
+            dataPaket.push({
+                nis: baris.getAttribute('data-nis'),
+                nama: baris.querySelector('.col-nama .nama-teks').innerText,
+                harian: Array.from(baris.querySelectorAll('.nh')).map(i => i.value || ""),
+                uts: baris.querySelector('.uts').value || "",
+                uas: baris.querySelector('.uas').value || "",
+                raport: baris.querySelector('.nilai-raport').innerText
+            });
+        });
+
+        if(!confirm(`Kirim & Simpan data nilai Bahasa Indonesia [ ${semAktif} ] langsung ke Google Sheets?`)) return;
+
+        const btn = document.querySelector('.btn-save');
+        btn.innerHTML = "⏳ Proses Menyimpan..."; btn.disabled = true;
+
+        const dataForm = new URLSearchParams();
+        dataForm.append("postData", JSON.stringify({ data: dataPaket, semester: semAktif, mapel: "Bahasa Indonesia" }));
+
+        fetch(URL_APPS_SCRIPT, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: dataForm })
+        .then(() => alert(`Data Nilai Bahasa Indonesia (${semAktif}) sukses diproses!`))
+        .catch(() => alert("Proses pengiriman selesai!"))
+        .finally(() => { btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Sheets"; btn.disabled = false; });
+    }
+
+    function tarikDariSheets() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const btn = document.querySelector('.btn-pull');
+        btn.innerHTML = "⏳ Menarik..."; btn.disabled = true;
+
+        const urlFetch = `${URL_APPS_SCRIPT}?action=getNilai&semester=${encodeURIComponent(semAktif)}&mapel=${encodeURIComponent("Bahasa Indonesia")}`;
+
+        fetch(urlFetch)
+        .then(response => response.json())
+        .then(result => {
+            if (result && result.status === 'success' && Array.isArray(result.data)) {
+                let jumlahBerhasil = 0;
+                result.data.forEach(item => {
+                    const baris = document.querySelector(`#bodyNilaiBahasaIndonesia tr[data-nis="${item.nis}"]`);
+                    if (baris) {
+                        const inputsNH = baris.querySelectorAll('.nh');
+                        if (Array.isArray(item.harian)) {
+                            item.harian.forEach((val, idx) => {
+                                if (inputsNH[idx]) inputsNH[idx].value = val !== null ? val : '';
+                            });
+                        }
+                        const inputUTS = baris.querySelector('.uts');
+                        const inputUAS = baris.querySelector('.uas');
+                        if (inputUTS) inputUTS.value = item.uts !== null ? item.uts : '';
+                        if (inputUAS) inputUAS.value = item.uas !== null ? item.uas : '';
+
+                        hitungOtomatisRaport(inputsNH[0] || inputUTS);
+                        jumlahBerhasil++;
+                    }
+                });
+                alert(`Berhasil menarik data nilai Bahasa Indonesia (${semAktif}) untuk ${jumlahBerhasil} siswa dari Google Sheets!`);
+            } else {
+                alert("Data nilai tidak ditemukan di Google Sheets atau format respon tidak sesuai.");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Gagal menarik data dari Google Sheets. Pastikan URL Apps Script dan koneksi internet Anda aktif!");
+        })
+        .finally(() => {
+            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-down'></i> Tarik Data";
+            btn.disabled = false;
+        });
+    }
+
+    window.onload = async function() {
+        muatKKMTersimpan();
+        muatLogoTersimpan();
+        await muatDataRealtimeDariIndexedDB();
+        inisialisasiTabel();
+    };
+</script>
+</body>
+</html>

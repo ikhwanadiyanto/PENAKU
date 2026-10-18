@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rumah Data - Manajemen Kartu Ujian Kelas VI</title>
+    <!-- Library untuk hapus background gambar secara otomatis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/removebg/1.0.1/removebg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal"></script>
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --text-main: #475569;
+            
+            --bg-card-1: #f3f0ff;
+            --border-card-1: #c084fc;
+            --text-card-1: #6b21a8;
+            --btn-card-1: #a855f7;
+            --btn-card-1-hover: #9333ea;
+
+            --bg-card-2: #f0fdf4;
+            --border-card-2: #86efac;
+            --text-card-2: #166534;
+            --btn-card-2: #4ade80;
+            --btn-card-2-hover: #22c55e;
+
+            --bg-card-3: #f0f9ff;
+            --border-card-3: #7dd3fc;
+            --text-card-3: #0369a1;
+            --btn-card-3: #38bdf8;
+            --btn-card-3-hover: #0284c7;
+
+            --bg-card-4: #fff7ed;
+            --border-card-4: #fdba74;
+            --text-card-4: #c2410c;
+            --btn-card-4: #fb923c;
+            --btn-card-4-hover: #f97316;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 20px 20px 70px 20px;
+            color: var(--text-main);
+        }
+        .admin-container { max-width: 1300px; margin: 0 auto; }
+        
+        header {
+            background: linear-gradient(135deg, #a7f3d0 0%, #bbf7d0 100%);
+            color: #065f46;
+            padding: 22px 25px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(167, 243, 208, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+        header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13.5px; font-weight: 400; }
+        
+        .btn-kembali {
+            background: #ffffff;
+            color: #065f46;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13.5px;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-kembali:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card-menu-1 { background-color: var(--bg-card-1); border: 2px solid var(--border-card-1); }
+        .card-menu-1 h3 { color: var(--text-card-1); }
+
+        .card-menu-2 { background-color: var(--bg-card-2); border: 2px solid var(--border-card-2); }
+        .card-menu-2 h3 { color: var(--text-card-2); }
+
+        .card-menu-3 { background-color: var(--bg-card-3); border: 2px solid var(--border-card-3); }
+        .card-menu-3 h3 { color: var(--text-card-3); }
+
+        .card-menu-4 { background-color: var(--bg-card-4); border: 2px solid var(--border-card-4); }
+        .card-menu-4 h3 { color: var(--text-card-4); }
+
+        .card-header-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .card-header-toggle h3 { 
+            margin: 0; 
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-toggle-eye {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px 9px;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .btn-toggle-eye:hover { background: #ffffff; transform: scale(1.05); }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 12.5px; color: #64748b; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 13px;
+            color: #334155;
+            background-color: #ffffff;
+            transition: all 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
+        }
+        
+        .jam-sesi-box {
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border-card-2);
+            margin-bottom: 14px;
+        }
+        .jam-sesi-row {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .jam-sesi-row:last-child { margin-bottom: 0; }
+        .jam-sesi-row label { font-size: 12px; font-weight: 700; color: #166534; }
+        .jam-sesi-row input { padding: 6px 8px; font-size: 12px; }
+
+        .jadwal-row {
+            display: grid;
+            grid-template-columns: 55px 100px 1fr 1fr;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .jadwal-row label { font-size: 12px; font-weight: 600; color: #64748b; }
+        .jadwal-row input { padding: 6px 8px; font-size: 12px; }
+
+        .btn {
+            width: 100%;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn-menu-1 { background: var(--btn-card-1); }
+        .btn-menu-1:hover { background: var(--btn-card-1-hover); }
+
+        .btn-menu-2 { background: var(--btn-card-2); color: #065f46; }
+        .btn-menu-2:hover { background: var(--btn-card-2-hover); color: white; }
+
+        .btn-menu-3 { background: var(--btn-card-3); }
+        .btn-menu-3:hover { background: var(--btn-card-3-hover); }
+
+        .btn-menu-4 { background: var(--btn-card-4); color: #7c2d12; }
+        .btn-menu-4:hover { background: var(--btn-card-4-hover); color: white; }
+
+        .btn-success { background: #22c55e !important; color: white !important; }
+        
+        .btn-hapus-aset {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+        .btn-hapus-aset:hover { background: #dc2626; }
+
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; }
+        th { background-color: #f8fafc; color: #64748b; font-weight: 600; }
+        tr:hover { background-color: #f8fafc; }
+        
+        .counter { font-size: 13.5px; font-weight: 600; color: #64748b; }
+        .badge-info {
+            background-color: #ffffff; color: #0369a1; padding: 8px 12px; 
+            border-radius: 8px; font-size: 12px; font-weight: 500; display: block; margin-bottom: 12px;
+            border-left: 3.5px solid var(--border-card-3);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+        .preview-img-tabel { width: 40px; height: 50px; object-fit: cover; border: 1px solid #e2e8f0; border-radius: 6px; }
+        .logo-preview-container { display: flex; align-items: center; gap: 10px; margin-top: 5px; flex-wrap: wrap; }
+        
+        /* DIPERBAIKI: Menjaga logo agar tidak gepeng atau lonjong menggunakan object-fit: contain */
+        .logo-preview { max-height: 40px; max-width: 60px; object-fit: contain; border: 1px dashed #cbd5e1; padding: 2px; background: #ffffff; border-radius: 6px; min-width: 40px; }
+
+        /* BAR STATUS MEMORI PROFESIONAL DI BAGIAN BAWAH */
+        .memory-status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #0369a1;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 -4px 15px rgba(2, 132, 199, 0.3);
+            z-index: 9999;
+            border-top: 2px solid #f59e0b;
+        }
+        .memory-info-left { display: flex; align-items: center; gap: 15px; }
+        .memory-bar-container {
+            width: 150px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        .memory-bar-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.4s ease; }
+
+        @media (max-width: 900px) { 
+            .main-content { grid-template-columns: 1fr; } 
+        }
+        @media (max-width: 576px) {
+            header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .btn-kembali { width: 100%; justify-content: center; }
+            .jadwal-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <header>
+            <div>
+                <h1>🏠 Rumah Data Kartu Ujian Kelas VI</h1>
+                <p>Sistem Manajemen Kartu Ujian (Auto-Sync IndexedDB & Atribut Lengkap)</p>
+            </div>
+            <!-- Tautan kembali mengarah ke PENA MANTAP V6.html -->
+            <button onclick="kembaliKePenaMantap()" class="btn-kembali">⬅️ Kembali ke Menu</button>
+        </header>
+
+        <div class="main-content">
+            <div>
+                <!-- MENU 4: PENGATURAN 4 BARIS KOP SURAT RESMI (PERMANEN) -->
+                <div class="card card-menu-4">
+                    <div class="card-header-toggle">
+                        <h3>📋 Pengaturan 4 Baris Kop Surat Resmi</h3>
+                        <button type="button" class="btn-toggle-eye" id="btnToggleKopSurat" onclick="toggleSection('KopSurat')" title="Sembunyikan/Tampilkan Menu">🙈</button>
+                    </div>
+
+                    <div id="bodyKopSuratSection">
+                        <div class="form-group">
+                            <label for="barisKop1">Kop Baris 1 (Pemerintah Kabupaten / Dinas)</label>
+                            <input type="text" id="barisKop1" placeholder="Contoh: PEMERINTAH KABUPATEN BREBES" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="barisKop2">Kop Baris 2 (Korwilcam / Instansi Terkait)</label>
+                            <input type="text" id="barisKop2" placeholder="Contoh: KORWILCAM BIDANG PENDIDIKAN" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="barisKop3">Kop Baris 3 (Nama Lembaga / Sekolah)</label>
+                            <input type="text" id="barisKop3" placeholder="Contoh: SD NEGERI 01 BOJONG" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="barisKop4">Kop Baris 4 (Alamat / Kontak Sekolah)</label>
+                            <input type="text" id="barisKop4" placeholder="Contoh: Jl. Raya Bojong No. 12" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="judulLaporan">Judul Dokumen / Kartu Ujian</label>
+                            <input type="text" id="judulLaporan" placeholder="Contoh: KARTU PESERTA UJIAN SEKOLAH" oninput="simpanPengaturanPermanen()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MENU 1: GENERATE & CONVERT NOMOR UJIAN -->
+                <div class="card card-menu-1">
+                    <div class="card-header-toggle">
+                        <h3>🔢 Convert & Set Nomor Ujian</h3>
+                        <button type="button" class="btn-toggle-eye" id="btnToggleConvert" onclick="toggleSection('Convert')" title="Sembunyikan/Tampilkan Menu">🙈</button>
+                    </div>
+                    
+                    <div id="bodyConvertSection">
+                        <div class="form-group">
+                            <label for="prefixNoUjian">Prefix Nomor Peserta</label>
+                            <input type="text" id="prefixNoUjian" value="06-001-" placeholder="Contoh: 06-001-">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label for="startNoUrut">No. Urut Awal</label>
+                                <input type="number" id="startNoUrut" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="suffixNoUjian">Akhiran (Suffix)</label>
+                                <input type="text" id="suffixNoUjian" value="-8" placeholder="-8">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label for="kapasitasRuang">Kapasitas/Ruang</label>
+                                <input type="number" id="kapasitasRuang" value="16" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="kolomRuang">Jumlah Kolom</label>
+                                <input type="number" id="kolomRuang" value="4" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="polaConvert">Pola Urutan Duduk</label>
+                            <select id="polaConvert">
+                                <option value="biasa">Biasa (Kiri ke Kanan)</option>
+                                <option value="letter_s">Model Letter S (Zig-Zag)</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-menu-1" onclick="convertUrutanOtomatis()">🔄 Generate Nomor & Urutan Ujian</button>
+                    </div>
+                </div>
+
+                <!-- MENU 2: PENGATURAN CETAK UMUM -->
+                <div class="card card-menu-2">
+                    <div class="card-header-toggle">
+                        <h3>⚙️ Pengaturan Cetak Umum</h3>
+                        <button type="button" class="btn-toggle-eye" id="btnTogglePengaturan" onclick="toggleSection('Pengaturan')" title="Sembunyikan/Tampilkan Menu">🙈</button>
+                    </div>
+
+                    <div id="bodyPengaturanSection">
+                        <div class="form-group">
+                            <label for="namaUjian">Nama / Jenis Ujian</label>
+                            <input type="text" id="namaUjian" placeholder="Contoh: UJIAN SEKOLAH" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="namaSekolah">Nama Sekolah</label>
+                            <input type="text" id="namaSekolah" placeholder="Contoh: SD NEGERI 01 BOJONG" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="tahunPelajaran">Tahun Pelajaran</label>
+                            <input type="text" id="tahunPelajaran" value="2026/2027" placeholder="Contoh: 2026/2027" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="namaKepsek">Nama Kepala Sekolah</label>
+                            <input type="text" id="namaKepsek" placeholder="Nama Kepala Sekolah beserta gelar" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        <div class="form-group">
+                            <label for="nipKepsek">NIP Kepala Sekolah</label>
+                            <input type="text" id="nipKepsek" placeholder="NIP Kepala Sekolah" oninput="simpanPengaturanPermanen()">
+                        </div>
+                        
+                        <!-- UPLOAD LOGO SEKOLAH -->
+                        <div class="form-group">
+                            <label for="logoSekolah">Unggah Logo Sekolah</label>
+                            <input type="file" id="logoSekolah" accept="image/*" onchange="prosesLogoSekolah(this)">
+                            <div class="logo-preview-container">
+                                <img id="previewLogo" class="logo-preview" src="" alt="Pratinjau Logo" style="display:none;">
+                                <span id="txtNoLogo" style="font-size:12px; color:#888; font-style:italic;">Belum ada logo terunggah</span>
+                                <button type="button" id="btnHapusLogo" class="btn-hapus-aset" style="display:none;" onclick="hapusLogoSekolah()">❌ Hapus Logo</button>
+                            </div>
+                        </div>
+
+                        <!-- UPLOAD STEMPEL -->
+                        <div class="form-group" style="border-top: 1px dashed #cbd5e1; padding-top: 12px; margin-top: 12px;">
+                            <label for="stempelSekolah">🔏 Unggah Stempel Sekolah (Permanen)</label>
+                            <input type="file" id="stempelSekolah" accept="image/*" onchange="prosesStempel(this)">
+                            <button type="button" class="btn btn-menu-2" style="margin-top: 6px; font-size:11px; padding:6px;" onclick="hapusBackgroundStempel()">✨ Hapus Background Stempel Otomatis</button>
+                            <div class="logo-preview-container" style="margin-top:5px;">
+                                <img id="previewStempel" class="logo-preview" src="" alt="Pratinjau Stempel" style="display:none;">
+                                <span id="txtNoStempel" style="font-size:12px; color:#888; font-style:italic;">Belum ada stempel</span>
+                                <button type="button" id="btnHapusStempel" class="btn-hapus-aset" style="display:none;" onclick="hapusStempelSekolah()">❌ Hapus Stempel</button>
+                            </div>
+                        </div>
+
+                        <!-- UPLOAD TANDA TANGAN -->
+                        <div class="form-group" style="border-top: 1px dashed #cbd5e1; padding-top: 12px; margin-top: 12px;">
+                            <label for="ttdKepsek">✍️ Unggah Tanda Tangan Kepala Sekolah (Permanen)</label>
+                            <input type="file" id="ttdKepsek" accept="image/*" onchange="prosesTtd(this)">
+                            <button type="button" class="btn btn-menu-2" style="margin-top: 6px; font-size:11px; padding:6px;" onclick="hapusBackgroundTtd()">✨ Hapus Background Tanda Tangan Otomatis</button>
+                            <div class="logo-preview-container" style="margin-top:5px;">
+                                <img id="previewTtd" class="logo-preview" src="" alt="Pratinjau Tanda Tangan" style="display:none;">
+                                <span id="txtNoTtd" style="font-size:12px; color:#888; font-style:italic;">Belum ada tanda tangan</span>
+                                <button type="button" id="btnHapusTtd" class="btn-hapus-aset" style="display:none;" onclick="hapusTtdKepsek()">❌ Hapus TTD</button>
+                            </div>
+                        </div>
+
+                        <!-- INPUT OTOMATIS WAKTU/PUKUL SESI -->
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label style="margin-bottom: 6px; color: var(--text-card-2);">⏰ Pengaturan Pukul / Jam Sesi (Otomatis)</label>
+                            <div class="jam-sesi-box">
+                                <div class="jam-sesi-row">
+                                    <label>Sesi 1:</label>
+                                    <input type="text" id="jamSesi1" value="07.30 - 09.30" placeholder="Misal: 07.30 - 09.30" oninput="simpanPengaturanPermanen()">
+                                </div>
+                                <div class="jam-sesi-row">
+                                    <label>Sesi 2:</label>
+                                    <input type="text" id="jamSesi2" value="10.00 - 11.30" placeholder="Misal: 10.00 - 11.30" oninput="simpanPengaturanPermanen()">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- MENU JADWAL & TANGGAL KEGIATAN -->
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label style="margin-bottom: 8px; color: var(--text-card-2);">🕒 Jadwal & Tanggal Kegiatan</label>
+                            
+                            <div class="jadwal-row">
+                                <label>Senin</label>
+                                <input type="text" id="tglSenin" placeholder="DD/MM/YYYY" oninput="autoGenerateTanggal(this.value); simpanPengaturanPermanen();">
+                                <input type="text" id="jSenin1" placeholder="Mapel 1" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jSenin2" placeholder="Mapel 2" oninput="simpanPengaturanPermanen()">
+                            </div>
+                            <div class="jadwal-row">
+                                <label>Selasa</label>
+                                <input type="text" id="tglSelasa" placeholder="DD/MM/YYYY" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jSelasa1" placeholder="Mapel 1" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jSelasa2" placeholder="Mapel 2" oninput="simpanPengaturanPermanen()">
+                            </div>
+                            <div class="jadwal-row">
+                                <label>Rabu</label>
+                                <input type="text" id="tglRabu" placeholder="DD/MM/YYYY" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jRabu1" placeholder="Mapel 1" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jRabu2" placeholder="Mapel 2" oninput="simpanPengaturanPermanen()">
+                            </div>
+                            <div class="jadwal-row">
+                                <label>Kamis</label>
+                                <input type="text" id="tglKamis" placeholder="DD/MM/YYYY" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jKamis1" placeholder="Mapel 1" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jKamis2" placeholder="Mapel 2" oninput="simpanPengaturanPermanen()">
+                            </div>
+                            <div class="jadwal-row">
+                                <label>Jum'at</label>
+                                <input type="text" id="tglJumat" placeholder="DD/MM/YYYY" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jJumat1" placeholder="Mapel 1" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jJumat2" placeholder="Mapel 2" oninput="simpanPengaturanPermanen()">
+                            </div>
+                            <div class="jadwal-row">
+                                <label>Sabtu</label>
+                                <input type="text" id="tglSabtu" placeholder="DD/MM/YYYY" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jSabtu1" placeholder="Mapel 1" oninput="simpanPengaturanPermanen()">
+                                <input type="text" id="jSabtu2" placeholder="Mapel 2" oninput="simpanPengaturanPermanen()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MENU 3: STATUS & AKSI CETAK -->
+                <div class="card card-menu-3">
+                    <div class="card-header-toggle">
+                        <h3>👤 Sinkronisasi Data Siswa (IndexedDB)</h3>
+                        <button type="button" class="btn-toggle-eye" id="btnToggleInputSiswa" onclick="toggleSection('InputSiswa')" title="Sembunyikan/Tampilkan Menu">🙈</button>
+                    </div>
+
+                    <div id="bodyInputSiswaSection">
+                        <span class="badge-info" id="statusPenyimpanan">⚡ Data siswa, NISN, & foto ditarik secara real-time dari IndexedDB PENA MANTAP V6[cite: 14].</span>
+                        <button type="button" id="btnTarikData" class="btn btn-menu-3" onclick="tarikDariIndexedDB()">🔄 Tarik Ulang Data & Foto Real-Time</button>
+                        <button type="button" class="btn btn-menu-1" style="margin-top: 8px;" onclick="cetakPdfKartuUjian()">📄 Cetak / Save ke PDF</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABEL SISWA -->
+            <div class="card" style="border: 1.5px solid #e2e8f0; height: fit-content;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="counter" id="jumlahSiswa">Total: 0 Siswa</div>
+                    <button class="btn-sm btn-danger" style="padding: 7px 12px; background:#f87171; border:none; color:white; border-radius:6px; cursor:pointer;" onclick="kosongkanTabel()">Kosongkan Tampilan</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Foto</th>
+                                <th>NIS / NISN</th>
+                                <th>Nama Lengkap</th>
+                                <th>No. Peserta</th>
+                                <th>Ruang (Bangku)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelSiswa">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #94a3b8; font-style: italic; padding: 25px;">
+                                    Memuat data siswa secara real-time dari IndexedDB...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BAR STATUS MEMORI PROFESIONAL DI BAGIAN BAWAH -->
+    <div class="memory-status-bar">
+        <div class="memory-info-left">
+            <i class="fa-solid fa-database" style="color: #f59e0b; font-size: 15px;"></i>
+            <span>Status Memori IndexedDB (PENA MANTAP V6): <strong id="memoryUsageText">Menghitung...</strong></span>
+            <span>
+                Kapasitas Terpakai: 
+                <div class="memory-bar-container">
+                    <div id="memoryBarFill" class="memory-bar-fill"></div>
+                </div>
+                <strong id="memoryPercentText">0%</strong>
+            </span>
+        </div>
+        <div>
+            <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Sinkronisasi Otomatis Aktif
+        </div>
+    </div>
+
+    <script>
+        let dbIndexedDB = null;
+        let dbMasterSiswa = [];
+        let dbKartuUjian = {};
+        let dbFotoSiswa = {};
+        let logoSekolahBase64 = localStorage.getItem('logoSekolahBase64_kartu') || '';
+        let stempelBase64 = localStorage.getItem('stempelBase64_kartu') || '';
+        let ttdBase64 = localStorage.getItem('ttdBase64_kartu') || '';
+
+        const sectionStates = {
+            KopSurat: false,
+            Convert: false,
+            Pengaturan: false,
+            InputSiswa: false
+        };
+
+        function applyVisibility(sectionName) {
+            const bodySec = document.getElementById(`body${sectionName}Section`);
+            const btnEye = document.getElementById(`btnToggle${sectionName}`);
+            const isHidden = sectionStates[sectionName];
+
+            if (isHidden) {
+                bodySec.style.display = 'none';
+                btnEye.innerText = '🙈';
+                btnEye.title = 'Tampilkan Menu';
+            } else {
+                bodySec.style.display = 'block';
+                btnEye.innerText = '👁️';
+                btnEye.title = 'Sembunyikan Menu';
+            }
+        }
+
+        function toggleSection(sectionName) {
+            sectionStates[sectionName] = !sectionStates[sectionName];
+            applyVisibility(sectionName);
+        }
+
+        // FUNGSI INDEXEDDB REAL-TIME
+        function bukaDatabaseIndexedDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open("AplikasiKelasVIDB", 1);
+                request.onerror = e => reject(e.target.error);
+                request.onsuccess = e => {
+                    dbIndexedDB = e.target.result;
+                    resolve(dbIndexedDB);
+                };
+                request.onupgradeneeded = e => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("pengaturan")) db.createObjectStore("pengaturan");
+                };
+            });
+        }
+
+        function ambilDariIndexedDB(key) {
+            return new Promise((resolve, reject) => {
+                if (!dbIndexedDB) return resolve(null);
+                const transaction = dbIndexedDB.transaction(["pengaturan"], "readonly");
+                const store = transaction.objectStore("pengaturan");
+                const request = store.get(key);
+                request.onsuccess = e => resolve(e.target.result);
+                request.onerror = () => resolve(null);
+            });
+        }
+
+        async function perbaruiStatusMemori() {
+            try {
+                let totalBytes = 0;
+                if (navigator.storage && navigator.storage.estimate) {
+                    const estimate = await navigator.storage.estimate();
+                    totalBytes = estimate.usage || 0;
+                }
+                let ukuranFormatted = totalBytes < 1024 * 1024 ? (totalBytes / 1024).toFixed(1) + " KB" : (totalBytes / (1024 * 1024)).toFixed(2) + " MB";
+                document.getElementById('memoryUsageText').innerText = ukuranFormatted;
+
+                const kuotaEstimasi = 50 * 1024 * 1024;
+                let persentase = Math.min(100, ((totalBytes / kuotaEstimasi) * 100));
+                document.getElementById('memoryBarFill').style.width = persentase.toFixed(1) + '%';
+                document.getElementById('memoryPercentText').innerText = persentase.toFixed(1) + '%';
+            } catch (e) {
+                document.getElementById('memoryUsageText').innerText = "Aktif (IndexedDB)";
+            }
+        }
+
+        async function tarikDariIndexedDB(isAuto = false) {
+            try {
+                if (!dbIndexedDB) await bukaDatabaseIndexedDB();
+
+                const savedMaster = await ambilDariIndexedDB('dbMasterSiswa');
+                const fotoSiswaDB = await ambilDariIndexedDB('dbDataSiswa');
+
+                if (savedMaster && Array.isArray(savedMaster)) {
+                    dbMasterSiswa = savedMaster.map(s => {
+                        let nis = String(s[0]).trim();
+                        let nama = s[1] || s[2] || '';
+                        let foundNisn = '-';
+
+                        // Ambil NISN jika tersedia pada format data master [NIS, NISN, Nama]
+                        if (s.length >= 3 && s[1] && s[1] !== '-') {
+                            foundNisn = s[1];
+                            nama = s[2];
+                        } 
+                        // Jika tidak ada di master, coba cari di objek detail dbDataSiswa
+                        else if (fotoSiswaDB) {
+                            for (let semKey in fotoSiswaDB) {
+                                if (fotoSiswaDB[semKey] && fotoSiswaDB[semKey][nis]) {
+                                    let item = fotoSiswaDB[semKey][nis];
+                                    if (item.nisn && item.nisn.trim() !== '') {
+                                        foundNisn = item.nisn.trim();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return [nis, foundNisn, nama];
+                    });
+                }
+
+                // Ambil foto dari objek dbDataSiswa
+                dbFotoSiswa = {};
+                if (fotoSiswaDB) {
+                    for (let semKey in fotoSiswaDB) {
+                        for (let nisKey in fotoSiswaDB[semKey]) {
+                            if (fotoSiswaDB[semKey][nisKey].foto) {
+                                dbFotoSiswa[nisKey] = fotoSiswaDB[semKey][nisKey].foto;
+                            }
+                        }
+                    }
+                }
+                const localFoto = localStorage.getItem('dbFotoSiswa');
+                if (localFoto) {
+                    try {
+                        let parsedFoto = JSON.parse(localFoto);
+                        Object.assign(dbFotoSiswa, parsedFoto);
+                    } catch(err){}
+                }
+
+                dbMasterSiswa.forEach((siswa, i) => {
+                    const nis = siswa[0];
+                    dbKartuUjian[nis] = {
+                        noPeserta: `06-001-${String(i+1).padStart(3, '0')}-8`,
+                        ruang: i < 16 ? "Ruang 01" : "Ruang 02",
+                        bangku: String(i+1).padStart(2, '0')
+                    };
+                });
+
+                renderTabel();
+                perbaruiStatusMemori();
+
+                const btnTarik = document.getElementById('btnTarikData');
+                btnTarik.classList.add('btn-success');
+                btnTarik.innerText = '✅ Data Real-Time Berhasil Dimuat';
+
+                if (!isAuto) {
+                    alert(`✅ Berhasil menarik ${dbMasterSiswa.length} data siswa beserta NISN secara real-time dari IndexedDB PENA MANTAP V6[cite: 14]!`);
+                }
+            } catch (e) {
+                console.error("Gagal menarik dari IndexedDB:", e);
+                if (!isAuto) alert("Gagal mengambil data dari IndexedDB.");
+            }
+        }
+
+        function prosesLogoSekolah(input) {
+            const file = input.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoSekolahBase64 = e.target.result;
+                    localStorage.setItem('logoSekolahBase64_kartu', logoSekolahBase64);
+                    muatPengaturanPermanen();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function hapusLogoSekolah() {
+            logoSekolahBase64 = '';
+            localStorage.removeItem('logoSekolahBase64_kartu');
+            document.getElementById('logoSekolah').value = '';
+            muatPengaturanPermanen();
+        }
+
+        function prosesStempel(input) {
+            const file = input.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    stempelBase64 = e.target.result;
+                    localStorage.setItem('stempelBase64_kartu', stempelBase64);
+                    muatPengaturanPermanen();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function hapusStempelSekolah() {
+            stempelBase64 = '';
+            localStorage.removeItem('stempelBase64_kartu');
+            document.getElementById('stempelSekolah').value = '';
+            muatPengaturanPermanen();
+        }
+
+        function prosesTtd(input) {
+            const file = input.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    ttdBase64 = e.target.result;
+                    localStorage.setItem('ttdBase64_kartu', ttdBase64);
+                    muatPengaturanPermanen();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function hapusTtdKepsek() {
+            ttdBase64 = '';
+            localStorage.removeItem('ttdBase64_kartu');
+            document.getElementById('ttdKepsek').value = '';
+            muatPengaturanPermanen();
+        }
+
+        async function hapusBackgroundStempel() {
+            if(!stempelBase64) return alert("Belum ada stempel yang diunggah!");
+            alert("Memproses penghapusan background stempel...");
+            try {
+                const blob = await imgly.removeBackground(stempelBase64);
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    stempelBase64 = reader.result;
+                    localStorage.setItem('stempelBase64_kartu', stempelBase64);
+                    muatPengaturanPermanen();
+                    alert("✅ Background stempel berhasil dihapus!");
+                }
+                reader.readAsDataURL(blob);
+            } catch(err) {
+                alert("Gagal menghapus background secara otomatis.");
+            }
+        }
+
+        async function hapusBackgroundTtd() {
+            if(!ttdBase64) return alert("Belum ada tanda tangan yang diunggah!");
+            alert("Memproses penghapusan background tanda tangan...");
+            try {
+                const blob = await imgly.removeBackground(ttdBase64);
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    ttdBase64 = reader.result;
+                    localStorage.setItem('ttdBase64_kartu', ttdBase64);
+                    muatPengaturanPermanen();
+                    alert("✅ Background tanda tangan berhasil dihapus!");
+                }
+                reader.readAsDataURL(blob);
+            } catch(err) {
+                alert("Gagal menghapus background secara otomatis.");
+            }
+        }
+
+        function simpanPengaturanPermanen() {
+            localStorage.setItem('barisKop1_k', document.getElementById('barisKop1').value);
+            localStorage.setItem('barisKop2_k', document.getElementById('barisKop2').value);
+            localStorage.setItem('barisKop3_k', document.getElementById('barisKop3').value);
+            localStorage.setItem('barisKop4_k', document.getElementById('barisKop4').value);
+            localStorage.setItem('judulLaporan_k', document.getElementById('judulLaporan').value);
+
+            localStorage.setItem('namaUjian_k', document.getElementById('namaUjian').value);
+            localStorage.setItem('namaSekolah_k', document.getElementById('namaSekolah').value);
+            localStorage.setItem('tahunPelajaran_k', document.getElementById('tahunPelajaran').value);
+            localStorage.setItem('namaKepsek_k', document.getElementById('namaKepsek').value);
+            localStorage.setItem('nipKepsek_k', document.getElementById('nipKepsek').value);
+            localStorage.setItem('jamSesi1_k', document.getElementById('jamSesi1').value);
+            localStorage.setItem('jamSesi2_k', document.getElementById('jamSesi2').value);
+
+            const hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            hariList.forEach(hari => {
+                localStorage.setItem(`tgl${hari}_k`, document.getElementById(`tgl${hari}`).value);
+                localStorage.setItem(`j${hari}1_k`, document.getElementById(`j${hari}1`).value);
+                localStorage.setItem(`j${hari}2_k`, document.getElementById(`j${hari}2`).value);
+            });
+        }
+
+        function muatPengaturanPermanen() {
+            document.getElementById('barisKop1').value = localStorage.getItem('barisKop1_k') || '';
+            document.getElementById('barisKop2').value = localStorage.getItem('barisKop2_k') || '';
+            document.getElementById('barisKop3').value = localStorage.getItem('barisKop3_k') || '';
+            document.getElementById('barisKop4').value = localStorage.getItem('barisKop4_k') || '';
+            document.getElementById('judulLaporan').value = localStorage.getItem('judulLaporan_k') || '';
+
+            document.getElementById('namaUjian').value = localStorage.getItem('namaUjian_k') || '';
+            document.getElementById('namaSekolah').value = localStorage.getItem('namaSekolah_k') || '';
+            document.getElementById('tahunPelajaran').value = localStorage.getItem('tahunPelajaran_k') || '2026/2027';
+            document.getElementById('namaKepsek').value = localStorage.getItem('namaKepsek_k') || '';
+            document.getElementById('nipKepsek').value = localStorage.getItem('nipKepsek_k') || '';
+            document.getElementById('jamSesi1').value = localStorage.getItem('jamSesi1_k') || '07.30 - 09.30';
+            document.getElementById('jamSesi2').value = localStorage.getItem('jamSesi2_k') || '10.00 - 11.30';
+
+            const hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            hariList.forEach(hari => {
+                const tglEl = document.getElementById(`tgl${hari}`);
+                const j1El = document.getElementById(`j${hari}1`);
+                const j2El = document.getElementById(`j${hari}2`);
+                if(tglEl) tglEl.value = localStorage.getItem(`tgl${hari}_k`) || '';
+                if(j1El) j1El.value = localStorage.getItem(`j${hari}1_k`) || '';
+                if(j2El) j2El.value = localStorage.getItem(`j${hari}2_k`) || '';
+            });
+
+            if(logoSekolahBase64) {
+                document.getElementById('previewLogo').src = logoSekolahBase64;
+                document.getElementById('previewLogo').style.display = 'block';
+                document.getElementById('txtNoLogo').style.display = 'none';
+                document.getElementById('btnHapusLogo').style.display = 'inline-flex';
+            }
+
+            if(stempelBase64) {
+                document.getElementById('previewStempel').src = stempelBase64;
+                document.getElementById('previewStempel').style.display = 'block';
+                document.getElementById('txtNoStempel').style.display = 'none';
+                document.getElementById('btnHapusStempel').style.display = 'inline-flex';
+            }
+
+            if(ttdBase64) {
+                document.getElementById('previewTtd').src = ttdBase64;
+                document.getElementById('previewTtd').style.display = 'block';
+                document.getElementById('txtNoTtd').style.display = 'none';
+                document.getElementById('btnHapusTtd').style.display = 'inline-flex';
+            }
+        }
+
+        function autoGenerateTanggal(valSenin) {
+            valSenin = valSenin.trim();
+            if (!valSenin) return;
+            const parts = valSenin.split(/[\/\-]/);
+            if (parts.length < 2) return;
+
+            let day = parseInt(parts[0], 10);
+            let month = parseInt(parts[1], 10) - 1;
+            let year = parts[2] ? parseInt(parts[2], 10) : new Date().getFullYear();
+            if (year < 100) year += 2000;
+
+            let dateObj = new Date(year, month, day);
+            if (isNaN(dateObj.getTime())) return;
+
+            const targetIds = ['tglSelasa', 'tglRabu', 'tglKamis', 'tglJumat', 'tglSabtu'];
+            targetIds.forEach((id, index) => {
+                let nextDate = new Date(dateObj);
+                nextDate.setDate(dateObj.getDate() + (index + 1));
+                let d = String(nextDate.getDate()).padStart(2, '0');
+                let m = String(nextDate.getMonth() + 1).padStart(2, '0');
+                let y = parts[2] && parts[2].length === 2 ? String(nextDate.getFullYear()).slice(-2) : nextDate.getFullYear();
+
+                const targetInput = document.getElementById(id);
+                if(targetInput) targetInput.value = `${d}/${m}/${y}`;
+            });
+            simpanPengaturanPermanen();
+        }
+
+        function convertUrutanOtomatis() {
+            if (dbMasterSiswa.length === 0) return alert("Belum ada data siswa yang dimuat!");
+
+            const prefix = document.getElementById('prefixNoUjian').value.trim();
+            const startNo = parseInt(document.getElementById('startNoUrut').value) || 1;
+            const suffix = document.getElementById('suffixNoUjian').value.trim();
+            const maksSiswa = parseInt(document.getElementById('kapasitasRuang').value) || 16;
+            const cols = parseInt(document.getElementById('kolomRuang').value) || 4;
+            const pola = document.getElementById('polaConvert').value;
+
+            dbMasterSiswa.forEach((siswa, index) => {
+                const nis = siswa[0];
+                const rNum = Math.floor(index / maksSiswa) + 1;
+                const offsetRuang = Math.floor(index / maksSiswa) * maksSiswa;
+                const posInRoom = index % maksSiswa;
+
+                let bangkuInRoom = posInRoom;
+                if (pola === 'letter_s') {
+                    let baris = Math.floor(posInRoom / cols);
+                    let kolom = posInRoom % cols;
+                    if (baris % 2 === 1) kolom = (cols - 1) - kolom;
+                    bangkuInRoom = (baris * cols) + kolom;
+                }
+
+                dbKartuUjian[nis] = {
+                    noPeserta: `${prefix}${String(startNo + index).padStart(3, '0')}${suffix}`,
+                    ruang: `Ruang ${String(rNum).padStart(2, '0')}`,
+                    bangku: String(offsetRuang + bangkuInRoom + 1).padStart(2, '0')
+                };
+            });
+
+            renderTabel();
+            alert(`✅ Berhasil mengonversi urutan untuk ${dbMasterSiswa.length} siswa.`);
+        }
+
+        function renderTabel() {
+            const tabelSiswa = document.getElementById('tabelSiswa');
+            const jumlahSiswaText = document.getElementById('jumlahSiswa');
+            tabelSiswa.innerHTML = '';
+            
+            if (dbMasterSiswa.length === 0) {
+                tabelSiswa.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8; font-style: italic; padding: 25px;">Tidak ada data siswa ditemukan dari IndexedDB.</td></tr>`;
+                jumlahSiswaText.innerText = `Total: 0 Siswa`;
+                return;
+            }
+
+            dbMasterSiswa.forEach((siswa, index) => {
+                const nisSiswa = siswa[0]; 
+                const nisnSiswa = (siswa[1] && siswa[1] !== "" && siswa[1] !== "-") ? siswa[1] : '-'; 
+                const namaSiswa = siswa[2]; 
+                const infoKartu = dbKartuUjian[nisSiswa] || { noPeserta: '-', ruang: '-', bangku: '-' };
+                const fotoSiswa = dbFotoSiswa[nisSiswa] || '';
+
+                const imgTag = fotoSiswa ? `<img src="${fotoSiswa}" class="preview-img-tabel">` : `<div style="width:40px; height:50px; background:#f8fafc; font-size:9px; display:flex; align-items:center; justify-content:center; text-align:center; border:1px dashed #cbd5e1; border-radius:6px; color:#94a3b8;">No Foto</div>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${imgTag}</td>
+                    <td><b>${nisSiswa}</b><br><span style="font-size:11.5px; color:#64748b;">${nisnSiswa}</span></td>
+                    <td style="text-transform: uppercase; font-weight: 600; color: #334155;">${namaSiswa}</td>
+                    <td>${infoKartu.noPeserta}</td>
+                    <td>${infoKartu.ruang} (No. ${infoKartu.bangku})</td>
+                `;
+                tabelSiswa.appendChild(tr);
+            });
+            jumlahSiswaText.innerText = `Total: ${dbMasterSiswa.length} Siswa`;
+        }
+
+        function kosongkanTabel() {
+            dbMasterSiswa = [];
+            dbKartuUjian = {};
+            dbFotoSiswa = {};
+            renderTabel();
+        }
+
+        function cetakPdfKartuUjian() {
+            if (dbMasterSiswa.length === 0) return alert("Tidak ada data siswa untuk dicetak!");
+
+            const namaUjian = document.getElementById('namaUjian').value.trim() || 'KARTU PESERTA UJIAN';
+            const tahunPelajaran = document.getElementById('tahunPelajaran').value.trim() || '2026/2027';
+            const namaKepsek = document.getElementById('namaKepsek').value.trim() || '.........................';
+            const nipKepsek = document.getElementById('nipKepsek').value.trim() || '.........................';
+
+            const kop1 = document.getElementById('barisKop1').value.trim();
+            const kop2 = document.getElementById('barisKop2').value.trim();
+            const kop3 = document.getElementById('barisKop3').value.trim();
+            const kop4 = document.getElementById('barisKop4').value.trim();
+
+            const jamSesi1Val = document.getElementById('jamSesi1').value.trim() || '-';
+            const jamSesi2Val = document.getElementById('jamSesi2').value.trim() || '-';
+
+            const tglSen = document.getElementById('tglSenin').value.trim();
+            const tglSel = document.getElementById('tglSelasa').value.trim();
+            const tglRab = document.getElementById('tglRabu').value.trim();
+            const tglKam = document.getElementById('tglKamis').value.trim();
+            const tglJum = document.getElementById('tglJumat').value.trim();
+            const tglSab = document.getElementById('tglSabtu').value.trim();
+
+            const sen1 = document.getElementById('jSenin1').value.trim() || '-';
+            const sen2 = document.getElementById('jSenin2').value.trim() || '-';
+            const sel1 = document.getElementById('jSelasa1').value.trim() || '-';
+            const sel2 = document.getElementById('jSelasa2').value.trim() || '-';
+            const rab1 = document.getElementById('jRabu1').value.trim() || '-';
+            const rab2 = document.getElementById('jRabu2').value.trim() || '-';
+            const kam1 = document.getElementById('jKamis1').value.trim() || '-';
+            const kam2 = document.getElementById('jKamis2').value.trim() || '-';
+            const jum1 = document.getElementById('jJumat1').value.trim() || '-';
+            const jum2 = document.getElementById('jJumat2').value.trim() || '-';
+            const sab1 = document.getElementById('jSabtu1').value.trim() || '-';
+            const sab2 = document.getElementById('jSabtu2').value.trim() || '-';
+
+            let htmlCards = "";
+            dbMasterSiswa.forEach((siswa) => {
+                const nis = siswa[0];
+                const nisn = (siswa[1] && siswa[1] !== "" && siswa[1] !== "-") ? siswa[1] : '-'; 
+                const nama = siswa[2].toUpperCase();
+                const info = dbKartuUjian[nis] || { noPeserta: "-", ruang: "-", bangku: "-" };
+                const foto = dbFotoSiswa[nis] || "";
+
+                const renderFotoBox = foto ? 
+                    `<img class="foto-box" src="${foto}" style="object-fit:cover; margin-left: 6px;">` : 
+                    `<div class="foto-box" style="margin-left: 6px;">Foto<br>3x4</div>`;
+
+                let ttdStempelArea = `
+                    <div class="ttd-box">
+                        Kepala Sekolah,<br>
+                        <div class="ttd-stempel-container">
+                            ${stempelBase64 ? `<img src="${stempelBase64}" class="stempel-cetak">` : ''}
+                            ${ttdBase64 ? `<img src="${ttdBase64}" class="ttd-cetak">` : ''}
+                        </div>
+                        <b><u>${namaKepsek}</u></b><br>
+                        NIP. ${nipKepsek}
+                    </div>
+                `;
+
+                htmlCards += `
+                <div class="card-box">
+                    <div class="card-header-with-logo">
+                        ${logoSekolahBase64 ? `<img src="${logoSekolahBase64}" class="logo-cetak-kartu" alt="Logo">` : ''}
+                        <div class="header-text-container">
+                            ${kop1 ? `<div style="font-size:8px; font-weight:normal;">${kop1.toUpperCase()}</div>` : ''}
+                            ${kop2 ? `<div style="font-size:8px; font-weight:bold;">${kop2.toUpperCase()}</div>` : ''}
+                            ${kop3 ? `<div style="font-size:9.5px; font-weight:bold;">${kop3.toUpperCase()}</div>` : ''}
+                            ${kop4 ? `<div style="font-size:7.5px; font-weight:normal;">${kop4}</div>` : ''}
+                            <div style="font-size:9.5px; font-weight:bold; margin-top:2px; border-top:1px solid #000; padding-top:1px;">${namaUjian.toUpperCase()}</div>
+                            <div style="font-size:7.5px; font-weight:normal;">TAHUN PELAJARAN ${tahunPelajaran}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table style="width:100%; margin-bottom: 6px;" class="info-siswa-table">
+                            <tr>
+                                <td style="width:22%; font-weight:600;">No. Peserta</td>
+                                <td style="width:28%;">: ${info.noPeserta}</td>
+                                <td style="width:22%; font-weight:600;">Ruang/Bangku</td>
+                                <td style="width:28%;">: ${info.ruang} / ${info.bangku}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:600;">NIS / NISN</td>
+                                <td>: ${nis} / ${nisn}</td>
+                                <td style="font-weight:600;">Nama Peserta</td>
+                                <td style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">: ${nama}</td>
+                            </tr>
+                        </table>
+
+                        <table class="tabel-jadwal-mini">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25px;">Sesi</th>
+                                    <th style="width: 65px;">Waktu</th>
+                                    <th>Senin${tglSen ? `<br><span class="sub-tgl">${tglSen}</span>` : ''}</th>
+                                    <th>Selasa${tglSel ? `<br><span class="sub-tgl">${tglSel}</span>` : ''}</th>
+                                    <th>Rabu${tglRab ? `<br><span class="sub-tgl">${tglRab}</span>` : ''}</th>
+                                    <th>Kamis${tglKam ? `<br><span class="sub-tgl">${tglKam}</span>` : ''}</th>
+                                    <th>Jum'at${tglJum ? `<br><span class="sub-tgl">${tglJum}</span>` : ''}</th>
+                                    <th>Sabtu${tglSab ? `<br><span class="sub-tgl">${tglSab}</span>` : ''}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight:bold; background:#f9fafb;">I</td>
+                                    <td style="font-weight:600; background:#fff; font-size: 7px !important;">${jamSesi1Val}</td>
+                                    <td>${sen1}</td><td>${sel1}</td><td>${rab1}</td><td>${kam1}</td><td>${jum1}</td><td>${sab1}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold; background:#f9fafb;">II</td>
+                                    <td style="font-weight:600; background:#fff; font-size: 7px !important;">${jamSesi2Val}</td>
+                                    <td>${sen2}</td><td>${sel2}</td><td>${rab2}</td><td>${kam2}</td><td>${jum2}</td><td>${sab2}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="card-footer">
+                            ${renderFotoBox}
+                            ${ttdStempelArea}
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            let templateLengkap = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak_Kartu_Ujian_US</title>
+    <style>
+        @page { size: A4 portrait; margin: 8mm; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fff; }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
+        .card-box { border: 1.5px solid #000; padding: 8px 10px; border-radius: 6px; background: #fff; page-break-inside: avoid; box-sizing: border-box; width: 100%; }
+        .card-header-with-logo { display: flex; align-items: center; border-bottom: 1.5px solid #000; padding-bottom: 5px; margin-bottom: 6px; gap: 8px; }
+        .logo-cetak-kartu { width: 38px; height: 38px; object-fit: contain; }
+        .header-text-container { flex: 1; text-align: center; line-height: 1.15; }
+        .info-siswa-table { font-size: 8.5px; border-collapse: collapse; }
+        .info-siswa-table td { padding: 2px 0; vertical-align: top; }
+        .tabel-jadwal-mini { width: 100%; margin-top: 5px; margin-bottom: 5px; border: 1px solid #000 !important; text-align: center; border-collapse: collapse; }
+        .tabel-jadwal-mini th, .tabel-jadwal-mini td { border: 1px solid #000; padding: 2.5px 1px !important; font-size: 7.5px !important; font-weight: normal; word-wrap: break-word; }
+        .tabel-jadwal-mini th { background: #f3f4f6; font-weight: bold; line-height: 1.1; font-size: 8px !important; }
+        .sub-tgl { font-size: 6.5px; font-weight: normal; color: #333; display: block; margin-top: 1px; }
+        .card-footer { display: flex; justify-content: space-between; margin-top: 4px; align-items: flex-end; }
+        .foto-box { width: 45px; height: 60px; border: 1px solid #000; text-align: center; font-size: 7.5px; color: #555; display: flex; align-items: center; justify-content: center; background: #fafafa; }
+        .ttd-box { text-align: center; font-size: 8px; width: 140px; line-height: 1.1; position: relative; }
+        .ttd-stempel-container { position: relative; height: 58px; margin: 1px 0; display: flex; justify-content: center; align-items: center; }
+        .stempel-cetak { position: absolute; width: 68px; height: 68px; object-fit: contain; opacity: 0.85; left: 5px; z-index: 1; }
+        .ttd-cetak { position: absolute; max-height: 95px; max-width: 165px; object-fit: contain; z-index: 2; margin-top: -16px; }
+    </style>
+</head>
+<body>
+    <div class="grid-container">${htmlCards}</div>
+    <script>window.onload = function() { setTimeout(function() { window.print(); }, 300); };<\/script>
+</body>
+</html>`;
+
+            const blob = new Blob([templateLengkap], { type: "text/html" });
+            const urlBlob = URL.createObjectURL(blob);
+            window.open(urlBlob, '_blank');
+        }
+
+        function kembaliKePenaMantap() {
+            window.location.href = "PENA MANTAP V6.html";
+        }
+
+        window.onload = async function() {
+            muatPengaturanPermanen();
+            await bukaDatabaseIndexedDB();
+            await tarikDariIndexedDB(true);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penghargaan Badge Siswa & Sampul Binder</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 40%, #a1c4fd 70%, #c2e9fb 100%);
+    padding: 25px 15px;
+    min-height: 100vh;
+    color: #2d3748;
+}
+
+.container { max-width: 1400px; margin: auto; }
+
+.header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    border: 3px solid #ffffff;
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(255, 105, 180, 0.2);
+    padding: 30px;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, #ff4e50, #f9d423, #00c9ff, #92fe9d, #e0c3fc);
+}
+.header h1 {
+    font-family: 'Fredoka', cursive;
+    font-size: 34px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+.header p { color: #5a67d8; font-size: 16px; font-weight: 700; margin-top: 6px; }
+
+.panel {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 18px 25px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    border: 2px solid #edf2f7;
+}
+.panel-title {
+    font-family: 'Fredoka', cursive;
+    font-size: 18px;
+    color: #4c51bf;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-action {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    text-decoration: none;
+}
+.btn-action:hover { transform: translateY(-3px) scale(1.02); }
+.binder-btn { background: linear-gradient(135deg, #8a2387, #e94057, #f27121); }
+.sync-btn { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.print-btn { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.reset-btn { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
+.back-btn { background: linear-gradient(135deg, #475569, #1e293b); }
+
+.siswa-card {
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 15px 35px rgba(103, 58, 183, 0.1);
+    border: 3px solid #ffffff;
+    transition: all 0.3s ease;
+}
+.siswa-card:hover {
+    box-shadow: 0 20px 45px rgba(103, 58, 183, 0.18);
+}
+.siswa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 3px dashed #e2e8f0;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.siswa-profile { display: flex; align-items: center; gap: 16px; }
+.siswa-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ff6b6b;
+    box-shadow: 0 8px 16px rgba(255, 107, 107, 0.3);
+}
+.siswa-info h3 { font-family: 'Fredoka', cursive; font-size: 20px; color: #2d3748; }
+.siswa-info p {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 700;
+    background: #edf2f7;
+    padding: 2px 10px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.btn-cetak-binder-siswa {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 15px rgba(245, 87, 108, 0.3);
+    transition: all 0.2s;
+}
+.btn-cetak-binder-siswa:hover { transform: translateY(-2px) scale(1.03); }
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+    gap: 15px;
+}
+.badge-slot {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    position: relative;
+    min-height: 175px;
+    transition: all 0.3s ease;
+}
+.badge-slot.filled {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f3ff 100%);
+    border: 2px solid #6366f1;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+}
+.badge-slot:hover { transform: translateY(-4px); }
+.badge-slot-num {
+    font-family: 'Fredoka', cursive;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a0aec0;
+    position: absolute;
+    top: 8px; left: 10px;
+    background: #edf2f7;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+.badge-slot.filled .badge-slot-num { background: #e0e7ff; color: #4338ca; }
+
+.badge-img-wrapper {
+    width: 65px; height: 65px;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 15px;
+    filter: drop-shadow(0 5px 8px rgba(0,0,0,0.15));
+}
+.badge-img-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+.badge-img-wrapper i { font-size: 36px; color: #cbd5e1; }
+
+.badge-title {
+    font-family: 'Fredoka', cursive;
+    font-size: 12px;
+    color: #4f46e5;
+    margin: 8px 0;
+    line-height: 1.2;
+    word-break: break-word;
+}
+.btn-upload-slot {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+}
+.btn-upload-slot:hover { background: linear-gradient(135deg, #3730a3, #4f46e5); }
+.btn-hapus-slot {
+    position: absolute; top: 6px; right: 6px;
+    background: #ff4757; color: #fff; border: none;
+    border-radius: 50%; width: 22px; height: 22px;
+    font-size: 11px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 8px rgba(255, 71, 87, 0.4);
+}
+.badge-input-file { display: none; }
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px);
+    display: none; justify-content: center; align-items: center; z-index: 9999; padding: 20px;
+}
+.modal-box {
+    background: #fff; border-radius: 28px; padding: 30px;
+    width: 100%; max-width: 480px; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    border: 3px solid #ffffff;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.modal-header h3 { font-family: 'Fredoka', cursive; font-size: 20px; color: #2d3748; }
+.btn-close-modal { background: none; border: none; font-size: 22px; cursor: pointer; color: #a0aec0; }
+
+.select-siswa {
+    width: 100%; padding: 14px; border-radius: 16px; border: 2px solid #e2e8f0;
+    font-family: inherit; font-size: 14px; font-weight: 700; outline: none; margin-bottom: 20px;
+    background: #f8fafc; color: #2d3748;
+}
+
+#areaCetakBinder { display: none; }
+
+@media print {
+    body { background: #fff !important; padding: 0 !important; color: #000 !important; }
+    .container, .modal-overlay { display: none !important; }
+    
+    #areaCetakBinder {
+        display: block !important;
+        width: 100%;
+        max-width: 210mm;
+        min-height: 297mm;
+        margin: auto;
+        padding: 15mm 12mm;
+        box-sizing: border-box;
+        background: #fff;
+    }
+
+    .binder-cover-box {
+        border: 6px solid #4f46e5;
+        border-radius: 30px;
+        padding: 35px 25px;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        background: radial-gradient(circle at top right, #f7fafc, #ffffff);
+    }
+
+    .binder-header-title h1 {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 28pt;
+        font-weight: 800;
+        color: #312e81;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+    .binder-header-title p {
+        font-size: 13pt;
+        color: #4338ca;
+        font-weight: 700;
+    }
+
+    .binder-profile {
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .binder-avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #6366f1;
+        margin-bottom: 12px;
+    }
+    .binder-nama { font-family: 'Fredoka', sans-serif; font-size: 22pt; font-weight: 800; color: #1e1b4b; margin-bottom: 4px; }
+    .binder-nis { font-size: 13pt; font-weight: 700; color: #64748b; background: #e0e7ff; padding: 4px 16px; border-radius: 20px; }
+
+    .binder-badge-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        margin-top: 15px;
+    }
+    .binder-badge-card {
+        border: 2px dashed #cbd5e1;
+        border-radius: 18px;
+        padding: 12px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 145px;
+        background: #f8fafc;
+    }
+    .binder-badge-card.filled {
+        border: 2px solid #4338ca;
+        background: #fff;
+    }
+    .binder-badge-card img {
+        width: 78px;
+        height: 78px;
+        object-fit: contain;
+        margin-bottom: 8px;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    }
+    .binder-badge-card i {
+        font-size: 48px;
+        color: #cbd5e1;
+        margin-bottom: 8px;
+    }
+    .binder-badge-card span {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 9pt;
+        font-weight: 700;
+        color: #312e81;
+        text-align: center;
+        line-height: 1.1;
+    }
+
+    .binder-footer {
+        margin-top: 20px;
+        font-size: 10pt;
+        font-weight: 700;
+        color: #64748b;
+        border-top: 2px dashed #cbd5e1;
+        padding-top: 15px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>✨ BADGE & LENCANA PENGHARGAAN SISWA ✨</h1>
+        <p>🚀 Koleksi hingga 10 Lencana Prestasi Terbaikmu!</p>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">
+            <i class="fa-solid fa-graduation-cap" style="font-size:22px; color:#6366f1;"></i> 
+            <span>Daftar Siswa & Lencana</span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="index.html" class="btn-action back-btn"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+            <button class="btn-action binder-btn" onclick="bukaModalBinder()"><i class="fa-solid fa-book-open"></i> Cetak Sampul Binder</button>
+            <button class="btn-action sync-btn" onclick="muatDataRealtimeDariDB()"><i class="fa-solid fa-rotate"></i> Sinkron Siswa</button>
+            <button class="btn-action print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Semua Kartu</button>
+            <button class="btn-action reset-btn" onclick="hapusSemuaBadge()"><i class="fa-solid fa-trash-can"></i> Reset Semua</button>
+        </div>
+    </div>
+
+    <div id="containerSiswaBadge"></div>
+</div>
+
+<div class="modal-overlay" id="modalBinder">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>📖 Cetak Sampul Binder Siswa</h3>
+            <button class="btn-close-modal" onclick="tutupModalBinder()">&times;</button>
+        </div>
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 12px; font-weight:600;">Pilih nama siswa yang ingin dicetak sampul bindernya:</p>
+        <select id="selectSiswaBinder" class="select-siswa"></select>
+        <button class="btn-action binder-btn" style="width: 100%; justify-content: center; padding: 14px;" onclick="eksekusiCetakBinder()"><i class="fa-solid fa-print"></i> Cetak Sampul Sekarang</button>
+    </div>
+</div>
+
+<div id="areaCetakBinder">
+    <div class="binder-cover-box">
+        <div class="binder-header-title">
+            <h1>JURNAL & PORTOFOLIO SISWA</h1>
+            <p>🌟 Catatan Pencapaian Lencana & Prestasi Siswa 🌟</p>
+        </div>
+
+        <div class="binder-profile">
+            <img id="printBinderFoto" class="binder-avatar" src="" onerror="this.src='https://via.placeholder.com/110?text=👤'">
+            <div id="printBinderNama" class="binder-nama">NAMA SISWA</div>
+            <div id="printBinderNis" class="binder-nis">NIS: -</div>
+        </div>
+
+        <div class="binder-badge-grid" id="printBinderBadgeGrid"></div>
+
+        <div class="binder-footer">
+            SDN KRAMAT 01 • Kelas VI • Tahun Pelajaran 2026/2027
+        </div>
+    </div>
+</div>
+
+<script>
+const MASTER_SISWA_DEFAULT = [
+["3052","Amelia Alita Zahra"],["3223","Angelica Vikar Maharani"],["3085","Anggraeni Abbilah Dhety"],
+["3087","AZKA NAILUN NABHAN"],["3088","Cinta Anugrah"],["3089","Dany Sabiq El-Fathin"],
+["3090","Dhea Fiky Mazaya"],["3224","Earlita Arsyifa Salsabila"],["3091","Fadilla Rizqi Khaerani"],
+["3092","Fathan Almaizan Zhafar"],["3093","Gavin Harry Wiriawan"],["3063","Hafiz Ardiyansah"],
+["3095","Intan Berliyan"],["3096","Luthfiya Nur Ramadhani"],["3069","M. Miftah Al Fattah"],
+["3097","Mugi Aditia Ripki"],["3098","Muh Azzka Alpratama"],["3099","Muhamad Ramadhani"],
+["3102","Nayla Dwi Syafriani"],["3108","Puteri Ayuning Kirana"],["3103","Raisa Rahmawati Septiani"],
+["3104","Renita Nur Saefitri"],["3084","Shalwa Aisa Nazwa"],["3105","Wifha Alya An Adibah"],
+["3106","Zhidan Dwi Aprilio Nurosy"],["3107","Zulfan Azhar Ramadhan"]
+];
+
+let siswa = MASTER_SISWA_DEFAULT;
+let dbFotoSiswa = {};
+
+/* SYSTEM PENYIMPANAN: INDEXEDDB UNTUK APLIKASI KELAS VI & BADGE */
+const DB_NAME = "AplikasiKelasVIDB";
+const STORE_BADGE = "badges";
+let dbInstance = null;
+
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains("pengaturan")) {
+                db.createObjectStore("pengaturan");
+            }
+            if (!db.objectStoreNames.contains("dataSiswaStore")) {
+                db.createObjectStore("dataSiswaStore");
+            }
+            if (!db.objectStoreNames.contains(STORE_BADGE)) {
+                db.createObjectStore(STORE_BADGE);
+            }
+        };
+        request.onsuccess = (e) => {
+            dbInstance = e.target.result;
+            resolve(dbInstance);
+        };
+        request.onerror = (e) => reject(e);
+    });
+}
+
+async function muatDataRealtimeDariDB() {
+    try {
+        if (!dbInstance) await initDB();
+        
+        const tx = dbInstance.transaction(["pengaturan"], "readonly");
+        const store = tx.objectStore("pengaturan");
+
+        const reqMaster = store.get("dbMasterSiswa");
+        reqMaster.onsuccess = (e) => {
+            if (e.target.result && Array.isArray(e.target.result) && e.target.result.length > 0) {
+                siswa = e.target.result;
+            }
+            renderGridSiswa();
+        };
+
+        const reqFoto = store.get("dbFotoSiswa");
+        reqFoto.onsuccess = (e) => {
+            if (e.target.result) {
+                dbFotoSiswa = e.target.result;
+            }
+            renderGridSiswa();
+        };
+    } catch (err) {
+        console.error("Gagal memuat data dari IndexedDB:", err);
+        renderGridSiswa();
+    }
+}
+
+async function simpanBadgeDB(key, data) {
+    if (!dbInstance) await initDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbInstance.transaction(STORE_BADGE, 'readwrite');
+        const store = tx.objectStore(STORE_BADGE);
+        const req = store.put(data, key);
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function ambilSemuaBadgeDB() {
+    if (!dbInstance) await initDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbInstance.transaction(STORE_BADGE, 'readonly');
+        const store = tx.objectStore(STORE_BADGE);
+        const result = {};
+        const req = store.openCursor();
+        req.onsuccess = (e) => {
+            const cursor = e.target.result;
+            if (cursor) {
+                result[cursor.key] = cursor.value;
+                cursor.continue();
+            } else {
+                resolve(result);
+            }
+        };
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function bersihkanSemuaBadgeDB() {
+    if (!dbInstance) await initDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbInstance.transaction(STORE_BADGE, 'readwrite');
+        const store = tx.objectStore(STORE_BADGE);
+        const req = store.clear();
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+/* FUNGSI OTOMATIS HAPUS BACKGROUND & KOMPRESI GAMBAR */
+function hapusBackgroundDanKompres(file, maxDimension = 200, tolerance = 35) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = function () {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxDimension) {
+                        height = Math.round((height * maxDimension) / width);
+                        width = maxDimension;
+                    }
+                } else {
+                    if (height > maxDimension) {
+                        width = Math.round((width * maxDimension) / height);
+                        height = maxDimension;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+
+                ctx.drawImage(img, 0, 0, width, height);
+                const imgData = ctx.getImageData(0, 0, width, height);
+                const data = imgData.data;
+
+                const bgR = data[0];
+                const bgG = data[1];
+                const bgB = data[2];
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    const diffR = Math.abs(r - bgR);
+                    const diffG = Math.abs(g - bgG);
+                    const diffB = Math.abs(b - bgB);
+
+                    if (diffR < tolerance && diffG < tolerance && diffB < tolerance) {
+                        data[i + 3] = 0;
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                const processedBase64 = canvas.toDataURL('image/png');
+                resolve(processedBase64);
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
+}
+
+async function renderGridSiswa() {
+    const container = document.getElementById('containerSiswaBadge');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    let dbBadgeSiswa10 = {};
+    try {
+        dbBadgeSiswa10 = await ambilSemuaBadgeDB();
+    } catch(e) {
+        console.error("Gagal membaca badge dari IndexedDB", e);
+    }
+
+    siswa.forEach((s) => {
+        const nis = s[0];
+        const nama = s[1];
+        const fotoProfil = dbFotoSiswa[nis] || 'https://via.placeholder.com/65?text=👤';
+        const badgesSiswa = dbBadgeSiswa10[nis] || {};
+
+        let slotsHTML = '';
+        for (let i = 1; i <= 10; i++) {
+            const dataBadge = badgesSiswa[i] || null;
+            const isFilled = dataBadge && dataBadge.gambar;
+
+            slotsHTML += `
+                <div class="badge-slot ${isFilled ? 'filled' : ''}">
+                    <span class="badge-slot-num">${i}</span>
+                    ${isFilled ? `<button class="btn-hapus-slot" onclick="hapusBadgeSlot('${nis}',${i})" title="Hapus Badge"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                    
+                    <div class="badge-img-wrapper">
+                        ${isFilled ? `<img src="${dataBadge.gambar}" alt="Badge ${i}">` : `<i class="fa-solid fa-award"></i>`}
+                    </div>
+
+                    <div class="badge-title">
+                        ${isFilled ? dataBadge.title : '<span style="color:#cbd5e1; font-weight:normal;">Kosong</span>'}
+                    </div>
+
+                    <button class="btn-upload-slot" onclick="pemicuUploadBadge('${nis}', ${i})">
+                        ${isFilled ? 'Ganti' : '+ Badge'}
+                    </button>
+                    <input type="file" id="input-badge-${nis}-${i}" class="badge-input-file" accept="image/*" onchange="prosesUploadBadge(this, '${nis}', ${i})">
+                </div>
+            `;
+        }
+
+        container.innerHTML += `
+            <div class="siswa-card">
+                <div class="siswa-header">
+                    <div class="siswa-profile">
+                        <img src="${fotoProfil}" class="siswa-avatar" onerror="this.src='https://via.placeholder.com/65?text=👤'">
+                        <div class="siswa-info">
+                            <h3>${nama}</h3>
+                            <p>NIS: ${nis}</p>
+                        </div>
+                    </div>
+                    <button class="btn-cetak-binder-siswa" onclick="cetakSampulBinderLangsung('${nis}')">
+                        <i class="fa-solid fa-book-open"></i> Cetak Sampul Binder
+                    </button>
+                </div>
+                <div class="badge-grid">
+                    ${slotsHTML}
+                </div>
+            </div>
+        `;
+    });
+}
+
+function pemicuUploadBadge(nis, slotIndex) {
+    document.getElementById(`input-badge-${nis}-${slotIndex}`).click();
+}
+
+async function prosesUploadBadge(input, nis, slotIndex) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const titleBadge = prompt(`Masukkan nama untuk Badge #${slotIndex} (Contoh: Disiplin, Rajin, Juara 1):`, "Badge Prestasi");
+    if (titleBadge === null) return;
+
+    try {
+        const processedImageBase64 = await hapusBackgroundDanKompres(file, 200, 35);
+        let dataSiswaBadge = {};
+        
+        const semuaData = await ambilSemuaBadgeDB();
+        if (semuaData[nis]) {
+            dataSiswaBadge = semuaData[nis];
+        }
+
+        dataSiswaBadge[slotIndex] = {
+            title: titleBadge.trim() || `Badge #${slotIndex}`,
+            gambar: processedImageBase64
+        };
+        
+        await simpanBadgeDB(nis, dataSiswaBadge);
+        await renderGridSiswa();
+        input.value = '';
+    } catch(err) {
+        alert("⚠️ Gagal mengunggah dan memproses gambar.");
+        console.error(err);
+    }
+}
+
+async function hapusBadgeSlot(nis, slotIndex) {
+    if(confirm(`Hapus Badge #${slotIndex} milik siswa ini?`)) {
+        const semuaData = await ambilSemuaBadgeDB();
+        if (semuaData[nis] && semuaData[nis][slotIndex]) {
+            delete semuaData[nis][slotIndex];
+            await simpanBadgeDB(nis, semuaData[nis]);
+            await renderGridSiswa();
+        }
+    }
+}
+
+function bukaModalBinder() {
+    const select = document.getElementById('selectSiswaBinder');
+    select.innerHTML = '';
+    siswa.forEach(s => {
+        select.innerHTML += `<option value="${s[0]}">${s[1]} (NIS: ${s[0]})</option>`;
+    });
+    document.getElementById('modalBinder').style.display = 'flex';
+}
+
+function tutupModalBinder() {
+    document.getElementById('modalBinder').style.display = 'none';
+}
+
+function eksekusiCetakBinder() {
+    const nisSelected = document.getElementById('selectSiswaBinder').value;
+    tutupModalBinder();
+    cetakSampulBinderLangsung(nisSelected);
+}
+
+async function cetakSampulBinderLangsung(nis) {
+    const dataSiswa = siswa.find(s => s[0] === nis);
+    if (!dataSiswa) return;
+
+    const nama = dataSiswa[1];
+    const fotoProfil = dbFotoSiswa[nis] || 'https://via.placeholder.com/110?text=👤';
+    
+    const semuaData = await ambilSemuaBadgeDB();
+    const badgesSiswa = semuaData[nis] || {};
+
+    document.getElementById('printBinderFoto').src = fotoProfil;
+    document.getElementById('printBinderNama').innerText = nama;
+    document.getElementById('printBinderNis').innerText = `NIS: ${nis}`;
+
+    const gridPrint = document.getElementById('printBinderBadgeGrid');
+    gridPrint.innerHTML = '';
+
+    for (let i = 1; i <= 10; i++) {
+        const dataBadge = badgesSiswa[i] || null;
+        const isFilled = dataBadge && dataBadge.gambar;
+
+        gridPrint.innerHTML += `
+            <div class="binder-badge-card ${isFilled ? 'filled' : ''}">
+                ${isFilled ? `<img src="${dataBadge.gambar}" alt="Badge">` : `<i class="fa-solid fa-award"></i>`}
+                <span>${isFilled ? dataBadge.title : `Slot #${i}`}</span>
+            </div>
+        `;
+    }
+
+    setTimeout(() => {
+        window.print();
+    }, 300);
+}
+
+async function hapusSemuaBadge() {
+    if(confirm("Apakah Anda yakin ingin menghapus SELURUH data badge semua siswa?")) {
+        await bersihkanSemuaBadgeDB();
+        await renderGridSiswa();
+        alert("🗑️ Semua data badge telah dibersihkan.");
+    }
+}
+
+// Saat pertama kali halaman dibuka, sinkronkan data siswa dan foto secara real-time dari IndexedDB
+window.addEventListener('DOMContentLoaded', () => {
+    initDB().then(() => {
+        muatDataRealtimeDariDB();
+    }).catch(err => {
+        console.error("Inisialisasi Database Gagal", err);
+        renderGridSiswa();
+    });
+});
+</script>
+</body>
+</html>

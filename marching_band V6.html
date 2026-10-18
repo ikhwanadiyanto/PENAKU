@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penilaian Marching Band Kelas VI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #ff6b35, #f7c59f, #ef8354); 
+            padding: 25px; 
+            min-height: 100vh; 
+            color: #334155; 
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 30px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            padding: 30px; 
+        }
+        
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 3px dashed #fed7aa; 
+            padding-bottom: 25px; 
+            margin-bottom: 25px; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+        }
+        .header-title { display: flex; align-items: center; gap: 20px; position: relative; width: 100%; flex-wrap: wrap; }
+        
+        /* DIPERBAIKI: Mencegah logo menjadi gepeng/lonjong */
+        .logo-container {
+            width: 75px;
+            height: 75px;
+            min-width: 75px;
+            min-height: 75px;
+            background: linear-gradient(135deg, #d35400, #ff6b35); 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px; 
+            box-shadow: 0 0 20px rgba(255,107,53,0.5);
+            animation: pulse-glow 2s infinite;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .logo-container:hover::after {
+            content: "Ubah";
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 10px;
+            text-align: center;
+            padding: 2px 0;
+            font-weight: 600;
+        }
+        
+        .logo-custom {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            border-radius: 50%; 
+        }
+        
+        @keyframes pulse-glow {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255,107,53,0.5); }
+            50% { transform: scale(1.04); box-shadow: 0 0 32px rgba(255,107,53,0.85); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,107,53,0.5); }
+        }
+
+        .header-title h1 { font-size: 26px; color: #1e1b4b; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .header-title p { font-size: 14px; color: #64748b; font-weight: 500; }
+
+        /* BAR STATUS MEMORI PROFESIONAL */
+        .memory-bar-container {
+            width: 100%;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 14px;
+            padding: 12px 18px;
+            margin-top: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .memory-progress-bg {
+            flex: 1;
+            height: 10px;
+            background: #fed7aa;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .memory-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff6b35, #ea580c);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .controls-panel { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+        
+        .select-semester { 
+            padding: 12px 20px; 
+            border-radius: 16px; 
+            border: 2px solid #ff6b35; 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: #d35400; 
+            outline: none; 
+            cursor: pointer; 
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(255,107,53,0.1);
+            transition: all 0.3s;
+        }
+        .select-semester:hover {
+            background: #fff7ed;
+            transform: translateY(-1px);
+        }
+        
+        .btn { 
+            padding: 12px 22px; 
+            border: none; 
+            border-radius: 16px; 
+            color: #fff; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            font-size: 14px; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .btn:hover { 
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn-excel { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-save { background: linear-gradient(135deg, #ea580c, #c2410c); }
+        .btn-pdf { background: linear-gradient(135deg, #a855f7, #9333ea); } 
+        .btn-back { background: linear-gradient(135deg, #64748b, #475569); }
+
+        .table-wrap { 
+            overflow-x: auto; 
+            background: #fff; 
+            border-radius: 20px; 
+            border: 1px solid #e2e8f0; 
+            margin-top: 15px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        
+        th { color: #fff; font-weight: 600; padding: 15px 12px; white-space: nowrap; text-align: center; }
+        .th-utama { background: #e65c00; } 
+        .th-sub { background: #ff6b35; min-width: 150px; }
+        .th-raport { background: #059669; font-size: 15px; min-width: 140px; } 
+        
+        td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        tr:nth-child(even) { background-color: #f8fafc; } 
+        tr:hover { background-color: #f1f5f9 !important; } 
+
+        .col-no { font-weight: 600; color: #64748b; width: 55px; }
+        .col-nis { color: #64748b; width: 85px; font-weight: 500; }
+        
+        .col-nama { 
+            text-align: left; 
+            min-width: 250px; 
+            font-weight: 500; 
+            color: #475569; 
+            position: sticky; 
+            left: 0; 
+            z-index: 2; 
+            box-shadow: 4px 0 10px rgba(247, 112, 98, 0.08); 
+            border-right: 2px solid #fed7aa; 
+            padding-left: 15px;
+        }
+        tr:nth-child(odd) .col-nama { background-color: #fff5f5 !important; }  
+        tr:nth-child(even) .col-nama { background-color: #fff7ed !important; } 
+        tr:hover .col-nama { background-color: #fecdd3 !important; }          
+
+        .select-predikat { 
+            width: 100%;
+            max-width: 130px;
+            padding: 8px 12px; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 10px; 
+            text-align: center; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #475569;
+            outline: none; 
+            transition: all 0.2s ease; 
+            background: #f8fafc;
+            cursor: pointer;
+        }
+        .select-predikat:focus { 
+            border-color: #ff6b35; 
+            background: #fff; 
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.2);
+        }
+
+        .nilai-raport { 
+            font-size: 15px; 
+            font-weight: 700; 
+            padding: 6px 14px; 
+            border-radius: 10px; 
+            display: inline-block; 
+            min-width: 90px; 
+            text-align: center;
+        }
+        .predikat-a { background: #d1fae5; color: #059669; }
+        .predikat-b { background: #e0f2fe; color: #0284c7; }
+        .predikat-c { background: #fef3c7; color: #d97706; }
+        .predikat-kosong { background: #f1f5f9; color: #94a3b8; }
+
+        .table-wrap::-webkit-scrollbar { height: 10px; }
+        .table-wrap::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .table-wrap::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media print {
+            body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+            .container { box-shadow: none !important; padding: 0 !important; max-width: 100% !important; background: transparent !important; }
+            .controls-panel, .header-title p, .logo-container:hover::after, .memory-bar-container { display: none !important; }
+            .header { border-bottom: 2px solid #000 !important; margin-bottom: 20px !important; padding-bottom: 10px !important; }
+            .table-wrap { overflow: visible !important; border: none !important; margin-top: 0 !important; box-shadow: none !important; }
+            table { width: 100% !important; border: 1px solid #000 !important; font-size: 13px !important; }
+            th, td { border: 1px solid #000 !important; padding: 10px 6px !important; color: #000 !important; }
+            th { background: #e65c00 !important; }
+            .th-sub { background: #ff6b35 !important; }
+            .th-raport { background: #059669 !important; }
+            .col-nama { position: static !important; background: transparent !important; border-right: 1px solid #000 !important; }
+            .select-predikat { border: none !important; background: transparent !important; appearance: none; -webkit-appearance: none; color: #000 !important; pointer-events: none; font-size: 13px !important; }
+            .nilai-raport { background: transparent !important; padding: 0 !important; color: #000 !important; font-size: 13px !important; font-weight: bold !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <div style="display: flex; align-items: center; gap: 20px; width: 100%;">
+                <div class="logo-container" onclick="document.getElementById('inputLogoManual').click();" title="Klik untuk ganti logo manual">
+                    <img id="tampilanLogo" src="image_480e7c.png" alt="Logo Marching Band" class="logo-custom" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'48\' fill=\'%23ff6b35\'/><text x=\'50\' y=\'65\' font-size=\'40\' text-anchor=\'middle\'>🥁</text></svg>';">
+                </div>
+                <input type="file" id="inputLogoManual" accept="image/*" style="display: none;" onchange="prosesUnggahLogo(this)">
+                
+                <div style="flex: 1;">
+                    <h1>Daftar Nilai Ekstrakurikuler Marching Band - Kelas VI</h1>
+                    <p>Kualifikasi & Predikat Aspek Disiplin serta Harmonisasi Nada ✨ Semangat Bermusik! ✨</p>
+                </div>
+            </div>
+
+            <!-- BAR STATUS MEMORI PROFESIONAL -->
+            <div class="memory-bar-container">
+                <span id="memoryStatusText"><i class="fa-solid fa-database" style="color: #ff6b35;"></i> Memuat Status IndexedDB...</span>
+                <div class="memory-progress-bg">
+                    <div class="memory-progress-fill" id="memoryProgressFill"></div>
+                </div>
+                <span id="memoryPercentText" style="font-weight: 700; color: #ff6b35;">0%</span>
+            </div>
+        </div>
+        
+        <div class="controls-panel">
+            <select id="semesterSelect" class="select-semester" onchange="gantiSemester()">
+                <option value="Semester 1">🍂 Semester 1</option>
+                <option value="Semester 2">🌸 Semester 2</option>
+            </select>
+            
+            <button class="btn btn-pdf" onclick="cetakLaporanPDF()"><i class="fa-solid fa-file-pdf"></i> Cetak PDF</button>
+            <button class="btn btn-excel" onclick="eksporExcel()"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+            <button class="btn btn-save" onclick="simpanKeSheets()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Ke Sheets</button>
+            <button class="btn btn-back" onclick="kembaliKeAbsensi()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table id="tabelNilaiMarchingBand">
+            <thead>
+                <tr>
+                    <th class="th-utama" rowspan="2">No</th>
+                    <th class="th-utama" rowspan="2">NIS</th>
+                    <th class="th-utama col-nama" rowspan="2">Nama Siswa</th>
+                    <th class="th-utama" colspan="2">Aspek Penilaian Kelayakan</th>
+                    <th class="th-raport" rowspan="2">PREDIKAT AKHIR</th>
+                </tr>
+                <tr>
+                    <th class="th-sub">Kedisiplinan & Sikap</th>
+                    <th class="th-sub">Harmonisasi & Ritme Musik</th>
+                </tr>
+            </thead>
+            <tbody id="bodyNilaiMarchingBand"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycby3j4loXE7K53usU4R0zJVDpapB-NkoB9VpD_RKl5tYiQX90PY6qINv16gX78ZVAcUe/exec";
+
+    const MASTER_SISWA_DEFAULT = [
+        ["3052","Amelia Alita Zahra"],["3223","Angelica Vikar Maharani"],["3085","Anggraeni Abbilah Dhety"],
+        ["3087","AZKA NAILUN NABHAN"],["3088","Cinta Anugrah"],["3089","Dany Sabiq El-Fathin"],
+        ["3090","Dhea Fiky Mazaya"],["3224","Earlita Arsyifa Salsabila"],["3091","Fadilla Rizqi Khaerani"],
+        ["3092","Fathan Almaizan Zhafar"],["3093","Gavin Harry Wiriawan"],["3063","Hafiz Ardiyansah"],
+        ["3095","Intan Berliyan"],["3096","Luthfiya Nur Ramadhani"],["3069","M. Miftah Al Fattah"],
+        ["3097","Mugi Aditia Ripki"],["3098","Muh Azzka Alpratama"],["3099","Muhamad Ramadhani"],
+        ["3102","Nayla Dwi Syafriani"],["3108","Puteri Ayuning Kirana"],["3103","Raisa Rahmawati Septiani"],
+        ["3104","Renita Nur Saefitri"],["3084","Shalwa Aisa Nazwa"],["3105","Wifha Alya An Adibah"],
+        ["3106","Zhidan Dwi Aprilio Nurosy"],["3107","Zulfan Azhar Ramadhan"]
+    ];
+
+    let SISWA = [];
+    let databaseFotoSiswa = {};
+    let databaseNilai = JSON.parse(localStorage.getItem('dbNilaiMarchingBand')) || {};
+
+    // FUNGSI INDEXEDDB REAL-TIME DARI PENA MANTAP V6
+    function bukaIndexedDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open("AplikasiKelasVIDB", 1);
+            request.onerror = e => reject(e.target.error);
+            request.onsuccess = e => resolve(e.target.result);
+            request.onupgradeneeded = e => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('pengaturan')) db.createObjectStore('pengaturan');
+            };
+        });
+    }
+
+    async function muatDataRealtimeDariIndexedDB() {
+        try {
+            const db = await bukaIndexedDB();
+            const tx = db.transaction('pengaturan', 'readonly');
+            const store = tx.objectStore('pengaturan');
+            
+            const masterSiswa = await new Promise((resolve) => {
+                const req = store.get('dbMasterSiswa');
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+
+            if (masterSiswa && Array.isArray(masterSiswa)) {
+                SISWA = masterSiswa;
+            } else {
+                SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || MASTER_SISWA_DEFAULT;
+            }
+
+            const fotoSiswaDB = await new Promise((resolve) => {
+                const req = store.get('dbDataSiswa');
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+
+            if (fotoSiswaDB) {
+                databaseFotoSiswa = fotoSiswaDB;
+            } else {
+                databaseFotoSiswa = JSON.parse(localStorage.getItem('dbFotoSiswa')) || {};
+            }
+
+            perbaruiBarMemoriIndexedDB(db);
+        } catch (err) {
+            console.error("Gagal memuat IndexedDB secara real-time, fallback ke localStorage:", err);
+            SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || MASTER_SISWA_DEFAULT;
+            perbaruiBarMemoriFallback();
+        }
+    }
+
+    async function perbaruiBarMemoriIndexedDB(db) {
+        try {
+            let estimatedBytes = 0;
+            if (navigator.storage && navigator.storage.estimate) {
+                const estimate = await navigator.storage.estimate();
+                estimatedBytes = estimate.usage || 0;
+            }
+            
+            const kb = (estimatedBytes / 1024).toFixed(1);
+            const limitMb = 50; 
+            const maxBytes = limitMb * 1024 * 1024;
+            const pct = Math.min(100, ((estimatedBytes / maxBytes) * 100)).toFixed(1);
+
+            document.getElementById('memoryStatusText').innerHTML = `<i class="fa-solid fa-database" style="color:#ff6b35;"></i> IndexedDB Aktif (PENA MANTAP V6): <b>${kb} KB</b>`;
+            document.getElementById('memoryProgressFill').style.width = `${pct}%`;
+            document.getElementById('memoryPercentText').innerText = `${pct}%`;
+        } catch(e) {
+            perbaruiBarMemoriFallback();
+        }
+    }
+
+    function perbaruiBarMemoriFallback() {
+        let totalBytes = 0;
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) totalBytes += ((localStorage[key].length + key.length) * 2);
+        }
+        const kb = (totalBytes / 1024).toFixed(1);
+        const pct = Math.min(100, ((kb / 51200) * 100)).toFixed(1);
+
+        document.getElementById('memoryStatusText').innerHTML = `<i class="fa-solid fa-database" style="color:#f59e0b;"></i> Penyimpanan Lokal: <b>${kb} KB</b>`;
+        document.getElementById('memoryProgressFill').style.width = `${pct}%`;
+        document.getElementById('memoryPercentText').innerText = `${pct}%`;
+    }
+
+    function prosesUnggahLogo(input) {
+        if (input.files && input.files[0]) {
+            const pembacaFile = new FileReader();
+            pembacaFile.onload = function(e) {
+                const hasilBase64 = e.target.result;
+                document.getElementById('tampilanLogo').src = hasilBase64;
+                localStorage.setItem('dbLogoMarchingBand', hasilBase64);
+            };
+            pembacaFile.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function muatLogoTersimpan() {
+        const logoLokal = localStorage.getItem('dbLogoMarchingBand');
+        if (logoLokal) {
+            document.getElementById('tampilanLogo').src = logoLokal;
+        }
+    }
+
+    function inisialisasiTabel() {
+        const body = document.getElementById('bodyNilaiMarchingBand');
+        body.innerHTML = '';
+        const semAktif = document.getElementById('semesterSelect').value;
+
+        if(!databaseNilai[semAktif]) { databaseNilai[semAktif] = {}; }
+
+        SISWA.forEach((siswa, index) => {
+            const nis = siswa[0];
+            const nama = siswa.length >= 3 ? siswa[2] : siswa[1];
+            const dataSiswa = databaseNilai[semAktif][nis] || { disiplin: '', harmoni: '', raport: '-' };
+
+            body.innerHTML += `
+                <tr data-nis="${nis}">
+                    <td class="col-no">${index + 1}</td>
+                    <td class="col-nis">${nis}</td>
+                    <td class="col-nama">${nama}</td>
+                    <td>
+                        <select class="select-predikat musik-disiplin" onchange="hitungPredikatOtomatis(this)">
+                            <option value="" ${dataSiswa.disiplin === '' ? 'selected' : ''}>- Pilih -</option>
+                            <option value="A" ${dataSiswa.disiplin === 'A' ? 'selected' : ''}>Sangat Disiplin (A)</option>
+                            <option value="B" ${dataSiswa.disiplin === 'B' ? 'selected' : ''}>Disiplin (B)</option>
+                            <option value="C" ${dataSiswa.disiplin === 'C' ? 'selected' : ''}>Cukup (C)</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="select-predikat musik-harmoni" onchange="hitungPredikatOtomatis(this)">
+                            <option value="" ${dataSiswa.harmoni === '' ? 'selected' : ''}>- Pilih -</option>
+                            <option value="A" ${dataSiswa.harmoni === 'A' ? 'selected' : ''}>Sangat Harmonis (A)</option>
+                            <option value="B" ${dataSiswa.harmoni === 'B' ? 'selected' : ''}>Harmonis (B)</option>
+                            <option value="C" ${dataSiswa.harmoni === 'C' ? 'selected' : ''}>Cukup (C)</option>
+                        </select>
+                    </td>
+                    <td><span class="nilai-raport ${ambilKelasStyle(dataSiswa.raport)}">${dataSiswa.raport || '-'}</span></td>
+                </tr>
+            `;
+        });
+    }
+
+    function ambilKelasStyle(predikat) {
+        if (predikat === 'A') return 'predikat-a';
+        if (predikat === 'B') return 'predikat-b';
+        if (predikat === 'C') return 'predikat-c';
+        return 'predikat-kosong';
+    }
+
+    function hitungPredikatOtomatis(element) {
+        const baris = element.closest('tr');
+        const nis = baris.getAttribute('data-nis');
+        const semAktif = document.getElementById('semesterSelect').value;
+        
+        const disiplin = baris.querySelector('.musik-disiplin').value;
+        const harmoni = baris.querySelector('.musik-harmoni').value;
+        
+        let hasilAkhir = '-';
+        
+        if (disiplin && harmoni) {
+            if (disiplin === 'A' && harmoni === 'A') hasilAkhir = 'A';
+            else if (disiplin === 'C' || harmoni === 'C') hasilAkhir = 'C';
+            else hasilAkhir = 'B';
+        } else if (disiplin || harmoni) {
+            hasilAkhir = disiplin || harmoni;
+        }
+
+        const elemenRaport = baris.querySelector('.nilai-raport');
+        elemenRaport.innerText = hasilAkhir;
+        elemenRaport.className = `nilai-raport ${ambilKelasStyle(hasilAkhir)}`;
+
+        databaseNilai[semAktif][nis] = { disiplin: disiplin, harmoni: harmoni, raport: hasilAkhir };
+        localStorage.setItem('dbNilaiMarchingBand', JSON.stringify(databaseNilai));
+    }
+
+    function cetakLaporanPDF() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const judulAsli = document.title;
+        document.title = `Laporan_Nilai_MarchingBand_6_${semAktif.replace(' ', '')}`;
+        window.print();
+        document.title = judulAsli;
+    }
+
+    function gantiSemester() { inisialisasiTabel(); }
+
+    function kembaliKeAbsensi() {
+        if (window.opener && !window.opener.closed) { window.close(); } 
+        else { window.location.href = 'PENA MANTAP V6.html'; }
+    }
+
+    function eksporExcel() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const workbook = XLSX.utils.table_to_book(document.getElementById('tabelNilaiMarchingBand'), { raw: true });
+        XLSX.writeFile(workbook, `Nilai_MarchingBand_Kelas6_${semAktif.replace(' ', '')}.xlsx`);
+    }
+
+    function simpanKeSheets() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const dataPaket = [];
+
+        document.querySelectorAll('#bodyNilaiMarchingBand tr').forEach(baris => {
+            dataPaket.push({
+                nis: baris.getAttribute('data-nis'),
+                nama: baris.querySelector('.col-nama').innerText,
+                harian: Array(30).fill(""),
+                uts: baris.querySelector('.musik-disiplin').value || "",
+                uas: baris.querySelector('.musik-harmoni').value || "",
+                raport: baris.querySelector('.nilai-raport').innerText
+            });
+        });
+
+        if(!confirm(`Kirim & Simpan data kualifikasi predikat Marching Band [ ${semAktif} ] langsung ke Google Sheets?`)) return;
+
+        const btn = document.querySelector('.btn-save');
+        btn.innerHTML = "⏳ Proses Menyimpan..."; btn.disabled = true;
+
+        const dataForm = new URLSearchParams();
+        dataForm.append("postData", JSON.stringify({ data: dataPaket, semester: semAktif, mapel: "Marching Band" }));
+
+        fetch(URL_APPS_SCRIPT, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: dataForm
+        })
+        .then(() => { alert(`Data Nilai Predikat Marching Band (${semAktif}) sukses disimpan ke Google Sheets!`); })
+        .catch(() => { alert("Proses pengiriman selesai! Silakan periksa spreadsheet Anda."); })
+        .finally(() => {
+            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Simpan ke Google Sheets";
+            btn.disabled = false;
+        });
+    }
+
+    window.onload = async function() {
+        muatLogoTersimpan();
+        await muatDataRealtimeDariIndexedDB();
+        inisialisasiTabel();
+    };
+</script>
+</body>
+</html>
