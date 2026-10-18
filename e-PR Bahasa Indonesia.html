@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>e-PR - Kuis Interaktif Ceria</title>
+    <!-- Google Fonts Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #1976d2;    
+            --secondary: #0d47a1;  
+            --danger: #ff5470;     
+            --success: #00b894;    
+            --bg: #f4f7fc;         
+            --accent: #ffeb3b;     
+            --skip-color: #ff9f1c; 
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+            color: #2d3748; 
+            overflow-x: hidden; 
+        }
+
+        /* Ambient Floating Animation Background */
+        .decorations-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-item {
+            position: absolute;
+            bottom: -60px;
+            font-size: 28px;
+            opacity: 0.8;
+            animation: floatUp 10s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(20deg) scale(1.1); opacity: 0; }
+        }
+
+        .fi-1 { left: 10%; background: #ff7675; width: 35px; height: 45px; border-radius: 50%; animation-duration: 9s; animation-delay: 0s; }
+        .fi-2 { left: 30%; animation-duration: 12s; animation-delay: 2s; }
+        .fi-3 { left: 50%; background: #55efc4; width: 35px; height: 45px; border-radius: 50%; animation-duration: 10s; animation-delay: 1s; }
+        .fi-4 { left: 70%; animation-duration: 11s; animation-delay: 3s; }
+        .fi-5 { left: 88%; background: #ffeaa7; width: 35px; height: 45px; border-radius: 50%; animation-duration: 8s; animation-delay: 1.5s; }
+
+        .mobile-container { 
+            width: 100%; 
+            max-width: 480px; 
+            background: white; 
+            min-height: 100vh; 
+            padding: 25px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            border-left: 4px solid var(--primary); 
+            border-right: 4px solid var(--primary); 
+            position: relative; 
+            z-index: 5;
+            box-shadow: 0 0 30px rgba(25, 118, 210, 0.15); 
+        }
+
+        .header { text-align: center; margin-bottom: 20px; position: relative; }
+        
+        .mascot-box {
+            font-size: 65px;
+            display: inline-block;
+            animation: bounceMascot 2s infinite ease-in-out;
+        }
+
+        @keyframes bounceMascot {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+
+        .header h3 { color: var(--secondary); margin: 5px 0 2px 0; font-size: 22px; font-weight: 800; }
+        .designer-credit { font-size: 11px; color: #718096; margin: 0 0 12px 0; font-weight: 600; background: #e3f2fd; display: inline-block; padding: 5px 14px; border-radius: 20px; }
+        
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; color: #4a5568; margin-bottom: 8px; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 16px; 
+            font-size: 15px; 
+            background-color: #f7fafc; 
+            font-weight: 600; 
+            transition: all 0.3s;
+        }
+        input:focus { border-color: var(--primary); background-color: #fff; outline: none; box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1); }
+        input[readonly] { background-color: #edf2f7; color: #718096; cursor: not-allowed; }
+
+        /* Bubble Pop-up Aturan Pengerjaan */
+        #rulesModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .rules-bubble {
+            background: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            border-top: 6px solid var(--primary);
+            animation: bubblePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bubblePop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .rules-bubble h4 {
+            margin: 0 0 12px 0;
+            color: var(--secondary);
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rules-bubble ol {
+            margin: 0 0 20px 0;
+            padding-left: 20px;
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .btn-understand {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--success), #009688);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-understand:active { transform: scale(0.98); }
+
+        /* Bubble Pelanggaran Merah */
+        #violationModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .violation-bubble {
+            background: #ffffff;
+            width: 100%;
+            max-width: 360px;
+            padding: 30px 20px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(255, 84, 112, 0.3);
+            text-align: center;
+            border-top: 8px solid var(--danger);
+            animation: bubblePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .violation-emoji {
+            font-size: 65px;
+            margin-bottom: 10px;
+        }
+
+        .violation-title {
+            color: var(--danger);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .violation-desc {
+            color: #4a5568;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .btn-action { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; 
+            border: none; 
+            border-radius: 16px; 
+            font-size: 17px; 
+            font-weight: 700; 
+            margin-top: 10px; 
+            cursor: pointer; 
+            box-shadow: 0 6px 18px rgba(25, 118, 210, 0.25); 
+            transition: transform 0.2s;
+        }
+        .btn-action:active { transform: scale(0.98); }
+        .btn-action:disabled { background: #e2e8f0; color: #a0aec0; box-shadow: none; cursor: not-allowed; }
+        
+        .btn-pas { 
+            width: 100%; 
+            padding: 12px; 
+            background: linear-gradient(135deg, var(--skip-color), #f77f00); 
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            margin-top: 15px; 
+            cursor: pointer; 
+        }
+
+        .timer-box { font-size: 20px; font-weight: 800; color: var(--danger); text-align: center; margin: 8px 0; background: #fff5f5; border: 2px solid #fed7d7; border-radius: 18px; display: inline-block; padding: 4px 20px; }
+        .progress-time-container { width: 100%; height: 8px; background: #edf2f7; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .progress-time-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary), #00bbf9); border-radius: 10px; transition: width 0.1s linear; }
+        .progress-time-bar.critical { background: linear-gradient(90deg, var(--danger), #e63946); }
+
+        .option-btn { 
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 16px; 
+            background: white; 
+            text-align: left; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            color: #4a5568; 
+            transition: all 0.2s;
+        }
+        .option-btn:hover { border-color: var(--primary); background: #f0f7ff; }
+        .option-btn.correct { background: #38b000 !important; color: white; border-color: #38b000; }
+        .option-btn.wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
+        
+        .hidden { display: none !important; }
+        .quiz-progress { text-align: center; color: var(--secondary); font-weight: 800; font-size: 13px; background: #e3f2fd; display: inline-block; padding: 4px 14px; border-radius: 30px; }
+        
+        #feedbackModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 999; }
+        .modal-content { background: white; padding: 25px 35px; border-radius: 22px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-emoji { font-size: 70px; margin-bottom: 8px; display: inline-block; }
+        .modal-text { font-size: 20px; font-weight: 800; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Element dengan Safe Fallback -->
+    <audio id="clickSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
+
+    <!-- Animasi Balon & Emotikon Latar Belakang -->
+    <div class="decorations-container">
+        <div class="floating-item fi-1"></div>
+        <div class="floating-item fi-2">🌸</div>
+        <div class="floating-item fi-3"></div>
+        <div class="floating-item fi-4">⭐</div>
+        <div class="floating-item fi-5"></div>
+    </div>
+
+    <!-- BUBBLE POP-UP ATURAN PENGERJAAN SAAT PERTAMA DIBUKA -->
+    <div id="rulesModal">
+        <div class="rules-bubble">
+            <h4>📌 Aturan Pengerjaan ✨</h4>
+            <ol>
+                <li>Siswa memiliki tepat <b>3 kali kesempatan</b> mengerjakan.</li>
+                <li>Tetap di dalam aplikasi selama kuis berlangsung.</li>
+                <li>Pindah aplikasi / keluar dianggap mengakhiri sesi.</li>
+                <li>Durasi per soal dirancang seru & menantang!</li>
+            </ol>
+            <button class="btn-understand" onclick="playAudioAndDo(closeRulesModal)">Saya Mengerti 👍</button>
+        </div>
+    </div>
+
+    <!-- BUBBLE NOTIFIKASI PELANGGARAN PINDAH APLIKASI (AWALNYA TERSEMBUNYI) -->
+    <div id="violationModal" class="hidden">
+        <div class="violation-bubble">
+            <div class="violation-emoji">🛑</div>
+            <div class="violation-title">Kamu Melanggar Peraturan!</div>
+            <div class="violation-desc">Terdeteksi berpindah aplikasi atau keluar dari halaman kuis. Sesi kamu dihentikan dan skor dikunci (0).</div>
+            <button class="btn-action" style="background: var(--danger); margin-top: 0;" onclick="playAudioAndDo(() => location.reload())">Keluar ❌</button>
+        </div>
+    </div>
+
+<div class="mobile-container">
+    <div class="header">
+        <div class="mascot-box">🐱✨</div>
+        <h3>e-PR KUIS CERIA</h3>
+        <div class="designer-credit">Design Oleh : Ikhwan Adi Yanto, S.Pd. 💬 0822 2557 5222</div>
+    </div>
+
+    <!-- HALAMAN LOGIN -->
+    <div id="startScreen">
+        <div class="form-group">
+            <label>Masukkan Nomor Induk Siswa (NIS) Kamu 🤗✨ :</label>
+            <input type="text" id="inputNIS" oninput="cekNIS()" placeholder="Ketik nomor NIS di sini ya..." autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Kode Tes Aktif 📝 :</label>
+            <input type="text" id="inputKodeTes" value="B.Ind-Bab.3-TP.1" readonly>
+        </div>
+        <div id="namaDisplay" style="margin: 15px 0; font-weight: bold; text-align: center; min-height: 35px; font-size: 14px;"></div>
+
+        <button class="btn-action" id="startBtn" onclick="playAudioAndDo(startQuiz)" disabled>Mulai Kuis Sekarang 🚀</button>
+    </div>
+
+    <!-- HALAMAN KUIS -->
+    <div id="quizScreen" class="hidden" style="display: flex; flex-direction: column; flex: 1;">
+        <div style="text-align: center; margin-bottom: 6px;"><div class="quiz-progress" id="progressText">Soal 1 dari 25</div></div>
+        <div style="text-align: center;"><div class="timer-box">⏰ <span id="timer">120s</span></div></div>
+        <div class="progress-time-container"><div id="timeBar" class="progress-time-bar"></div></div>
+        <p id="question" style="font-weight: 700; font-size: 18px; line-height: 1.4; color: #1a202c; text-align: left; margin-bottom: 15px;"></p>
+        <div id="options"></div>
+        <button class="btn-pas" onclick="playAudioAndDo(lewatSoal)">⏭️ Lewati & Kerjakan Nanti</button>
+    </div>
+
+    <!-- MODAL FEEDBACK -->
+    <div id="feedbackModal" class="hidden">
+        <div class="modal-content">
+            <div id="modalEmoji" class="modal-emoji">👍</div>
+            <h2 id="modalTitle" class="modal-text" style="color: #38b000;">Hebat Sekali!</h2>
+        </div>
+    </div>
+
+    <!-- HALAMAN SKOR AKHIR -->
+    <div id="resultScreen" class="hidden" style="text-align:center; padding-top: 15px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 55px; margin-bottom: 5px;">🏆🎈</div>
+        <h2 id="resultTitle" style="font-size: 22px; color: var(--secondary); font-weight: 800;"></h2>
+        <div id="score" style="font-size: 38px; font-weight: 900; margin: 15px 0; color: #007200; background: #f0fff4; padding: 15px; border-radius: 20px; border: 3px dashed var(--primary);"></div>
+        <div id="durationInfo" style="font-size: 14px; font-weight: 700; margin-bottom: 20px; color: #4a5568; background: #e3f2fd; padding: 10px; border-radius: 12px;">
+            ⏳ Total Waktu: <span id="durationText" style="color: var(--secondary);">0 menit 0 detik</span>
+        </div>
+        <button class="btn-action" onclick="playAudioAndDo(() => location.reload())">Selesai & Keluar 🤩</button>
+    </div>
+</div>
+
+<script>
+    const MAX_ATTEMPTS = 3;
+    let quizIsRunning = false;
+    
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzrfBCYtqJu9qkpM1dKlS1VGt2UkBMRsQEhu1rjOOFtcTi07urfEi8SeCDCndV3VuqH/exec";
+
+    const dataSiswa = {
+        "3052": "Amelia Alita Zahra", "3223": "Angelica Vikar Maharani", "3085": "Anggraeni Abbilah Dhety",
+        "3087": "Azka Nailun Nabhan", "3088": "Cinta Anugrah", "3089": "Dany Sabiq El-Fathin",
+        "3090": "Dhea Fiky Mazaya", "3224": "Earlita Arsyifa Salsabila", "3091": "Fadilla Rizqi Khaerani",
+        "3092": "Fathan Almaizan Zhafar", "3093": "Gavin Harry Wiriawan", "3063": "Hafiz Ardiyansah",
+        "3095": "Intan Berliyan", "3096": "Luthfiya Nur Ramadhani", "3069": "M. Miftah Al Fattah",
+        "3097": "Mugi Aditia Ripki", "3098": "Muh Azzka Alpratama", "3099": "Muhamad Ramadhani",
+        "3102": "Nayla Dwi Syafriani", "3108": "Puteri Ayuning Kirana", "3103": "Raisa Rahmawati Septiani",
+        "3104": "Renita Nur Saefitri", "3084": "Shalwa Aisa Nazwa", "3105": "Wifha Alya An Adibah",
+        "3106": "Zhidan Dwi Aprilio Nurosy", "3107": "Zulfan Azhar Ramadhan"
+    };
+
+    const originalQuizData = [
+        { q: "Cerita legenda biasanya menceritakan tentang ....", a: "A", o: ["A. asal-usul suatu tempat atau peristiwa yang dipercaya masyarakat", "B. petunjuk menggunakan alat elektronik", "C. langkah-langkah membuat makanan", "D. laporan hasil percobaan ilmiah"] },
+        { q: "Pesan moral yang ingin disampaikan pengarang melalui cerita disebut ....", a: "B", o: ["A. tema", "B. amanat", "C. latar", "D. alur"] },
+        { q: "Perhatikan kalimat berikut!\n“Angin malam berbisik di antara pepohonan.”\nMajas yang digunakan dalam kalimat tersebut adalah ....", a: "C", o: ["A. hiperbola", "B. metafora", "C. personifikasi", "D. perumpamaan"] },
+        { q: "Kalimat yang menggunakan majas hiperbola adalah ....", a: "D", o: ["A. Wajahnya bersinar seperti bulan.", "B. Ayah adalah tulang punggung keluarga.", "C. Daun-daun menari tertiup angin.", "D. Aku sudah menunggumu selama seribu tahun!"] },
+        { q: "Perhatikan kalimat berikut!\n“Rina adalah bintang kelas di sekolahnya.”\nMakna ungkapan “bintang kelas” adalah ....", a: "A", o: ["A. siswa yang berprestasi di kelasnya", "B. siswa yang suka melihat bintang", "C. siswa yang tinggal dekat sekolah", "D. siswa yang mempelajari benda langit"] },
+        { q: "Habitat merupakan ....", a: "B", o: ["A. makanan utama suatu hewan", "B. tempat hidup alami suatu makhluk hidup", "C. cara hewan berkembang biak", "D. proses perpindahan hewan"] },
+        { q: "Pelestarian orang utan perlu dilakukan dengan cara ....", a: "C", o: ["A. memindahkan semua orang utan ke perkotaan", "B. membuka hutan untuk perkebunan", "C. menjaga hutan sebagai habitat alaminya", "D. menangkap orang utan untuk dipelihara di rumah"] },
+        { q: "Kalimat berikut yang merupakan fakta adalah ....", a: "D", o: ["A. Orang utan adalah hewan paling lucu di dunia.", "B. Menurut saya, hutan merupakan tempat terindah.", "C. Sepertinya orang utan lebih menarik daripada hewan lain.", "D. Orang utan termasuk kelompok primata."] },
+        { q: "Kalimat yang menunjukkan opini adalah ....", a: "A", o: ["A. Menurut saya, museum itu sangat menarik untuk dikunjungi.", "B. Museum menyimpan berbagai benda bersejarah.", "C. Indonesia memiliki beragam museum.", "D. Pengunjung memasuki museum melalui pintu utama."] },
+        { q: "Perhatikan kalimat berikut!\nIbu berkata, “Jangan lupa membawa bekal besok!”\nKalimat tersebut termasuk ....", a: "B", o: ["A. kalimat tidak langsung", "B. kalimat langsung", "C. kalimat berita tidak langsung", "D. kalimat tanya"] },
+        { q: "Doni berkata, “Saya akan belajar malam ini.”\nBentuk kalimat tidak langsung yang tepat adalah ....", a: "C", o: ["A. Doni berkata, “Ia akan belajar malam ini.”", "B. Doni mengatakan saya akan belajar malam ini.", "C. Doni mengatakan bahwa ia akan belajar malam itu.", "D. Doni bertanya apakah ia belajar malam itu."] },
+        { q: "Tanda baca yang digunakan untuk mengapit petikan langsung adalah ....", a: "D", o: ["A. tanda kurung ( )", "B. tanda hubung (-)", "C. tanda garis miring (/)", "D. tanda petik (“...”)"] },
+        { q: "Perhatikan data jumlah pengunjung museum berikut!\nSenin: 40 orang\nSelasa: 55 orang\nRabu: 70 orang\nKamis: 60 orang\nJumlah pengunjung terbanyak terjadi pada hari ....", a: "A", o: ["A. Rabu", "B. Kamis", "C. Selasa", "D. Senin"] },
+        { q: "Berdasarkan data jumlah pengunjung museum pada soal sebelumnya, selisih pengunjung hari Rabu dan Senin adalah ....", a: "B", o: ["A. 20 orang", "B. 30 orang", "C. 25 orang", "D. 35 orang"] },
+        { q: "Tujuan utama menyajikan data dalam bentuk grafik adalah ....", a: "C", o: ["A. membuat data sulit dibaca", "B. mengganti semua informasi dengan gambar", "C. memudahkan pembaca memahami dan membandingkan data", "D. memperpanjang penjelasan tertulis"] },
+        { q: "Saat membaca grafik, informasi yang perlu diperhatikan untuk memahami data adalah ....", a: "D", o: ["A. warna kertas yang digunakan", "B. nama pembuat grafik saja", "C. ukuran huruf pada grafik", "D. judul, keterangan, dan angka pada grafik"] },
+        { q: "Museum memiliki fungsi penting bagi masyarakat, yaitu ....", a: "A", o: ["A. melestarikan dan memberikan informasi tentang benda bersejarah", "B. menjadi tempat penyimpanan barang dagangan", "C. menggantikan fungsi sekolah sepenuhnya", "D. menjadi tempat tinggal manusia purba"] },
+        { q: "Manusia purba merupakan manusia yang hidup pada ....", a: "C", o: ["A. masa depan", "B. zaman modern", "C. masa lampau yang sangat jauh", "D. masa setelah teknologi digital berkembang"] },
+        { q: "Saat melakukan kunjungan ke museum, informasi yang tepat untuk dicatat adalah ....", a: "D", o: ["A. warna pakaian seluruh pengunjung", "B. makanan kesukaan teman", "C. harga barang di toko sekitar", "D. nama benda bersejarah, keterangan, dan fungsinya"] },
+        { q: "Catatan hasil pengamatan yang baik harus ditulis berdasarkan ....", a: "A", o: ["A. fakta dan informasi yang diperoleh selama pengamatan", "B. cerita yang belum diketahui kebenarannya", "C. pendapat teman tanpa pemeriksaan", "D. imajinasi penulis semata"] },
+        { q: "Perhatikan kalimat berikut!\n“Air sungai itu jernih sehingga dasar sungai terlihat jelas.”\nMakna kata jernih adalah ....", a: "B", o: ["A. berbau tidak sedap", "B. bening atau tidak keruh", "C. sangat dalam", "D. berwarna gelap"] },
+        { q: "Sikap yang tepat ketika mendengarkan cerita legenda dari daerah lain adalah ....", a: "C", o: ["A. menganggap semua cerita itu tidak berguna", "B. mengubah cerita tanpa memahami isinya", "C. menghargai cerita dan nilai budaya yang terkandung di dalamnya", "D. menertawakan kepercayaan masyarakat setempat"] },
+        { q: "Perhatikan kalimat langsung berikut!\n“Jangan membuang sampah ke sungai,” pesan Pak Guru.\nBentuk kalimat tidak langsung yang tepat adalah ....", a: "D", o: ["A. Pak Guru berkata, “Jangan membuang sampah ke sungai.”", "B. Pak Guru berpesan, “Sampah dibuang ke sungai.”", "C. Pak Guru bertanya apakah sungai membuang sampah.", "D. Pak Guru berpesan agar kami tidak membuang sampah ke sungai."] },
+        { q: "Saat menyampaikan hasil kunjungan museum di depan kelas, informasi sebaiknya disampaikan secara ....", a: "A", o: ["A. runtut, jelas, dan sesuai hasil pengamatan", "B. berbelit-belit dan tidak berurutan", "C. berdasarkan dugaan pribadi saja", "D. singkat tanpa informasi penting"] },
+        { q: "Perhatikan pernyataan berikut!\n“Menurut saya, cerita legenda tersebut sangat menarik karena mengajarkan kejujuran.”\nBagian yang menunjukkan opini adalah ....", a: "B", o: ["A. cerita legenda", "B. Menurut saya, cerita legenda tersebut sangat menarik", "C. mengajarkan kejujuran", "D. kejujuran adalah sikap terpuji"] }
+    ];
+
+    let activeQueue = [];
+    let currentIndexInQueue = 0;
+    let score = 0, timeLeft = 120, timer;
+    let totalSisaWaktuKeseluruhan = 0;
+
+    // Deteksi jika siswa berpindah aplikasi / tab / minimize
+    document.addEventListener("visibilitychange", function() {
+        if (quizIsRunning && document.hidden) {
+            triggerViolation();
+        }
+    });
+    window.addEventListener("blur", function() {
+        if (quizIsRunning) {
+            triggerViolation();
+        }
+    });
+
+    function triggerViolation() {
+        if (!quizIsRunning) return;
+        quizIsRunning = false;
+        clearInterval(timer);
+        hideFeedbackModal();
+
+        // Tampilkan Bubble Pelanggaran Merah
+        document.getElementById('violationModal').classList.remove('hidden');
+
+        // Kirim data skor 0 ke Spreadsheet secara otomatis
+        let targetNIS = document.getElementById('inputNIS').value.trim();
+        let namaSiswa = dataSiswa[targetNIS] || "Siswa";
+        let kodeTes = document.getElementById('inputKodeTes').value.trim() || "-";
+
+        let formData = new FormData();
+        formData.append('nama', namaSiswa + " (Melanggar / Pindah Aplikasi)");
+        formData.append('skor', 0);
+        formData.append('keterangan', kodeTes); 
+        formData.append('sisaWaktu', "0 detik");
+        formData.append('durasiPengerjaan', "0 menit 0 detik");
+
+        fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: formData }).catch(err => console.error(err));
+    }
+
+    function playAudioAndDo(callback) {
+        let audio = document.getElementById('clickSound');
+        let executed = false;
+
+        let runOnce = () => {
+            if (!executed) {
+                executed = true;
+                if (callback) callback();
+            }
+        };
+
+        if (audio) {
+            audio.currentTime = 0;
+            let playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    audio.onended = runOnce;
+                    setTimeout(runOnce, 1000);
+                }).catch(err => {
+                    runOnce();
+                });
+            } else {
+                runOnce();
+            }
+        } else {
+            runOnce();
+        }
+    }
+
+    function closeRulesModal() {
+        document.getElementById('rulesModal').classList.add('hidden');
+    }
+
+    function showFeedbackModal(isCorrect) {
+        let modal = document.getElementById('feedbackModal');
+        let emoji = document.getElementById('modalEmoji');
+        let title = document.getElementById('modalTitle');
+        if (isCorrect) { emoji.innerText = "🎉✨"; title.innerText = "Benar, Hebat Sekali!"; title.style.color = "#38b000"; } 
+        else { emoji.innerText = "🥺💪"; title.innerText = "Kurang Tepat, Semangat!"; title.style.color = "var(--danger)"; }
+        modal.classList.remove('hidden');
+    }
+
+    function hideFeedbackModal() { document.getElementById('feedbackModal').classList.add('hidden'); }
+
+    function cekNIS() {
+        let inputVal = document.getElementById('inputNIS').value.trim();
+        let display = document.getElementById('namaDisplay');
+        let startBtn = document.getElementById('startBtn');
+        
+        startBtn.disabled = true;
+        if (!inputVal) { display.innerText = ""; return; }
+        
+        let namaSiswa = dataSiswa[inputVal];
+        if (!namaSiswa) { display.innerText = "NIS tidak ditemukan ❌"; display.style.color = "var(--danger)"; return; }
+
+        let pemakaian = parseInt(localStorage.getItem('kuota_bind_tp1_' + inputVal)) || 0;
+        let sisa = MAX_ATTEMPTS - pemakaian;
+
+        if (sisa <= 0) {
+            display.innerHTML = `Halo, ${namaSiswa} ❌<br><span style="color:var(--danger); font-size:12px;">Kesempatan 3x kamu sudah habis!</span>`;
+            startBtn.disabled = true;
+        } else {
+            display.innerHTML = `Halo, ${namaSiswa} ✨<br><span style="color:#007200; font-size:12px;">Sisa kesempatan: <b>${sisa} dari 3 kali</b></span>`;
+            startBtn.disabled = false;
+        }
+    }
+
+    function startQuiz() {
+        let nis = document.getElementById('inputNIS').value.trim();
+        let pemakaian = parseInt(localStorage.getItem('kuota_bind_tp1_' + nis)) || 0;
+        if ((MAX_ATTEMPTS - pemakaian) <= 0) { alert("Kesempatan sudah habis!"); location.reload(); return; }
+
+        localStorage.setItem('kuota_bind_tp1_' + nis, pemakaian + 1);
+        score = 0; totalSisaWaktuKeseluruhan = 0;
+        activeQueue = [...originalQuizData].sort(() => Math.random() - 0.5);
+        currentIndexInQueue = 0;
+
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('quizScreen').classList.remove('hidden');
+        
+        quizIsRunning = true;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (!quizIsRunning) return;
+        clearInterval(timer); timeLeft = 120;
+        let timeBar = document.getElementById('timeBar');
+        timeBar.style.width = "100%"; timeBar.classList.remove('critical');
+        document.getElementById('timer').innerText = timeLeft + "s";
+        document.getElementById('progressText').innerText = `Soal ${currentIndexInQueue + 1} dari ${activeQueue.length}`;
+        
+        let q = activeQueue[currentIndexInQueue];
+        document.getElementById('question').innerText = q.q;
+        let optDiv = document.getElementById('options'); optDiv.innerHTML = "";
+        
+        q.o.forEach((o, index) => {
+            let btn = document.createElement('button'); 
+            btn.className = 'option-btn'; 
+            btn.innerText = o;
+            btn.onclick = () => { 
+                optDiv.querySelectorAll('.option-btn').forEach(b => b.disabled = true); 
+                clearInterval(timer);
+                totalSisaWaktuKeseluruhan += timeLeft;
+
+                playAudioAndDo(() => {
+                    if(o.charAt(0) === q.a) { btn.classList.add('correct'); score += 4; showFeedbackModal(true); } 
+                    else { btn.classList.add('wrong'); showFeedbackModal(false); }
+                    
+                    setTimeout(() => { hideFeedbackModal(); next(); }, 1200);
+                });
+            };
+            optDiv.appendChild(btn);
+        });
+
+        let loopCount = 0;
+        timer = setInterval(() => {
+            if (!quizIsRunning) return;
+            loopCount++;
+            let currentWidth = ((120 - (loopCount * 0.1)) / 120) * 100;
+            timeBar.style.width = Math.max(0, currentWidth) + "%";
+
+            if (loopCount % 10 === 0) {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft + "s";
+                if(timeLeft > 0 && timeLeft <= 10) { timeBar.classList.add('critical'); }
+                if(timeLeft <= 0) { 
+                    clearInterval(timer); timeBar.style.width = "0%";
+                    optDiv.querySelectorAll('.option-btn').forEach(b => b.disabled = true); 
+                    showFeedbackModal(false);
+                    let skippedQuestion = activeQueue.splice(currentIndexInQueue, 1)[0];
+                    activeQueue.push(skippedQuestion);
+                    setTimeout(() => { hideFeedbackModal(); showQuestion(); }, 1200); 
+                }
+            }
+        }, 100);
+    }
+
+    function lewatSoal() {
+        clearInterval(timer);
+        let skippedQuestion = activeQueue.splice(currentIndexInQueue, 1)[0];
+        activeQueue.push(skippedQuestion);
+        if (currentIndexInQueue >= activeQueue.length) currentIndexInQueue = 0;
+        showQuestion();
+    }
+
+    function next() {
+        activeQueue.splice(currentIndexInQueue, 1);
+        if(currentIndexInQueue < activeQueue.length) { showQuestion(); } 
+        else if (activeQueue.length > 0) { currentIndexInQueue = 0; showQuestion(); } 
+        else {
+            quizIsRunning = false; clearInterval(timer);
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            document.getElementById('resultTitle').innerText = score >= 70 ? "Luar Biasa! Kamu Hebat 🎉 🤩" : "Tetap Semangat, Ayo Coba Lagi! 📚 ✨";
+            document.getElementById('score').innerText = "Skor Kamu: " + score;
+            
+            let targetNIS = document.getElementById('inputNIS').value.trim();
+            let namaSiswa = dataSiswa[targetNIS];
+            let kodeTes = document.getElementById('inputKodeTes').value.trim() || "-";
+
+            let totalWaktuMaksimal = originalQuizData.length * 120;
+            let waktuDipakaiDetik = totalWaktuMaksimal - totalSisaWaktuKeseluruhan;
+            let menit = Math.floor(waktuDipakaiDetik / 60);
+            let detik = waktuDipakaiDetik % 60;
+            let formatDurasi = menit + " menit " + detik + " detik";
+
+            document.getElementById('durationText').innerText = formatDurasi;
+
+            let formData = new FormData();
+            formData.append('nama', namaSiswa);
+            formData.append('skor', score);
+            formData.append('keterangan', kodeTes); 
+            formData.append('sisaWaktu', totalSisaWaktuKeseluruhan + " detik");
+            formData.append('durasiPengerjaan', formatDurasi);
+
+            fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: formData }).catch(err => console.error(err));
+        }
+    }
+</script>
+</body>
+</html>
