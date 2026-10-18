@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Datang - PENA KU (Pengelolaan Nilai & Administrasi Kelas Unggul)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            min-height: 100vh;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #ffd1ff 50%, #a1c4fd 75%, #c2ffd8 100%);
+            background-size: 300% 300%;
+            animation: gradientBG 14s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Dekorasi Gelembung Melayang */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.55);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 9s infinite ease-in-out;
+            z-index: 1;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+            50% { transform: translateY(-35px) scale(1.12) rotate(12deg); }
+        }
+
+        /* Top Bar Header */
+        .header-bar {
+            width: 100%;
+            max-width: 1600px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
+
+        .top-user-bar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 22px;
+            border-radius: 35px;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.18);
+            backdrop-filter: blur(12px);
+            border: 3px solid #ffffff;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #2f3542;
+            font-size: 1rem;
+        }
+
+        .user-info i {
+            color: #ff6b6b;
+            font-size: 1.2rem;
+        }
+
+        .btn-auth {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 9px 20px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.35);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+        }
+
+        /* Container Full Screen / Long Grid */
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 45px 50px 55px 50px;
+            border-radius: 40px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 25px 70px rgba(255, 107, 107, 0.2);
+            border: 5px solid #ffffff;
+            width: 100%;
+            max-width: 1600px;
+            position: relative;
+            z-index: 2;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .logo-wrapper {
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            width: 160px;
+            height: auto;
+            filter: drop-shadow(0px 12px 18px rgba(0, 0, 0, 0.2));
+            animation: bounce 3s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            font-weight: 700;
+            font-size: 3.5rem;
+            color: #1e3799;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 0px #f6e58d;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.35rem;
+            color: #3867d6;
+            font-weight: 700;
+            margin-bottom: 45px;
+            background: linear-gradient(90deg, #1e3799, #0984e3, #00b894, #e17055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowText 8s linear infinite;
+        }
+
+        @keyframes rainbowText {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .section-title {
+            font-family: 'Comic Neue', cursive;
+            font-size: 2rem;
+            color: #2f3542;
+            text-align: left;
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* LAYOUT GRID LEGA (3 Kolom x 2 Baris untuk tampilan lapang) */
+        .grid-3x2 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+
+        .card-kelas {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 28px 35px;
+            border-radius: 28px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #ffffff;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            gap: 25px;
+        }
+
+        .card-kelas i {
+            font-size: 3.5rem;
+            transition: transform 0.35s ease;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .card-kelas .card-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .card-kelas span.title {
+            font-family: 'Comic Neue', cursive;
+            font-size: 2.2rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card-kelas span.desc {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .kelas-1 { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); }
+        .kelas-2 { background: linear-gradient(135deg, #ff9f43, #ffbd7a); }
+        .kelas-3 { background: linear-gradient(135deg, #feca57, #ffdd67); }
+        .kelas-4 { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
+        .kelas-5 { background: linear-gradient(135deg, #48dbfb, #00d2d3); }
+        .kelas-6 { background: linear-gradient(135deg, #54a0ff, #5f27cd); }
+
+        .card-kelas:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+        }
+
+        .card-kelas:hover i {
+            transform: scale(1.2) rotate(12deg);
+        }
+
+        .card-kelas::after {
+            content: '';
+            position: absolute;
+            top: -25px;
+            right: -25px;
+            width: 90px;
+            height: 90px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+        }
+
+        /* Footer & Badge Developer */
+        .footer-bar {
+            width: 100%;
+            max-width: 1600px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            z-index: 10;
+        }
+
+        .developer-badge {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: #4b6584;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 8px 18px;
+            border-radius: 16px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            border: 2px solid #ffffff;
+            backdrop-filter: blur(8px);
+        }
+
+        .developer-badge strong {
+            color: #2d3436;
+            font-weight: 700;
+        }
+
+        /* --- MODAL LOGIN POPUP --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 4px solid #ffffff;
+            position: relative;
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .login-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: #2b569a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 8px 15px rgba(161, 196, 253, 0.4);
+        }
+
+        .login-header h2 {
+            font-family: 'Comic Neue', cursive;
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: #a0aec0;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 13px 45px 13px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: #2d3748;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #45aaf2;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(69, 170, 242, 0.15);
+        }
+
+        .form-control:focus + .input-icon {
+            color: #45aaf2;
+        }
+
+        .btn-toggle-pwd {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 1rem;
+            color: #718096;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .btn-toggle-pwd:hover {
+            background-color: #edf2f7;
+            color: #2d3748;
+        }
+
+        .btn-toggle-pwd .emoji-icon {
+            font-size: 1.1rem;
+        }
+
+        .remember-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 0.88rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #4a5568;
+            user-select: none;
+            font-weight: 500;
+        }
+
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff6b6b;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-submit-login {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-close-modal {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            background: #edf2f7;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-close-modal:hover {
+            background: #e2e8f0;
+            color: #e53e3e;
+        }
+
+        .alert-error {
+            background-color: #fff5f5;
+            border-left: 4px solid #f56565;
+            color: #c53030;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        /* RESPONSIVE LAYOUT */
+        @media (max-width: 1200px) {
+            .grid-3x2 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body, html { padding: 15px; }
+            .grid-3x2 {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .card-kelas {
+                padding: 22px 25px;
+            }
+            h1 { font-size: 2.5rem; }
+            .container { padding: 30px 20px; }
+            .footer-bar { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Gelembung Dekorasi Belakang -->
+    <div class="bubble" style="width: 90px; height: 90px; top: 6%; left: 3%; animation-duration: 8s;"></div>
+    <div class="bubble" style="width: 130px; height: 130px; bottom: 8%; left: 5%; animation-duration: 13s;"></div>
+    <div class="bubble" style="width: 100px; height: 100px; top: 12%; right: 4%; animation-duration: 10s;"></div>
+    <div class="bubble" style="width: 75px; height: 75px; bottom: 12%; right: 8%; animation-duration: 7s;"></div>
+
+    <!-- Header Top User Bar -->
+    <div class="header-bar">
+        <div class="top-user-bar">
+            <div class="user-info" id="userInfo">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="userStatusText">Tamu (Belum Login)</span>
+            </div>
+            <button class="btn-auth" id="btnAuthAction" onclick="handleAuthAction()">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span id="btnAuthText">Masuk</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Container Utama Wide Screen -->
+    <div class="container">
+        <div class="logo-wrapper">
+            <img src="Lencana Emas Biru PENAKU.png" alt="Logo PENA KU" class="logo">
+        </div>
+        
+        <h1>Aplikasi PENA KU</h1>
+        <div class="subtitle">✨ Pengelolaan Nilai dan Administrasi Kelas Unggul ✨</div>
+        
+        <div class="section-title">🎈 Menu Tingkat Kelas</div>
+        
+        <div class="grid-3x2">
+            <a href="#" class="card-kelas kelas-1">
+                <i class="fa-solid fa-face-smile-beam"></i>
+                <div class="card-info">
+                    <span class="title">Kelas 1</span>
+                    <span class="desc">Administrasi & Nilai Kelas 1</span>
+                </div>
+            </a>
+            <a href="#" class="card-kelas kelas-2">
+                <i class="fa-solid fa-shapes"></i>
+                <div class="card-info">
+                    <span class="title">Kelas 2</span>
+                    <span class="desc">Administrasi & Nilai Kelas 2</span>
+                </div>
+            </a>
+            <a href="#" class="card-kelas kelas-3">
+                <i class="fa-solid fa-palette"></i>
+                <div class="card-info">
+                    <span class="title">Kelas 3</span>
+                    <span class="desc">Administrasi & Nilai Kelas 3</span>
+                </div>
+            </a>
+            <a href="#" class="card-kelas kelas-4">
+                <i class="fa-solid fa-rocket"></i>
+                <div class="card-info">
+                    <span class="title">Kelas 4</span>
+                    <span class="desc">Administrasi & Nilai Kelas 4</span>
+                </div>
+            </a>
+            <a href="#" class="card-kelas kelas-5">
+                <i class="fa-solid fa-flask-vial"></i>
+                <div class="card-info">
+                    <span class="title">Kelas 5</span>
+                    <span class="desc">Administrasi & Nilai Kelas 5</span>
+                </div>
+            </a>
+            <a href="PENA MANTAP.html" class="card-kelas kelas-6">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <div class="card-info">
+                    <span class="title">Kelas 6</span>
+                    <span class="desc">Administrasi & Nilai Utama Kelas 6</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer Developer Info -->
+    <div class="footer-bar">
+        <div class="developer-badge">
+            Aplikasi ini dibuat oleh : <strong>Ikhwan Adi Yanto, S.Pd.</strong> tahun 2026
+        </div>
+    </div>
+
+    <!-- MODAL POPUP LOGIN -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-card">
+            <button class="btn-close-modal" onclick="closeLoginModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="login-header">
+                <div class="login-icon">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2>Login Akun PENA KU</h2>
+                <p>Masukkan kredensial untuk mengakses sistem</p>
+            </div>
+
+            <div class="alert-error" id="loginError">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="errorMessage">Username atau password salah!</span>
+            </div>
+
+            <form id="loginForm" onsubmit="processLogin(event)">
+                <div class="form-group">
+                    <label for="usernameInput">Nama Pengguna (Username)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="usernameInput" class="form-control" placeholder="Masukkan username" required autocomplete="username">
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordInput">Kata Sandi (Password)</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required autocomplete="current-password">
+                        <i class="fa-solid fa-key input-icon"></i>
+                        <button type="button" class="btn-toggle-pwd" id="togglePasswordBtn" onclick="togglePasswordVisibility()" title="Perlihatkan/Sembunyikan Sandi">
+                            <span class="emoji-icon" id="toggleEmoji">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="remember-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Selalu ingat password</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit-login">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <audio id="kelasSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
+
+    <script>
+        const VALID_USER = "admin";
+        const VALID_PASS = "ikhwan22";
+
+        const loginModal = document.getElementById('loginModal');
+        const usernameInput = document.getElementById('usernameInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const toggleEmoji = document.getElementById('toggleEmoji');
+        const loginError = document.getElementById('loginError');
+        const userStatusText = document.getElementById('userStatusText');
+        const btnAuthText = document.getElementById('btnAuthText');
+        const btnAuthAction = document.getElementById('btnAuthAction');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus();
+        });
+
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('pena_user');
+            const savedRemember = localStorage.getItem('pena_remember');
+
+            if (savedRemember === 'true' && savedUser === VALID_USER) {
+                setLoggedInState(savedUser);
+            } else if (sessionStorage.getItem('pena_logged_in') === 'true') {
+                setLoggedInState(sessionStorage.getItem('pena_user') || VALID_USER);
+            } else {
+                setLoggedOutState();
+                if (localStorage.getItem('pena_saved_username')) {
+                    usernameInput.value = localStorage.getItem('pena_saved_username');
+                    passwordInput.value = localStorage.getItem('pena_saved_password') || '';
+                    rememberMeCheckbox.checked = true;
+                }
+            }
+        }
+
+        function setLoggedInState(username) {
+            userStatusText.textContent = `Guru (${username})`;
+            btnAuthText.textContent = "Keluar";
+            btnAuthAction.classList.add('btn-logout');
+            btnAuthAction.setAttribute('onclick', 'processLogout()');
+        }
+
+        function setLoggedOutState() {
+            userStatusText.textContent = "Tamu (Belum Login)";
+            btnAuthText.textContent = "Masuk";
+            btnAuthAction.classList.remove('btn-logout');
+            btnAuthAction.setAttribute('onclick', 'openLoginModal()');
+        }
+
+        function openLoginModal() {
+            loginError.style.display = 'none';
+            loginModal.classList.add('active');
+            setTimeout(() => usernameInput.focus(), 200);
+        }
+
+        function closeLoginModal() {
+            loginModal.classList.remove('active');
+        }
+
+        function togglePasswordVisibility() {
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleEmoji.textContent = "🙈";
+                togglePasswordBtn.setAttribute('title', 'Sembunyikan Sandi');
+            } else {
+                passwordInput.type = "password";
+                toggleEmoji.textContent = "👁️";
+                togglePasswordBtn.setAttribute('title', 'Perlihatkan Sandi');
+            }
+        }
+
+        function processLogin(event) {
+            event.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (username === VALID_USER && password === VALID_PASS) {
+                loginError.style.display = 'none';
+                
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('pena_remember', 'true');
+                    localStorage.setItem('pena_user', username);
+                    localStorage.setItem('pena_saved_username', username);
+                    localStorage.setItem('pena_saved_password', password);
+                } else {
+                    localStorage.removeItem('pena_remember');
+                    localStorage.removeItem('pena_user');
+                    localStorage.removeItem('pena_saved_username');
+                    localStorage.removeItem('pena_saved_password');
+                }
+
+                sessionStorage.setItem('pena_logged_in', 'true');
+                sessionStorage.setItem('pena_user', username);
+
+                setLoggedInState(username);
+                closeLoginModal();
+                alert(`Selamat datang kembali, ${username}! Login berhasil.`);
+            } else {
+                loginError.style.display = 'flex';
+                document.getElementById('errorMessage').textContent = "Username atau password salah! (Coba: admin / ikhwan22)";
+            }
+        }
+
+        function processLogout() {
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
+                sessionStorage.removeItem('pena_logged_in');
+                sessionStorage.removeItem('pena_user');
+                localStorage.removeItem('pena_remember');
+                localStorage.removeItem('pena_user');
+                setLoggedOutState();
+                alert("Anda telah berhasil keluar.");
+            }
+        }
+
+        function handleAuthAction() {
+            if (sessionStorage.getItem('pena_logged_in') === 'true' || localStorage.getItem('pena_remember') === 'true') {
+                processLogout();
+            } else {
+                openLoginModal();
+            }
+        }
+
+        const normalMenus = document.querySelectorAll('.card-kelas');
+        const kelasSound = document.getElementById('kelasSound');
+
+        normalMenus.forEach(menu => {
+            menu.addEventListener('click', (e) => {
+                const isLoggedIn = sessionStorage.getItem('pena_logged_in') === 'true' || localStorage.getItem('pena_remember') === 'true';
+                
+                if (!isLoggedIn) {
+                    e.preventDefault();
+                    openLoginModal();
+                    alert("Silakan login terlebih dahulu untuk mengakses menu ini.");
+                    return;
+                }
+
+                const targetUrl = menu.getAttribute('href');
+                
+                if (targetUrl && targetUrl !== '#') {
+                    e.preventDefault();
+                    
+                    kelasSound.currentTime = 0;
+                    kelasSound.play().catch(error => {
+                        window.location.href = targetUrl;
+                    });
+
+                    kelasSound.onended = function() {
+                        window.location.href = targetUrl;
+                    };
+                } else {
+                    kelasSound.currentTime = 0; 
+                    kelasSound.play().catch(error => {
+                        console.log("Pemutaran suara diblokir browser sebelum ada interaksi.");
+                    });
+                    kelasSound.onended = null;
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
