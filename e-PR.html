@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-PR - Beranda Pilihan Mata Pelajaran</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0d47a1;
+            --secondary-blue: #1976d2;
+            --light-blue: #e3f2fd;
+            --accent-blue: #42a5f5;
+            --dark-blue: #0a2540;
+            --white: #ffffff;
+            --gray-bg: #f4f7fc;
+            --shadow: 0 10px 25px rgba(13, 71, 161, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-bg);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Floating Animation Layer (Balon, Bunga, Emotikon) */
+        .decorations-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-item {
+            position: absolute;
+            bottom: -80px;
+            font-size: 32px;
+            opacity: 0.85;
+            animation: floatUp 12s infinite linear;
+            user-select: none;
+        }
+
+        /* Style Balon khusus */
+        .balloon-item {
+            width: 42px;
+            height: 56px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            opacity: 0.75;
+            animation: floatUp 11s infinite linear;
+        }
+        .balloon-item::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 12px;
+            background-color: rgba(0,0,0,0.25);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0; }
+            10% { opacity: 0.85; }
+            50% { transform: translateY(-50vh) rotate(15deg) scale(1.1); }
+            90% { opacity: 0.85; }
+            100% { transform: translateY(-115vh) rotate(-15deg) scale(0.9); opacity: 0; }
+        }
+
+        /* Variasi Elemen Dekorasi */
+        .f1 { left: 5%; background: #ff7675; animation-duration: 9s; animation-delay: 0s; }
+        .f2 { left: 14%; animation-duration: 13s; animation-delay: 1.5s; }
+        .f3 { left: 24%; animation-duration: 11s; animation-delay: 3s; }
+        .f4 { left: 34%; background: #55efc4; animation-duration: 10s; animation-delay: 0.5s; }
+        .f5 { left: 44%; animation-duration: 14s; animation-delay: 2s; }
+        .f6 { left: 54%; animation-duration: 12s; animation-delay: 4s; }
+        .f7 { left: 64%; background: #74b9ff; animation-duration: 10s; animation-delay: 1s; }
+        .f8 { left: 74%; animation-duration: 15s; animation-delay: 2.5s; }
+        .f9 { left: 84%; animation-duration: 11s; animation-delay: 0.2s; }
+        .f10 { left: 93%; background: #fd79a8; animation-duration: 13s; animation-delay: 3.5s; }
+
+        /* Header Navigation */
+        header {
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            color: var(--white);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            color: #ffeb3b;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .brand-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-title span {
+            color: #ffeb3b;
+        }
+
+        /* Tombol Beranda di Header */
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 9px 20px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            background-color: var(--white);
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Container Main Body */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .welcome-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-hero h1 {
+            color: var(--dark-blue);
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .welcome-hero p {
+            color: #555;
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grid Frame Mata Pelajaran */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 10px;
+        }
+
+        .subject-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border-top: 6px solid var(--secondary-blue);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(13, 71, 161, 0.22);
+        }
+
+        /* Frame Cute Icon Box */
+        .subject-icon-box {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            position: relative;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .subject-card:hover .subject-icon-box {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .subject-icon-box i {
+            font-size: 38px;
+            color: var(--white);
+        }
+
+        /* Lucu Emoji Badge di Atas Icon */
+        .cute-emoji {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 26px;
+            animation: pulseEmoji 2s infinite ease-in-out;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        @keyframes pulseEmoji {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(10deg); }
+        }
+
+        .subject-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 12px;
+        }
+
+        .subject-desc {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        /* Custom Colors per Frame Mapel */
+        .card-pancasila .subject-icon-box { background: linear-gradient(135deg, #ff7675, #d63031); }
+        .card-pancasila { border-top-color: #d63031; }
+
+        .card-bindo .subject-icon-box { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+        .card-bindo { border-top-color: #0984e3; }
+
+        .card-ipas .subject-icon-box { background: linear-gradient(135deg, #55efc4, #00b894); }
+        .card-ipas { border-top-color: #00b894; }
+
+        .card-mtk .subject-icon-box { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+        .card-mtk { border-top-color: #6c5ce7; }
+
+        .card-bing .subject-icon-box { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
+        .card-bing .subject-icon-box i { color: #2d3436; }
+        .card-bing { border-top-color: #fdcb6e; }
+
+        .card-bjawa .subject-icon-box { background: linear-gradient(135deg, #fab1a0, #e17055); }
+        .card-bjawa { border-top-color: #e17055; }
+
+        .card-srup .subject-icon-box { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .card-srup { border-top-color: #e84393; }
+
+        .card-smus .subject-icon-box { background: linear-gradient(135deg, #81ecec, #00cec9); }
+        .card-smus { border-top-color: #00cec9; }
+
+        /* Action Button Inside Frame */
+        .btn-open-epr {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--white);
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(25, 118, 210, 0.25);
+        }
+
+        .subject-card:hover .btn-open-epr {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #777;
+            position: relative;
+            z-index: 5;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Element -->
+    <audio id="clickSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
+
+    <!-- Ambient Floating Decorations (Balon, Bunga & Emotikon Lucu) -->
+    <div class="decorations-container">
+        <div class="balloon-item f1"></div>
+        <div class="floating-item f2">🌸</div>
+        <div class="floating-item f3">🥰</div>
+        <div class="balloon-item f4"></div>
+        <div class="floating-item f5">🌻</div>
+        <div class="floating-item f6">🥳</div>
+        <div class="balloon-item f7"></div>
+        <div class="floating-item f8">🌷</div>
+        <div class="floating-item f9">⭐</div>
+        <div class="balloon-item f10"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="logo-container">
+            <i class="fa-solid fa-graduation-cap logo-icon"></i>
+            <div class="brand-title">e-PR <span>🎈</span></div>
+        </div>
+        <nav>
+            <a onclick="playAndNavigate(event, 'index.html')"><i class="fa-solid fa-house"></i> Beranda</a>
+        </nav>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main>
+        <div class="welcome-hero">
+            <h1>Pilih Mata Pelajaran PR Hari Ini! ✨</h1>
+            <p>Pilih frame mata pelajaran di bawah untuk mulai mengerjakan Pekerjaan Rumah (PR) secara seru dan menyenangkan.</p>
+        </div>
+
+        <div class="subjects-grid">
+
+            <!-- Frame 1: Pend. Pancasila -->
+            <a onclick="playAndNavigate(event, 'e-PR Pend.Pancasila.html')" class="subject-card card-pancasila">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="cute-emoji">⭐</span>
+                </div>
+                <div class="subject-title">Pend. Pancasila</div>
+                <div class="subject-desc">Belajar nilai Pancasila & kewarganegaraan dengan riang gembira.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 2: Bahasa Indonesia -->
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Indonesia.html')" class="subject-card card-bindo">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-book"></i>
+                    <span class="cute-emoji">📚</span>
+                </div>
+                <div class="subject-title">Bahasa Indonesia</div>
+                <div class="subject-desc">Membaca, menulis, dan memahami cerita menarik.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 3: IPAS -->
+            <a onclick="playAndNavigate(event, 'e-PR IPAS.html')" class="subject-card card-ipas">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-flask"></i>
+                    <span class="cute-emoji">🌱</span>
+                </div>
+                <div class="subject-title">IPAS</div>
+                <div class="subject-desc">Menjelajahi rahasia alam dan ilmu pengetahuan sosial.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 4: Matematika -->
+            <a onclick="playAndNavigate(event, 'e-PR Matematika.html')" class="subject-card card-mtk">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span class="cute-emoji">🔢</span>
+                </div>
+                <div class="subject-title">Matematika</div>
+                <div class="subject-desc">Bermain dengan angka, hitungan, dan logika seru.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 5: Bahasa Inggris -->
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Inggris.html')" class="subject-card card-bing">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-language"></i>
+                    <span class="cute-emoji">🔤</span>
+                </div>
+                <div class="subject-title">Bahasa Inggris</div>
+                <div class="subject-desc">Belajar kosa kata dan percakapan bahasa internasional.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 6: Bahasa Jawa -->
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Jawa.html')" class="subject-card card-bjawa">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-scroll"></i>
+                    <span class="cute-emoji">🪘</span>
+                </div>
+                <div class="subject-title">Bahasa Jawa</div>
+                <div class="subject-desc">Mengenal kebudayaan, unggah-ungguh, dan bahasa daerah.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 7: Seni Rupa -->
+            <a onclick="playAndNavigate(event, 'e-PR Seni Rupa.html')" class="subject-card card-srup">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-palette"></i>
+                    <span class="cute-emoji">🎨</span>
+                </div>
+                <div class="subject-title">Seni Rupa</div>
+                <div class="subject-desc">Mewarnai hari dengan gambar, kreasi, dan bentuk indah.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Frame 8: Seni Musik -->
+            <a onclick="playAndNavigate(event, 'e-PR Seni Musik.html')" class="subject-card card-smus">
+                <div class="subject-icon-box">
+                    <i class="fa-solid fa-music"></i>
+                    <span class="cute-emoji">🎵</span>
+                </div>
+                <div class="subject-title">Seni Musik</div>
+                <div class="subject-desc">Mengenal nada, irama, dan lagu-lagu gembira.</div>
+                <div class="btn-open-epr">
+                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2026 e-PR Pendidikan - Belajar Menyenangkan Setiap Hari! 🎉
+    </footer>
+
+    <!-- Script Suara & Navigasi -->
+    <script>
+        function playAndNavigate(event, targetUrl) {
+            event.preventDefault(); // Tahan navigasi standar
+            
+            const audio = document.getElementById('clickSound');
+            if (audio) {
+                audio.currentTime = 0; // Reset suara ke awal
+
+                // Fungsi yang dipanggil saat audio benar-benar selesai
+                const onAudioEnded = () => {
+                    audio.removeEventListener('ended', onAudioEnded);
+                    window.location.href = targetUrl;
+                };
+
+                // Pasang listener 'ended'
+                audio.addEventListener('ended', onAudioEnded);
+
+                // Jalankan audio
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        // Jika audio gagal dimainkan (misal diblokir browser), langsung pindah
+                        audio.removeEventListener('ended', onAudioEnded);
+                        window.location.href = targetUrl;
+                    });
+                }
+            } else {
+                window.location.href = targetUrl;
+            }
+        }
+    </script>
+
+</body>
+</html>
