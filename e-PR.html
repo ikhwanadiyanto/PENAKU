@@ -37,7 +37,7 @@
             position: relative;
         }
 
-        /* Ambient Floating Animation Layer (Balon, Bunga, Emotikon) */
+        /* Ambient Floating Animation Layer */
         .decorations-container {
             position: fixed;
             width: 100%;
@@ -58,7 +58,6 @@
             user-select: none;
         }
 
-        /* Style Balon khusus */
         .balloon-item {
             width: 42px;
             height: 56px;
@@ -85,7 +84,6 @@
             100% { transform: translateY(-115vh) rotate(-15deg) scale(0.9); opacity: 0; }
         }
 
-        /* Variasi Elemen Dekorasi */
         .f1 { left: 5%; background: #ff7675; animation-duration: 9s; animation-delay: 0s; }
         .f2 { left: 14%; animation-duration: 13s; animation-delay: 1.5s; }
         .f3 { left: 24%; animation-duration: 11s; animation-delay: 3s; }
@@ -140,7 +138,6 @@
             color: #ffeb3b;
         }
 
-        /* Tombol Beranda di Header */
         nav a {
             color: var(--white);
             text-decoration: none;
@@ -223,7 +220,6 @@
             box-shadow: 0 15px 30px rgba(13, 71, 161, 0.22);
         }
 
-        /* Frame Cute Icon Box */
         .subject-icon-box {
             width: 85px;
             height: 85px;
@@ -246,7 +242,6 @@
             color: var(--white);
         }
 
-        /* Lucu Emoji Badge di Atas Icon */
         .cute-emoji {
             position: absolute;
             top: -5px;
@@ -275,7 +270,6 @@
             line-height: 1.4;
         }
 
-        /* Custom Colors per Frame Mapel */
         .card-pancasila .subject-icon-box { background: linear-gradient(135deg, #ff7675, #d63031); }
         .card-pancasila { border-top-color: #d63031; }
 
@@ -301,7 +295,6 @@
         .card-smus .subject-icon-box { background: linear-gradient(135deg, #81ecec, #00cec9); }
         .card-smus { border-top-color: #00cec9; }
 
-        /* Action Button Inside Frame */
         .btn-open-epr {
             width: 100%;
             padding: 10px 16px;
@@ -324,7 +317,213 @@
             box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
         }
 
-        /* Footer */
+        /* STYLES TIMELINE & LOADING BAR */
+        .timeline-section {
+            margin-top: 50px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 2px solid #e1f5fe;
+        }
+
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #e0e0e0;
+            padding-bottom: 12px;
+        }
+
+        .timeline-header h2 {
+            font-size: 20px;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-badge {
+            background: #ff4757;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            animation: pulseBadge 1.5s infinite;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @keyframes pulseBadge {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .timeline-viewport {
+            height: 320px;
+            overflow: hidden;
+            position: relative;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 10px 0;
+            border: 1px solid #edf2f7;
+        }
+
+        .timeline-track {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 20px;
+            /* Mulai dari posisi 0% (tepi atas viewport) dan bergerak ke atas secara perlahan (45 detik) */
+            animation: moveUp 45s linear infinite;
+        }
+
+        .timeline-viewport:hover .timeline-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes moveUp {
+            0% { transform: translateY(0%); }
+            100% { transform: translateY(-50%); }
+        }
+
+        .timeline-item {
+            background: #ffffff;
+            border-left: 5px solid #2ed573;
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            transition: transform 0.2s ease;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .student-details h4 {
+            font-size: 14px;
+            color: #2d3436;
+            font-weight: 600;
+        }
+
+        .student-details p {
+            font-size: 12px;
+            color: #636e72;
+        }
+
+        .badge-info-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .badge-mapel {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-ket {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-nilai {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Jika Nilai 0, Badge otomatis Berwarna Merah */
+        .badge-nilai.zero-score {
+            background: #ffebee !important;
+            color: #c62828 !important;
+        }
+
+        /* Styling Loading Persentase */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .loading-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-bg {
+            width: 80%;
+            max-width: 300px;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #1976d2, #2ed573);
+            border-radius: 10px;
+            transition: width 0.1s ease-out;
+        }
+
+        .progress-percentage {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            font-weight: 700;
+        }
+
+        .timeline-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #b2bec3;
+            font-size: 14px;
+        }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -338,10 +537,8 @@
 </head>
 <body>
 
-    <!-- Audio Element -->
     <audio id="clickSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
 
-    <!-- Ambient Floating Decorations (Balon, Bunga & Emotikon Lucu) -->
     <div class="decorations-container">
         <div class="balloon-item f1"></div>
         <div class="floating-item f2">🌸</div>
@@ -355,7 +552,6 @@
         <div class="balloon-item f10"></div>
     </div>
 
-    <!-- Header Navigation -->
     <header>
         <div class="logo-container">
             <i class="fa-solid fa-graduation-cap logo-icon"></i>
@@ -366,7 +562,6 @@
         </nav>
     </header>
 
-    <!-- Main Content Grid -->
     <main>
         <div class="welcome-hero">
             <h1>Pilih Mata Pelajaran PR Hari Ini! ✨</h1>
@@ -374,143 +569,95 @@
         </div>
 
         <div class="subjects-grid">
-
-            <!-- Frame 1: Pend. Pancasila -->
             <a onclick="playAndNavigate(event, 'e-PR Pend.Pancasila.html')" class="subject-card card-pancasila">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <span class="cute-emoji">⭐</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-shield-halved"></i><span class="cute-emoji">⭐</span></div>
                 <div class="subject-title">Pend. Pancasila</div>
                 <div class="subject-desc">Belajar nilai Pancasila & kewarganegaraan dengan riang gembira.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 2: Bahasa Indonesia -->
             <a onclick="playAndNavigate(event, 'e-PR Bahasa Indonesia.html')" class="subject-card card-bindo">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-book"></i>
-                    <span class="cute-emoji">📚</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-book"></i><span class="cute-emoji">📚</span></div>
                 <div class="subject-title">Bahasa Indonesia</div>
                 <div class="subject-desc">Membaca, menulis, dan memahami cerita menarik.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 3: IPAS -->
             <a onclick="playAndNavigate(event, 'e-PR IPAS.html')" class="subject-card card-ipas">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-flask"></i>
-                    <span class="cute-emoji">🌱</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-flask"></i><span class="cute-emoji">🌱</span></div>
                 <div class="subject-title">IPAS</div>
                 <div class="subject-desc">Menjelajahi rahasia alam dan ilmu pengetahuan sosial.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 4: Matematika -->
             <a onclick="playAndNavigate(event, 'e-PR Matematika.html')" class="subject-card card-mtk">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-calculator"></i>
-                    <span class="cute-emoji">🔢</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-calculator"></i><span class="cute-emoji">🔢</span></div>
                 <div class="subject-title">Matematika</div>
                 <div class="subject-desc">Bermain dengan angka, hitungan, dan logika seru.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 5: Bahasa Inggris -->
             <a onclick="playAndNavigate(event, 'e-PR Bahasa Inggris.html')" class="subject-card card-bing">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-language"></i>
-                    <span class="cute-emoji">🔤</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-language"></i><span class="cute-emoji">🔤</span></div>
                 <div class="subject-title">Bahasa Inggris</div>
                 <div class="subject-desc">Belajar kosa kata dan percakapan bahasa internasional.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 6: Bahasa Jawa -->
             <a onclick="playAndNavigate(event, 'e-PR Bahasa Jawa.html')" class="subject-card card-bjawa">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-scroll"></i>
-                    <span class="cute-emoji">🪘</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-scroll"></i><span class="cute-emoji">🪘</span></div>
                 <div class="subject-title">Bahasa Jawa</div>
                 <div class="subject-desc">Mengenal kebudayaan, unggah-ungguh, dan bahasa daerah.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 7: Seni Rupa -->
             <a onclick="playAndNavigate(event, 'e-PR Seni Rupa.html')" class="subject-card card-srup">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-palette"></i>
-                    <span class="cute-emoji">🎨</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-palette"></i><span class="cute-emoji">🎨</span></div>
                 <div class="subject-title">Seni Rupa</div>
                 <div class="subject-desc">Mewarnai hari dengan gambar, kreasi, dan bentuk indah.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
-            <!-- Frame 8: Seni Musik -->
             <a onclick="playAndNavigate(event, 'e-PR Seni Musik.html')" class="subject-card card-smus">
-                <div class="subject-icon-box">
-                    <i class="fa-solid fa-music"></i>
-                    <span class="cute-emoji">🎵</span>
-                </div>
+                <div class="subject-icon-box"><i class="fa-solid fa-music"></i><span class="cute-emoji">🎵</span></div>
                 <div class="subject-title">Seni Musik</div>
                 <div class="subject-desc">Mengenal nada, irama, dan lagu-lagu gembira.</div>
-                <div class="btn-open-epr">
-                    Mulai e-PR <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-
         </div>
+
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR Hari Ini</h2>
+                <span class="live-badge"><i class="fa-solid fa-circle"></i> UPDATE REALTIME</span>
+            </div>
+
+            <div class="timeline-viewport">
+                <div class="timeline-track" id="timelineTrack">
+                    <!-- Progress Bar Loading Persentase -->
+                    <div class="loading-container">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Seluruh Data e-PR Hari Ini...</div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="progressBarFill"></div>
+                        </div>
+                        <div class="progress-percentage" id="progressText">0%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
     <footer>
         &copy; 2026 e-PR Pendidikan - Belajar Menyenangkan Setiap Hari! 🎉
     </footer>
 
-    <!-- Script Suara & Navigasi -->
     <script>
         function playAndNavigate(event, targetUrl) {
-            event.preventDefault(); // Tahan navigasi standar
-            
+            event.preventDefault();
             const audio = document.getElementById('clickSound');
             if (audio) {
-                audio.currentTime = 0; // Reset suara ke awal
-
-                // Fungsi yang dipanggil saat audio benar-benar selesai
+                audio.currentTime = 0;
                 const onAudioEnded = () => {
                     audio.removeEventListener('ended', onAudioEnded);
                     window.location.href = targetUrl;
                 };
-
-                // Pasang listener 'ended'
                 audio.addEventListener('ended', onAudioEnded);
-
-                // Jalankan audio
                 const playPromise = audio.play();
-                
                 if (playPromise !== undefined) {
                     playPromise.catch(err => {
-                        // Jika audio gagal dimainkan (misal diblokir browser), langsung pindah
                         audio.removeEventListener('ended', onAudioEnded);
                         window.location.href = targetUrl;
                     });
@@ -519,7 +666,158 @@
                 window.location.href = targetUrl;
             }
         }
-    </script>
 
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHjta10uWQb-O_PLOZf50zEYa_TwQL-8FQk_DDdJJXC6J-9a9h6s5PiPZ0s3a9odOz/exec";
+
+        function cleanStudentName(rawName) {
+            if (!rawName) return "";
+            return String(rawName).replace(/\s*\([^)]*\)/g, '').trim();
+        }
+
+        function parseMapelName(rawKet) {
+            if (!rawKet) return "e-PR";
+            const str = String(rawKet).toUpperCase();
+            if (str.includes("B.IND") || str.includes("BINDO")) return "Bahasa Indonesia";
+            if (str.includes("IPAS")) return "IPAS";
+            if (str.includes("MTK") || str.includes("MATEMATIKA")) return "Matematika";
+            if (str.includes("PANCASILA") || str.includes("PPKN")) return "Pend. Pancasila";
+            if (str.includes("B.ING") || str.includes("INGGRIS")) return "Bahasa Inggris";
+            if (str.includes("JAWA")) return "Bahasa Jawa";
+            if (str.includes("SENI RUPA")) return "Seni Rupa";
+            if (str.includes("SENI MUSIK")) return "Seni Musik";
+            return rawKet;
+        }
+
+        function updateProgress(percent) {
+            const fill = document.getElementById('progressBarFill');
+            const text = document.getElementById('progressText');
+            if (fill && text) {
+                fill.style.width = percent + '%';
+                text.innerText = percent + '%';
+            }
+        }
+
+        async function fetchPrTimelineData() {
+            const trackContainer = document.getElementById('timelineTrack');
+
+            try {
+                updateProgress(25);
+
+                const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
+                
+                updateProgress(65);
+
+                const data = await response.json();
+
+                updateProgress(90);
+
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                
+                const todayFormattedID = `${day}/${month}/${year}`;
+                const todayFormattedISO = `${year}-${month}-${day}`;
+
+                let listToday = [];
+
+                if (Array.isArray(data)) {
+                    data.forEach(item => {
+                        const rawTime = item.timestamp || item.waktu || item[0] || "";
+                        const rawNama = item.nama || item[1] || "";
+                        const rawNilai = item.skor || item.nilai || item[2] || "0";
+                        const rawKet = item.keterangan || item.mapel || item[3] || "Selesai";
+
+                        if (!rawTime || !rawNama) return;
+
+                        const timeStr = String(rawTime);
+
+                        if (timeStr.includes(todayFormattedID) || timeStr.includes(todayFormattedISO)) {
+                            let jamStr = "--:--";
+                            const matchTime = timeStr.match(/\d{2}:\d{2}/);
+                            if (matchTime) {
+                                jamStr = matchTime[0];
+                            }
+
+                            listToday.push({
+                                waktu: jamStr,
+                                nama: cleanStudentName(rawNama),
+                                mapel: parseMapelName(rawKet),
+                                keterangan: rawKet,
+                                nilai: String(rawNilai).trim()
+                            });
+                        }
+                    });
+                }
+
+                updateProgress(100);
+
+                const allTodayStudents = listToday.reverse();
+
+                setTimeout(() => {
+                    if (allTodayStudents.length === 0) {
+                        trackContainer.innerHTML = `
+                            <div class="timeline-empty">
+                                <i class="fa-solid fa-circle-check" style="color: #2ed573; font-size: 24px; margin-bottom: 8px;"></i>
+                                <p>Belum ada siswa yang menyelesaikan e-PR hari ini (${todayFormattedID}).</p>
+                            </div>
+                        `;
+                        trackContainer.style.animation = 'none';
+                        return;
+                    }
+
+                    let htmlContent = '';
+                    allTodayStudents.forEach(siswa => {
+                        const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
+                        
+                        const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
+                        const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
+                        const nilaiText = isZero ? "0" : siswa.nilai;
+
+                        htmlContent += `
+                            <div class="timeline-item">
+                                <div class="student-info">
+                                    <div class="student-avatar">${initial}</div>
+                                    <div class="student-details">
+                                        <h4>${siswa.nama}</h4>
+                                        <p><i class="fa-regular fa-clock"></i> Pukul ${siswa.waktu} WIB</p>
+                                    </div>
+                                </div>
+                                <div class="badge-info-group">
+                                    <div class="badge-mapel">
+                                        <i class="fa-solid fa-book-open"></i> ${siswa.mapel}
+                                    </div>
+                                    <div class="badge-ket" title="Keterangan">
+                                        <i class="fa-solid fa-circle-info"></i> ${siswa.keterangan}
+                                    </div>
+                                    <div class="${nilaiClass}">
+                                        <i class="fa-solid fa-star"></i> Skor: ${nilaiText}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    // Duplikasi konten agar pergerakan infinite loop menyatu mulus tanpa jeda di awal
+                    trackContainer.innerHTML = htmlContent + htmlContent;
+                }, 300);
+
+            } catch (error) {
+                console.error("Gagal mengambil data dari Google Sheets:", error);
+                updateProgress(100);
+                setTimeout(() => {
+                    trackContainer.innerHTML = `
+                        <div class="timeline-empty">
+                            <i class="fa-solid fa-triangle-exclamation" style="color: #ff4757; font-size: 24px; margin-bottom: 8px;"></i>
+                            <p>Gagal memuat data dari Spreadsheet. Pastikan Apps Script telah di-deploy dengan akses 'Anyone'.</p>
+                        </div>
+                    `;
+                    trackContainer.style.animation = 'none';
+                }, 300);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchPrTimelineData);
+    </script>
 </body>
 </html>
