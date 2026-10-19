@@ -402,7 +402,62 @@
         .live-status-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Kontainer Pemilih Tanggal dengan Tombol Navigasi Kiri & Kanan */
+        .date-picker-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .date-picker-wrapper:focus-within {
+            border-color: var(--secondary-blue);
+            background: #ffffff;
+            box-shadow: 0 3px 8px rgba(25, 118, 210, 0.2);
+        }
+
+        .date-nav-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .date-nav-btn:hover {
+            background: #e2e8f0;
+            color: var(--secondary-blue);
+        }
+
+        .date-inner-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .date-picker-wrapper input[type="date"] {
+            border: none;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e293b;
+            outline: none;
+            cursor: pointer;
+            padding: 4px 2px;
         }
 
         /* Tombol Lonceng Interaktif */
@@ -475,6 +530,9 @@
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .filter-chip:hover {
@@ -486,6 +544,35 @@
             background: var(--secondary-blue);
             color: var(--white);
             box-shadow: 0 3px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        /* Tampilan Angka Counter (Warna Merah untuk 0 & Warna Hijau untuk > 0) */
+        .filter-chip .chip-count {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            transition: all 0.3s ease;
+        }
+
+        .filter-chip .chip-count.count-zero {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .filter-chip .chip-count.count-active {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .filter-chip.active .chip-count.count-zero {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .filter-chip.active .chip-count.count-active {
+            background: #10b981;
+            color: #ffffff;
         }
 
         .timeline-viewport {
@@ -846,8 +933,18 @@
 
         <section class="timeline-section">
             <div class="timeline-header">
-                <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR Hari Ini</h2>
+                <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR</h2>
                 <div class="live-status-group">
+                    <!-- Pemilih Tanggal dengan Tombol Navigasi Kiri & Kanan -->
+                    <div class="date-picker-wrapper" title="Navigasi tanggal pengisian">
+                        <button class="date-nav-btn" onclick="changeDate(-1)" title="Hari Sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+                        <div class="date-inner-group">
+                            <i class="fa-solid fa-calendar-days" style="color: var(--secondary-blue);"></i>
+                            <input type="date" id="filterDateInput" onchange="onDateChanged()">
+                        </div>
+                        <button class="date-nav-btn" onclick="changeDate(1)" title="Hari Berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
                     <button class="interactive-bell-btn" id="resetTimelineBtn" onclick="resetTimelineLoop()" title="Klik untuk mengulang putaran dari data terbaru!">
                         🔔
                     </button>
@@ -855,24 +952,24 @@
                 </div>
             </div>
 
-            <!-- Tombol Filter Mata Pelajaran -->
+            <!-- Tombol Filter Mata Pelajaran dengan Badge Jumlah Siswa Unik -->
             <div class="timeline-filters" id="timelineFilters">
-                <button class="filter-chip active" onclick="filterTimeline('Semua', this)">✨ Semua Mapel</button>
-                <button class="filter-chip" onclick="filterTimeline('Pend. Pancasila', this)">Pend. Pancasila</button>
-                <button class="filter-chip" onclick="filterTimeline('Bahasa Indonesia', this)">Bahasa Indonesia</button>
-                <button class="filter-chip" onclick="filterTimeline('IPAS', this)">IPAS</button>
-                <button class="filter-chip" onclick="filterTimeline('Matematika', this)">Matematika</button>
-                <button class="filter-chip" onclick="filterTimeline('Bahasa Inggris', this)">Bahasa Inggris</button>
-                <button class="filter-chip" onclick="filterTimeline('Bahasa Jawa', this)">Bahasa Jawa</button>
-                <button class="filter-chip" onclick="filterTimeline('Seni Rupa', this)">Seni Rupa</button>
-                <button class="filter-chip" onclick="filterTimeline('Seni Musik', this)">Seni Musik</button>
+                <button class="filter-chip active" onclick="filterTimeline('Semua', this)">✨ Semua Mapel <span class="chip-count count-zero" id="count-Semua">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Pend. Pancasila', this)">Pend. Pancasila <span class="chip-count count-zero" id="count-Pend. Pancasila">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Bahasa Indonesia', this)">Bahasa Indonesia <span class="chip-count count-zero" id="count-Bahasa Indonesia">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('IPAS', this)">IPAS <span class="chip-count count-zero" id="count-IPAS">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Matematika', this)">Matematika <span class="chip-count count-zero" id="count-Matematika">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Bahasa Inggris', this)">Bahasa Inggris <span class="chip-count count-zero" id="count-Bahasa Inggris">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Bahasa Jawa', this)">Bahasa Jawa <span class="chip-count count-zero" id="count-Bahasa Jawa">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Seni Rupa', this)">Seni Rupa <span class="chip-count count-zero" id="count-Seni Rupa">0</span></button>
+                <button class="filter-chip" onclick="filterTimeline('Seni Musik', this)">Seni Musik <span class="chip-count count-zero" id="count-Seni Musik">0</span></button>
             </div>
 
             <div class="timeline-viewport" id="timelineViewport">
                 <div class="timeline-track" id="timelineTrack">
                     <!-- Progress Bar Loading Persentase -->
                     <div class="loading-container">
-                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Seluruh Data e-PR Hari Ini...</div>
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Seluruh Data e-PR...</div>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" id="progressBarFill"></div>
                         </div>
@@ -884,7 +981,7 @@
     </main>
 
     <footer>
-        &copy; 2026 e-PR Pendidikan - Belajar Menyenangkan Setiap Hari! 🎉
+        &copy; 2026 e-PR Pendidikan - Belajar Menyenangkan Setiap Hari! 🎉 Designed by Ikhwan Adi Yanto,S.Pd
     </footer>
 
     <script>
@@ -965,8 +1062,116 @@
         }
 
         let globalViewportEl = null;
-        let cachedStudentsData = [];
+        let rawMasterData = []; 
         let currentFilterMapel = "Semua";
+
+        // Fungsi untuk menggeser tanggal lewat tombol navigasi kiri/kanan (-1 hari atau +1 hari)
+        function changeDate(days) {
+            const dateInput = document.getElementById('filterDateInput');
+            if (!dateInput.value) return;
+
+            let currentDate = new Date(dateInput.value);
+            currentDate.setDate(currentDate.getDate() + days);
+
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+
+            dateInput.value = `${year}-${month}-${day}`;
+            processAndRenderData();
+        }
+
+        function updateChipElement(elementId, count) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.innerText = count;
+                if (count > 0) {
+                    el.classList.remove('count-zero');
+                    el.classList.add('count-active');
+                } else {
+                    el.classList.remove('count-active');
+                    el.classList.add('count-zero');
+                }
+            }
+        }
+
+        function processAndRenderData() {
+            const dateInputVal = document.getElementById('filterDateInput').value; 
+            
+            let parts = dateInputVal.split('-');
+            let targetFormattedID = "";
+            let targetFormattedISO = dateInputVal;
+            if (parts.length === 3) {
+                targetFormattedID = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+
+            let filteredByDate = [];
+
+            if (Array.isArray(rawMasterData)) {
+                rawMasterData.forEach(item => {
+                    const rawTime = item.timestamp || item.waktu || item[0] || "";
+                    const rawNama = item.nama || item[1] || "";
+                    const rawNilai = item.skor || item.nilai || item[2] || "0";
+                    const rawKet = item.keterangan || item.mapel || item[3] || "Selesai";
+
+                    if (!rawTime || !rawNama) return;
+
+                    const timeStr = String(rawTime);
+
+                    if (timeStr.includes(targetFormattedID) || timeStr.includes(targetFormattedISO)) {
+                        let jamStr = "--:--";
+                        const matchTime = timeStr.match(/\d{2}:\d{2}/);
+                        if (matchTime) jamStr = matchTime[0];
+
+                        filteredByDate.push({
+                            waktu: jamStr,
+                            nama: cleanStudentName(rawNama),
+                            mapel: parseMapelName(rawKet),
+                            keterangan: rawKet,
+                            nilai: String(rawNilai).trim()
+                        });
+                    }
+                });
+            }
+
+            const cachedStudentsData = filteredByDate.reverse();
+
+            const allUniqueStudents = new Set();
+            const mapelUniqueStudents = {};
+
+            cachedStudentsData.forEach(item => {
+                const mapel = item.mapel;
+                const nama = item.nama ? item.nama.toLowerCase() : "";
+                if (!nama) return;
+
+                allUniqueStudents.add(nama);
+
+                if (mapel) {
+                    if (!mapelUniqueStudents[mapel]) {
+                        mapelUniqueStudents[mapel] = new Set();
+                    }
+                    mapelUniqueStudents[mapel].add(nama);
+                }
+            });
+
+            updateChipElement('count-Semua', allUniqueStudents.size);
+            const mapelList = [
+                'Pend. Pancasila', 'Bahasa Indonesia', 'IPAS', 
+                'Matematika', 'Bahasa Inggris', 'Bahasa Jawa', 
+                'Seni Rupa', 'Seni Musik'
+            ];
+
+            mapelList.forEach(mapel => {
+                const uniqueSize = mapelUniqueStudents[mapel] ? mapelUniqueStudents[mapel].size : 0;
+                updateChipElement(`count-${mapel}`, uniqueSize);
+            });
+
+            renderTimelineList(cachedStudentsData);
+        }
+
+        function onDateChanged() {
+            processAndRenderData();
+        }
 
         function resetTimelineLoop() {
             if (globalViewportEl) {
@@ -983,12 +1188,9 @@
 
         function filterTimeline(mapelName, chipElement) {
             currentFilterMapel = mapelName;
-            
-            // Ubah kelas aktif pada tombol filter
             document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
             chipElement.classList.add('active');
-
-            renderTimelineList(cachedStudentsData);
+            processAndRenderData();
         }
 
         function initDraggableScroll(viewportEl) {
@@ -1048,27 +1250,26 @@
             }, 30);
         }
 
-        function renderTimelineList(allData) {
+        function renderTimelineList(filteredList) {
             const trackContainer = document.getElementById('timelineTrack');
-            const viewportEl = document.getElementById('timelineViewport');
 
-            let filteredList = allData;
+            let finalDisplayList = filteredList;
             if (currentFilterMapel !== "Semua") {
-                filteredList = allData.filter(s => s.mapel.toLowerCase() === currentFilterMapel.toLowerCase());
+                finalDisplayList = filteredList.filter(s => s.mapel.toLowerCase() === currentFilterMapel.toLowerCase());
             }
 
-            if (filteredList.length === 0) {
+            if (finalDisplayList.length === 0) {
                 trackContainer.innerHTML = `
                     <div class="timeline-empty">
                         <i class="fa-solid fa-circle-info" style="color: #3b82f6; font-size: 24px; margin-bottom: 8px;"></i>
-                        <p>Tidak ada riwayat pengerjaan untuk kategori "${currentFilterMapel}".</p>
+                        <p>Tidak ada riwayat pengerjaan pada tanggal ini untuk kategori "${currentFilterMapel}".</p>
                     </div>
                 `;
                 return;
             }
 
             let htmlContent = '';
-            filteredList.forEach((siswa, index) => {
+            finalDisplayList.forEach((siswa, index) => {
                 const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
                 const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
                 const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
@@ -1108,8 +1309,7 @@
 
             trackContainer.innerHTML = htmlContent + htmlContent;
             
-            // Jika data terbaru masuk dengan skor sempurna (100), luncurkan konfeti meriah!
-            if (filteredList.length > 0 && (filteredList[0].nilai === "100" || filteredList[0].nilai === "100.0")) {
+            if (finalDisplayList.length > 0 && (finalDisplayList[0].nilai === "100" || finalDisplayList[0].nilai === "100.0")) {
                 triggerConfettiEffect();
             }
         }
@@ -1135,70 +1335,21 @@
                 const data = await response.json();
                 updateProgress(90);
 
-                const now = new Date();
-                const day = String(now.getDate()).padStart(2, '0');
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const year = now.getFullYear();
-                
-                const todayFormattedID = `${day}/${month}/${year}`;
-                const todayFormattedISO = `${year}-${month}-${day}`;
-
-                let listToday = [];
-
-                if (Array.isArray(data)) {
-                    data.forEach(item => {
-                        const rawTime = item.timestamp || item.waktu || item[0] || "";
-                        const rawNama = item.nama || item[1] || "";
-                        const rawNilai = item.skor || item.nilai || item[2] || "0";
-                        const rawKet = item.keterangan || item.mapel || item[3] || "Selesai";
-
-                        if (!rawTime || !rawNama) return;
-
-                        const timeStr = String(rawTime);
-
-                        if (timeStr.includes(todayFormattedID) || timeStr.includes(todayFormattedISO)) {
-                            let jamStr = "--:--";
-                            const matchTime = timeStr.match(/\d{2}:\d{2}/);
-                            if (matchTime) jamStr = matchTime[0];
-
-                            listToday.push({
-                                waktu: jamStr,
-                                nama: cleanStudentName(rawNama),
-                                mapel: parseMapelName(rawKet),
-                                keterangan: rawKet,
-                                nilai: String(rawNilai).trim()
-                            });
-                        }
-                    });
-                }
-
+                rawMasterData = data;
                 updateProgress(100);
-                cachedStudentsData = listToday.reverse();
 
-                // Cek apakah ada data masuk baru (dibandingkan penyimpanan lokal)
-                const lastStoredCount = localStorage.getItem('epr_last_count') || 0;
-                if (cachedStudentsData.length > lastStoredCount && lastStoredCount > 0) {
-                    // Putar suara notifikasi lonceng
-                    const bellAudio = document.getElementById('bellSound');
-                    if (bellAudio) bellAudio.play().catch(e => console.log("Audio play blocked"));
-                    triggerConfettiEffect();
+                const dateInput = document.getElementById('filterDateInput');
+                if (dateInput && !dateInput.value) {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    dateInput.value = `${year}-${month}-${day}`;
                 }
-                localStorage.setItem('epr_last_count', cachedStudentsData.length);
 
                 setTimeout(() => {
-                    if (cachedStudentsData.length === 0) {
-                        trackContainer.innerHTML = `
-                            <div class="timeline-empty">
-                                <i class="fa-solid fa-circle-check" style="color: #2ed573; font-size: 24px; margin-bottom: 8px;"></i>
-                                <p>Belum ada siswa yang menyelesaikan e-PR hari ini (${todayFormattedID}).</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    renderTimelineList(cachedStudentsData);
+                    processAndRenderData();
                     initDraggableScroll(viewportEl);
-
                 }, 300);
 
             } catch (error) {
@@ -1219,7 +1370,6 @@
             fetchPrTimelineData();
             checkSubjectLinks();
             
-            // Set interval otomatis per 60 detik untuk memeriksa data baru dari Spreadsheet secara berkala
             setInterval(fetchPrTimelineData, 60000);
         });
     </script>
