@@ -317,7 +317,7 @@
             box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
         }
 
-        /* STYLES TIMELINE & LOADING BAR */
+        /* STYLES TIMELINE & MOUSE DRAG */
         .timeline-section {
             margin-top: 50px;
             background: #ffffff;
@@ -365,12 +365,18 @@
 
         .timeline-viewport {
             height: 320px;
-            overflow: hidden;
+            overflow-y: hidden; /* Mengunci scroll bar bawaan agar dikontrol penuh oleh script drag mouse */
             position: relative;
             background: #f8fafc;
             border-radius: 16px;
             padding: 10px 0;
             border: 1px solid #edf2f7;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .timeline-viewport:active {
+            cursor: grabbing;
         }
 
         .timeline-track {
@@ -378,17 +384,7 @@
             flex-direction: column;
             gap: 12px;
             padding: 0 20px;
-            /* Mulai dari posisi 0% (tepi atas viewport) dan bergerak ke atas secara perlahan (45 detik) */
-            animation: moveUp 45s linear infinite;
-        }
-
-        .timeline-viewport:hover .timeline-track {
-            animation-play-state: paused;
-        }
-
-        @keyframes moveUp {
-            0% { transform: translateY(0%); }
-            100% { transform: translateY(-50%); }
+            position: relative;
         }
 
         .timeline-item {
@@ -400,7 +396,7 @@
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-            transition: transform 0.2s ease;
+            pointer-events: none; /* Mencegah teks/elemen terseleksi saat di-drag mouse */
         }
 
         .student-info {
@@ -468,7 +464,6 @@
             font-weight: 700;
         }
 
-        /* Jika Nilai 0, Badge otomatis Berwarna Merah */
         .badge-nilai.zero-score {
             background: #ffebee !important;
             color: #c62828 !important;
@@ -625,7 +620,7 @@
                 <span class="live-badge"><i class="fa-solid fa-circle"></i> UPDATE REALTIME</span>
             </div>
 
-            <div class="timeline-viewport">
+            <div class="timeline-viewport" id="timelineViewport">
                 <div class="timeline-track" id="timelineTrack">
                     <!-- Progress Bar Loading Persentase -->
                     <div class="loading-container">
@@ -697,8 +692,89 @@
             }
         }
 
+        // Logika Mouse Drag & Touch Drag interaktif untuk Timeline
+        function initDraggableScroll(viewportEl) {
+            let isDown = false;
+            let startY;
+            let scrollTop;
+            let isAutoScrolling = true;
+            let resumeTimeout = null;
+
+            // Kontrol Mouse Down (Klik dan Tahan)
+            viewportEl.addEventListener('mousedown', (e) => {
+                isDown = true;
+                isAutoScrolling = false;
+                startY = e.pageY - viewportEl.offsetTop;
+                scrollTop = viewportEl.scrollTop;
+                if (resumeTimeout) clearTimeout(resumeTimeout);
+            });
+
+            viewportEl.addEventListener('mouseleave', () => {
+                if (isDown) {
+                    isDown = false;
+                    scheduleResume();
+                }
+            });
+
+            viewportEl.addEventListener('mouseup', () => {
+                if (isDown) {
+                    isDown = false;
+                    scheduleResume();
+                }
+            });
+
+            viewportEl.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const y = e.pageY - viewportEl.offsetTop;
+                const walk = (y - startY) * 1.5; // Kecepatan geser tarikan mouse
+                viewportEl.scrollTop = scrollTop - walk;
+            });
+
+            // Kontrol Touch (Sentuhan Jari di HP/Tablet)
+            viewportEl.addEventListener('touchstart', (e) => {
+                isDown = true;
+                isAutoScrolling = false;
+                startY = e.touches[0].pageY - viewportEl.offsetTop;
+                scrollTop = viewportEl.scrollTop;
+                if (resumeTimeout) clearTimeout(resumeTimeout);
+            });
+
+            viewportEl.addEventListener('touchend', () => {
+                isDown = false;
+                scheduleResume();
+            });
+
+            viewportEl.addEventListener('touchmove', (e) => {
+                if (!isDown) return;
+                const y = e.touches[0].pageY - viewportEl.offsetTop;
+                const walk = (y - startY) * 1.5;
+                viewportEl.scrollTop = scrollTop - walk;
+            });
+
+            function scheduleResume() {
+                if (resumeTimeout) clearTimeout(resumeTimeout);
+                resumeTimeout = setTimeout(() => {
+                    isAutoScrolling = true;
+                }, 2000); // Kembali berjalan otomatis 2 detik setelah dilepas
+            }
+
+            // Loop Berjalan Otomatis (Auto-scroll lembut ke atas)
+            setInterval(() => {
+                if (isAutoScrolling && !isDown) {
+                    viewportEl.scrollTop += 0.6;
+                    // Jika mencapai titik akhir duplikat, kembalikan ke awal secara seamless
+                    const halfHeight = viewportEl.scrollHeight / 2;
+                    if (viewportEl.scrollTop >= halfHeight) {
+                        viewportEl.scrollTop = 0;
+                    }
+                }
+            }, 30);
+        }
+
         async function fetchPrTimelineData() {
             const trackContainer = document.getElementById('timelineTrack');
+            const viewportEl = document.getElementById('timelineViewport');
 
             try {
                 updateProgress(25);
@@ -762,7 +838,6 @@
                                 <p>Belum ada siswa yang menyelesaikan e-PR hari ini (${todayFormattedID}).</p>
                             </div>
                         `;
-                        trackContainer.style.animation = 'none';
                         return;
                     }
 
@@ -798,8 +873,12 @@
                         `;
                     });
 
-                    // Duplikasi konten agar pergerakan infinite loop menyatu mulus tanpa jeda di awal
+                    // Duplikasi konten agar pergerakan loop tidak terputus dan menyatu sempurna
                     trackContainer.innerHTML = htmlContent + htmlContent;
+
+                    // Aktifkan fungsi tarik mouse & sentuhan
+                    initDraggableScroll(viewportEl);
+
                 }, 300);
 
             } catch (error) {
@@ -812,7 +891,6 @@
                             <p>Gagal memuat data dari Spreadsheet. Pastikan Apps Script telah di-deploy dengan akses 'Anyone'.</p>
                         </div>
                     `;
-                    trackContainer.style.animation = 'none';
                 }, 300);
             }
         }
