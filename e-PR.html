@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary-blue: #0d47a1;
@@ -317,7 +319,7 @@
             box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
         }
 
-        /* KELAS KETIKA LINK TIDAK AKTIF / OFFLINE (WARNA ABU-ABU) */
+        /* OFFLINE CARD */
         .subject-card.offline-card {
             background: #e2e8f0 !important;
             border-top-color: #94a3b8 !important;
@@ -382,9 +384,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 2px dashed #e0e0e0;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
             flex-wrap: wrap;
             gap: 15px;
         }
@@ -403,7 +405,7 @@
             gap: 10px;
         }
 
-        /* Animasi Emotikon Lonceng Bisa Diklik (Reset / Ulang Putaran) */
+        /* Tombol Lonceng Interaktif */
         .interactive-bell-btn {
             background: #fff3e0;
             border: 2px solid #ffa726;
@@ -452,6 +454,40 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* Filter Mata Pelajaran Bar */
+        .timeline-filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            scrollbar-width: thin;
+        }
+
+        .filter-chip {
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .filter-chip.active {
+            background: var(--secondary-blue);
+            color: var(--white);
+            box-shadow: 0 3px 8px rgba(25, 118, 210, 0.3);
+        }
+
         .timeline-viewport {
             height: 320px;
             overflow-y: hidden;
@@ -489,7 +525,7 @@
             position: relative;
         }
 
-        /* Animasi Emotikon Lonceng di Pojok Kiri Atas Kartu Data Terbaru */
+        /* Badge Lonceng Kartu Terbaru */
         .newest-item-badge {
             position: absolute;
             top: -8px;
@@ -584,7 +620,7 @@
             color: #c62828 !important;
         }
 
-        /* Styling Loading Persentase */
+        /* Loading Persentase */
         .loading-container {
             display: flex;
             flex-direction: column;
@@ -644,9 +680,7 @@
             margin-top: auto;
         }
 
-        /* =========================================================
-           RESPONSIF KHUSUS MODE PONSEL / PORTRAIT (MAX-WIDTH: 768px)
-           ========================================================= */
+        /* RESPONSIF MODE PORTRAIT PONSEL */
         @media (max-width: 768px) {
             header {
                 padding: 14px 20px;
@@ -673,7 +707,7 @@
             }
 
             .subjects-grid {
-                grid-template-columns: 1fr; /* 1 Kolom penuh agar kartu tidak terlalu kecil */
+                grid-template-columns: 1fr;
                 gap: 16px;
             }
 
@@ -681,7 +715,6 @@
                 padding: 20px 16px;
             }
 
-            /* Penyesuaian Timeline Header & Item agar pas di layar HP portrait */
             .timeline-section {
                 padding: 16px 12px;
                 margin-top: 30px;
@@ -720,6 +753,8 @@
 <body>
 
     <audio id="clickSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
+    <!-- Audio Notifikasi Lonceng Realtime -->
+    <audio id="bellSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 
     <div class="decorations-container">
         <div class="balloon-item f1"></div>
@@ -813,12 +848,24 @@
             <div class="timeline-header">
                 <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR Hari Ini</h2>
                 <div class="live-status-group">
-                    <!-- Emotikon lonceng animasi di samping kiri update realtime yang bisa diklik untuk mengulang/mereset putaran timeline -->
                     <button class="interactive-bell-btn" id="resetTimelineBtn" onclick="resetTimelineLoop()" title="Klik untuk mengulang putaran dari data terbaru!">
                         🔔
                     </button>
                     <span class="live-badge"><i class="fa-solid fa-circle"></i> UPDATE REALTIME</span>
                 </div>
+            </div>
+
+            <!-- Tombol Filter Mata Pelajaran -->
+            <div class="timeline-filters" id="timelineFilters">
+                <button class="filter-chip active" onclick="filterTimeline('Semua', this)">✨ Semua Mapel</button>
+                <button class="filter-chip" onclick="filterTimeline('Pend. Pancasila', this)">Pend. Pancasila</button>
+                <button class="filter-chip" onclick="filterTimeline('Bahasa Indonesia', this)">Bahasa Indonesia</button>
+                <button class="filter-chip" onclick="filterTimeline('IPAS', this)">IPAS</button>
+                <button class="filter-chip" onclick="filterTimeline('Matematika', this)">Matematika</button>
+                <button class="filter-chip" onclick="filterTimeline('Bahasa Inggris', this)">Bahasa Inggris</button>
+                <button class="filter-chip" onclick="filterTimeline('Bahasa Jawa', this)">Bahasa Jawa</button>
+                <button class="filter-chip" onclick="filterTimeline('Seni Rupa', this)">Seni Rupa</button>
+                <button class="filter-chip" onclick="filterTimeline('Seni Musik', this)">Seni Musik</button>
             </div>
 
             <div class="timeline-viewport" id="timelineViewport">
@@ -841,27 +888,16 @@
     </footer>
 
     <script>
-        // Fungsi Pengecekan Ketersediaan Link Mata Pelajaran
         async function checkSubjectLinks() {
             const cards = document.querySelectorAll('.subject-card[data-url]');
-            
             cards.forEach(async (card) => {
                 const url = card.getAttribute('data-url');
                 try {
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-                    const response = await fetch(url, { 
-                        method: 'HEAD', 
-                        signal: controller.signal,
-                        cache: 'no-cache'
-                    });
-                    
+                    const response = await fetch(url, { method: 'HEAD', signal: controller.signal, cache: 'no-cache' });
                     clearTimeout(timeoutId);
-
-                    if (!response.ok) {
-                        setCardOffline(card);
-                    }
+                    if (!response.ok) setCardOffline(card);
                 } catch (error) {
                     setCardOffline(card);
                 }
@@ -929,6 +965,8 @@
         }
 
         let globalViewportEl = null;
+        let cachedStudentsData = [];
+        let currentFilterMapel = "Semua";
 
         function resetTimelineLoop() {
             if (globalViewportEl) {
@@ -941,6 +979,16 @@
                     }, 400);
                 }
             }
+        }
+
+        function filterTimeline(mapelName, chipElement) {
+            currentFilterMapel = mapelName;
+            
+            // Ubah kelas aktif pada tombol filter
+            document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
+            chipElement.classList.add('active');
+
+            renderTimelineList(cachedStudentsData);
         }
 
         function initDraggableScroll(viewportEl) {
@@ -959,20 +1007,8 @@
                 if (resumeTimeout) clearTimeout(resumeTimeout);
             });
 
-            viewportEl.addEventListener('mouseleave', () => {
-                if (isDown) {
-                    isDown = false;
-                    scheduleResume();
-                }
-            });
-
-            viewportEl.addEventListener('mouseup', () => {
-                if (isDown) {
-                    isDown = false;
-                    scheduleResume();
-                }
-            });
-
+            viewportEl.addEventListener('mouseleave', () => { if (isDown) { isDown = false; scheduleResume(); } });
+            viewportEl.addEventListener('mouseup', () => { if (isDown) { isDown = false; scheduleResume(); } });
             viewportEl.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
@@ -988,12 +1024,7 @@
                 scrollTop = viewportEl.scrollTop;
                 if (resumeTimeout) clearTimeout(resumeTimeout);
             });
-
-            viewportEl.addEventListener('touchend', () => {
-                isDown = false;
-                scheduleResume();
-            });
-
+            viewportEl.addEventListener('touchend', () => { isDown = false; scheduleResume(); });
             viewportEl.addEventListener('touchmove', (e) => {
                 if (!isDown) return;
                 const y = e.touches[0].pageY - viewportEl.offsetTop;
@@ -1003,9 +1034,7 @@
 
             function scheduleResume() {
                 if (resumeTimeout) clearTimeout(resumeTimeout);
-                resumeTimeout = setTimeout(() => {
-                    isAutoScrolling = true;
-                }, 2000);
+                resumeTimeout = setTimeout(() => { isAutoScrolling = true; }, 2000);
             }
 
             setInterval(() => {
@@ -1017,6 +1046,82 @@
                     }
                 }
             }, 30);
+        }
+
+        function renderTimelineList(allData) {
+            const trackContainer = document.getElementById('timelineTrack');
+            const viewportEl = document.getElementById('timelineViewport');
+
+            let filteredList = allData;
+            if (currentFilterMapel !== "Semua") {
+                filteredList = allData.filter(s => s.mapel.toLowerCase() === currentFilterMapel.toLowerCase());
+            }
+
+            if (filteredList.length === 0) {
+                trackContainer.innerHTML = `
+                    <div class="timeline-empty">
+                        <i class="fa-solid fa-circle-info" style="color: #3b82f6; font-size: 24px; margin-bottom: 8px;"></i>
+                        <p>Tidak ada riwayat pengerjaan untuk kategori "${currentFilterMapel}".</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let htmlContent = '';
+            filteredList.forEach((siswa, index) => {
+                const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
+                const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
+                const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
+                const nilaiText = isZero ? "0" : siswa.nilai;
+
+                const isNewest = (index === 0 && currentFilterMapel === "Semua");
+                const newestBadgeHtml = isNewest ? `
+                    <div class="newest-item-badge">
+                        🔔 Data Terbaru
+                    </div>
+                ` : '';
+
+                htmlContent += `
+                    <div class="timeline-item">
+                        ${newestBadgeHtml}
+                        <div class="student-info">
+                            <div class="student-avatar">${initial}</div>
+                            <div class="student-details">
+                                <h4>${siswa.nama}</h4>
+                                <p><i class="fa-regular fa-clock"></i> Pukul ${siswa.waktu} WIB</p>
+                            </div>
+                        </div>
+                        <div class="badge-info-group">
+                            <div class="badge-mapel">
+                                <i class="fa-solid fa-book-open"></i> ${siswa.mapel}
+                            </div>
+                            <div class="badge-ket" title="Keterangan">
+                                <i class="fa-solid fa-circle-info"></i> ${siswa.keterangan}
+                            </div>
+                            <div class="${nilaiClass}">
+                                <i class="fa-solid fa-star"></i> Skor: ${nilaiText}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            trackContainer.innerHTML = htmlContent + htmlContent;
+            
+            // Jika data terbaru masuk dengan skor sempurna (100), luncurkan konfeti meriah!
+            if (filteredList.length > 0 && (filteredList[0].nilai === "100" || filteredList[0].nilai === "100.0")) {
+                triggerConfettiEffect();
+            }
+        }
+
+        function triggerConfettiEffect() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
         }
 
         async function fetchPrTimelineData() {
@@ -1054,9 +1159,7 @@
                         if (timeStr.includes(todayFormattedID) || timeStr.includes(todayFormattedISO)) {
                             let jamStr = "--:--";
                             const matchTime = timeStr.match(/\d{2}:\d{2}/);
-                            if (matchTime) {
-                                jamStr = matchTime[0];
-                            }
+                            if (matchTime) jamStr = matchTime[0];
 
                             listToday.push({
                                 waktu: jamStr,
@@ -1070,10 +1173,20 @@
                 }
 
                 updateProgress(100);
-                const allTodayStudents = listToday.reverse();
+                cachedStudentsData = listToday.reverse();
+
+                // Cek apakah ada data masuk baru (dibandingkan penyimpanan lokal)
+                const lastStoredCount = localStorage.getItem('epr_last_count') || 0;
+                if (cachedStudentsData.length > lastStoredCount && lastStoredCount > 0) {
+                    // Putar suara notifikasi lonceng
+                    const bellAudio = document.getElementById('bellSound');
+                    if (bellAudio) bellAudio.play().catch(e => console.log("Audio play blocked"));
+                    triggerConfettiEffect();
+                }
+                localStorage.setItem('epr_last_count', cachedStudentsData.length);
 
                 setTimeout(() => {
-                    if (allTodayStudents.length === 0) {
+                    if (cachedStudentsData.length === 0) {
                         trackContainer.innerHTML = `
                             <div class="timeline-empty">
                                 <i class="fa-solid fa-circle-check" style="color: #2ed573; font-size: 24px; margin-bottom: 8px;"></i>
@@ -1083,46 +1196,7 @@
                         return;
                     }
 
-                    let htmlContent = '';
-                    allTodayStudents.forEach((siswa, index) => {
-                        const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
-                        const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
-                        const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
-                        const nilaiText = isZero ? "0" : siswa.nilai;
-
-                        const isNewest = (index === 0);
-                        const newestBadgeHtml = isNewest ? `
-                            <div class="newest-item-badge">
-                                🔔 Data Terbaru
-                            </div>
-                        ` : '';
-
-                        htmlContent += `
-                            <div class="timeline-item">
-                                ${newestBadgeHtml}
-                                <div class="student-info">
-                                    <div class="student-avatar">${initial}</div>
-                                    <div class="student-details">
-                                        <h4>${siswa.nama}</h4>
-                                        <p><i class="fa-regular fa-clock"></i> Pukul ${siswa.waktu} WIB</p>
-                                    </div>
-                                </div>
-                                <div class="badge-info-group">
-                                    <div class="badge-mapel">
-                                        <i class="fa-solid fa-book-open"></i> ${siswa.mapel}
-                                    </div>
-                                    <div class="badge-ket" title="Keterangan">
-                                        <i class="fa-solid fa-circle-info"></i> ${siswa.keterangan}
-                                    </div>
-                                    <div class="${nilaiClass}">
-                                        <i class="fa-solid fa-star"></i> Skor: ${nilaiText}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    trackContainer.innerHTML = htmlContent + htmlContent;
+                    renderTimelineList(cachedStudentsData);
                     initDraggableScroll(viewportEl);
 
                 }, 300);
@@ -1144,6 +1218,9 @@
         document.addEventListener("DOMContentLoaded", () => {
             fetchPrTimelineData();
             checkSubjectLinks();
+            
+            // Set interval otomatis per 60 detik untuk memeriksa data baru dari Spreadsheet secara berkala
+            setInterval(fetchPrTimelineData, 60000);
         });
     </script>
 </body>
