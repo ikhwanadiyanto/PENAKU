@@ -317,6 +317,57 @@
             box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
         }
 
+        /* KELAS KETIKA LINK TIDAK AKTIF / OFFLINE (WARNA ABU-ABU) */
+        .subject-card.offline-card {
+            background: #e2e8f0 !important;
+            border-top-color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            opacity: 0.75;
+            box-shadow: none !important;
+        }
+
+        .subject-card.offline-card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .subject-card.offline-card .subject-icon-box {
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8) !important;
+        }
+
+        .subject-card.offline-card .subject-title {
+            color: #64748b !important;
+        }
+
+        .subject-card.offline-card .subject-desc {
+            color: #94a3b8 !important;
+        }
+
+        .subject-card.offline-card .btn-open-epr {
+            background: #94a3b8 !important;
+            box-shadow: none !important;
+            cursor: not-allowed !important;
+        }
+
+        .offline-badge {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            z-index: 5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .subject-card.offline-card .offline-badge {
+            display: inline-block;
+        }
+
         /* STYLES TIMELINE & MOUSE DRAG */
         .timeline-section {
             margin-top: 50px;
@@ -365,7 +416,7 @@
 
         .timeline-viewport {
             height: 320px;
-            overflow-y: hidden; /* Mengunci scroll bar bawaan agar dikontrol penuh oleh script drag mouse */
+            overflow-y: hidden;
             position: relative;
             background: #f8fafc;
             border-radius: 16px;
@@ -396,7 +447,7 @@
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-            pointer-events: none; /* Mencegah teks/elemen terseleksi saat di-drag mouse */
+            pointer-events: none;
         }
 
         .student-info {
@@ -564,49 +615,57 @@
         </div>
 
         <div class="subjects-grid">
-            <a onclick="playAndNavigate(event, 'e-PR Pend.Pancasila.html')" class="subject-card card-pancasila">
+            <a onclick="playAndNavigate(event, 'e-PR Pend.Pancasila.html')" class="subject-card card-pancasila" data-url="e-PR Pend.Pancasila.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-shield-halved"></i><span class="cute-emoji">⭐</span></div>
                 <div class="subject-title">Pend. Pancasila</div>
                 <div class="subject-desc">Belajar nilai Pancasila & kewarganegaraan dengan riang gembira.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Bahasa Indonesia.html')" class="subject-card card-bindo">
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Indonesia.html')" class="subject-card card-bindo" data-url="e-PR Bahasa Indonesia.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-book"></i><span class="cute-emoji">📚</span></div>
                 <div class="subject-title">Bahasa Indonesia</div>
                 <div class="subject-desc">Membaca, menulis, dan memahami cerita menarik.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR IPAS.html')" class="subject-card card-ipas">
+            <a onclick="playAndNavigate(event, 'e-PR IPAS.html')" class="subject-card card-ipas" data-url="e-PR IPAS.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-flask"></i><span class="cute-emoji">🌱</span></div>
                 <div class="subject-title">IPAS</div>
                 <div class="subject-desc">Menjelajahi rahasia alam dan ilmu pengetahuan sosial.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Matematika.html')" class="subject-card card-mtk">
+            <a onclick="playAndNavigate(event, 'e-PR Matematika.html')" class="subject-card card-mtk" data-url="e-PR Matematika.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-calculator"></i><span class="cute-emoji">🔢</span></div>
                 <div class="subject-title">Matematika</div>
                 <div class="subject-desc">Bermain dengan angka, hitungan, dan logika seru.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Bahasa Inggris.html')" class="subject-card card-bing">
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Inggris.html')" class="subject-card card-bing" data-url="e-PR Bahasa Inggris.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-language"></i><span class="cute-emoji">🔤</span></div>
                 <div class="subject-title">Bahasa Inggris</div>
                 <div class="subject-desc">Belajar kosa kata dan percakapan bahasa internasional.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Bahasa Jawa.html')" class="subject-card card-bjawa">
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Jawa.html')" class="subject-card card-bjawa" data-url="e-PR Bahasa Jawa.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-scroll"></i><span class="cute-emoji">🪘</span></div>
                 <div class="subject-title">Bahasa Jawa</div>
                 <div class="subject-desc">Mengenal kebudayaan, unggah-ungguh, dan bahasa daerah.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Seni Rupa.html')" class="subject-card card-srup">
+            <a onclick="playAndNavigate(event, 'e-PR Seni Rupa.html')" class="subject-card card-srup" data-url="e-PR Seni Rupa.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-palette"></i><span class="cute-emoji">🎨</span></div>
                 <div class="subject-title">Seni Rupa</div>
                 <div class="subject-desc">Mewarnai hari dengan gambar, kreasi, dan bentuk indah.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Seni Musik.html')" class="subject-card card-smus">
+            <a onclick="playAndNavigate(event, 'e-PR Seni Musik.html')" class="subject-card card-smus" data-url="e-PR Seni Musik.html">
+                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-music"></i><span class="cute-emoji">🎵</span></div>
                 <div class="subject-title">Seni Musik</div>
                 <div class="subject-desc">Mengenal nada, irama, dan lagu-lagu gembira.</div>
@@ -640,6 +699,45 @@
     </footer>
 
     <script>
+        // Fungsi Pengecekan Ketersediaan Link Mata Pelajaran
+        async function checkSubjectLinks() {
+            const cards = document.querySelectorAll('.subject-card[data-url]');
+            
+            cards.forEach(async (card) => {
+                const url = card.getAttribute('data-url');
+                try {
+                    // Menguji koneksi file/link menggunakan fetch (Head request atau GET ringan)
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 4000); // Batas waktu 4 detik
+
+                    const response = await fetch(url, { 
+                        method: 'HEAD', 
+                        signal: controller.signal,
+                        cache: 'no-cache'
+                    });
+                    
+                    clearTimeout(timeoutId);
+
+                    // Jika status HTTP bukan 200-299, anggap tidak aktif
+                    if (!response.ok) {
+                        setCardOffline(card);
+                    }
+                } catch (error) {
+                    // Jika terjadi error jaringan / file tidak ditemukan (404) / timeout
+                    setCardOffline(card);
+                }
+            });
+        }
+
+        function setCardOffline(card) {
+            card.classList.add('offline-card');
+            // Ubah fungsi klik agar menampilkan peringatan dan mencegah navigasi
+            card.onclick = function(event) {
+                event.preventDefault();
+                alert("Maaf, link atau halaman mata pelajaran ini sedang tidak aktif/terkoneksi.");
+            };
+        }
+
         function playAndNavigate(event, targetUrl) {
             event.preventDefault();
             const audio = document.getElementById('clickSound');
@@ -700,7 +798,6 @@
             let isAutoScrolling = true;
             let resumeTimeout = null;
 
-            // Kontrol Mouse Down (Klik dan Tahan)
             viewportEl.addEventListener('mousedown', (e) => {
                 isDown = true;
                 isAutoScrolling = false;
@@ -727,11 +824,10 @@
                 if (!isDown) return;
                 e.preventDefault();
                 const y = e.pageY - viewportEl.offsetTop;
-                const walk = (y - startY) * 1.5; // Kecepatan geser tarikan mouse
+                const walk = (y - startY) * 1.5;
                 viewportEl.scrollTop = scrollTop - walk;
             });
 
-            // Kontrol Touch (Sentuhan Jari di HP/Tablet)
             viewportEl.addEventListener('touchstart', (e) => {
                 isDown = true;
                 isAutoScrolling = false;
@@ -756,14 +852,12 @@
                 if (resumeTimeout) clearTimeout(resumeTimeout);
                 resumeTimeout = setTimeout(() => {
                     isAutoScrolling = true;
-                }, 2000); // Kembali berjalan otomatis 2 detik setelah dilepas
+                }, 2000);
             }
 
-            // Loop Berjalan Otomatis (Auto-scroll lembut ke atas)
             setInterval(() => {
                 if (isAutoScrolling && !isDown) {
                     viewportEl.scrollTop += 0.6;
-                    // Jika mencapai titik akhir duplikat, kembalikan ke awal secara seamless
                     const halfHeight = viewportEl.scrollHeight / 2;
                     if (viewportEl.scrollTop >= halfHeight) {
                         viewportEl.scrollTop = 0;
@@ -778,13 +872,9 @@
 
             try {
                 updateProgress(25);
-
                 const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
-                
                 updateProgress(65);
-
                 const data = await response.json();
-
                 updateProgress(90);
 
                 const now = new Date();
@@ -827,7 +917,6 @@
                 }
 
                 updateProgress(100);
-
                 const allTodayStudents = listToday.reverse();
 
                 setTimeout(() => {
@@ -844,7 +933,6 @@
                     let htmlContent = '';
                     allTodayStudents.forEach(siswa => {
                         const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
-                        
                         const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
                         const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
                         const nilaiText = isZero ? "0" : siswa.nilai;
@@ -873,10 +961,7 @@
                         `;
                     });
 
-                    // Duplikasi konten agar pergerakan loop tidak terputus dan menyatu sempurna
                     trackContainer.innerHTML = htmlContent + htmlContent;
-
-                    // Aktifkan fungsi tarik mouse & sentuhan
                     initDraggableScroll(viewportEl);
 
                 }, 300);
@@ -895,7 +980,10 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", fetchPrTimelineData);
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchPrTimelineData();
+            checkSubjectLinks(); // Jalankan pemeriksaan link mata pelajaran
+        });
     </script>
 </body>
 </html>
