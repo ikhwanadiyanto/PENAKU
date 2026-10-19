@@ -100,7 +100,7 @@
         .form-group { margin-bottom: 16px; text-align: left; }
         .form-group label { display: block; font-size: 13px; font-weight: 700; color: #4a5568; margin-bottom: 8px; }
         
-        input { 
+        input, textarea, select { 
             width: 100%; 
             padding: 14px; 
             border: 2px solid #e2e8f0; 
@@ -110,7 +110,7 @@
             font-weight: 600; 
             transition: all 0.3s;
         }
-        input:focus { border-color: var(--primary); background-color: #fff; outline: none; box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1); }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); background-color: #fff; outline: none; box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1); }
         input[readonly] { background-color: #edf2f7; color: #718096; cursor: not-allowed; }
 
         /* Bubble Pop-up Aturan Pengerjaan */
@@ -177,6 +177,47 @@
             transition: transform 0.2s;
         }
         .btn-understand:active { transform: scale(0.98); }
+
+        /* Bubble Alasan Percobaan Ke-2 & Ke-3 */
+        #reasonModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+            padding: 20px;
+        }
+
+        .reason-bubble {
+            background: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(25, 118, 210, 0.25);
+            text-align: left;
+            border-top: 6px solid var(--skip-color);
+            animation: bubblePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .reason-bubble h4 {
+            margin: 0 0 10px 0;
+            color: var(--skip-color);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .reason-bubble p {
+            font-size: 13px;
+            color: #4a5568;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
 
         /* Bubble Pelanggaran Merah */
         #violationModal {
@@ -308,11 +349,23 @@
             <h4>📌 Aturan Pengerjaan ✨</h4>
             <ol>
                 <li>Siswa memiliki tepat <b>3 kali kesempatan</b> mengerjakan.</li>
+                <li>Kesempatan akan di-reset otomatis setiap 12 jam.</li>
                 <li>Tetap di dalam aplikasi selama kuis berlangsung.</li>
-                <li>Pindah aplikasi / keluar dianggap mengakhiri sesi.</li>
                 <li>Durasi per soal dirancang seru & menantang!</li>
             </ol>
             <button class="btn-understand" onclick="playAudioAndDo(closeRulesModal)">Saya Mengerti 👍</button>
+        </div>
+    </div>
+
+    <!-- BUBBLE ALASAN PERCOBAAN KE-2 & KE-3 (AWALNYA TERSEMBUNYI) -->
+    <div id="reasonModal" class="hidden">
+        <div class="reason-bubble">
+            <h4 id="reasonTitle">💬 Konfirmasi Percobaan</h4>
+            <p id="reasonDesc">Ini adalah percobaan ke-X, alasan mencoba : ...</p>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <textarea id="inputAlasan" rows="3" placeholder="Tulis alasan mencoba di sini..."></textarea>
+            </div>
+            <button class="btn-understand" onclick="submitAlasan()">Lanjutkan Kuis 🚀</button>
         </div>
     </div>
 
@@ -345,7 +398,7 @@
         </div>
         <div id="namaDisplay" style="margin: 15px 0; font-weight: bold; text-align: center; min-height: 35px; font-size: 14px;"></div>
 
-        <button class="btn-action" id="startBtn" onclick="playAudioAndDo(startQuiz)" disabled>Mulai Kuis Sekarang 🚀</button>
+        <button class="btn-action" id="startBtn" onclick="playAudioAndDo(handleStartButton)" disabled>Mulai Kuis Sekarang 🚀</button>
     </div>
 
     <!-- HALAMAN KUIS -->
@@ -381,6 +434,8 @@
 <script>
     const MAX_ATTEMPTS = 3;
     let quizIsRunning = false;
+    let currentAttemptNumber = 1;
+    let alasanSiswaText = "-";
     
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzrfBCYtqJu9qkpM1dKlS1VGt2UkBMRsQEhu1rjOOFtcTi07urfEi8SeCDCndV3VuqH/exec";
 
@@ -393,7 +448,8 @@
         "3097": "Mugi Aditia Ripki", "3098": "Muh Azzka Alpratama", "3099": "Muhamad Ramadhani",
         "3102": "Nayla Dwi Syafriani", "3108": "Puteri Ayuning Kirana", "3103": "Raisa Rahmawati Septiani",
         "3104": "Renita Nur Saefitri", "3084": "Shalwa Aisa Nazwa", "3105": "Wifha Alya An Adibah",
-        "3106": "Zhidan Dwi Aprilio Nurosy", "3107": "Zulfan Azhar Ramadhan"
+        "3106": "Zhidan Dwi Aprilio Nurosy", "3107": "Zulfan Azhar Ramadhan",
+        "3289": "Tauladani Elang"
     };
 
     const originalQuizData = [
@@ -458,7 +514,7 @@
         let formData = new FormData();
         formData.append('nama', namaSiswa + " (Melanggar / Pindah Aplikasi)");
         formData.append('skor', 0);
-        formData.append('keterangan', kodeTes); 
+        formData.append('keterangan', kodeTes + " [Alasan: " + alasanSiswaText + "]"); 
         formData.append('sisaWaktu', "0 detik");
         formData.append('durasiPengerjaan', "0 menit 0 detik");
 
@@ -521,11 +577,26 @@
         let namaSiswa = dataSiswa[inputVal];
         if (!namaSiswa) { display.innerText = "NIS tidak ditemukan ❌"; display.style.color = "var(--danger)"; return; }
 
-        let pemakaian = parseInt(localStorage.getItem('kuota_rasio_' + inputVal)) || 0;
+        // Cek data 12 jam terakhir menggunakan timestamp
+        let dataKey = 'kuota_data_rasio_' + inputVal;
+        let savedData = JSON.parse(localStorage.getItem(dataKey));
+        let now = new Date().getTime();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
+        let pemakaian = 0;
+        if (savedData) {
+            if (now - savedData.timestamp > twelveHours) {
+                localStorage.removeItem(dataKey);
+                pemakaian = 0;
+            } else {
+                pemakaian = savedData.count;
+            }
+        }
+
         let sisa = MAX_ATTEMPTS - pemakaian;
 
         if (sisa <= 0) {
-            display.innerHTML = `Halo, ${namaSiswa} ❌<br><span style="color:var(--danger); font-size:12px;">Kesempatan 3x kamu sudah habis!</span>`;
+            display.innerHTML = `Halo, ${namaSiswa} ❌<br><span style="color:var(--danger); font-size:12px;">Kesempatan 3x kamu sudah habis! (Reset dalam 12 jam)</span>`;
             startBtn.disabled = true;
         } else {
             display.innerHTML = `Halo, ${namaSiswa} ✨<br><span style="color:#007200; font-size:12px;">Sisa kesempatan: <b>${sisa} dari 3 kali</b></span>`;
@@ -533,12 +604,67 @@
         }
     }
 
-    function startQuiz() {
+    function handleStartButton() {
         let nis = document.getElementById('inputNIS').value.trim();
-        let pemakaian = parseInt(localStorage.getItem('kuota_rasio_' + nis)) || 0;
+        let dataKey = 'kuota_data_rasio_' + nis;
+        let savedData = JSON.parse(localStorage.getItem(dataKey));
+        let now = new Date().getTime();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
+        let pemakaian = 0;
+        if (savedData) {
+            if (now - savedData.timestamp > twelveHours) {
+                pemakaian = 0;
+            } else {
+                pemakaian = savedData.count;
+            }
+        }
+
+        currentAttemptNumber = pemakaian + 1;
+
+        // Jika percobaan ke-2 atau ke-3, munculkan buble alasan
+        if (currentAttemptNumber >= 2) {
+            document.getElementById('reasonTitle').innerText = `💬 Konfirmasi Percobaan ke-${currentAttemptNumber}`;
+            document.getElementById('reasonDesc').innerText = `Ini adalah percobaan ke-${currentAttemptNumber}, alasan mencoba : ...`;
+            document.getElementById('inputAlasan').value = "";
+            document.getElementById('reasonModal').classList.remove('hidden');
+        } else {
+            alasanSiswaText = "Percobaan Pertama";
+            jalankanMulaiQuiz();
+        }
+    }
+
+    function submitAlasan() {
+        let alasanInput = document.getElementById('inputAlasan').value.trim();
+        if (!alasanInput) {
+            alert("Mohon isi alasan mencoba terlebih dahulu ya! 😊");
+            return;
+        }
+        alasanSiswaText = alasanInput;
+        document.getElementById('reasonModal').classList.add('hidden');
+        jalankanMulaiQuiz();
+    }
+
+    function jalankanMulaiQuiz() {
+        let nis = document.getElementById('inputNIS').value.trim();
+        let dataKey = 'kuota_data_rasio_' + nis;
+        let savedData = JSON.parse(localStorage.getItem(dataKey));
+        let now = new Date().getTime();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
+        let pemakaian = 0;
+        if (savedData && (now - savedData.timestamp <= twelveHours)) {
+            pemakaian = savedData.count;
+        }
+
         if ((MAX_ATTEMPTS - pemakaian) <= 0) { alert("Kesempatan sudah habis!"); location.reload(); return; }
 
-        localStorage.setItem('kuota_rasio_' + nis, pemakaian + 1);
+        let newData = {
+            count: pemakaian + 1,
+            timestamp: (pemakaian === 0) ? now : savedData.timestamp
+        };
+        localStorage.setItem(dataKey, JSON.stringify(newData));
+
         score = 0; totalSisaWaktuKeseluruhan = 0;
         activeQueue = [...originalQuizData].sort(() => Math.random() - 0.5);
         currentIndexInQueue = 0;
@@ -636,9 +762,9 @@
             document.getElementById('durationText').innerText = formatDurasi;
 
             let formData = new FormData();
-            formData.append('nama', namaSiswa);
+            formData.append('nama', namaSiswa + (currentAttemptNumber > 1 ? ` (Percobaan ke-${currentAttemptNumber})` : ""));
             formData.append('skor', score);
-            formData.append('keterangan', kodeTes); 
+            formData.append('keterangan', kodeTes + ` [Alasan: ${alasanSiswaText}]`); 
             formData.append('sisaWaktu', totalSisaWaktuKeseluruhan + " detik");
             formData.append('durasiPengerjaan', formatDurasi);
 
