@@ -385,6 +385,8 @@
             margin-bottom: 20px;
             border-bottom: 2px dashed #e0e0e0;
             padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .timeline-header h2 {
@@ -395,12 +397,48 @@
             gap: 10px;
         }
 
+        .live-status-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Animasi Emotikon Lonceng Bisa Diklik (Reset / Ulang Putaran) */
+        .interactive-bell-btn {
+            background: #fff3e0;
+            border: 2px solid #ffa726;
+            color: #ef6c00;
+            font-size: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(255, 167, 38, 0.3);
+            animation: ringBell 1.2s infinite ease-in-out;
+        }
+
+        .interactive-bell-btn:hover {
+            transform: scale(1.15) rotate(15deg);
+            background: #ffe0b2;
+            box-shadow: 0 5px 12px rgba(255, 167, 38, 0.5);
+        }
+
+        @keyframes ringBell {
+            0%, 100% { transform: rotate(0deg); }
+            20%, 60% { transform: rotate(-15deg); }
+            40%, 80% { transform: rotate(15deg); }
+        }
+
         .live-badge {
             background: #ff4757;
             color: #fff;
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             animation: pulseBadge 1.5s infinite;
             display: inline-flex;
@@ -448,6 +486,32 @@
             justify-content: space-between;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
             pointer-events: none;
+            position: relative;
+        }
+
+        /* Animasi Emotikon Lonceng di Pojok Kiri Atas Kartu Data Terbaru */
+        .newest-item-badge {
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            background: #fff9c4;
+            color: #f57f17;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid #fbc02d;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: bounceBellItem 1.5s infinite ease-in-out;
+            z-index: 5;
+        }
+
+        @keyframes bounceBellItem {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
 
         .student-info {
@@ -579,6 +643,78 @@
             z-index: 5;
             margin-top: auto;
         }
+
+        /* =========================================================
+           RESPONSIF KHUSUS MODE PONSEL / PORTRAIT (MAX-WIDTH: 768px)
+           ========================================================= */
+        @media (max-width: 768px) {
+            header {
+                padding: 14px 20px;
+            }
+
+            .brand-title {
+                font-size: 22px;
+            }
+
+            .logo-icon {
+                font-size: 26px;
+            }
+
+            main {
+                padding: 20px 12px;
+            }
+
+            .welcome-hero h1 {
+                font-size: 22px;
+            }
+
+            .welcome-hero p {
+                font-size: 14px;
+            }
+
+            .subjects-grid {
+                grid-template-columns: 1fr; /* 1 Kolom penuh agar kartu tidak terlalu kecil */
+                gap: 16px;
+            }
+
+            .subject-card {
+                padding: 20px 16px;
+            }
+
+            /* Penyesuaian Timeline Header & Item agar pas di layar HP portrait */
+            .timeline-section {
+                padding: 16px 12px;
+                margin-top: 30px;
+            }
+
+            .timeline-header h2 {
+                font-size: 16px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 12px 14px;
+            }
+
+            .badge-info-group {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 6px;
+            }
+
+            .badge-mapel, .badge-ket, .badge-nilai {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+
+            .newest-item-badge {
+                top: -7px;
+                font-size: 10px;
+                padding: 1px 6px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -676,7 +812,13 @@
         <section class="timeline-section">
             <div class="timeline-header">
                 <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR Hari Ini</h2>
-                <span class="live-badge"><i class="fa-solid fa-circle"></i> UPDATE REALTIME</span>
+                <div class="live-status-group">
+                    <!-- Emotikon lonceng animasi di samping kiri update realtime yang bisa diklik untuk mengulang/mereset putaran timeline -->
+                    <button class="interactive-bell-btn" id="resetTimelineBtn" onclick="resetTimelineLoop()" title="Klik untuk mengulang putaran dari data terbaru!">
+                        🔔
+                    </button>
+                    <span class="live-badge"><i class="fa-solid fa-circle"></i> UPDATE REALTIME</span>
+                </div>
             </div>
 
             <div class="timeline-viewport" id="timelineViewport">
@@ -706,9 +848,8 @@
             cards.forEach(async (card) => {
                 const url = card.getAttribute('data-url');
                 try {
-                    // Menguji koneksi file/link menggunakan fetch (Head request atau GET ringan)
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 4000); // Batas waktu 4 detik
+                    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
                     const response = await fetch(url, { 
                         method: 'HEAD', 
@@ -718,12 +859,10 @@
                     
                     clearTimeout(timeoutId);
 
-                    // Jika status HTTP bukan 200-299, anggap tidak aktif
                     if (!response.ok) {
                         setCardOffline(card);
                     }
                 } catch (error) {
-                    // Jika terjadi error jaringan / file tidak ditemukan (404) / timeout
                     setCardOffline(card);
                 }
             });
@@ -731,7 +870,6 @@
 
         function setCardOffline(card) {
             card.classList.add('offline-card');
-            // Ubah fungsi klik agar menampilkan peringatan dan mencegah navigasi
             card.onclick = function(event) {
                 event.preventDefault();
                 alert("Maaf, link atau halaman mata pelajaran ini sedang tidak aktif/terkoneksi.");
@@ -790,8 +928,23 @@
             }
         }
 
-        // Logika Mouse Drag & Touch Drag interaktif untuk Timeline
+        let globalViewportEl = null;
+
+        function resetTimelineLoop() {
+            if (globalViewportEl) {
+                globalViewportEl.scrollTop = 0;
+                const bellBtn = document.getElementById('resetTimelineBtn');
+                if (bellBtn) {
+                    bellBtn.style.transform = 'scale(1.3) rotate(360deg)';
+                    setTimeout(() => {
+                        bellBtn.style.transform = 'scale(1) rotate(0deg)';
+                    }, 400);
+                }
+            }
+        }
+
         function initDraggableScroll(viewportEl) {
+            globalViewportEl = viewportEl;
             let isDown = false;
             let startY;
             let scrollTop;
@@ -931,14 +1084,22 @@
                     }
 
                     let htmlContent = '';
-                    allTodayStudents.forEach(siswa => {
+                    allTodayStudents.forEach((siswa, index) => {
                         const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
                         const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
                         const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
                         const nilaiText = isZero ? "0" : siswa.nilai;
 
+                        const isNewest = (index === 0);
+                        const newestBadgeHtml = isNewest ? `
+                            <div class="newest-item-badge">
+                                🔔 Data Terbaru
+                            </div>
+                        ` : '';
+
                         htmlContent += `
                             <div class="timeline-item">
+                                ${newestBadgeHtml}
                                 <div class="student-info">
                                     <div class="student-avatar">${initial}</div>
                                     <div class="student-details">
@@ -982,7 +1143,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchPrTimelineData();
-            checkSubjectLinks(); // Jalankan pemeriksaan link mata pelajaran
+            checkSubjectLinks();
         });
     </script>
 </body>
