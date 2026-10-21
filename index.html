@@ -35,7 +35,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Dekorasi Gelembung Warna Manis & Transparan[cite: 3] */
+        /* Dekorasi Gelembung Warna Manis & Transparan */
         .bubble {
             position: absolute;
             border-radius: 50%;
@@ -152,12 +152,8 @@
         }
 
         @keyframes pointingBounce {
-            0%, 100% {
-                transform: translateY(0) scale(1);
-            }
-            50% {
-                transform: translateY(14px) scale(1.15);
-            }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(14px) scale(1.15); }
         }
 
         /* Animasi Teks Judul Ceria */
@@ -204,6 +200,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-top: 10px;
         }
 
         /* LAYOUT GRID LEGA (3 Kolom x 2 Baris) */
@@ -214,7 +211,7 @@
             width: 100%;
         }
 
-        .card-kelas {
+        .card-kelas, .card-music {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -233,7 +230,7 @@
             gap: 25px;
         }
 
-        .card-kelas i.main-icon {
+        .card-kelas i.main-icon, .card-music i.main-icon {
             font-size: 3.2rem;
             transition: transform 0.35s ease;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
@@ -241,21 +238,21 @@
             text-align: center;
         }
 
-        .card-kelas .card-info {
+        .card-kelas .card-info, .card-music .card-info {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             text-align: left;
         }
 
-        .card-kelas span.title {
+        .card-kelas span.title, .card-music span.title {
             font-family: 'Comic Neue', cursive;
             font-size: 2rem;
             line-height: 1.1;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .card-kelas span.desc {
+        .card-kelas span.desc, .card-music span.desc {
             font-family: 'Poppins', sans-serif;
             font-size: 0.88rem;
             font-weight: 500;
@@ -263,7 +260,7 @@
             margin-top: 4px;
         }
 
-        /* Warna asli saat Login */
+        /* Warna Menu Kelas */
         .kelas-1 { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); }
         .kelas-2 { background: linear-gradient(135deg, #ff9f43, #ffbd7a); }
         .kelas-3 { background: linear-gradient(135deg, #feca57, #ffdd67); }
@@ -271,53 +268,73 @@
         .kelas-5 { background: linear-gradient(135deg, #48dbfb, #00d2d3); }
         .kelas-6 { background: linear-gradient(135deg, #54a0ff, #5f27cd); }
 
-        /* Style Ketika Belum Login (Terkunci & Abu-abu)[cite: 3] */
-        .card-kelas.locked {
-            background: linear-gradient(135deg, #b2bec3, #636e72) !important;
-            cursor: not-allowed;
+        /* Warna Menu Alat Musik */
+        .music-pianika { background: linear-gradient(135deg, #ff9ff3, #feca57); }
+        .music-angklung { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+        .music-extra1 { background: linear-gradient(135deg, #ff6b81, #ff4757); }
+        .music-extra2 { background: linear-gradient(135deg, #10ac84, #1dd1a1); }
+        .music-extra3 { background: linear-gradient(135deg, #5f27cd, #341f97); }
+        .music-extra4 { background: linear-gradient(135deg, #ffa502, #ff7f50); }
+
+        /* Style Otomatis Ketika File Offline / Belum Tersedia */
+        .card-music.offline-file, .card-kelas.locked {
+            background: linear-gradient(135deg, rgba(178, 190, 195, 0.75), rgba(99, 110, 114, 0.85)) !important;
+            backdrop-filter: blur(6px);
+            cursor: not-allowed !important;
             opacity: 0.85;
         }
 
-        .card-kelas.locked:hover {
+        .card-music.offline-file:hover, .card-kelas.locked:hover {
             transform: none !important;
             box-shadow: 0 12px 25px rgba(0,0,0,0.12) !important;
         }
 
-        .card-kelas.locked:hover i.main-icon {
+        .card-music.offline-file:hover i.main-icon, .card-kelas.locked:hover i.main-icon {
             transform: none !important;
+            animation: none !important;
         }
 
-        /* Badge Gembok di Pojok Kartu[cite: 3] */
-        .lock-badge {
+        /* Badge Status (Gembok atau Belum Tersedia) */
+        .status-badge {
             position: absolute;
             top: 15px;
             right: 18px;
-            background: rgba(0, 0, 0, 0.3);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 5px 12px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #ff7675;
-            font-size: 1rem;
+            gap: 6px;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 3;
+            letter-spacing: 0.5px;
         }
 
-        .card-kelas:not(.locked) .lock-badge {
-            display: none;
+        .status-badge i {
+            color: #ff7675;
+            font-size: 0.85rem;
         }
 
-        .card-kelas:not(.locked):hover {
+        /* Animasi Khusus untuk Ikon Pianika & Angklung */
+        @keyframes musicBounceAnim {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-6px) rotate(-8deg) scale(1.1); }
+            75% { transform: translateY(-6px) rotate(8deg) scale(1.1); }
+        }
+
+        .animated-music-icon {
+            animation: musicBounceAnim 2s infinite ease-in-out;
+        }
+
+        .card-music:not(.offline-file):hover {
             transform: translateY(-10px) scale(1.03);
             box-shadow: 0 20px 35px rgba(0,0,0,0.2);
         }
 
-        .card-kelas:not(.locked):hover i.main-icon {
-            transform: scale(1.2) rotate(12deg);
-        }
-
-        .card-kelas::after {
+        .card-kelas::after, .card-music::after {
             content: '';
             position: absolute;
             top: -25px;
@@ -328,7 +345,7 @@
             border-radius: 50%;
         }
 
-        /* Style Menu Pendukung Terpisah "e-PR" di Bawah[cite: 3] */
+        /* Style Menu Pendukung Terpisah "e-PR" di Bawah */
         .epr-section-wrapper {
             margin-top: 25px;
             width: 100%;
@@ -670,7 +687,7 @@
                 grid-template-columns: 1fr;
                 gap: 14px;
             }
-            .card-kelas, .card-epr {
+            .card-kelas, .card-music, .card-epr {
                 padding: 18px 22px;
             }
             h1 { font-size: 2rem; }
@@ -682,7 +699,7 @@
 </head>
 <body>
 
-    <!-- Gelembung Warna Manis dan Transparan[cite: 3] -->
+    <!-- Gelembung Warna Manis dan Transparan -->
     <div class="bubble" style="width: 100px; height: 100px; top: 5%; left: 4%; background: rgba(255, 182, 193, 0.45); animation-duration: 8s;"></div>
     <div class="bubble" style="width: 140px; height: 140px; bottom: 10%; left: 6%; background: rgba(173, 216, 230, 0.45); animation-duration: 12s;"></div>
     <div class="bubble" style="width: 110px; height: 110px; top: 10%; right: 5%; background: rgba(255, 218, 185, 0.45); animation-duration: 9s;"></div>
@@ -713,12 +730,11 @@
         <h1>Selamat Datang Di Aplikasi PENA-KU</h1>
         <div class="subtitle">✨ Pengelolaan Nilai dan Administrasi Kelas Unggul ✨</div>
         
+        <!-- 1. Menu Tingkat Kelas (1 s.d 6) -->
         <div class="section-title">🎈 Menu Tingkat Kelas</div>
-        
-        <!-- Menu Kelas 1 s.d 6 Terhubung ke file PENA MANTAP V1 - V6 -->
         <div class="grid-3x2" id="kelasGrid">
             <a href="PENA MANTAP V1.html" class="card-kelas kelas-1 locked" data-menu="1">
-                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
                 <i class="fa-solid fa-face-smile-beam main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 1</span>
@@ -726,7 +742,7 @@
                 </div>
             </a>
             <a href="PENA MANTAP V2.html" class="card-kelas kelas-2 locked" data-menu="2">
-                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
                 <i class="fa-solid fa-shapes main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 2</span>
@@ -734,7 +750,7 @@
                 </div>
             </a>
             <a href="PENA MANTAP V3.html" class="card-kelas kelas-3 locked" data-menu="3">
-                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
                 <i class="fa-solid fa-palette main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 3</span>
@@ -742,7 +758,7 @@
                 </div>
             </a>
             <a href="PENA MANTAP V4.html" class="card-kelas kelas-4 locked" data-menu="4">
-                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
                 <i class="fa-solid fa-rocket main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 4</span>
@@ -750,7 +766,7 @@
                 </div>
             </a>
             <a href="PENA MANTAP V5.html" class="card-kelas kelas-5 locked" data-menu="5">
-                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
                 <i class="fa-solid fa-flask-vial main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 5</span>
@@ -758,7 +774,7 @@
                 </div>
             </a>
             <a href="PENA MANTAP V6.html" class="card-kelas kelas-6 locked" data-menu="6">
-                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
                 <i class="fa-solid fa-graduation-cap main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 6</span>
@@ -767,9 +783,61 @@
             </a>
         </div>
 
-        <!-- Menu Pendukung Terpisah "e-PR" (Bisa diakses Mode Tamu / Publik)[cite: 3] -->
+        <!-- 2. Menu Alat Musik Interaktif (Pengecekan File Otomatis ke GitHub) -->
+        <div class="section-title" style="margin-top: 35px;">🎵 Menu Media Alat Musik Interaktif</div>
+        <div class="grid-3x2" id="musicGrid">
+            <!-- PIANIKA -->
+            <a href="Pianika-Ku.html" class="card-music music-pianika" data-file="Pianika-Ku.html">
+                <i class="fa-solid fa-music main-icon animated-music-icon"></i>
+                <div class="card-info">
+                    <span class="title">Pianika</span>
+                    <span class="desc">Virtual Pianika-Ku Interaktif</span>
+                </div>
+            </a>
+
+            <!-- ANGKLUNG -->
+            <a href="Angklung-Ku.html" class="card-music music-angklung" data-file="Angklung-Ku.html">
+                <i class="fa-solid fa-bell main-icon animated-music-icon" style="animation-delay: 0.5s;"></i>
+                <div class="card-info">
+                    <span class="title">Angklung</span>
+                    <span class="desc">Virtual Angklung-Ku Tradisional</span>
+                </div>
+            </a>
+
+            <!-- 4 Alat Musik Tambahan -->
+            <a href="Drum-Ku.html" class="card-music music-extra1" data-file="Drum-Ku.html">
+                <i class="fa-solid fa-drum main-icon"></i>
+                <div class="card-info">
+                    <span class="title">Drum / Perkusi</span>
+                    <span class="desc">Alat Musik Ritmis Interaktif</span>
+                </div>
+            </a>
+            <a href="Gitar-Ku.html" class="card-music music-extra2" data-file="Gitar-Ku.html">
+                <i class="fa-solid fa-guitar main-icon"></i>
+                <div class="card-info">
+                    <span class="title">Gitar Akustik</span>
+                    <span class="desc">Alat Musik Harmonis Digital</span>
+                </div>
+            </a>
+            <a href="Keyboard-Ku.html" class="card-music music-extra3" data-file="Keyboard-Ku.html">
+                <i class="fa-solid fa-compact-disc main-icon"></i>
+                <div class="card-info">
+                    <span class="title">Keyboard</span>
+                    <span class="desc">Synthesizer Digital Modern</span>
+                </div>
+            </a>
+            <a href="Suling-Ku.html" class="card-music music-extra4" data-file="Suling-Ku.html">
+                <i class="fa-solid fa-wind main-icon"></i>
+                <div class="card-info">
+                    <span class="title">Suling / Rekorder</span>
+                    <span class="desc">Alat Musik Tiup Nusantara</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- 3. Menu Pendukung Terpisah "e-PR" -->
         <div class="epr-section-wrapper">
-            <a href="e-PR.html" class="card-epr">
+            <a href="e-PR.html" class="card-epr" data-file="e-PR.html">
                 <i class="fa-solid fa-book-open-reader"></i>
                 <div class="card-info">
                     <span class="title">e-PR (Electronic Peer Review / Pelaporan)</span>
@@ -782,7 +850,7 @@
     <!-- Footer Developer Info -->
     <div class="footer-bar">
         <div class="developer-badge">
-            Aplikasi ini dibuat oleh : <strong>Ikhwan Adi Yanto, S.Pd.</strong> tahun 2026[cite: 3]
+            Aplikasi ini dibuat oleh : <strong>Ikhwan Adi Yanto, S.Pd.</strong> tahun 2026
         </div>
     </div>
 
@@ -801,7 +869,6 @@
                 <p>Masukkan kredensial untuk membuka kunci sistem kelas</p>
             </div>
 
-            <!-- Notifikasi Error Profesional -->
             <div class="alert-error" id="loginError">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 <span id="errorMessage">Nama pengguna atau kata sandi yang Anda masukkan salah. Silakan coba lagi.</span>
@@ -841,7 +908,7 @@
         </div>
     </div>
 
-    <!-- Audio Element Global[cite: 3] -->
+    <!-- Audio Element Global -->
     <audio id="globalSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
 
     <script>
@@ -859,13 +926,47 @@
         const btnAuthText = document.getElementById('btnAuthText');
         const btnAuthAction = document.getElementById('btnAuthAction');
         const kelasCards = document.querySelectorAll('.card-kelas');
+        const musicCards = document.querySelectorAll('.card-music');
         const globalSound = document.getElementById('globalSound');
 
         document.addEventListener('DOMContentLoaded', () => {
             checkLoginStatus();
+            checkFilesAvailability(); // Jalankan pengecekan file saat halaman dimuat
         });
 
-        // --- FUNGSI GLOBAL PEMUTAR SUARA UNTUK SEMUA TOMBOL ---
+        // --- FUNGSI DETEKSI FILE ONLINE/OFFLINE (UNTUK GITHUB) ---
+        async function checkFilesAvailability() {
+            const checkableCards = document.querySelectorAll('.card-music, .card-epr');
+            
+            for (let card of checkableCards) {
+                const fileUrl = card.getAttribute('data-file');
+                if (!fileUrl) continue;
+
+                try {
+                    // Melakukan fetch header untuk memeriksa apakah file tersedia di server/GitHub
+                    let response = await fetch(fileUrl, { method: 'HEAD' });
+                    if (!response.ok) {
+                        markCardAsOffline(card);
+                    }
+                } catch (error) {
+                    // Jika gagal (file belum di-upload / offline)
+                    markCardAsOffline(card);
+                }
+            }
+        }
+
+        function markCardAsOffline(card) {
+            card.classList.add('offline-file');
+            // Tambahkan badge "Belum Tersedia" di pojok kanan atas kartu
+            if (!card.querySelector('.status-badge')) {
+                const badge = document.createElement('div');
+                badge.className = 'status-badge';
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Belum Tersedia';
+                card.appendChild(badge);
+            }
+        }
+
+        // --- FUNGSI GLOBAL PEMUTAR SUARA ---
         function playSoundAndProceed(callback) {
             globalSound.currentTime = 0;
             globalSound.play().catch(err => {
@@ -901,15 +1002,16 @@
             }
         }
 
-        // Mengatur Tampilan & Status Kartu Kelas Berdasarkan Hak Akses Login
         function setLoggedInState(username) {
             userStatusText.textContent = `Guru (${username})`;
             btnAuthText.textContent = "Keluar";
             btnAuthAction.classList.add('btn-logout');
 
-            // Buka Kunci Semua Menu Kelas & Kembalikan Warna Aslinya
             kelasCards.forEach(card => {
                 card.classList.remove('locked');
+                const badge = card.querySelector('.status-badge');
+                if (badge) badge.remove();
+                
                 const menuNum = card.getAttribute('data-menu');
                 if(menuNum === "1") card.className = "card-kelas kelas-1";
                 if(menuNum === "2") card.className = "card-kelas kelas-2";
@@ -917,11 +1019,6 @@
                 if(menuNum === "4") card.className = "card-kelas kelas-4";
                 if(menuNum === "5") card.className = "card-kelas kelas-5";
                 if(menuNum === "6") card.className = "card-kelas kelas-6";
-                
-                const badge = document.createElement('div');
-                badge.className = 'lock-badge';
-                badge.innerHTML = '<i class="fa-solid fa-lock"></i>';
-                card.appendChild(badge);
             });
         }
 
@@ -930,9 +1027,14 @@
             btnAuthText.textContent = "Masuk";
             btnAuthAction.classList.remove('btn-logout');
 
-            // Kunci Semua Menu Kelas & Ubah ke Warna Abu-abu[cite: 3]
             kelasCards.forEach(card => {
                 card.classList.add('locked');
+                if (!card.querySelector('.status-badge')) {
+                    const badge = document.createElement('div');
+                    badge.className = 'status-badge';
+                    badge.innerHTML = '<i class="fa-solid fa-lock"></i> Terkunci';
+                    card.appendChild(badge);
+                }
             });
         }
 
@@ -988,11 +1090,9 @@
                     sessionStorage.setItem('pena_logged_in', 'true');
                     sessionStorage.setItem('pena_user', username);
 
-                    // Tutup modal login terlebih dahulu secara instan
                     loginModal.classList.remove('active');
                     setLoggedInState(username);
 
-                    // Tampilkan notifikasi setelah modal tertutup mulus
                     setTimeout(() => {
                         alert(`Selamat datang kembali, ${username}! Login berhasil.`);
                     }, 100);
@@ -1025,16 +1125,16 @@
             }
         }
 
-        // --- SEMUA TOMBOL MENU KELAS & E-PR DIBERI EFEK SUARA ---
-        const allInteractiveCards = document.querySelectorAll('.card-kelas, .card-epr');
+        // --- INTERAKSI KLIK MENU ---
+        const allInteractiveCards = document.querySelectorAll('.card-kelas, .card-music, .card-epr');
 
         allInteractiveCards.forEach(menu => {
             menu.addEventListener('click', (e) => {
-                const isLoggedIn = sessionStorage.getItem('pena_logged_in') === 'true' || localStorage.getItem('pena_remember') === 'true';
                 const isLocked = menu.classList.contains('locked');
+                const isOffline = menu.classList.contains('offline-file');
                 const targetUrl = menu.getAttribute('href');
 
-                // Jika kartu kelas terkunci (mode tamu)
+                // Jika kelas terkunci
                 if (isLocked) {
                     e.preventDefault();
                     playSoundAndProceed(() => {
@@ -1044,7 +1144,16 @@
                     return;
                 }
 
-                // Jika tombol sah dan menuju URL lain
+                // Jika file alat musik berstatus offline / belum tersedia
+                if (isOffline) {
+                    e.preventDefault();
+                    playSoundAndProceed(() => {
+                        alert("⚠️ Halaman ini masih offline atau file belum tersedia di repositori (GitHub). Silakan unggah file terkait terlebih dahulu.");
+                    });
+                    return;
+                }
+
+                // Jika file ada dan siap dibuka
                 if (targetUrl && targetUrl !== '#') {
                     e.preventDefault();
                     playSoundAndProceed(() => {
