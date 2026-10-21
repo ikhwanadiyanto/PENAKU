@@ -94,14 +94,6 @@
         }
 
         /* Animasi Shake / Goyang Angklung */
-        @keyframes shakeSlow {
-            0% { transform: rotate(0deg) translateX(0); }
-            25% { transform: rotate(-2deg) translateX(-2px); }
-            50% { transform: rotate(0deg) translateX(0); }
-            75% { transform: rotate(2deg) translateX(2px); }
-            100% { transform: rotate(0deg) translateX(0); }
-        }
-
         @keyframes shakeFast {
             0% { transform: rotate(0deg) translateX(0) scale(1.01); }
             20% { transform: rotate(-3.5deg) translateX(-4px); }
@@ -115,8 +107,17 @@
             animation: shakeFast 0.22s ease-in-out;
         }
 
+        /* Kelas Animasi Goyang Kontinu dengan durasi dinamis yang diatur via JS */
         .anim-shake-continuous {
-            animation: shakeSlow 0.13s infinite linear;
+            animation: shakeSlow var(--shake-speed, 0.13s) infinite linear;
+        }
+
+        @keyframes shakeSlow {
+            0% { transform: rotate(0deg) translateX(0); }
+            25% { transform: rotate(-2.5deg) translateX(-2px); }
+            50% { transform: rotate(0deg) translateX(0); }
+            75% { transform: rotate(2.5deg) translateX(2px); }
+            100% { transform: rotate(0deg) translateX(0); }
         }
 
         /* Visual Feedback Active & Guide */
@@ -194,7 +195,7 @@
         </div>
 
         <!-- Panel Kontrol Tengah -->
-        <div class="flex items-center gap-1 md:gap-2.5 flex-wrap justify-center">
+        <div class="flex items-center gap-1 md:gap-2 flex-wrap justify-center">
             
             <!-- Mode Bermain Switcher -->
             <div class="flex items-center bg-black/50 p-0.5 rounded-lg border border-amber-900/60 text-[10px] md:text-xs">
@@ -206,6 +207,13 @@
                 </button>
             </div>
 
+            <!-- Slider Pengatur Tempo Goyang (Durasi / Kecepatan Goyang) -->
+            <div class="hidden xl:flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded-lg border border-amber-900/60" title="Atur Tempo / Kecepatan Goyang">
+                <i class="fa-solid fa-gauge-high text-amber-400 text-[11px]"></i>
+                <span class="text-[9px] text-amber-200/70">Tempo:</span>
+                <input type="range" id="shakeSpeedSlider" min="0.06" max="0.30" step="0.01" value="0.14" class="w-14 accent-amber-500 cursor-pointer">
+            </div>
+
             <!-- Toggle Mode Geser / Slide (Glissando) -->
             <button id="slideToggleBtn" class="bg-amber-950 hover:bg-amber-900 text-amber-200/80 border border-amber-700/60 px-2 py-0.5 rounded-lg text-[10px] md:text-xs flex items-center gap-1.5 transition shadow" title="Aktifkan/Matikan Bunyi Saat Menggeser Jari/Kursor">
                 <i class="fa-solid fa-hand-pointer text-amber-400"></i>
@@ -214,7 +222,7 @@
 
             <!-- Pemilih Lagu & Mode Belajar -->
             <div class="flex items-center bg-black/50 p-0.5 rounded-lg border border-amber-900/60 text-[10px] md:text-xs gap-1">
-                <select id="songSelect" class="bg-zinc-900 text-amber-100 border border-amber-800 rounded px-1.5 py-0.5 focus:outline-none focus:border-amber-400 max-w-[100px] md:max-w-[140px] text-[10px] md:text-xs">
+                <select id="songSelect" class="bg-zinc-900 text-amber-100 border border-amber-800 rounded px-1.5 py-0.5 focus:outline-none focus:border-amber-400 max-w-[90px] md:max-w-[120px] text-[10px] md:text-xs">
                     <option value="none">-- Bebas --</option>
                     <option value="gundul">Gundul Pacul</option>
                     <option value="kartini">Ibu Kita Kartini</option>
@@ -235,7 +243,7 @@
             <!-- Volume Slider -->
             <div class="hidden sm:flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded-lg border border-amber-900/60">
                 <i class="fa-solid fa-volume-high text-amber-400 text-[11px]"></i>
-                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" class="w-12 md:w-16 accent-amber-500 cursor-pointer">
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" class="w-12 md:w-14 accent-amber-500 cursor-pointer">
             </div>
 
         </div>
@@ -261,7 +269,6 @@
             
             <!-- Palang Rak Atas (Bambu Horizontal) -->
             <div class="w-full h-2.5 md:h-4 bamboo-frame rounded-full relative flex items-center justify-between px-2 z-10">
-                <!-- Tali Pengikat Rotan Di Rak Atas -->
                 <div class="w-full flex justify-around items-center">
                     <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
                     <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
@@ -290,7 +297,7 @@
                     <i class="fa-solid fa-gem text-amber-500 mr-1"></i> Skala 13 Nada (A3 s/d F5)
                 </span>
                 <span class="text-[8px] md:text-[10px] font-mono text-amber-300/80 uppercase tracking-wider hidden sm:inline">
-                    <i class="fa-solid fa-[#dfab34] mr-1"></i> Mode Slide Glissando: Sentuh & Geser Melintasi Bambu
+                    <i class="fa-solid fa-sliders text-amber-400 mr-1"></i> Atur Tempo Goyang di Atas
                 </span>
             </div>
 
@@ -308,11 +315,8 @@
     <script>
         // Data Set 13 Nada Angklung (2 Low, 8 Utama, 3 High)
         const ANGKLUNG_DATA = [
-            // 2 Nada Rendah Tambahan
             { note: 'La', pitch: 'A3', octaveType: 'low', freq: 220.00, keyDisplay: 'Z', keyCodes: ['KeyZ'], heightRatio: 1.00 },
             { note: 'Si', pitch: 'B3', octaveType: 'low', freq: 246.94, keyDisplay: 'X', keyCodes: ['KeyX'], heightRatio: 0.94 },
-            
-            // 8 Nada Standar Diatonik
             { note: 'Do', pitch: 'C4', octaveType: 'mid', freq: 261.63, keyDisplay: '1 / A', keyCodes: ['Digit1', 'KeyA'], heightRatio: 0.88 },
             { note: 'Re', pitch: 'D4', octaveType: 'mid', freq: 293.66, keyDisplay: '2 / S', keyCodes: ['Digit2', 'KeyS'], heightRatio: 0.82 },
             { note: 'Mi', pitch: 'E4', octaveType: 'mid', freq: 329.63, keyDisplay: '3 / D', keyCodes: ['Digit3', 'KeyD'], heightRatio: 0.77 },
@@ -321,14 +325,11 @@
             { note: 'La', pitch: 'A4', octaveType: 'mid', freq: 440.00, keyDisplay: '6 / H', keyCodes: ['Digit6', 'KeyH'], heightRatio: 0.62 },
             { note: 'Si', pitch: 'B4', octaveType: 'mid', freq: 493.88, keyDisplay: '7 / J', keyCodes: ['Digit7', 'KeyJ'], heightRatio: 0.57 },
             { note: "Do'", pitch: 'C5', octaveType: 'mid', freq: 523.25, keyDisplay: '8 / K', keyCodes: ['Digit8', 'KeyK'], heightRatio: 0.53 },
-
-            // 3 Nada Tinggi Tambahan
             { note: "Re'", pitch: 'D5', octaveType: 'high', freq: 587.33, keyDisplay: 'O / N', keyCodes: ['KeyO', 'KeyN'], heightRatio: 0.48 },
             { note: "Mi'", pitch: 'E5', octaveType: 'high', freq: 659.25, keyDisplay: 'P / M', keyCodes: ['KeyP', 'KeyM'], heightRatio: 0.44 },
             { note: "Fa'", pitch: 'F5', octaveType: 'high', freq: 698.46, keyDisplay: '[ / ,', keyCodes: ['BracketLeft', 'Comma'], heightRatio: 0.40 }
         ];
 
-        // Data Lagu Tradisional Diperbarui Untuk 13 Nada
         const SONGS = {
             gundul: {
                 title: "Gundul Pacul",
@@ -389,17 +390,17 @@
         let audioCtx = null;
         let masterGainNode = null;
         let isShakeMode = false;
-        let isSlideMode = true; // Mode Slide Glissando aktif secara default
-        let isPointerDown = false; // Status mouse/touch ditahan
-        let lastHoveredIndex = -1; // Indeks angklung terakhir yang terpicu saat digeser
+        let isSlideMode = true;
+        let isPointerDown = false;
+        let lastHoveredIndex = -1;
         let masterVolume = 0.8;
+        let shakeSpeed = 0.14; // Default durasi goyang (detik)
         let activeShakers = {};
         let autoPlayTimeout = null;
         let isAutoPlaying = false;
         let isGuideMode = false;
         let currentGuideIndex = 0;
 
-        // Inisialisasi Audio Engine
         function initAudio() {
             if (!audioCtx) {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -414,9 +415,6 @@
             }
         }
 
-        /**
-         * Sintesis Suara Bambu Angklung Akustik Menggunakan Web Audio API
-         */
         function playAngklungSound(item, duration = 0.7, isShaking = false) {
             initAudio();
             if (!audioCtx) return;
@@ -424,7 +422,6 @@
             const freq = item.freq;
             const now = audioCtx.currentTime;
 
-            // Adjust Karakter Resonansi berdasarkan jenis oktaf (Low, Mid, High)
             let octaveMultiplier = 2;
             let subMultiplier = 0.5;
             let mainVol = 0.75;
@@ -432,41 +429,35 @@
             let subVol = 0.15;
 
             if (item.octaveType === 'low') {
-                subVol = 0.35; // Resonansi bass bambu lebih tebal
+                subVol = 0.35;
                 mainVol = 0.85;
             } else if (item.octaveType === 'high') {
-                octVol = 0.35; // Denting bambu atas lebih bright
+                octVol = 0.35;
                 subVol = 0.05;
             }
 
-            // 1. Oscillator Utama (Harmonis Kayu Bambu)
             const oscMain = audioCtx.createOscillator();
             oscMain.type = 'sine';
             oscMain.frequency.setValueAtTime(freq, now);
 
-            // 2. Oscillator Oktaf Atas (Denting Bambu Atas)
             const oscOctave = audioCtx.createOscillator();
             oscOctave.type = 'triangle';
             oscOctave.frequency.setValueAtTime(freq * octaveMultiplier, now);
 
-            // 3. Resonator Tabung Bawah (Rongga Udara)
             const oscResonator = audioCtx.createOscillator();
             oscResonator.type = 'sine';
             oscResonator.frequency.setValueAtTime(freq * subMultiplier, now);
 
-            // Bandpass Filter Akustik
             const bandpass = audioCtx.createBiquadFilter();
             bandpass.type = 'bandpass';
             bandpass.frequency.setValueAtTime(freq * 1.35, now);
             bandpass.Q.setValueAtTime(2.6, now);
 
-            // Gains
             const gainMain = audioCtx.createGain();
             const gainOctave = audioCtx.createGain();
             const gainResonator = audioCtx.createGain();
             const noteGain = audioCtx.createGain();
 
-            // LFO Tremolo Goyang Angklung
             const lfo = audioCtx.createOscillator();
             const lfoGain = audioCtx.createGain();
             
@@ -478,7 +469,6 @@
             gainOctave.gain.setValueAtTime(octVol, now);
             gainResonator.gain.setValueAtTime(subVol, now);
 
-            // Noise Ketukan Bambu (Impulse Click)
             const bufferSize = audioCtx.sampleRate * 0.012; 
             const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const output = noiseBuffer.getChannelData(0);
@@ -500,7 +490,6 @@
             noiseFilter.connect(noiseGain);
             noiseGain.connect(noteGain);
 
-            // Routing Audio
             oscMain.connect(gainMain);
             oscOctave.connect(gainOctave);
             oscResonator.connect(gainResonator);
@@ -512,7 +501,6 @@
 
             lfoGain.connect(noteGain.gain);
 
-            // ADSR Envelope
             const attackTime = 0.01;
             const decayTime = duration;
 
@@ -522,7 +510,6 @@
 
             noteGain.connect(masterGainNode);
 
-            // Play & Stop
             oscMain.start(now);
             oscOctave.start(now);
             oscResonator.start(now);
@@ -536,7 +523,6 @@
             lfo.stop(stopTime);
         }
 
-        // Render Komponen Visual Angklung 13 Nada Landscape
         function renderAngklung() {
             const container = document.getElementById('angklungContainer');
             container.innerHTML = '';
@@ -544,7 +530,6 @@
             ANGKLUNG_DATA.forEach((item, index) => {
                 const heightPercent = Math.max(42, Math.floor(item.heightRatio * 100));
 
-                // Warna Beda tipis untuk menandai nada low / mid / high
                 let tagColorClass = 'text-amber-300 border-amber-600/40';
                 if (item.octaveType === 'low') {
                     tagColorClass = 'text-sky-300 border-sky-500/50';
@@ -557,7 +542,6 @@
                 angklungEl.dataset.index = index;
 
                 angklungEl.innerHTML = `
-                    <!-- Label Nada Atas -->
                     <div class="mb-0.5 text-center pointer-events-none">
                         <span class="block text-[8px] md:text-[10px] font-bold bg-black/70 px-1 py-0.2 rounded border shadow ${tagColorClass}">
                             ${item.pitch}
@@ -567,38 +551,28 @@
                         </span>
                     </div>
 
-                    <!-- Visual Bambu Angklung -->
                     <div class="angklung-body relative w-full flex justify-center items-end" style="height: ${heightPercent}%;">
-                        
-                        <!-- Rangka Bingkai Samping & Atas -->
                         <div class="absolute inset-0 border-t border-x border-amber-900/70 rounded-t pointer-events-none"></div>
 
-                        <!-- Tabung Bambu Kecil (Kiri) -->
                         <div class="bamboo-texture absolute left-[8%] bottom-0 w-[32%] rounded-t-full rounded-b border border-amber-950 shadow-md" 
                              style="height: ${heightPercent * 0.62}%;">
                             <div class="bamboo-node w-full h-0.5 md:h-1 absolute top-1/2"></div>
                         </div>
 
-                        <!-- Tabung Utama Bambu Besar (Kanan) -->
                         <div class="bamboo-texture absolute right-[8%] bottom-0 w-[48%] rounded-t-full rounded-b border border-amber-950 shadow-lg flex flex-col justify-between items-center py-0.5" 
                              style="height: 100%;">
-                            <!-- Coakan Potongan Suara Bambu Atas -->
                             <div class="w-full h-3 md:h-5 bg-amber-950/80 rounded-b-full border-b border-amber-700/50"></div>
-                            <!-- Ruas Bambu (Node) -->
                             <div class="bamboo-node w-full h-0.5 md:h-1 border-y border-amber-950"></div>
                             <div class="bamboo-node w-full h-0.5 md:h-1 border-y border-amber-950 mb-1"></div>
                         </div>
 
-                        <!-- Tali Pengikat Rotan Samping -->
                         <div class="rattan-bind absolute top-1/3 w-full h-1.5 rounded-sm z-10"></div>
 
-                        <!-- Dasaran Rel Kayu Tabung Bawah -->
                         <div class="bamboo-frame w-full h-2.5 rounded absolute -bottom-1 border border-amber-700 shadow-md flex items-center justify-center">
                             <div class="w-1 h-1 rounded-full bg-amber-400"></div>
                         </div>
                     </div>
 
-                    <!-- Indikator Tombol Keyboard (Bottom Badge) -->
                     <div class="mt-1 pointer-events-none">
                         <span class="key-badge text-[8px] md:text-[10px] font-mono font-bold bg-amber-950/90 text-amber-300 border border-amber-700/80 px-1 py-0.2 rounded shadow block text-center truncate">
                             ${item.keyDisplay}
@@ -606,20 +580,16 @@
                     </div>
                 `;
 
-                // Setup Individual Click Interaction Fallback
                 setupInteractions(angklungEl, index);
-
                 container.appendChild(angklungEl);
             });
         }
 
-        // Setup Event Mouse & Touch untuk Individual Element
         function setupInteractions(element, index) {
             const startTrigger = (e) => {
                 if (e) e.preventDefault();
                 initAudio();
                 isPointerDown = true;
-
                 triggerNoteByIndex(index);
             };
 
@@ -634,21 +604,16 @@
 
             element.addEventListener('mousedown', startTrigger);
             element.addEventListener('mouseup', endTrigger);
-
             element.addEventListener('touchstart', startTrigger, { passive: false });
             element.addEventListener('touchend', endTrigger, { passive: false });
         }
 
-        // Fungsi Global trigger note berdasarkan index (Mendukung Click & Slide Glissando)
         function triggerNoteByIndex(index) {
             if (index < 0 || index >= ANGKLUNG_DATA.length) return;
-            
-            // Pemicuan berulang pada bilah yang sama dihindari (Kecuali Shake Mode)
             if (index === lastHoveredIndex && !isShakeMode) return;
 
             lastHoveredIndex = index;
 
-            // Haptic Vibration feedback bila didukung perangkat
             if (navigator.vibrate) {
                 try { navigator.vibrate(12); } catch(err) {}
             }
@@ -658,7 +623,6 @@
             }
 
             if (isShakeMode) {
-                // Hentikan pemicu shake sebelumnya bila ada saat digeser
                 Object.keys(activeShakers).forEach(idx => stopShake(idx));
                 startShake(index);
             } else {
@@ -666,14 +630,9 @@
             }
         }
 
-        // Deteksi Posisi Pointer (Pointer / Touch Move) untuk Fitur Slide Glissando
         function setupSlideGlissando() {
-            const container = document.getElementById('angklungContainer');
-
             const handlePointerMove = (clientX, clientY) => {
                 if (!isPointerDown || !isSlideMode) return;
-
-                // Dapatkan elemen di bawah kursor / ujung jari
                 const targetEl = document.elementFromPoint(clientX, clientY);
                 if (!targetEl) return;
 
@@ -684,7 +643,6 @@
                 }
             };
 
-            // Event Listener Touch Move (Layar Sentuh HP/Tablet)
             window.addEventListener('touchmove', (e) => {
                 if (!isPointerDown || !isSlideMode) return;
                 if (e.touches && e.touches.length > 0) {
@@ -693,14 +651,12 @@
                 }
             }, { passive: true });
 
-            // Event Listener Mouse Move (Kursor PC/Desktop saat Klik Ditahan)
             window.addEventListener('mousemove', (e) => {
                 if (isPointerDown && isSlideMode) {
                     handlePointerMove(e.clientX, e.clientY);
                 }
             });
 
-            // Pointer Release Global
             const handlePointerUp = () => {
                 isPointerDown = false;
                 lastHoveredIndex = -1;
@@ -712,7 +668,6 @@
             window.addEventListener('touchcancel', handlePointerUp);
         }
 
-        // Memicu Satu Bunyi Ketukan (Staccato)
         function triggerSingleHit(index) {
             const item = ANGKLUNG_DATA[index];
             const card = document.querySelector(`.angklung-card[data-index="${index}"]`);
@@ -722,7 +677,7 @@
 
             if (card) {
                 card.classList.remove('anim-shake-once');
-                void card.offsetWidth; // Reflow
+                void card.offsetWidth;
                 card.classList.add('anim-shake-once', 'active');
 
                 setTimeout(() => {
@@ -731,7 +686,6 @@
             }
         }
 
-        // Memulai Mode Shaker (Goyang Ditahan)
         function startShake(index) {
             if (activeShakers[index]) return;
 
@@ -739,19 +693,20 @@
             const card = document.querySelector(`.angklung-card[data-index="${index}"]`);
 
             if (card) {
+                // Terapkan kecepatan goyang dinamis via CSS Custom Property
+                card.style.setProperty('--shake-speed', `${shakeSpeed}s`);
                 card.classList.add('anim-shake-continuous', 'active');
             }
 
-            playAngklungSound(item, 0.22, true);
+            playAngklungSound(item, shakeSpeed * 1.5, true);
             spawnWaveParticle(card);
             
             activeShakers[index] = setInterval(() => {
-                playAngklungSound(item, 0.22, true);
+                playAngklungSound(item, shakeSpeed * 1.5, true);
                 spawnWaveParticle(card);
-            }, 110);
+            }, shakeSpeed * 1000 * 0.85);
         }
 
-        // Menghentikan Mode Shaker
         function stopShake(index) {
             if (activeShakers[index]) {
                 clearInterval(activeShakers[index]);
@@ -764,7 +719,6 @@
             }
         }
 
-        // Partikel Efek Gelombang Suara
         function spawnWaveParticle(parentCard) {
             if (!parentCard) return;
             const particle = document.createElement('div');
@@ -776,7 +730,6 @@
             }, 600);
         }
 
-        // Setup Keyboard Event Listeners
         function setupKeyboard() {
             const keyMap = {};
             ANGKLUNG_DATA.forEach((item, index) => {
@@ -816,7 +769,6 @@
             });
         }
 
-        // Pemutar Lagu Otomatis
         function playSongAuto(songKey) {
             stopAutoPlay();
             const song = SONGS[songKey];
@@ -856,7 +808,6 @@
             }
         }
 
-        // Mode Panduan / Belajar Interaktif
         function startGuideMode(songKey) {
             stopAutoPlay();
             const song = SONGS[songKey];
@@ -903,10 +854,10 @@
             }
         }
 
-        // Controls Event Binding
         function setupUIControls() {
             const modeSingleBtn = document.getElementById('modeSingleBtn');
             const modeShakeBtn = document.getElementById('modeShakeBtn');
+            const shakeSpeedSlider = document.getElementById('shakeSpeedSlider');
             const slideToggleBtn = document.getElementById('slideToggleBtn');
             const slideStatusText = document.getElementById('slideStatusText');
             const volumeSlider = document.getElementById('volumeSlider');
@@ -926,6 +877,13 @@
                 isShakeMode = true;
                 modeShakeBtn.className = "px-2 py-0.5 rounded font-medium transition-all bg-amber-600 text-white shadow";
                 modeSingleBtn.className = "px-2 py-0.5 rounded font-medium transition-all text-amber-200/70 hover:text-white";
+            });
+
+            // Pengatur Tempo/Durasi Goyang (Slider)
+            shakeSpeedSlider.addEventListener('input', (e) => {
+                // Nilai dibalik: slider ke kanan (max) membuat tempo lebih cepat (durasi kecil)
+                const val = parseFloat(e.target.value);
+                shakeSpeed = 0.36 - val; // Semakin besar slider, semakin cepat goyangannya
             });
 
             slideToggleBtn.addEventListener('click', () => {
@@ -999,7 +957,6 @@
             });
         }
 
-        // On Window Load
         window.onload = function() {
             renderAngklung();
             setupSlideGlissando();
