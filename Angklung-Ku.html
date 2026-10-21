@@ -56,7 +56,6 @@
             height: 100vh;
         }
 
-        /* Tekstur Serat Bambu Kustom */
         .bamboo-texture {
             background: linear-gradient(90deg, 
                 rgba(60, 38, 8, 0.5) 0%, 
@@ -68,7 +67,6 @@
             box-shadow: inset 1px 0 4px rgba(255, 255, 255, 0.3), inset -2px 0 6px rgba(0, 0, 0, 0.8);
         }
 
-        /* Frame Penyangga Kayu & Bambu */
         .bamboo-frame {
             background: linear-gradient(180deg, #57380d 0%, #2b1903 100%);
             border: 1.5px solid #85551c;
@@ -80,7 +78,6 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.7);
         }
 
-        /* Tali Pengikat Rotan Tradisional */
         .rattan-bind {
             background: repeating-linear-gradient(
                 45deg,
@@ -93,7 +90,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
-        /* Animasi Shake / Goyang Angklung */
         @keyframes shakeFast {
             0% { transform: rotate(0deg) translateX(0) scale(1.01); }
             20% { transform: rotate(-3.5deg) translateX(-4px); }
@@ -107,9 +103,8 @@
             animation: shakeFast 0.22s ease-in-out;
         }
 
-        /* Kelas Animasi Goyang Kontinu dengan durasi dinamis yang diatur via JS */
         .anim-shake-continuous {
-            animation: shakeSlow var(--shake-speed, 0.13s) infinite linear;
+            animation: shakeSlow var(--shake-speed, 0.16s) infinite linear;
         }
 
         @keyframes shakeSlow {
@@ -120,7 +115,6 @@
             100% { transform: rotate(0deg) translateX(0); }
         }
 
-        /* Visual Feedback Active & Guide */
         .angklung-card {
             transition: transform 0.1s ease, filter 0.12s ease;
         }
@@ -134,7 +128,6 @@
             transform: scale(1.05);
         }
 
-        /* Partikel Gelombang Suara Bambu */
         .wave-particle {
             position: absolute;
             top: 10%;
@@ -151,7 +144,6 @@
             100% { opacity: 0; transform: scale(3.5); }
         }
 
-        /* Motif Batik Header Overlay */
         .batik-pattern {
             background-color: #120c07;
             background-image: radial-gradient(#382310 1px, transparent 1px), radial-gradient(#382310 1px, #120c07 1px);
@@ -159,7 +151,6 @@
             background-position: 0 0, 16px 16px;
         }
 
-        /* Warning Modal Landscape */
         @media orientation: portrait {
             #portraitWarning {
                 display: flex !important;
@@ -169,35 +160,33 @@
 </head>
 <body class="batik-pattern h-screen w-screen flex flex-col justify-between p-1.5 md:p-3 overflow-hidden select-none">
 
-    <!-- PERINGATAN ORIENTASI (HP PORTRAIT) -->
+    <!-- PERINGATAN ORIENTASI -->
     <div id="portraitWarning" class="hidden fixed inset-0 bg-black/95 z-50 flex-col items-center justify-center text-center p-6 backdrop-blur-lg">
         <div class="w-16 h-16 mb-4 text-amber-400 animate-bounce flex items-center justify-center">
             <i class="fa-solid fa-rotate-right text-4xl"></i>
         </div>
         <h2 class="font-cinzel text-xl md:text-2xl font-bold text-amber-300 mb-2">Putar Layar ke LANDSCAPE</h2>
         <p class="text-xs md:text-sm text-amber-100/70 max-w-sm">
-            Untuk pengalaman memutar Angklung 13 Nada yang maksimal, silakan miringkan HP/Tablet Anda ke posisi mendatar.
+            Untuk pengalaman memutar Angklung Virtual yang maksimal, silakan miringkan HP/Tablet Anda ke posisi mendatar.
         </p>
     </div>
 
-    <!-- HEADER / CONTROL BAR LANDSCAPE COMPACT -->
+    <!-- HEADER / CONTROL BAR -->
     <header class="w-full bg-amber-950/70 backdrop-blur-md border border-amber-800/40 rounded-xl px-2.5 py-1 flex items-center justify-between shadow-xl z-20 gap-2 shrink-0">
         
-        <!-- Logo & Judul -->
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-music text-amber-400 text-base md:text-xl"></i>
             <div>
                 <h1 class="font-cinzel text-xs md:text-base font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-600 tracking-wider leading-none">
                     ANGKLUNG
                 </h1>
-                <span class="text-[8px] md:text-[10px] text-amber-200/60 uppercase tracking-widest block">13 Nada Landscape</span>
+                <span class="text-[8px] md:text-[10px] text-amber-200/60 uppercase tracking-widest block">15 Nada Landscape</span>
             </div>
         </div>
 
-        <!-- Panel Kontrol Tengah -->
         <div class="flex items-center gap-1 md:gap-2 flex-wrap justify-center">
             
-            <!-- Mode Bermain Switcher -->
+            <!-- Mode Bermain -->
             <div class="flex items-center bg-black/50 p-0.5 rounded-lg border border-amber-900/60 text-[10px] md:text-xs">
                 <button id="modeSingleBtn" class="px-2 py-0.5 rounded font-medium transition-all bg-amber-600 text-white shadow">
                     Ketuk
@@ -207,20 +196,22 @@
                 </button>
             </div>
 
-            <!-- Slider Pengatur Tempo Goyang (Durasi / Kecepatan Goyang) -->
-            <div class="hidden xl:flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded-lg border border-amber-900/60" title="Atur Tempo / Kecepatan Goyang">
-                <i class="fa-solid fa-gauge-high text-amber-400 text-[11px]"></i>
-                <span class="text-[9px] text-amber-200/70">Tempo:</span>
-                <input type="range" id="shakeSpeedSlider" min="0.06" max="0.30" step="0.01" value="0.14" class="w-14 accent-amber-500 cursor-pointer">
+            <!-- Tombol Pengatur Tempo Gear (Gear 1 s/d 4) -->
+            <div class="hidden lg:flex items-center bg-black/50 p-0.5 rounded-lg border border-amber-900/60 text-[10px] md:text-xs gap-1" title="Pilih Tingkat Kecepatan Goyang (Gear)">
+                <span class="text-[9px] text-amber-300 px-1 font-semibold"><i class="fa-solid fa-gear mr-1"></i>Tempo:</span>
+                <button class="gear-btn px-1.5 py-0.5 rounded font-bold transition text-amber-200/70 hover:text-white" data-gear="1">G1</button>
+                <button class="gear-btn px-1.5 py-0.5 rounded font-bold transition bg-amber-600 text-white shadow" data-gear="2">G2</button>
+                <button class="gear-btn px-1.5 py-0.5 rounded font-bold transition text-amber-200/70 hover:text-white" data-gear="3">G3</button>
+                <button class="gear-btn px-1.5 py-0.5 rounded font-bold transition text-amber-200/70 hover:text-white" data-gear="4">G4</button>
             </div>
 
-            <!-- Toggle Mode Geser / Slide (Glissando) -->
-            <button id="slideToggleBtn" class="bg-amber-950 hover:bg-amber-900 text-amber-200/80 border border-amber-700/60 px-2 py-0.5 rounded-lg text-[10px] md:text-xs flex items-center gap-1.5 transition shadow" title="Aktifkan/Matikan Bunyi Saat Menggeser Jari/Kursor">
+            <!-- Toggle Slide Glissando -->
+            <button id="slideToggleBtn" class="bg-amber-950 hover:bg-amber-900 text-amber-200/80 border border-amber-700/60 px-2 py-0.5 rounded-lg text-[10px] md:text-xs flex items-center gap-1.5 transition shadow">
                 <i class="fa-solid fa-hand-pointer text-amber-400"></i>
                 <span>Slide: <b id="slideStatusText" class="text-amber-400">ON</b></span>
             </button>
 
-            <!-- Pemilih Lagu & Mode Belajar -->
+            <!-- Pemilih Lagu & Belajar -->
             <div class="flex items-center bg-black/50 p-0.5 rounded-lg border border-amber-900/60 text-[10px] md:text-xs gap-1">
                 <select id="songSelect" class="bg-zinc-900 text-amber-100 border border-amber-800 rounded px-1.5 py-0.5 focus:outline-none focus:border-amber-400 max-w-[90px] md:max-w-[120px] text-[10px] md:text-xs">
                     <option value="none">-- Bebas --</option>
@@ -231,16 +222,16 @@
                     <option value="lirilir">Lir-Ilir</option>
                 </select>
 
-                <button id="playSongBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1" title="Putar Otomatis">
+                <button id="playSongBtn" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1">
                     <i class="fa-solid fa-play text-[9px]"></i> <span class="hidden md:inline">Play</span>
                 </button>
 
-                <button id="guideSongBtn" class="bg-amber-700 hover:bg-amber-600 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1" title="Mode Panduan Belajar">
+                <button id="guideSongBtn" class="bg-amber-700 hover:bg-amber-600 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1">
                     <i class="fa-solid fa-graduation-cap text-xs"></i> <span class="hidden md:inline">Panduan</span>
                 </button>
             </div>
 
-            <!-- Volume Slider -->
+            <!-- Volume -->
             <div class="hidden sm:flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded-lg border border-amber-900/60">
                 <i class="fa-solid fa-volume-high text-amber-400 text-[11px]"></i>
                 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" class="w-12 md:w-14 accent-amber-500 cursor-pointer">
@@ -248,72 +239,63 @@
 
         </div>
 
-        <!-- Tombol Aksi Kanan (Fullscreen & Audio Init) -->
         <div class="flex items-center gap-1">
             <button id="audioInitBtn" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-lg text-[9px] md:text-xs flex items-center gap-1 transition">
-                <i class="fa-solid fa-power-off text-emerald-400"></i> <span class="hidden md:inline">Audio Ready</span>
+                <i class="fa-solid fa-power-off text-emerald-400"></i> <span class="hidden md:inline">Ready</span>
             </button>
 
-            <button id="fullscreenBtn" class="bg-amber-900/60 hover:bg-amber-800 text-amber-200 border border-amber-700 px-2 py-0.5 rounded-lg text-xs transition" title="Layar Penuh">
+            <button id="fullscreenBtn" class="bg-amber-900/60 hover:bg-amber-800 text-amber-200 border border-amber-700 px-2 py-0.5 rounded-lg text-xs transition">
                 <i class="fa-solid fa-expand"></i>
             </button>
         </div>
 
     </header>
 
-    <!-- AREA RANGKAIAN ANGKLUNG LANDSCAPE MAIN -->
+    <!-- AREA UTAMA ANGKLUNG -->
     <main class="w-full flex-grow flex items-center justify-center relative my-1 overflow-hidden">
-        
-        <!-- Rak Penyangga Utama Angklung (Landscape Rack) -->
         <div class="w-full h-full max-h-[83vh] bg-amber-950/20 p-1.5 md:p-2.5 rounded-2xl border border-amber-800/30 shadow-2xl flex flex-col justify-between items-center relative overflow-hidden">
             
-            <!-- Palang Rak Atas (Bambu Horizontal) -->
             <div class="w-full h-2.5 md:h-4 bamboo-frame rounded-full relative flex items-center justify-between px-2 z-10">
                 <div class="w-full flex justify-around items-center">
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
-                    <div class="rattan-bind w-2.5 h-3 md:w-3.5 md:h-5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
+                    <div class="rattan-bind w-1.5 h-2 md:w-2.5 md:h-3.5 rounded-sm"></div>
                 </div>
             </div>
 
-            <!-- Kontainer Bilah-Bilah Angklung (Barisan Horizontal 13 Nada) -->
-            <div id="angklungContainer" class="w-full flex-grow flex justify-between items-end gap-0.5 md:gap-1 px-0.5 py-0.5 z-10 overflow-hidden touch-none">
-                <!-- Di-generate via JavaScript -->
-            </div>
+            <div id="angklungContainer" class="w-full flex-grow flex justify-between items-end gap-0.5 md:gap-1 px-0.5 py-0.5 z-10 overflow-hidden touch-none"></div>
 
-            <!-- Palang Rak Bawah (Bambu Horizontal Base) -->
             <div class="w-full h-3.5 md:h-5 bamboo-frame rounded-lg relative flex items-center justify-between px-3 z-10">
                 <span class="text-[8px] md:text-[10px] font-mono text-amber-300/80 uppercase tracking-wider">
-                    <i class="fa-solid fa-gem text-amber-500 mr-1"></i> Skala 13 Nada (A3 s/d F5)
+                    <i class="fa-solid fa-gem text-amber-500 mr-1"></i> Skala 15 Nada (A3 s/d G5)
                 </span>
                 <span class="text-[8px] md:text-[10px] font-mono text-amber-300/80 uppercase tracking-wider hidden sm:inline">
-                    <i class="fa-solid fa-sliders text-amber-400 mr-1"></i> Atur Tempo Goyang di Atas
+                    <i class="fa-solid fa-gear text-amber-400 mr-1"></i> Atur Kecepatan Tempo via Gear 1-4
                 </span>
             </div>
 
         </div>
-
     </main>
 
-    <!-- FOOTER RINGKAS -->
     <footer class="w-full text-center text-[9px] md:text-xs text-amber-200/50 flex justify-between items-center px-1 py-0.5 shrink-0">
-        <span>Rendah: <b>Z,X</b> | Utama: <b>1-8 / A-K</b> | Tinggi: <b>O,P,[ / N,M,,</b></span>
-        <span>Angklung 13 Nada Virtual Indonesia • Web Audio API</span>
+        <span>Rendah: <b>Z,X</b> | Utama: <b>1-8 / A-K</b> | Tinggi: <b>O,P,[, ], \ / N,M,,, ., /</b></span>
+        <span>Angklung 15 Nada Virtual Indonesia • Web Audio API</span>
     </footer>
 
-    <!-- SCRIPT UTAMA UTK AUDIO SINTESIS & INTERAKSI -->
+    <!-- SCRIPT UTAMA -->
     <script>
-        // Data Set 13 Nada Angklung (2 Low, 8 Utama, 3 High)
         const ANGKLUNG_DATA = [
             { note: 'La', pitch: 'A3', octaveType: 'low', freq: 220.00, keyDisplay: 'Z', keyCodes: ['KeyZ'], heightRatio: 1.00 },
             { note: 'Si', pitch: 'B3', octaveType: 'low', freq: 246.94, keyDisplay: 'X', keyCodes: ['KeyX'], heightRatio: 0.94 },
@@ -327,7 +309,9 @@
             { note: "Do'", pitch: 'C5', octaveType: 'mid', freq: 523.25, keyDisplay: '8 / K', keyCodes: ['Digit8', 'KeyK'], heightRatio: 0.53 },
             { note: "Re'", pitch: 'D5', octaveType: 'high', freq: 587.33, keyDisplay: 'O / N', keyCodes: ['KeyO', 'KeyN'], heightRatio: 0.48 },
             { note: "Mi'", pitch: 'E5', octaveType: 'high', freq: 659.25, keyDisplay: 'P / M', keyCodes: ['KeyP', 'KeyM'], heightRatio: 0.44 },
-            { note: "Fa'", pitch: 'F5', octaveType: 'high', freq: 698.46, keyDisplay: '[ / ,', keyCodes: ['BracketLeft', 'Comma'], heightRatio: 0.40 }
+            { note: "Fa'", pitch: 'F5', octaveType: 'high', freq: 698.46, keyDisplay: '[ / ,', keyCodes: ['BracketLeft', 'Comma'], heightRatio: 0.40 },
+            { note: "Sol'", pitch: 'G5', octaveType: 'high', freq: 783.99, keyDisplay: '] / .', keyCodes: ['BracketRight', 'Period'], heightRatio: 0.36 },
+            { note: "La'", pitch: 'A5', octaveType: 'high', freq: 880.00, keyDisplay: '\\ / /', keyCodes: ['Backslash', 'Slash'], heightRatio: 0.32 }
         ];
 
         const SONGS = {
@@ -386,15 +370,26 @@
             }
         };
 
-        // State Global
         let audioCtx = null;
         let masterGainNode = null;
         let isShakeMode = false;
         let isSlideMode = true;
         let isPointerDown = false;
+        let activePointerId = null;
         let lastHoveredIndex = -1;
         let masterVolume = 0.8;
-        let shakeSpeed = 0.14; // Default durasi goyang (detik)
+        
+        // Pengaturan Tempo Gear (Gear 1 paling lambat, Gear 4 paling cepat)
+        // Nilai mendefinisikan durasi animasi goyang dan interval bunyi getar
+        let currentGear = 2;
+        let shakeSpeeds = {
+            1: 0.24, // Lambat / Gear 1
+            2: 0.16, // Sedang / Gear 2 (Default)
+            3: 0.11, // Cepat / Gear 3
+            4: 0.07  // Sangat Cepat / Gear 4 (Paling Cepat)
+        };
+        let shakeSpeed = shakeSpeeds[2];
+
         let activeShakers = {};
         let autoPlayTimeout = null;
         let isAutoPlaying = false;
@@ -422,19 +417,9 @@
             const freq = item.freq;
             const now = audioCtx.currentTime;
 
-            let octaveMultiplier = 2;
-            let subMultiplier = 0.5;
-            let mainVol = 0.75;
-            let octVol = 0.2;
-            let subVol = 0.15;
-
-            if (item.octaveType === 'low') {
-                subVol = 0.35;
-                mainVol = 0.85;
-            } else if (item.octaveType === 'high') {
-                octVol = 0.35;
-                subVol = 0.05;
-            }
+            let mainVol = item.octaveType === 'low' ? 0.85 : 0.75;
+            let octVol = item.octaveType === 'high' ? 0.35 : 0.2;
+            let subVol = item.octaveType === 'low' ? 0.35 : 0.15;
 
             const oscMain = audioCtx.createOscillator();
             oscMain.type = 'sine';
@@ -442,11 +427,11 @@
 
             const oscOctave = audioCtx.createOscillator();
             oscOctave.type = 'triangle';
-            oscOctave.frequency.setValueAtTime(freq * octaveMultiplier, now);
+            oscOctave.frequency.setValueAtTime(freq * 2, now);
 
             const oscResonator = audioCtx.createOscillator();
             oscResonator.type = 'sine';
-            oscResonator.frequency.setValueAtTime(freq * subMultiplier, now);
+            oscResonator.frequency.setValueAtTime(freq * 0.5, now);
 
             const bandpass = audioCtx.createBiquadFilter();
             bandpass.type = 'bandpass';
@@ -458,16 +443,16 @@
             const gainResonator = audioCtx.createGain();
             const noteGain = audioCtx.createGain();
 
-            const lfo = audioCtx.createOscillator();
-            const lfoGain = audioCtx.createGain();
-            
-            lfo.frequency.setValueAtTime(isShaking ? 14 : 10, now);
-            lfoGain.gain.setValueAtTime(0.3, now);
-            lfo.connect(lfoGain.gain);
-
             gainMain.gain.setValueAtTime(mainVol, now);
             gainOctave.gain.setValueAtTime(octVol, now);
             gainResonator.gain.setValueAtTime(subVol, now);
+
+            const lfo = audioCtx.createOscillator();
+            const lfoGain = audioCtx.createGain();
+            lfo.frequency.setValueAtTime(isShaking ? 14 : 10, now);
+            lfoGain.gain.setValueAtTime(0.3, now);
+            lfo.connect(lfoGain.gain);
+            lfoGain.connect(noteGain.gain);
 
             const bufferSize = audioCtx.sampleRate * 0.012; 
             const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -499,14 +484,10 @@
             gainResonator.connect(noteGain);
             bandpass.connect(noteGain);
 
-            lfoGain.connect(noteGain.gain);
-
             const attackTime = 0.01;
-            const decayTime = duration;
-
             noteGain.gain.setValueAtTime(0.001, now);
             noteGain.gain.linearRampToValueAtTime(0.85, now + attackTime);
-            noteGain.gain.exponentialRampToValueAtTime(0.001, now + attackTime + decayTime);
+            noteGain.gain.exponentialRampToValueAtTime(0.001, now + attackTime + duration);
 
             noteGain.connect(masterGainNode);
 
@@ -516,11 +497,12 @@
             lfo.start(now);
             noise.start(now);
 
-            const stopTime = now + attackTime + decayTime + 0.05;
+            const stopTime = now + attackTime + duration + 0.05;
             oscMain.stop(stopTime);
             oscOctave.stop(stopTime);
             oscResonator.stop(stopTime);
             lfo.stop(stopTime);
+            noise.stop(stopTime);
         }
 
         function renderAngklung() {
@@ -531,22 +513,19 @@
                 const heightPercent = Math.max(42, Math.floor(item.heightRatio * 100));
 
                 let tagColorClass = 'text-amber-300 border-amber-600/40';
-                if (item.octaveType === 'low') {
-                    tagColorClass = 'text-sky-300 border-sky-500/50';
-                } else if (item.octaveType === 'high') {
-                    tagColorClass = 'text-rose-300 border-rose-500/50';
-                }
+                if (item.octaveType === 'low') tagColorClass = 'text-sky-300 border-sky-500/50';
+                if (item.octaveType === 'high') tagColorClass = 'text-rose-300 border-rose-500/50';
 
-                const angklungEl = document.createElement('div');
-                angklungEl.className = `angklung-card flex-1 h-full flex flex-col items-center justify-end relative cursor-pointer px-[1px] md:px-0.5 group min-w-[24px]`;
-                angklungEl.dataset.index = index;
+                const card = document.createElement('div');
+                card.className = `angklung-card flex-1 h-full flex flex-col items-center justify-end relative cursor-pointer px-[1px] md:px-0.5 group min-w-[20px]`;
+                card.dataset.index = index;
 
-                angklungEl.innerHTML = `
+                card.innerHTML = `
                     <div class="mb-0.5 text-center pointer-events-none">
-                        <span class="block text-[8px] md:text-[10px] font-bold bg-black/70 px-1 py-0.2 rounded border shadow ${tagColorClass}">
+                        <span class="block text-[7px] md:text-[9px] font-bold bg-black/70 px-0.5 py-0.2 rounded border shadow ${tagColorClass}">
                             ${item.pitch}
                         </span>
-                        <span class="text-[8px] md:text-[9px] text-amber-200/80 font-semibold block leading-none mt-0.5">
+                        <span class="text-[7px] md:text-[9px] text-amber-200/80 font-semibold block leading-none mt-0.5">
                             ${item.note}
                         </span>
                     </div>
@@ -574,98 +553,76 @@
                     </div>
 
                     <div class="mt-1 pointer-events-none">
-                        <span class="key-badge text-[8px] md:text-[10px] font-mono font-bold bg-amber-950/90 text-amber-300 border border-amber-700/80 px-1 py-0.2 rounded shadow block text-center truncate">
+                        <span class="key-badge text-[7px] md:text-[9px] font-mono font-bold bg-amber-950/90 text-amber-300 border border-amber-700/80 px-0.5 py-0.2 rounded shadow block text-center truncate">
                             ${item.keyDisplay}
                         </span>
                     </div>
                 `;
 
-                setupInteractions(angklungEl, index);
-                container.appendChild(angklungEl);
+                container.appendChild(card);
             });
         }
 
-        function setupInteractions(element, index) {
-            const startTrigger = (e) => {
-                if (e) e.preventDefault();
+        function setupUnifiedGlissando() {
+            const container = document.getElementById('angklungContainer');
+
+            const getIndexFromPoint = (x, y) => {
+                const el = document.elementFromPoint(x, y);
+                if (!el) return -1;
+                const card = el.closest('.angklung-card');
+                return card ? parseInt(card.dataset.index, 10) : -1;
+            };
+
+            container.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
                 initAudio();
                 isPointerDown = true;
-                triggerNoteByIndex(index);
-            };
+                activePointerId = e.pointerId;
 
-            const endTrigger = (e) => {
-                if (e) e.preventDefault();
-                isPointerDown = false;
-                lastHoveredIndex = -1;
-                if (isShakeMode) {
-                    stopShake(index);
+                const index = getIndexFromPoint(e.clientX, e.clientY);
+                if (index !== -1) {
+                    triggerNoteByIndex(index);
                 }
+            });
+
+            window.addEventListener('pointermove', (e) => {
+                if (!isPointerDown || !isSlideMode || e.pointerId !== activePointerId) return;
+                
+                const index = getIndexFromPoint(e.clientX, e.clientY);
+                if (index !== -1 && index !== lastHoveredIndex) {
+                    triggerNoteByIndex(index);
+                }
+            });
+
+            const clearPointerState = (e) => {
+                if (e && e.pointerId !== activePointerId) return;
+                isPointerDown = false;
+                activePointerId = null;
+                lastHoveredIndex = -1;
+                stopAllShakes();
             };
 
-            element.addEventListener('mousedown', startTrigger);
-            element.addEventListener('mouseup', endTrigger);
-            element.addEventListener('touchstart', startTrigger, { passive: false });
-            element.addEventListener('touchend', endTrigger, { passive: false });
+            window.addEventListener('pointerup', clearPointerState);
+            window.addEventListener('pointercancel', clearPointerState);
         }
 
         function triggerNoteByIndex(index) {
             if (index < 0 || index >= ANGKLUNG_DATA.length) return;
-            if (index === lastHoveredIndex && !isShakeMode) return;
-
+            
             lastHoveredIndex = index;
 
             if (navigator.vibrate) {
                 try { navigator.vibrate(12); } catch(err) {}
             }
 
-            if (isGuideMode) {
-                checkGuideStep(index);
-            }
+            if (isGuideMode) checkGuideStep(index);
 
             if (isShakeMode) {
-                Object.keys(activeShakers).forEach(idx => stopShake(idx));
+                stopAllShakes();
                 startShake(index);
             } else {
                 triggerSingleHit(index);
             }
-        }
-
-        function setupSlideGlissando() {
-            const handlePointerMove = (clientX, clientY) => {
-                if (!isPointerDown || !isSlideMode) return;
-                const targetEl = document.elementFromPoint(clientX, clientY);
-                if (!targetEl) return;
-
-                const angklungCard = targetEl.closest('.angklung-card');
-                if (angklungCard && angklungCard.dataset.index !== undefined) {
-                    const newIndex = parseInt(angklungCard.dataset.index, 10);
-                    triggerNoteByIndex(newIndex);
-                }
-            };
-
-            window.addEventListener('touchmove', (e) => {
-                if (!isPointerDown || !isSlideMode) return;
-                if (e.touches && e.touches.length > 0) {
-                    const touch = e.touches[0];
-                    handlePointerMove(touch.clientX, touch.clientY);
-                }
-            }, { passive: true });
-
-            window.addEventListener('mousemove', (e) => {
-                if (isPointerDown && isSlideMode) {
-                    handlePointerMove(e.clientX, e.clientY);
-                }
-            });
-
-            const handlePointerUp = () => {
-                isPointerDown = false;
-                lastHoveredIndex = -1;
-                Object.keys(activeShakers).forEach(idx => stopShake(idx));
-            };
-
-            window.addEventListener('mouseup', handlePointerUp);
-            window.addEventListener('touchend', handlePointerUp);
-            window.addEventListener('touchcancel', handlePointerUp);
         }
 
         function triggerSingleHit(index) {
@@ -679,10 +636,7 @@
                 card.classList.remove('anim-shake-once');
                 void card.offsetWidth;
                 card.classList.add('anim-shake-once', 'active');
-
-                setTimeout(() => {
-                    card.classList.remove('active');
-                }, 220);
+                setTimeout(() => card.classList.remove('active'), 220);
             }
         }
 
@@ -693,7 +647,6 @@
             const card = document.querySelector(`.angklung-card[data-index="${index}"]`);
 
             if (card) {
-                // Terapkan kecepatan goyang dinamis via CSS Custom Property
                 card.style.setProperty('--shake-speed', `${shakeSpeed}s`);
                 card.classList.add('anim-shake-continuous', 'active');
             }
@@ -707,16 +660,13 @@
             }, shakeSpeed * 1000 * 0.85);
         }
 
-        function stopShake(index) {
-            if (activeShakers[index]) {
-                clearInterval(activeShakers[index]);
-                delete activeShakers[index];
-            }
-
-            const card = document.querySelector(`.angklung-card[data-index="${index}"]`);
-            if (card) {
-                card.classList.remove('anim-shake-continuous', 'active');
-            }
+        function stopAllShakes() {
+            Object.keys(activeShakers).forEach(idx => {
+                clearInterval(activeShakers[idx]);
+                const card = document.querySelector(`.angklung-card[data-index="${idx}"]`);
+                if (card) card.classList.remove('anim-shake-continuous', 'active');
+            });
+            activeShakers = {};
         }
 
         function spawnWaveParticle(parentCard) {
@@ -724,47 +674,28 @@
             const particle = document.createElement('div');
             particle.className = 'wave-particle';
             parentCard.appendChild(particle);
-
-            setTimeout(() => {
-                particle.remove();
-            }, 600);
+            setTimeout(() => particle.remove(), 600);
         }
 
         function setupKeyboard() {
             const keyMap = {};
             ANGKLUNG_DATA.forEach((item, index) => {
-                item.keyCodes.forEach(code => {
-                    keyMap[code.toUpperCase()] = index;
-                });
+                item.keyCodes.forEach(code => keyMap[code.toUpperCase()] = index);
             });
 
             window.addEventListener('keydown', (e) => {
                 if (e.repeat) return;
                 const code = e.code.toUpperCase();
-                
                 if (keyMap.hasOwnProperty(code)) {
-                    const index = keyMap[code];
                     initAudio();
-
-                    if (isGuideMode) {
-                        checkGuideStep(index);
-                    }
-
-                    if (isShakeMode) {
-                        startShake(index);
-                    } else {
-                        triggerSingleHit(index);
-                    }
+                    triggerNoteByIndex(keyMap[code]);
                 }
             });
 
             window.addEventListener('keyup', (e) => {
                 const code = e.code.toUpperCase();
-                if (keyMap.hasOwnProperty(code)) {
-                    const index = keyMap[code];
-                    if (isShakeMode) {
-                        stopShake(index);
-                    }
+                if (keyMap.hasOwnProperty(code) && isShakeMode) {
+                    stopAllShakes();
                 }
             });
         }
@@ -786,14 +717,11 @@
                     stopAutoPlay();
                     return;
                 }
-
                 const noteData = song.notes[noteStep];
                 triggerSingleHit(noteData.idx);
-
                 noteStep++;
                 autoPlayTimeout = setTimeout(nextNote, noteData.duration);
             }
-
             nextNote();
         }
 
@@ -812,7 +740,6 @@
             stopAutoPlay();
             const song = SONGS[songKey];
             if (!song) return;
-
             isGuideMode = true;
             currentGuideIndex = 0;
             highlightGuideStep();
@@ -825,30 +752,22 @@
 
         function highlightGuideStep() {
             document.querySelectorAll('.angklung-card').forEach(c => c.classList.remove('guide-active'));
-
-            const songSelect = document.getElementById('songSelect').value;
-            const song = SONGS[songSelect];
+            const song = SONGS[document.getElementById('songSelect').value];
 
             if (!song || currentGuideIndex >= song.notes.length) {
                 stopGuideMode();
                 return;
             }
 
-            const targetIdx = song.notes[currentGuideIndex].idx;
-            const targetCard = document.querySelector(`.angklung-card[data-index="${targetIdx}"]`);
-            if (targetCard) {
-                targetCard.classList.add('guide-active');
-            }
+            const targetCard = document.querySelector(`.angklung-card[data-index="${song.notes[currentGuideIndex].idx}"]`);
+            if (targetCard) targetCard.classList.add('guide-active');
         }
 
         function checkGuideStep(playedIndex) {
-            const songSelect = document.getElementById('songSelect').value;
-            const song = SONGS[songSelect];
-
+            const song = SONGS[document.getElementById('songSelect').value];
             if (!song || currentGuideIndex >= song.notes.length) return;
 
-            const expectedIndex = song.notes[currentGuideIndex].idx;
-            if (playedIndex === expectedIndex) {
+            if (playedIndex === song.notes[currentGuideIndex].idx) {
                 currentGuideIndex++;
                 setTimeout(highlightGuideStep, 120);
             }
@@ -857,7 +776,7 @@
         function setupUIControls() {
             const modeSingleBtn = document.getElementById('modeSingleBtn');
             const modeShakeBtn = document.getElementById('modeShakeBtn');
-            const shakeSpeedSlider = document.getElementById('shakeSpeedSlider');
+            const gearBtns = document.querySelectorAll('.gear-btn');
             const slideToggleBtn = document.getElementById('slideToggleBtn');
             const slideStatusText = document.getElementById('slideStatusText');
             const volumeSlider = document.getElementById('volumeSlider');
@@ -879,24 +798,24 @@
                 modeSingleBtn.className = "px-2 py-0.5 rounded font-medium transition-all text-amber-200/70 hover:text-white";
             });
 
-            // Pengatur Tempo/Durasi Goyang (Slider)
-            shakeSpeedSlider.addEventListener('input', (e) => {
-                // Nilai dibalik: slider ke kanan (max) membuat tempo lebih cepat (durasi kecil)
-                const val = parseFloat(e.target.value);
-                shakeSpeed = 0.36 - val; // Semakin besar slider, semakin cepat goyangannya
+            // Pengaturan Kontrol Gear 1 s/d 4 Tempo Goyang
+            gearBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    gearBtns.forEach(b => {
+                        b.className = "gear-btn px-1.5 py-0.5 rounded font-bold transition text-amber-200/70 hover:text-white";
+                    });
+                    btn.className = "gear-btn px-1.5 py-0.5 rounded font-bold transition bg-amber-600 text-white shadow";
+                    
+                    const gearLevel = parseInt(btn.dataset.gear, 10);
+                    currentGear = gearLevel;
+                    shakeSpeed = shakeSpeeds[gearLevel];
+                });
             });
 
             slideToggleBtn.addEventListener('click', () => {
                 isSlideMode = !isSlideMode;
-                if (isSlideMode) {
-                    slideStatusText.innerText = "ON";
-                    slideStatusText.className = "text-amber-400";
-                    slideToggleBtn.classList.remove('opacity-50');
-                } else {
-                    slideStatusText.innerText = "OFF";
-                    slideStatusText.className = "text-zinc-400";
-                    slideToggleBtn.classList.add('opacity-50');
-                }
+                slideStatusText.innerText = isSlideMode ? "ON" : "OFF";
+                slideStatusText.className = isSlideMode ? "text-amber-400" : "text-zinc-400";
             });
 
             volumeSlider.addEventListener('input', (e) => {
@@ -908,28 +827,18 @@
 
             playSongBtn.addEventListener('click', () => {
                 stopGuideMode();
-                if (isAutoPlaying) {
-                    stopAutoPlay();
-                } else {
-                    const songKey = songSelect.value;
-                    if (songKey !== 'none') {
-                        playSongAuto(songKey);
-                    }
-                }
+                isAutoPlaying ? stopAutoPlay() : playSongAuto(songSelect.value);
             });
 
             guideSongBtn.addEventListener('click', () => {
                 stopAutoPlay();
-                const songKey = songSelect.value;
-                if (songKey !== 'none') {
+                if (songSelect.value !== 'none') {
                     if (isGuideMode) {
                         stopGuideMode();
-                        guideSongBtn.classList.remove('bg-emerald-600');
-                        guideSongBtn.classList.add('bg-amber-700');
+                        guideSongBtn.className = "bg-amber-700 hover:bg-amber-600 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1";
                     } else {
-                        startGuideMode(songKey);
-                        guideSongBtn.classList.remove('bg-amber-700');
-                        guideSongBtn.classList.add('bg-emerald-600');
+                        startGuideMode(songSelect.value);
+                        guideSongBtn.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1";
                     }
                 }
             });
@@ -937,42 +846,34 @@
             songSelect.addEventListener('change', () => {
                 stopAutoPlay();
                 stopGuideMode();
-                guideSongBtn.classList.remove('bg-emerald-600');
-                guideSongBtn.classList.add('bg-amber-700');
+                guideSongBtn.className = "bg-amber-700 hover:bg-amber-600 text-white px-2 py-0.5 rounded font-medium transition flex items-center gap-1";
             });
 
             audioInitBtn.addEventListener('click', () => {
                 initAudio();
-                audioInitBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i> <span class="hidden md:inline">Audio Ready</span>`;
+                audioInitBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i> <span class="hidden md:inline">Ready</span>`;
             });
 
             fullscreenBtn.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen().catch(() => {});
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    }
+                } else if (document.exitFullscreen) {
+                    document.exitFullscreen();
                 }
             });
         }
 
-        window.onload = function() {
+        window.onload = () => {
             renderAngklung();
-            setupSlideGlissando();
+            setupUnifiedGlissando();
             setupKeyboard();
             setupUIControls();
             
-            const initAudioOnUserTouch = () => {
+            const unlockAudio = () => {
                 initAudio();
-                document.removeEventListener('click', initAudioOnUserTouch);
-                document.removeEventListener('keydown', initAudioOnUserTouch);
-                document.removeEventListener('touchstart', initAudioOnUserTouch);
+                window.removeEventListener('pointerdown', unlockAudio);
             };
-
-            document.addEventListener('click', initAudioOnUserTouch);
-            document.addEventListener('keydown', initAudioOnUserTouch);
-            document.addEventListener('touchstart', initAudioOnUserTouch);
+            window.addEventListener('pointerdown', unlockAudio);
         };
     </script>
 </body>
