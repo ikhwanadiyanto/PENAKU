@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIANIKA-KU - Virtual Pianika Interaktif</title>
+    <!-- Tailwind CSS for sleek UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for clean iconography -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts for typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Custom Key Shadows and 3D Effect */
+        .white-key {
+            background: linear-gradient(to bottom, #ffffff 0%, #f3f4f6 85%, #e5e7eb 100%);
+            box-shadow: inset 0 -5px 0 #d1d5db, 0 4px 6px rgba(0,0,0,0.15);
+            transition: background 0.05s ease, transform 0.05s ease;
+        }
+
+        .white-key.active {
+            background: linear-gradient(to bottom, #e5e7eb 0%, #38bdf8 100%) !important;
+            box-shadow: inset 0 -2px 0 #0284c7, 0 2px 3px rgba(0,0,0,0.2) !important;
+            transform: translateY(3px);
+        }
+
+        .black-key {
+            background: linear-gradient(to bottom, #374151 0%, #1f2937 80%, #111827 100%);
+            box-shadow: inset 0 -3px 0 #000000, 0 4px 6px rgba(0,0,0,0.3);
+            transition: background 0.05s ease, transform 0.05s ease;
+        }
+
+        .black-key.active {
+            background: linear-gradient(to bottom, #0284c7 0%, #0369a1 100%) !important;
+            box-shadow: inset 0 -1px 0 #000000, 0 2px 3px rgba(0,0,0,0.3) !important;
+            transform: translateY(2px);
+        }
+
+        /* Flexible Hose Animation */
+        .hose-rib {
+            background: repeating-linear-gradient(
+                90deg,
+                #38bdf8,
+                #38bdf8 6px,
+                #0284c7 6px,
+                #0284c7 12px
+            );
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-between p-2 sm:p-4 md:p-6 overflow-x-hidden">
+
+    <!-- Header Section -->
+    <header class="w-full max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3 mb-2 sm:mb-4">
+        <div class="flex items-center gap-3">
+            <div class="p-2 sm:p-2.5 bg-cyan-500 rounded-2xl shadow-lg shadow-cyan-500/30 text-slate-900">
+                <i data-lucide="music" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400">
+                    PIANIKA-KU
+                </h1>
+                <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Melodica 32-Key Extended Synth Range</p>
+            </div>
+        </div>
+
+        <!-- Song Demo Selector & Controls -->
+        <div class="flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60 shadow-inner w-full sm:w-auto justify-between sm:justify-end">
+            <div class="flex items-center gap-2 pl-2">
+                <i data-lucide="disc" class="w-4 h-4 text-cyan-400 animate-spin" style="animation-duration: 8s;"></i>
+                <select id="songSelect" class="bg-transparent text-xs sm:text-sm text-slate-200 font-medium focus:outline-none cursor-pointer pr-2">
+                    <option value="" class="bg-slate-800 text-slate-300">-- Pilih Demo Lagu --</option>
+                    <option value="kartini" class="bg-slate-800 text-slate-200">Ibu Kita Kartini</option>
+                    <option value="gundul" class="bg-slate-800 text-slate-200">Gundul-Gundul Pacul</option>
+                    <option value="twinkle" class="bg-slate-800 text-slate-200">Twinkle Twinkle Little Star</option>
+                    <option value="balonku" class="bg-slate-800 text-slate-200">Balonku Ada Lima</option>
+                </select>
+            </div>
+            <button id="btnPlayDemo" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs rounded-lg transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                <span id="demoBtnText">Putar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Pianika Body Container -->
+    <main class="w-full max-w-7xl flex flex-col items-center my-auto">
+        
+        <!-- Pipe / Flexible Hose & Mouthpiece Illustration -->
+        <div class="w-full flex items-center justify-start pl-6 sm:pl-12 -mb-3 z-10">
+            <div class="flex items-center">
+                <!-- Mouthpiece -->
+                <div class="w-8 sm:w-10 h-5 sm:h-6 bg-slate-200 rounded-l-full border-2 border-slate-400 shadow-md flex items-center justify-center relative">
+                    <div class="w-2.5 sm:w-3 h-2.5 sm:h-3 bg-slate-800 rounded-full"></div>
+                </div>
+                <!-- Flexible Hose Body -->
+                <div class="h-4 sm:h-5 w-28 sm:w-56 hose-rib border-y border-cyan-700 shadow-inner relative"></div>
+                <!-- Hose Joint Connect to Pianika -->
+                <div class="w-5 sm:w-6 h-7 sm:h-8 bg-slate-700 rounded-r-md border-r-2 border-slate-500 shadow-md"></div>
+            </div>
+        </div>
+
+        <!-- Pianika Body Frame -->
+        <div class="w-full bg-gradient-to-b from-sky-500 via-blue-600 to-indigo-700 p-3 sm:p-5 md:p-6 rounded-3xl shadow-2xl border-4 border-sky-400/30 relative">
+            
+            <!-- Top Controls Panel on Pianika Body -->
+            <div class="bg-slate-900/60 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 mb-4 border border-white/10 flex flex-wrap items-center justify-between gap-2.5 shadow-inner">
+                
+                <!-- Display Not Label Toggle -->
+                <div class="flex items-center gap-1 bg-slate-800/90 p-1 rounded-xl border border-slate-700">
+                    <button id="btnNotationCDE" class="notation-btn px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition-all bg-cyan-500 text-slate-950 shadow">
+                        C D E
+                    </button>
+                    <button id="btnNotationNum" class="notation-btn px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">
+                        1 2 3
+                    </button>
+                    <button id="btnNotationSol" class="notation-btn px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">
+                        Do Re Mi
+                    </button>
+                </div>
+
+                <!-- Octave Shift & Vibrato / Pitch Bend -->
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                    
+                    <!-- Octave Controls -->
+                    <div class="flex items-center bg-slate-800/90 rounded-xl p-1 border border-slate-700">
+                        <span class="text-[11px] sm:text-xs text-slate-400 font-semibold px-1.5">Oktaf:</span>
+                        <button id="btnOctaveDown" class="p-1 sm:p-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-200 transition active:scale-95">
+                            <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <span id="octaveValue" class="text-xs font-extrabold px-2.5 text-cyan-400">0</span>
+                        <button id="btnOctaveUp" class="p-1 sm:p-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-200 transition active:scale-95">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Vibrato Toggle Button -->
+                    <button id="btnVibratoToggle" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl flex items-center gap-1.5 text-xs font-semibold text-slate-300 transition-all shadow-sm">
+                        <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
+                        <span>Vibrato: <strong id="vibratoStatusText" class="text-slate-400">MATI</strong></span>
+                    </button>
+
+                    <!-- Simulator Blow Effect Toggle -->
+                    <button id="btnBlowToggle" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl flex items-center gap-2 text-xs font-semibold text-slate-300 transition-all shadow-sm">
+                        <div id="blowIndicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                        <span>Tiupan: <strong id="blowStatusText" class="text-emerald-400">OTOMATIS</strong></span>
+                    </button>
+                </div>
+
+                <!-- Volume Control & Pitch Bend Wheel -->
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1.5 bg-slate-800/90 px-2.5 py-1 rounded-xl border border-slate-700">
+                        <span class="text-[10px] sm:text-xs text-slate-400 font-bold">Pitch</span>
+                        <input id="pitchBendSlider" type="range" min="-100" max="100" value="0" class="w-16 sm:w-20 accent-cyan-400 cursor-pointer">
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-slate-800/90 px-3 py-1 rounded-xl border border-slate-700">
+                        <i data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i>
+                        <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.7" class="w-16 sm:w-24 accent-cyan-400 cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pianika Keys Bed / Container (Extended for 32 keys) -->
+            <div class="relative bg-slate-950 p-2 sm:p-3 rounded-2xl border-2 border-slate-800 shadow-2xl overflow-x-auto min-h-[210px] sm:min-h-[250px] flex justify-center touch-none">
+                
+                <!-- Keys Wrapper for 32 keys -->
+                <div id="keyboard" class="relative flex h-44 sm:h-56 min-w-[950px] lg:min-w-[1150px] w-full select-none justify-center touch-none">
+                    <!-- Keys dynamically generated via JS -->
+                </div>
+
+            </div>
+
+            <!-- Pianika Brand Detail Stamp -->
+            <div class="flex items-center justify-between mt-3 px-2 text-[10px] sm:text-xs text-sky-200/70 font-semibold uppercase tracking-widest">
+                <span>PIANIKA-KU Synth Pro-32 (Landscape 32-Key Extended)</span>
+                <span class="flex items-center gap-1">
+                    <i data-lucide="wind" class="w-3 h-3"></i> Air Pressure Synthesis
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Manual Blow Button -->
+        <div class="mt-3 flex flex-col items-center gap-1">
+            <button id="btnManualBlow" class="px-6 py-2 bg-slate-800 border-2 border-cyan-500/40 hover:border-cyan-400 text-cyan-300 font-bold rounded-full shadow-lg transition-all active:scale-95 flex items-center gap-2 text-xs sm:text-sm select-none touch-none">
+                <i data-lucide="wind" class="w-4 h-4"></i>
+                <span>Tahan untuk Meniup (Mode Manual)</span>
+            </button>
+            <span class="text-[10px] sm:text-[11px] text-slate-400">Gunakan tombol 'Spasi' di keyboard PC untuk tiupan manual</span>
+        </div>
+
+    </main>
+
+    <!-- Footer & Keyboard Mapping Guide with Copyright -->
+    <footer class="w-full max-w-7xl mt-4 sm:mt-6 pt-3 border-t border-slate-800 flex flex-col items-center justify-center gap-2 text-center text-xs text-slate-400">
+        <div class="flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs">
+            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono border border-slate-700">A - K / Z - M</span>
+            <span>= Tutus Putih</span>
+            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono border border-slate-700 ml-2">W, E, T, Y, U, O, P</span>
+            <span>= Tutus Hitam</span>
+        </div>
+        
+        <!-- Mandatory Copyright Footer -->
+        <div class="text-center font-semibold text-slate-300 pt-1 text-xs sm:text-sm">
+            © 2026 PENAKU - Belajar Menyenangkan Setiap Hari! 🎉 Designed by Ikhwan Adi Yanto,S.Pd
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        /* ==========================================================================
+           1. EXTENDED 32-KEY PIANIKA CONFIGURATION & KEYBOARD MAP
+           ========================================================================== */
+        // 32-Key Extended Range (F3 to C6)
+        const NOTES = [
+            { note: 'F3', type: 'white', key: 'Z', cde: 'F', num: '4,', sol: 'Fa,' },
+            { note: 'F#3', type: 'black', key: 'S', cde: 'F#', num: '4#,', sol: 'Fa#' },
+            { note: 'G3', type: 'white', key: 'X', cde: 'G', num: '5,', sol: 'Sol,' },
+            { note: 'G#3', type: 'black', key: 'D', cde: 'G#', num: '5#,', sol: 'Sol#' },
+            { note: 'A3', type: 'white', key: 'C', cde: 'A', num: '6,', sol: 'La,' },
+            { note: 'A#3', type: 'black', key: 'F', cde: 'A#', num: '6#,', sol: 'La#' },
+            { note: 'B3', type: 'white', key: 'V', cde: 'B', num: '7,', sol: 'Si,' },
+            
+            { note: 'C4', type: 'white', key: 'A', cde: 'C', num: '1', sol: 'Do' },
+            { note: 'C#4', type: 'black', key: 'W', cde: 'C#', num: '1#', sol: 'Do#' },
+            { note: 'D4', type: 'white', key: 'S', cde: 'D', num: '2', sol: 'Re' },
+            { note: 'D#4', type: 'black', key: 'E', cde: 'D#', num: '2#', sol: 'Re#' },
+            { note: 'E4', type: 'white', key: 'D', cde: 'E', num: '3', sol: 'Mi' },
+            { note: 'F4', type: 'white', key: 'F', cde: 'F', num: '4', sol: 'Fa' },
+            { note: 'F#4', type: 'black', key: 'T', cde: 'F#', num: '4#', sol: 'Fa#' },
+            { note: 'G4', type: 'white', key: 'G', cde: 'G', num: '5', sol: 'Sol' },
+            { note: 'G#4', type: 'black', key: 'Y', cde: 'G#', num: '5#', sol: 'Sol#' },
+            { note: 'A4', type: 'white', key: 'H', cde: 'A', num: '6', sol: 'La' },
+            { note: 'A#4', type: 'black', key: 'U', cde: 'A#', num: '6#', sol: 'La#' },
+            { note: 'B4', type: 'white', key: 'J', cde: 'B', num: '7', sol: 'Si' },
+            
+            { note: 'C5', type: 'white', key: 'K', cde: 'C', num: '1\'', sol: 'Do\'' },
+            { note: 'C#5', type: 'black', key: 'O', cde: 'C#', num: '1\'#', sol: 'Do\'' },
+            { note: 'D5', type: 'white', key: 'L', cde: 'D', num: '2\'', sol: 'Re\'' },
+            { note: 'D#5', type: 'black', key: 'P', cde: 'D#', num: '2\'#', sol: 'Re\'' },
+            { note: 'E5', type: 'white', key: ';', cde: 'E', num: '3\'', sol: 'Mi\'' },
+            { note: 'F5', type: 'white', key: '\'', cde: 'F', num: '4\'', sol: 'Fa\'' },
+            { note: 'F#5', type: 'black', key: ']', cde: 'F#', num: '4\'#', sol: 'Fa\'' },
+            { note: 'G5', type: 'white', key: 'B', cde: 'G', num: '5\'', sol: 'Sol\'' },
+            { note: 'G#5', type: 'black', key: '1', cde: 'G#', num: '5\'#', sol: 'Sol\'' },
+            { note: 'A5', type: 'white', key: 'N', cde: 'A', num: '6\'', sol: 'La\'' },
+            { note: 'A#5', type: 'black', key: '2', cde: 'A#', num: '6\'#', sol: 'La\'' },
+            { note: 'B5', type: 'white', key: 'M', cde: 'B', num: '7\'', sol: 'Si\'' },
+            { note: 'C6', type: 'white', key: ',', cde: 'C', num: '1\'\'', sol: 'Do\'\'' }
+        ];
+
+        // Mapped Keyboard Input Keys
+        const KEY_MAP = {
+            'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4', 'f': 'F4',
+            't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4', 'u': 'A#4', 'j': 'B4',
+            'k': 'C5', 'o': 'C#5', 'l': 'D5', 'p': 'D#5', ';': 'E5', '\'': 'F5',
+            'z': 'F3', 'x': 'G3', 'c': 'A3', 'v': 'B3', 'b': 'G5', 'n': 'A5', 'm': 'B5', ',': 'C6'
+        };
+
+        // Note Frequencies
+        const NOTE_FREQS = {
+            'F3': 174.61, 'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08, 'B3': 246.94,
+            'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63, 'F4': 349.23,
+            'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+            'C5': 523.25, 'C#5': 554.37, 'D5': 587.33, 'D#5': 622.25, 'E5': 659.25, 'F5': 698.46,
+            'F#5': 739.99, 'G5': 783.99, 'G#5': 830.61, 'A5': 880.00, 'A#5': 932.33, 'B5': 987.77, 'C6': 1046.50
+        };
+
+        // Song Presets
+        const DEMO_SONGS = {
+            kartini: [
+                { note: 'C4', duration: 400 }, { note: 'D4', duration: 400 }, { note: 'E4', duration: 600 }, { note: 'F4', duration: 400 },
+                { note: 'G4', duration: 800 }, { note: 'E4', duration: 400 }, { note: 'C4', duration: 800 },
+                { note: 'A4', duration: 400 }, { note: 'C5', duration: 400 }, { note: 'B4', duration: 400 }, { note: 'A4', duration: 400 },
+                { note: 'G4', duration: 1000 },
+                { note: 'F4', duration: 400 }, { note: 'A4', duration: 400 }, { note: 'G4', duration: 400 }, { note: 'F4', duration: 400 },
+                { note: 'E4', duration: 800 }, { note: 'C4', duration: 800 },
+                { note: 'D4', duration: 400 }, { note: 'F4', duration: 400 }, { note: 'E4', duration: 400 }, { note: 'D4', duration: 400 },
+                { note: 'C4', duration: 1000 }
+            ],
+            gundul: [
+                { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 }, { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 },
+                { note: 'F4', duration: 350 }, { note: 'G4', duration: 350 }, { note: 'G4', duration: 700 },
+                { note: 'B4', duration: 350 }, { note: 'C5', duration: 350 }, { note: 'B4', duration: 350 }, { note: 'C5', duration: 350 },
+                { note: 'B4', duration: 350 }, { note: 'G4', duration: 700 },
+                { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 }, { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 },
+                { note: 'F4', duration: 350 }, { note: 'G4', duration: 350 }, { note: 'G4', duration: 700 }
+            ],
+            twinkle: [
+                { note: 'C4', duration: 400 }, { note: 'C4', duration: 400 }, { note: 'G4', duration: 400 }, { note: 'G4', duration: 400 },
+                { note: 'A4', duration: 400 }, { note: 'A4', duration: 400 }, { note: 'G4', duration: 800 },
+                { note: 'F4', duration: 400 }, { note: 'F4', duration: 400 }, { note: 'E4', duration: 400 }, { note: 'E4', duration: 400 },
+                { note: 'D4', duration: 400 }, { note: 'D4', duration: 400 }, { note: 'C4', duration: 800 }
+            ],
+            balonku: [
+                { note: 'E4', duration: 350 }, { note: 'F4', duration: 350 }, { note: 'G4', duration: 700 }, { note: 'C5', duration: 700 },
+                { note: 'G4', duration: 700 }, { note: 'E4', duration: 700 },
+                { note: 'G4', duration: 350 }, { note: 'F4', duration: 350 }, { note: 'E4', duration: 350 }, { note: 'D4', duration: 350 },
+                { note: 'C4', duration: 1000 }
+            ]
+        };
+
+        /* ==========================================================================
+           2. APP STATE & WEB AUDIO SYNTHESIZER
+           ========================================================================== */
+        let audioCtx = null;
+        let masterGain = null;
+        let activeVoices = {};
+
+        let currentNotation = 'cde';
+        let currentOctaveShift = 0;
+        let isAutoBlow = true;
+        let isBlowingManual = false;
+        let isVibratoOn = false;
+        let currentPitchCents = 0;
+        let activeKeysPressed = new Set();
+        let isDemoPlaying = false;
+        let demoTimeoutId = null;
+
+        // Glissando / Mouse Slide State
+        let isMouseDown = false;
+        let currentHoverNote = null;
+        let activeTouchNotes = {}; // Stores touchIdentifier -> note
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                masterGain = audioCtx.createGain();
+                
+                const volumeSlider = document.getElementById('volumeSlider');
+                masterGain.gain.setValueAtTime(parseFloat(volumeSlider.value), audioCtx.currentTime);
+                masterGain.connect(audioCtx.destination);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function getDetunedFreq(baseFreq) {
+            const octaveFreq = baseFreq * Math.pow(2, currentOctaveShift);
+            return octaveFreq * Math.pow(2, currentPitchCents / 1200);
+        }
+
+        function startNoteSound(noteName) {
+            if (!audioCtx) initAudio();
+            if (activeVoices[noteName]) return;
+
+            const baseFreq = NOTE_FREQS[noteName];
+            if (!baseFreq) return;
+            const targetFreq = getDetunedFreq(baseFreq);
+
+            const now = audioCtx.currentTime;
+
+            // Oscillators
+            const osc1 = audioCtx.createOscillator();
+            osc1.type = 'square';
+            osc1.frequency.setValueAtTime(targetFreq, now);
+
+            const osc2 = audioCtx.createOscillator();
+            osc2.type = 'sawtooth';
+            osc2.frequency.setValueAtTime(targetFreq, now);
+
+            // Vibrato (LFO)
+            let lfo = null;
+            let lfoGain = null;
+
+            if (isVibratoOn) {
+                lfo = audioCtx.createOscillator();
+                lfo.frequency.setValueAtTime(5.5, now);
+                lfoGain = audioCtx.createGain();
+                lfoGain.gain.setValueAtTime(targetFreq * 0.015, now);
+                lfo.connect(lfoGain);
+                lfoGain.connect(osc1.frequency);
+                lfoGain.connect(osc2.frequency);
+                lfo.start(now);
+            }
+
+            const oscMix1 = audioCtx.createGain();
+            const oscMix2 = audioCtx.createGain();
+            oscMix1.gain.value = 0.4;
+            oscMix2.gain.value = 0.2;
+
+            osc1.connect(oscMix1);
+            osc2.connect(oscMix2);
+
+            // Filter
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(targetFreq * 1.4, now);
+            filter.Q.setValueAtTime(2.2, now);
+
+            oscMix1.connect(filter);
+            oscMix2.connect(filter);
+
+            // Note ADSR Envelope
+            const noteGain = audioCtx.createGain();
+            noteGain.gain.setValueAtTime(0, now);
+            noteGain.gain.linearRampToValueAtTime(0.7, now + 0.03);
+
+            filter.connect(noteGain);
+            noteGain.connect(masterGain);
+
+            osc1.start(now);
+            osc2.start(now);
+
+            activeVoices[noteName] = {
+                osc1, osc2, lfo, noteGain,
+                stop: function() {
+                    const stopTime = audioCtx.currentTime;
+                    const releaseTime = 0.07;
+                    noteGain.gain.cancelScheduledValues(stopTime);
+                    noteGain.gain.setValueAtTime(noteGain.gain.value, stopTime);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, stopTime + releaseTime);
+                    
+                    osc1.stop(stopTime + releaseTime + 0.01);
+                    osc2.stop(stopTime + releaseTime + 0.01);
+                    if (lfo) lfo.stop(stopTime + releaseTime + 0.01);
+                },
+                updatePitch: function() {
+                    const updatedFreq = getDetunedFreq(baseFreq);
+                    osc1.frequency.setTargetAtTime(updatedFreq, audioCtx.currentTime, 0.02);
+                    osc2.frequency.setTargetAtTime(updatedFreq, audioCtx.currentTime, 0.02);
+                }
+            };
+        }
+
+        function stopNoteSound(noteName) {
+            if (activeVoices[noteName]) {
+                activeVoices[noteName].stop();
+                delete activeVoices[noteName];
+            }
+        }
+
+        /* ==========================================================================
+           3. UI RENDERER & GLISSANDO TOUCH/DRAG LOGIC
+           ========================================================================== */
+        const keyboardEl = document.getElementById('keyboard');
+
+        function renderKeyboard() {
+            keyboardEl.innerHTML = '';
+
+            let whiteIndex = 0;
+            const totalWhiteKeys = NOTES.filter(n => n.type === 'white').length;
+            
+            NOTES.forEach((item) => {
+                const keyEl = document.createElement('div');
+                keyEl.dataset.note = item.note;
+
+                if (item.type === 'white') {
+                    keyEl.className = `white-key key-element relative flex flex-col justify-between items-center pb-2.5 pt-1.5 rounded-b-xl cursor-pointer select-none border border-slate-300/80 z-0`;
+                    keyEl.style.width = `calc(100% / ${totalWhiteKeys})`;
+                    keyEl.style.height = '100%';
+
+                    keyEl.innerHTML = `
+                        <span class="text-[9px] sm:text-xs font-bold text-slate-400 font-mono pointer-events-none">${item.key}</span>
+                        <div class="text-center pointer-events-none">
+                            <span class="note-label block text-[10px] sm:text-xs font-extrabold text-slate-800">${getLabelText(item)}</span>
+                        </div>
+                    `;
+                    whiteIndex++;
+                } else {
+                    keyEl.className = `black-key key-element absolute flex flex-col justify-between items-center pb-2 pt-1 rounded-b-lg cursor-pointer select-none z-10`;
+                    const leftPos = (whiteIndex) * (100 / totalWhiteKeys) - (100 / totalWhiteKeys * 0.32);
+                    keyEl.style.left = `${leftPos}%`;
+                    keyEl.style.width = `calc(100% / ${totalWhiteKeys} * 0.65)`;
+                    keyEl.style.height = '58%';
+
+                    keyEl.innerHTML = `
+                        <span class="text-[8px] sm:text-[9px] font-bold text-slate-400 font-mono pointer-events-none">${item.key}</span>
+                        <span class="note-label text-[9px] sm:text-[10px] font-bold text-cyan-300 pointer-events-none">${getLabelText(item)}</span>
+                    `;
+                }
+
+                keyboardEl.appendChild(keyEl);
+            });
+        }
+
+        // Helper to find key note from screen coordinates
+        function getKeyFromPoint(x, y) {
+            const el = document.elementFromPoint(x, y);
+            if (!el) return null;
+            const keyEl = el.closest('.key-element');
+            return keyEl ? keyEl.dataset.note : null;
+        }
+
+        /* --- Mouse Drag / Glissando Logic --- */
+        window.addEventListener('mousedown', (e) => {
+            const note = getKeyFromPoint(e.clientX, e.clientY);
+            if (note) {
+                isMouseDown = true;
+                currentHoverNote = note;
+                triggerNoteOn(note);
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+            const note = getKeyFromPoint(e.clientX, e.clientY);
+            if (note !== currentHoverNote) {
+                if (currentHoverNote) triggerNoteOff(currentHoverNote);
+                if (note) triggerNoteOn(note);
+                currentHoverNote = note;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isMouseDown) {
+                isMouseDown = false;
+                if (currentHoverNote) {
+                    triggerNoteOff(currentHoverNote);
+                    currentHoverNote = null;
+                }
+            }
+        });
+
+        /* --- Touch Drag / Multi-touch Glissando Logic --- */
+        function handleTouchEvents(e) {
+            e.preventDefault(); // Prevent scrolling on touch
+            const currentTouchMap = {};
+
+            for (let i = 0; i < e.touches.length; i++) {
+                const touch = e.touches[i];
+                const note = getKeyFromPoint(touch.clientX, touch.clientY);
+                if (note) {
+                    currentTouchMap[touch.identifier] = note;
+                }
+            }
+
+            // Turn off notes no longer touched by active touch identifier
+            Object.keys(activeTouchNotes).forEach(id => {
+                const oldNote = activeTouchNotes[id];
+                const newNote = currentTouchMap[id];
+                if (oldNote && oldNote !== newNote) {
+                    // Check if any other touch is still on oldNote before stopping
+                    const isStillTouched = Object.values(currentTouchMap).includes(oldNote);
+                    if (!isStillTouched) {
+                        triggerNoteOff(oldNote);
+                    }
+                }
+            });
+
+            // Turn on new touched notes
+            Object.keys(currentTouchMap).forEach(id => {
+                const newNote = currentTouchMap[id];
+                if (activeTouchNotes[id] !== newNote) {
+                    triggerNoteOn(newNote);
+                }
+            });
+
+            activeTouchNotes = currentTouchMap;
+        }
+
+        const keyboardContainer = document.getElementById('keyboard');
+        keyboardContainer.addEventListener('touchstart', handleTouchEvents, { passive: false });
+        keyboardContainer.addEventListener('touchmove', handleTouchEvents, { passive: false });
+        keyboardContainer.addEventListener('touchend', handleTouchEvents, { passive: false });
+        keyboardContainer.addEventListener('touchcancel', handleTouchEvents, { passive: false });
+
+        function getLabelText(item) {
+            if (currentNotation === 'cde') return item.cde;
+            if (currentNotation === 'num') return item.num;
+            if (currentNotation === 'sol') return item.sol;
+            return item.cde;
+        }
+
+        function updateLabels() {
+            document.querySelectorAll('[data-note]').forEach(el => {
+                const noteData = NOTES.find(n => n.note === el.dataset.note);
+                if (noteData) {
+                    const labelSpan = el.querySelector('.note-label');
+                    if (labelSpan) labelSpan.textContent = getLabelText(noteData);
+                }
+            });
+        }
+
+        /* ==========================================================================
+           4. NOTE CONTROLLER & EXTRA CONTROLS
+           ========================================================================== */
+        function triggerNoteOn(noteName) {
+            initAudio();
+            activeKeysPressed.add(noteName);
+
+            const keyEl = document.querySelector(`[data-note="${noteName}"]`);
+            if (keyEl) keyEl.classList.add('active');
+
+            if (isAutoBlow || isBlowingManual) {
+                startNoteSound(noteName);
+            }
+        }
+
+        function triggerNoteOff(noteName) {
+            activeKeysPressed.delete(noteName);
+
+            const keyEl = document.querySelector(`[data-note="${noteName}"]`);
+            if (keyEl) keyEl.classList.remove('active');
+
+            stopNoteSound(noteName);
+        }
+
+        function stopAllNotes() {
+            activeKeysPressed.forEach(note => triggerNoteOff(note));
+            activeKeysPressed.clear();
+        }
+
+        // Pitch Bend Slider Event
+        const pitchBendSlider = document.getElementById('pitchBendSlider');
+        pitchBendSlider.addEventListener('input', (e) => {
+            currentPitchCents = parseFloat(e.target.value);
+            Object.values(activeVoices).forEach(voice => voice.updatePitch());
+        });
+        pitchBendSlider.addEventListener('change', () => {
+            pitchBendSlider.value = 0;
+            currentPitchCents = 0;
+            Object.values(activeVoices).forEach(voice => voice.updatePitch());
+        });
+
+        // Vibrato Toggle Button
+        const btnVibratoToggle = document.getElementById('btnVibratoToggle');
+        const vibratoStatusText = document.getElementById('vibratoStatusText');
+        btnVibratoToggle.addEventListener('click', () => {
+            isVibratoOn = !isVibratoOn;
+            if (isVibratoOn) {
+                vibratoStatusText.textContent = "AKTIF";
+                vibratoStatusText.className = "text-cyan-400 font-extrabold";
+            } else {
+                vibratoStatusText.textContent = "MATI";
+                vibratoStatusText.className = "text-slate-400 font-semibold";
+            }
+        });
+
+        // PC Keyboard Event Listeners
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            const key = e.key.toLowerCase();
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                isBlowingManual = true;
+                document.getElementById('btnManualBlow').classList.add('bg-cyan-600', 'text-white');
+                activeKeysPressed.forEach(note => startNoteSound(note));
+                return;
+            }
+
+            if (KEY_MAP[key]) {
+                e.preventDefault();
+                triggerNoteOn(KEY_MAP[key]);
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+
+            if (e.code === 'Space') {
+                isBlowingManual = false;
+                document.getElementById('btnManualBlow').classList.remove('bg-cyan-600', 'text-white');
+                if (!isAutoBlow) {
+                    Object.keys(activeVoices).forEach(note => stopNoteSound(note));
+                }
+                return;
+            }
+
+            if (KEY_MAP[key]) {
+                triggerNoteOff(KEY_MAP[key]);
+            }
+        });
+
+        // Notation Toggles
+        const btnNotationCDE = document.getElementById('btnNotationCDE');
+        const btnNotationNum = document.getElementById('btnNotationNum');
+        const btnNotationSol = document.getElementById('btnNotationSol');
+
+        function setNotation(type, activeBtn) {
+            currentNotation = type;
+            [btnNotationCDE, btnNotationNum, btnNotationSol].forEach(btn => {
+                btn.className = "notation-btn px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white";
+            });
+            activeBtn.className = "notation-btn px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition-all bg-cyan-500 text-slate-950 shadow";
+            updateLabels();
+        }
+
+        btnNotationCDE.addEventListener('click', () => setNotation('cde', btnNotationCDE));
+        btnNotationNum.addEventListener('click', () => setNotation('num', btnNotationNum));
+        btnNotationSol.addEventListener('click', () => setNotation('sol', btnNotationSol));
+
+        // Octave Shift Controls
+        const octaveValEl = document.getElementById('octaveValue');
+        document.getElementById('btnOctaveDown').addEventListener('click', () => {
+            if (currentOctaveShift > -1) {
+                currentOctaveShift--;
+                octaveValEl.textContent = currentOctaveShift;
+            }
+        });
+        document.getElementById('btnOctaveUp').addEventListener('click', () => {
+            if (currentOctaveShift < 1) {
+                currentOctaveShift++;
+                octaveValEl.textContent = currentOctaveShift > 0 ? `+${currentOctaveShift}` : currentOctaveShift;
+            }
+        });
+
+        // Blow Mode Toggle
+        const btnBlowToggle = document.getElementById('btnBlowToggle');
+        const blowIndicator = document.getElementById('blowIndicator');
+        const blowStatusText = document.getElementById('blowStatusText');
+
+        btnBlowToggle.addEventListener('click', () => {
+            isAutoBlow = !isAutoBlow;
+            if (isAutoBlow) {
+                blowIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]";
+                blowStatusText.textContent = "OTOMATIS";
+                blowStatusText.className = "text-emerald-400";
+            } else {
+                blowIndicator.className = "w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]";
+                blowStatusText.textContent = "MANUAL";
+                blowStatusText.className = "text-amber-400";
+                if (!isBlowingManual) {
+                    Object.keys(activeVoices).forEach(note => stopNoteSound(note));
+                }
+            }
+        });
+
+        // Manual Blow Mouse/Touch Listeners
+        const btnManualBlow = document.getElementById('btnManualBlow');
+        const startManualBlow = (e) => {
+            e.preventDefault();
+            isBlowingManual = true;
+            btnManualBlow.classList.add('bg-cyan-600', 'text-white');
+            activeKeysPressed.forEach(note => startNoteSound(note));
+        };
+        const stopManualBlow = () => {
+            isBlowingManual = false;
+            btnManualBlow.classList.remove('bg-cyan-600', 'text-white');
+            if (!isAutoBlow) {
+                Object.keys(activeVoices).forEach(note => stopNoteSound(note));
+            }
+        };
+
+        btnManualBlow.addEventListener('mousedown', startManualBlow);
+        btnManualBlow.addEventListener('mouseup', stopManualBlow);
+        btnManualBlow.addEventListener('mouseleave', stopManualBlow);
+        btnManualBlow.addEventListener('touchstart', startManualBlow);
+        btnManualBlow.addEventListener('touchend', stopManualBlow);
+
+        // Volume Control
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            if (masterGain) {
+                masterGain.gain.setValueAtTime(parseFloat(e.target.value), audioCtx.currentTime);
+            }
+        });
+
+        // Song Autoplay
+        const btnPlayDemo = document.getElementById('btnPlayDemo');
+        const songSelect = document.getElementById('songSelect');
+        const demoBtnText = document.getElementById('demoBtnText');
+
+        btnPlayDemo.addEventListener('click', () => {
+            if (isDemoPlaying) {
+                stopDemoSong();
+            } else {
+                const songKey = songSelect.value;
+                if (!songKey) {
+                    alert('Silakan pilih lagu demo terlebih dahulu!');
+                    return;
+                }
+                playDemoSong(DEMO_SONGS[songKey]);
+            }
+        });
+
+        function playDemoSong(notesList) {
+            initAudio();
+            isDemoPlaying = true;
+            demoBtnText.textContent = 'Berhenti';
+            btnPlayDemo.classList.replace('from-cyan-500', 'from-rose-500');
+            btnPlayDemo.classList.replace('to-blue-600', 'to-red-600');
+
+            let index = 0;
+
+            function playNextNote() {
+                if (!isDemoPlaying || index >= notesList.length) {
+                    stopDemoSong();
+                    return;
+                }
+
+                const noteItem = notesList[index];
+                triggerNoteOn(noteItem.note);
+
+                demoTimeoutId = setTimeout(() => {
+                    triggerNoteOff(noteItem.note);
+                    index++;
+                    demoTimeoutId = setTimeout(playNextNote, 60);
+                }, noteItem.duration);
+            }
+
+            playNextNote();
+        }
+
+        function stopDemoSong() {
+            isDemoPlaying = false;
+            clearTimeout(demoTimeoutId);
+            stopAllNotes();
+            demoBtnText.textContent = 'Putar';
+            btnPlayDemo.classList.replace('from-rose-500', 'from-cyan-500');
+            btnPlayDemo.classList.replace('to-red-600', 'to-blue-600');
+        }
+
+        // Initial Render
+        renderKeyboard();
+    </script>
+</body>
+</html>
