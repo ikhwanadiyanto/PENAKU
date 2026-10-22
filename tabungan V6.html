@@ -6,74 +6,23 @@
     <title>Sistem Pendataan Tabungan Kelas VI</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: linear-gradient(135deg, #4f46e5, #3b82f6, #06b6d4); padding: 20px; min-height: 100vh; color: #374151; }
         .container { max-width: 1200px; margin: auto; background: #fff; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px; width: 100%; }
-        
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed #e5e7eb; padding-bottom: 20px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .header-title h1 { font-size: 22px; color: #0f172a; }
-
-        .header-actions-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .memory-status-bar {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 8px 14px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 180px;
-        }
-
-        .memory-info-text {
-            font-size: 11px;
-            font-weight: 600;
-            color: #475569;
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .memory-progress-track {
-            width: 100%;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .memory-progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #4f46e5, #06b6d4);
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s ease; }
-        .loading-card { background: #fff; padding: 30px; border-radius: 20px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .loading-card h3 { font-size: 16px; color: #0f172a; margin-bottom: 8px; }
-        .loading-card p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
-        .loading-bar-track { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; margin-bottom: 12px; }
-        .loading-bar-fill { height: 100%; background: linear-gradient(135deg, #4f46e5, #06b6d4); width: 0%; transition: width 0.1s linear; }
-        .loading-percent-text { font-size: 14px; font-weight: 700; color: #4f46e5; }
-
-        .btn { padding: 10px 18px; border: none; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn { padding: 10px 18px; border: none; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-tarik-server { background: #2563eb; }
+        .btn-excel { background: #16a34a; }
+        .btn-import { background: #2563eb; }
         .btn-print { background: #e11d48; white-space: nowrap; }
         .btn-pdf { background: #f59e0b; }
         .btn-submit { background: #4f46e5; width: 100%; padding: 12px; font-size: 15px; justify-content: center; }
         .btn-clear-all { background: #dc2626; width: 100%; padding: 10px; font-size: 13px; justify-content: center; margin-top: 15px; opacity: 0.85; }
         .btn-clear-all:hover { opacity: 1; background: #b91c1c; }
-        .btn-kembali { background: #64748b; }
         
         .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .card-stat { padding: 20px; border-radius: 16px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
@@ -94,10 +43,12 @@
         .btn-tarik { background: #4f46e5; color: #fff; border: none; width: 42px; height: 42px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.2s; flex-shrink: 0; }
         .btn-tarik:hover { background: #4338ca; transform: scale(1.05); }
 
+        /* Header Filter & Tombol Mata */
         .filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .btn-toggle-filter { background: #64748b; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .btn-toggle-filter:hover { background: #475569; }
 
+        /* Panel Filter Container */
         .filter-panel { margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; transition: all 0.3s ease; }
         .filter-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
@@ -106,14 +57,13 @@
         th { background: #475569; color: #fff; padding: 12px; position: sticky; top: 0; }
         td { padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center; }
         
-        .nama-col { text-align: left !important; padding-left: 15px !important; }
-
         .action-cell { display: flex; gap: 8px; justify-content: center; align-items: center; }
         .btn-edit { background: none; border: none; color: #f59e0b; cursor: pointer; font-size: 15px; }
         .btn-edit:hover { transform: scale(1.15); }
         .btn-delete { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 15px; }
         .btn-delete:hover { transform: scale(1.15); }
 
+        /* Modal Custom untuk Save Susulan Rentang Tanggal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
         .modal-box { background: #fff; padding: 25px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-box h3 { margin-bottom: 15px; font-size: 18px; color: #0f172a; }
@@ -123,37 +73,19 @@
 </head>
 <body>
 
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-card">
-        <h3>Memuat Sistem Tabungan...</h3>
-        <p>Inisialisasi database permanen & sinkronisasi siswa</p>
-        <div class="loading-bar-track">
-            <div class="loading-bar-fill" id="loadingBarFill"></div>
-        </div>
-        <div class="loading-percent-text" id="loadingPercentText">0%</div>
-    </div>
-</div>
-
 <div class="container">
     <div class="header">
         <div class="header-title" style="display: flex; align-items: center; gap: 15px;">
-            <a href="PENA MANTAP V6.html" class="btn btn-kembali">
+            <a href="PENA MANTAP V6.html" class="btn" style="background: #64748b; text-decoration: none;">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
             <h1>Sistem Manajemen Tabungan</h1>
         </div>
-        <div class="header-actions-group">
-            <div class="memory-status-bar">
-                <div class="memory-info-text">
-                    <span><i class="fa-solid fa-database text-blue"></i> Memori IndexedDB</span>
-                    <span id="memoryUsageText">Menghitung...</span>
-                </div>
-                <div class="memory-progress-track">
-                    <div id="memoryProgressFill" class="memory-progress-fill"></div>
-                </div>
-            </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn btn-pdf" onclick="cetakHarianPDF()"><i class="fa-solid fa-file-pdf"></i> PDF Harian</button>
-            <button class="btn btn-tarik-server" onclick="tarikDataDariGoogleSheet()"><i class="fa-solid fa-cloud-arrow-down"></i> Tarik Data Server</button>
+            <input type="file" id="importFileExcel" accept=".xlsx, .xls" style="display: none;" onchange="prosesImportExcel(event)">
+            <button class="btn btn-import" onclick="document.getElementById('importFileExcel').click()"><i class="fa-solid fa-file-import"></i> Import Excel</button>
+            <button class="btn btn-excel" onclick="eksporExcel()"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
             <button class="btn" style="background: #0f766e;" onclick="saveKeTabungan()"><i class="fa-solid fa-cloud-arrow-up"></i> Save ke Tabungan</button>
             <button class="btn" style="background: #b45309;" onclick="bukaModalSaveSusulan()"><i class="fa-solid fa-business-time"></i> Save Susulan</button>
         </div>
@@ -174,7 +106,7 @@
                 <label style="font-size: 13px; font-weight: 500;">Siswa</label>
                 <div class="input-group-tarik">
                     <select id="inputSiswa" class="form-control" required></select>
-                    <button type="button" class="btn-tarik" onclick="inisialisasiDataSiswa(true)" title="Cek & Deteksi Siswa Tambahan"><i class="fa-solid fa-rotate"></i></button>
+                    <button type="button" class="btn-tarik" onclick="tarikDataSiswa(true)" title="Sinkronkan Data Siswa"><i class="fa-solid fa-rotate"></i></button>
                 </div>
                 
                 <label style="font-size: 13px; font-weight: 500;">Tanggal</label>
@@ -198,6 +130,7 @@
         </div>
 
         <div>
+            <!-- Header Filter dengan Tombol Mata -->
             <div class="filter-header">
                 <span style="font-size: 14px; font-weight: 600; color: #475569;">Riwayat Transaksi</span>
                 <button class="btn-toggle-filter" id="btnToggleFilter" onclick="toggleFilterPanel()" title="Sembunyikan / Tampilkan Menu Filter">
@@ -205,6 +138,7 @@
                 </button>
             </div>
 
+            <!-- Panel Filter yang bisa Disembunyikan / Ditampilkan -->
             <div class="filter-panel" id="filterPanel">
                 <input type="text" id="filterInput" class="form-control" placeholder="Cari NIS/Nama..." onkeyup="hitungDanTampilkan()">
                 <div class="filter-row">
@@ -220,7 +154,7 @@
             <div class="table-wrap">
                 <table id="tabelHistoriTabungan">
                     <thead>
-                        <tr><th>Tanggal</th><th>NIS</th><th style="text-align: left; padding-left: 15px;">Nama</th><th>Jenis</th><th>Nominal</th><th>Saldo</th><th>Aksi</th></tr>
+                        <tr><th>Tanggal</th><th>NIS</th><th>Nama</th><th>Jenis</th><th>Nominal</th><th>Saldo</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="bodyLogTransaksi"></tbody>
                 </table>
@@ -229,6 +163,7 @@
     </div>
 </div>
 
+<!-- Modal Save Susulan Rentang Waktu -->
 <div class="modal-overlay" id="modalSaveSusulan">
     <div class="modal-box">
         <h3><i class="fa-solid fa-business-time" style="color: #b45309;"></i> Save Susulan (Timpa Data)</h3>
@@ -242,7 +177,7 @@
 
         <div class="modal-actions">
             <button class="btn" style="background: #64748b; flex: 1; justify-content: center;" onclick="tutupModalSaveSusulan()">Batal</button>
-            <button class="btn btn-tarik-server" style="flex: 1; justify-content: center;" onclick="eksekusiSaveSusulanRentang()">Kirim & Timpa</button>
+            <button class="btn btn-excel" style="flex: 1; justify-content: center;" onclick="eksekusiSaveSusulanRentang()">Kirim & Timpa</button>
         </div>
     </div>
 </div>
@@ -250,128 +185,10 @@
 <script>
     const SISWA_DEFAULT = [["3052","Amelia Alita Zahra"],["3223","Angelica Vikar Maharani"],["3085","Anggraeni Abbilah Dhety"],["3087","AZKA NAILUN NABHAN"],["3088","Cinta Anugrah"],["3089","Dany Sabiq El-Fathin"],["3090","Dhea Fiky Mazaya"],["3224","Earlita Arsyifa Salsabila"],["3091","Fadilla Rizqi Khaerani"],["3092","Fathan Almaizan Zhafar"],["3093","Gavin Harry Wiriawan"],["3063","Hafiz Ardiyansah"],["3095","Intan Berliyan"],["3096","Luthfiya Nur Ramadhani"],["3069","M. Miftah Al Fattah"],["3097","Mugi Aditia Ripki"],["3098","Muh Azzka Alpratama"],["3099","Muhamad Ramadhani"],["3102","Nayla Dwi Syafriani"],["3108","Puteri Ayuning Kirana"],["3103","Raisa Rahmawati Septiani"],["3104","Renita Nur Saefitri"],["3084","Shalwa Aisa Nazwa"],["3105","Wifha Alya An Adibah"],["3106","Zhidan Dwi Aprilio Nurosy"],["3107","Zulfan Azhar Ramadhan"]];
     
-    let SISWA = [];
-    let dataTransaksi = [];
+    let SISWA = JSON.parse(localStorage.getItem('dbMasterSiswa')) || SISWA_DEFAULT;
+    let dataTransaksi = JSON.parse(localStorage.getItem('dbTabunganSiswa')) || [];
 
-    const DB_NAME = "AplikasiKelasVIDB";
-    const DB_VERSION = 1;
-
-    function openIndexedDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => resolve(request.result);
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains('pengaturan')) db.createObjectStore('pengaturan');
-                if (!db.objectStoreNames.contains('tabunganSiswa')) db.createObjectStore('tabunganSiswa', { keyPath: 'id' });
-            };
-        });
-    }
-
-    async function idbGet(storeName, key) {
-        const db = await openIndexedDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(storeName, 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.get(key);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    async function idbPut(storeName, key, value) {
-        const db = await openIndexedDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(storeName, 'readwrite');
-            const store = transaction.objectStore(storeName);
-            const request = store.put(value, key);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    async function idbGetAll(storeName) {
-        const db = await openIndexedDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(storeName, 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.getAll();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    function jalankanLoadingBar(callbackSelesai) {
-        const overlay = document.getElementById('loadingOverlay');
-        const fill = document.getElementById('loadingBarFill');
-        const text = document.getElementById('loadingPercentText');
-        
-        overlay.style.display = 'flex';
-        overlay.style.opacity = '1';
-        let progress = 0;
-
-        const interval = setInterval(() => {
-            progress += Math.floor(Math.random() * 15) + 8;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                fill.style.width = '100%';
-                text.innerText = '100%';
-                setTimeout(() => {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                    if (callbackSelesai) callbackSelesai();
-                }, 250);
-            }
-            fill.style.width = progress + '%';
-            text.innerText = progress + '%';
-        }, 30);
-    }
-
-    function formatTanggalDDMMYYYY(dateInput) {
-        if (!dateInput) return "-";
-        let d;
-        if (typeof dateInput === 'string' && dateInput.includes('/')) {
-            const parts = dateInput.split('/');
-            if (parts.length === 3) {
-                let yy = parseInt(parts[2]);
-                if (yy < 100) yy += 2000;
-                d = new Date(yy, parseInt(parts[1]) - 1, parseInt(parts[0]));
-            } else {
-                d = new Date(dateInput);
-            }
-        } else {
-            d = new Date(dateInput);
-        }
-        if (isNaN(d.getTime())) return dateInput.toString();
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-
-    async function updateMemoryStatusBar() {
-        try {
-            if (navigator.storage && navigator.storage.estimate) {
-                const estimate = await navigator.storage.estimate();
-                const usedMB = (estimate.usage / (1024 * 1024)).toFixed(2);
-                const quotaMB = (estimate.quota / (1024 * 1024)).toFixed(0);
-                const percentage = quotaMB > 0 ? ((estimate.usage / estimate.quota) * 100).toFixed(1) : 0;
-                
-                document.getElementById('memoryUsageText').innerText = `${usedMB} MB / ${quotaMB} MB (${percentage}%)`;
-                document.getElementById('memoryProgressFill').style.width = `${Math.min(percentage, 100)}%`;
-            } else {
-                document.getElementById('memoryUsageText').innerText = 'Aktif (IndexedDB)';
-                document.getElementById('memoryProgressFill').style.width = '25%';
-            }
-        } catch (e) {
-            document.getElementById('memoryUsageText').innerText = 'Ready';
-        }
-    }
-
-    // WEB LINK TERBARU ANDA
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyS9eMJOoR8HpoLHGVUiFi3yvj8WzXsG5AffnFgzzO_hlrP6c7mwNEfB8b_sLboVQa-/exec"; 
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz366Nf0KyMCtbQav9y7_zTLbtWshOFLlKBl0NAM_uxy7_q6H3bzBi2YZtdgZLLfEbL/exec"; 
 
     const inputSiswa = document.getElementById('inputSiswa');
     const inputJenis = document.getElementById('inputJenis');
@@ -394,157 +211,57 @@
         }
     }
 
-    async function inisialisasiDataSiswa(isManual = false) {
-        const lakukanInisialisasi = async () => {
-            try {
-                let storedMaster = await idbGet('pengaturan', 'dbMasterSiswa');
-                let sumberV6 = null;
+    function tarikDataSiswa(isManual = false) {
+        const dbPusat = localStorage.getItem('dbMasterSiswa');
+        if (dbPusat) { SISWA = JSON.parse(dbPusat); } else { SISWA = SISWA_DEFAULT; }
 
-                if (Array.isArray(window.dbMasterSiswa) && window.dbMasterSiswa.length > 0) {
-                    sumberV6 = window.dbMasterSiswa;
-                } else if (localStorage.getItem('dbMasterSiswa')) {
-                    try { sumberV6 = JSON.parse(localStorage.getItem('dbMasterSiswa')); } catch(e) {}
-                }
+        const currentSiswaVal = inputSiswa.value;
+        const currentFilterVal = document.getElementById('filterSiswa').value;
 
-                if (!storedMaster || storedMaster.length === 0) {
-                    SISWA = (sumberV6 && sumberV6.length > 0) ? sumberV6 : SISWA_DEFAULT;
-                    await idbPut('pengaturan', 'dbMasterSiswa', SISWA);
-                } else {
-                    SISWA = storedMaster;
-                    if (sumberV6 && sumberV6.length > SISWA.length) {
-                        SISWA = sumberV6;
-                        await idbPut('pengaturan', 'dbMasterSiswa', SISWA);
-                        if (isManual) alert("✨ Terdeteksi siswa tambahan baru! Database master siswa berhasil diperbarui.");
-                    }
-                }
+        inputSiswa.innerHTML = "";
+        const selF = document.getElementById('filterSiswa');
+        selF.innerHTML = '<option value="">-- Filter Per Siswa (Lihat Saldo) --</option>';
 
-                const tabunganStored = await idbGetAll('tabunganSiswa');
-                dataTransaksi = tabunganStored.length > 0 ? tabunganStored : (JSON.parse(localStorage.getItem('dbTabunganSiswa')) || []);
+        SISWA.forEach(s => {
+            inputSiswa.innerHTML += `<option value='{"nis":"${s[0]}","nama":"${s[1]}"}'>${s[1]}</option>`;
+            selF.innerHTML += `<option value="${s[1]}">${s[1]}</option>`;
+        });
 
-                const currentSiswaVal = inputSiswa.value;
-                const currentFilterVal = document.getElementById('filterSiswa').value;
-
-                inputSiswa.innerHTML = "";
-                const selF = document.getElementById('filterSiswa');
-                selF.innerHTML = '<option value="">-- Filter Per Siswa (Lihat Saldo) --</option>';
-
-                SISWA.forEach(s => {
-                    inputSiswa.innerHTML += `<option value='{"nis":"${s[0]}","nama":"${s[1]}"}'>${s[1]}</option>`;
-                    selF.innerHTML += `<option value="${s[1]}">${s[1]}</option>`;
-                });
-
-                if(currentSiswaVal) inputSiswa.value = currentSiswaVal;
-                if(currentFilterVal) selF.value = currentFilterVal;
-
-                updateMemoryStatusBar();
-                hitungDanTampilkan();
-                updateNominalOtomatis();
-
-                if (isManual && (!sumberV6 || sumberV6.length <= SISWA.length)) {
-                    alert("✅ Data siswa sudah mutakhir dan tersimpan permanen.");
-                }
-            } catch (e) {
-                console.error("Gagal sinkronisasi data:", e);
-                SISWA = SISWA_DEFAULT;
-                dataTransaksi = JSON.parse(localStorage.getItem('dbTabunganSiswa')) || [];
-                
-                inputSiswa.innerHTML = "";
-                const selF = document.getElementById('filterSiswa');
-                selF.innerHTML = '<option value="">-- Filter Per Siswa (Lihat Saldo) --</option>';
-                SISWA.forEach(s => {
-                    inputSiswa.innerHTML += `<option value='{"nis":"${s[0]}","nama":"${s[1]}"}'>${s[1]}</option>`;
-                    selF.innerHTML += `<option value="${s[1]}">${s[1]}</option>`;
-                });
-                hitungDanTampilkan();
-                if (isManual) alert("Menggunakan data siswa default.");
-            }
-        };
+        if(currentSiswaVal) inputSiswa.value = currentSiswaVal;
+        if(currentFilterVal) selF.value = currentFilterVal;
 
         if (isManual) {
-            jalankanLoadingBar(lakukanInisialisasi);
-        } else {
-            await lakukanInisialisasi();
+            hitungDanTampilkan();
+            alert("Berhasil menyinkronkan daftar nama siswa dengan database pusat!");
         }
     }
 
     function formatRupiah(n) { return "Rp " + parseInt(n).toLocaleString('id-ID'); }
+
     function parseRupiah(txt) {
         if (!txt) return 0;
         return parseInt(txt.toString().replace(/[^0-9]/g, '')) || 0;
     }
 
-    // TARIK DATA DARI SERVER (SINKRON DENGAN GOOGLE SHEET "Tabungan Siswa")
-    async function tarikDataDariGoogleSheet() {
-        if (!confirm("⚠️ Tarik data terbaru dari Server Google Sheet?\nData yang sudah ada di aplikasi tidak akan ditimpa jika tanggal dan transaksinya sama.")) return;
-
-        const btn = document.querySelector(".btn-tarik-server");
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Menarik...";
-        btn.disabled = true;
-
-        try {
-            const response = await fetch(WEB_APP_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ mode: "fetch" })
-            });
-            const resJson = await response.json();
-
-            if (resJson.status === "success" && Array.isArray(resJson.data)) {
-                let dataServer = resJson.data;
-                let addedCount = 0;
-
-                for (let i = 0; i < dataServer.length; i++) {
-                    let item = dataServer[i];
-                    let tglIso = new Date(parseDateDMY(item.tanggal) || item.tanggal).toISOString();
-                    let nominalVal = parseRupiah(item.nominal);
-
-                    let isDuplicate = dataTransaksi.some(t => {
-                        let tglExisting = formatTanggalDDMMYYYY(t.waktu);
-                        return tglExisting === formatTanggalDDMMYYYY(tglIso) &&
-                               t.nama.toLowerCase() === item.nama.toLowerCase() &&
-                               t.jenis === item.jenis.toUpperCase() &&
-                               t.nominal === nominalVal;
-                    });
-
-                    if (!isDuplicate && nominalVal > 0) {
-                        let newItem = {
-                            id: Date.now() + i,
-                            waktu: tglIso,
-                            nis: item.nis ? item.nis.toString() : "-",
-                            nama: item.nama,
-                            jenis: item.jenis.toUpperCase(),
-                            nominal: nominalVal
-                        };
-                        dataTransaksi.unshift(newItem);
-                        await idbPut('tabunganSiswa', newItem.id, newItem);
-                        addedCount++;
-                    }
-                }
-
-                updateMemoryStatusBar();
-                hitungDanTampilkan();
-                updateNominalOtomatis();
-                alert(`✅ Sinkronisasi Berhasil!\nBerhasil menambahkan ${addedCount} data baru dari server (data duplikat/sama dilewati).`);
-            } else {
-                alert("❌ Gagal menarik data dari server: " + (resJson.message || "Respon server tidak valid"));
-            }
-        } catch (err) {
-            console.error(err);
-            alert("❌ Terjadi kesalahan jaringan saat menarik data server.");
-        } finally {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+    function parseTanggalExcel(val) {
+        if (!val) return new Date().toISOString();
+        if (!isNaN(val)) {
+            const date = new Date((val - 25569) * 86400 * 1000);
+            return date.toISOString();
         }
+        let parts = val.toString().split(/[\/\-]/);
+        if (parts.length === 3) {
+            if (parts[0].length === 4) return new Date(parts[0], parts[1]-1, parts[2]).toISOString(); 
+            return new Date(parts[2], parts[1]-1, parts[0]).toISOString(); 
+        }
+        return new Date(val).toISOString();
     }
 
+    // Helper konversi string "DD/MM/YYYY" ke objek Date (mengabaikan jam)
     function parseDateDMY(dateStr) {
-        if (!dateStr) return null;
-        const parts = dateStr.toString().split('/');
-        if (parts.length !== 3) return new Date(dateStr);
-        let yy = parseInt(parts[2]);
-        if (yy < 100) yy += 2000;
-        return new Date(yy, parseInt(parts[1]) - 1, parseInt(parts[0]));
+        const parts = dateStr.split('/');
+        if (parts.length !== 3) return null;
+        return new Date(parts[2], parts[1] - 1, parts[0]);
     }
 
     function getSaldoSiswa(nama) {
@@ -576,7 +293,13 @@
     inputSiswa.addEventListener('change', updateNominalOtomatis);
     inputJenis.addEventListener('change', updateNominalOtomatis);
 
-    async function hapusSemuaRiwayat() {
+    function eksporExcel() {
+        if (typeof XLSX === 'undefined') { alert("❌ Pustaka Excel belum siap."); return; }
+        const workbook = XLSX.utils.table_to_book(document.getElementById('tabelHistoriTabungan'), {sheet: "Riwayat"});
+        XLSX.writeFile(workbook, "Data_Tabungan.xlsx");
+    }
+
+    function hapusSemuaRiwayat() {
         if (dataTransaksi.length === 0) {
             alert("ℹ️ Riwayat transaksi memang sudah kosong.");
             return;
@@ -584,11 +307,8 @@
         if (confirm("⚠️ PERINGATAN CRITICAL!\nApakah Anda yakin ingin menghapus SELURUH riwayat log transaksi tabungan siswa? Tindakan ini tidak bisa dibatalkan.")) {
             const passwordInput = prompt("🔒 Masukkan Password Admin untuk otentikasi penghapusan:");
             if (passwordInput === "ikhwan22") {
-                const db = await openIndexedDB();
-                const tx = db.transaction('tabunganSiswa', 'readwrite');
-                tx.objectStore('tabunganSiswa').clear();
-                dataTransaksi = [];
-                updateMemoryStatusBar();
+                dataTransaksi = []; 
+                localStorage.removeItem('dbTabunganSiswa'); 
                 hitungDanTampilkan(); 
                 updateNominalOtomatis(); 
                 alert("✅ Sukses! Seluruh database riwayat log transaksi berhasil dibersihkan.");
@@ -596,6 +316,67 @@
                 alert("❌ Password Salah! Anda tidak memiliki hak akses untuk menghapus database.");
             }
         }
+    }
+
+    function prosesImportExcel(e) {
+        if (typeof XLSX === 'undefined') { alert("❌ Pustaka Excel belum siap."); return; }
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                if (sheetData.length <= 1) {
+                    alert("❌ File Excel kosong atau tidak memiliki baris data.");
+                    return;
+                }
+
+                let counterBerhasil = 0;
+                const barisData = sheetData.slice(1).reverse();
+
+                barisData.forEach((row, index) => {
+                    if (row.length >= 5 && row[2] && row[3]) { 
+                        const tglIso = parseTanggalExcel(row[0]);
+                        const nis = row[1] ? row[1].toString() : "-";
+                        const nama = row[2].toString();
+                        const jenis = row[3].toString().toUpperCase();
+                        const nominal = parseRupiah(row[4]);
+
+                        if (['SETOR', 'TARIK', 'PAJAK'].includes(jenis) && nominal > 0) {
+                            dataTransaksi.unshift({
+                                id: Date.now() + index, 
+                                waktu: tglIso,
+                                nis: nis,
+                                nama: nama,
+                                jenis: jenis,
+                                nominal: nominal
+                            });
+                            counterBerhasil++;
+                        }
+                    }
+                });
+
+                if (counterBerhasil > 0) {
+                    localStorage.setItem('dbTabunganSiswa', JSON.stringify(dataTransaksi));
+                    hitungDanTampilkan();
+                    updateNominalOtomatis();
+                    alert(`✅ Berhasil mengimpor ${counterBerhasil} data transaksi ke riwayat!`);
+                } else {
+                    alert("❌ Tidak ada data yang cocok/valid untuk diimpor.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("❌ Gagal membaca file Excel.");
+            }
+            document.getElementById('importFileExcel').value = "";
+        };
+        reader.readAsArrayBuffer(file);
     }
 
     function saveKeTabungan() {
@@ -641,12 +422,12 @@
         rows.forEach(row => {
             const cells = row.getElementsByTagName('td');
             if (cells.length > 0) {
-                const tanggalTabelStr = cells[0].innerText;
+                const tanggalTabelStr = cells[0].innerText; // Format DD/MM/YYYY
                 const rowDateObj = parseDateDMY(tanggalTabelStr);
 
                 let lolosFilter = true;
                 if (tglMulaiObj && tglSelesaiObj && rowDateObj) {
-                    rowDateObj.setHours(12,0,0,0);
+                    rowDateObj.setHours(12,0,0,0); // set tengah hari untuk amankan perbandingan timezone
                     if (rowDateObj < tglMulaiObj || rowDateObj > tglSelesaiObj) {
                         lolosFilter = false;
                     }
@@ -654,12 +435,12 @@
 
                 if (lolosFilter) {
                     dataKirim.push([
-                        cells[0].innerText,
-                        cells[1].innerText,
-                        cells[2].innerText,
-                        cells[3].innerText,
-                        cells[4].innerText,
-                        cells[5].innerText
+                        cells[0].innerText, // Tanggal (dd/mm/yyyy)
+                        cells[1].innerText, // NIS
+                        cells[2].innerText, // Nama
+                        cells[3].innerText, // Jenis
+                        cells[4].innerText, // Nominal
+                        cells[5].innerText  // Saldo
                     ]);
                 }
             }
@@ -670,6 +451,7 @@
             return; 
         }
         
+        // Membalikkan urutan agar data terkirim secara kronologis
         dataKirim.reverse(); 
 
         const isSaveAll = (namaTombol === "Save ke Tabungan");
@@ -696,7 +478,7 @@
             })
         })
         .then(() => { 
-            alert(`✅ Sukses Terkirim! (${dataKirim.length} data transaksi pada rentang ${tglMulaiStr ? tglMulaiStr + ' s.d ' + tglSelesaiStr : 'seluruh tanggal'} berhasil dikirim ke Google Sheet).`); 
+            alert(`✅ Sukses Terkirim! (${dataKirim.length} data transaksi pada rentang ${tglMulaiStr ? tglMulaiStr + ' s.d ' + tglSelesaiStr : 'seluruh tanggal'} berhasil dikirim & ditimpa ke Google Sheet).`); 
         })
         .catch(error => { 
             alert("❌ Gagal: " + error.message); 
@@ -710,7 +492,7 @@
     }
 
     function kirimTransaksiBaruKeSpreadsheet(item) {
-        const tglFormat = formatTanggalDDMMYYYY(item.waktu);
+        const tglFormat = new Date(item.waktu).toLocaleDateString('id-ID');
         const nominalFormat = formatRupiah(item.nominal);
         const saldoFormat = formatRupiah(getSaldoSiswa(item.nama));
 
@@ -771,7 +553,7 @@
 
         const statusHeaderClass = (barisMulai === 1) ? "show-on-print" : "hide-on-print";
         const printWindow = window.open('', '_blank', 'height=600,width=800');
-        printWindow.document.write(`<html><head><title>Buku Tabungan - ${siswaNama}</title><style>body{font-family:'Courier New',monospace;font-size:12px;margin:0;padding:10px;color:#000;}.bank-header{width:100%;margin-bottom:25px;border-bottom:3px double #000;padding-bottom:12px;}.bank-header .title{font-size:16px;font-weight:bold;letter-spacing:2px;margin-bottom:10px;text-align:center;}.bank-header .meta-grid{display:flex;justify-content:space-between;font-size:11px;}.bubble{display:flex;align-items:center;justify-content:space-between;border:1px solid #000;border-radius:12px;padding:10px 15px;margin-bottom:8px;page-break-inside:avoid;}.no-baris{font-weight:bold;font-size:13px;border-right:1px solid #000;padding-right:12px;width:30px;}.detail-item{flex:1;text-align:left;padding-left:10px;}.paraf{width:90px;text-align:right;font-size:10px;}.empty-bubble{border:1px dashed #ccc;height:40px;margin-bottom:8px;}.warna-setor{color:#10b981!important;font-weight:bold;}.warna-tarik{color:#ef4444!important;font-weight:bold;}.warna-pajak{color:#d97706!important;font-weight:bold;}@media print{body{padding:15mm;-webkit-print-color-adjust:exact;print-color-adjust:exact;}.hide-on-print{display:none!important;}.show-on-print{display:block!important;}}</style></head><body><div class="bank-header ${statusHeaderClass}"><div class="title">LAPORAN MUTASI TABUNGAN SISWA</div><div class="meta-grid"><div class="meta-left"><div><strong>NAMA LENGKAP :</strong> ${siswaNama.toUpperCase()}</div><div><strong>NOMOR INDUK  :</strong> ${siswaNis}</div></div><div class="meta-right" style="text-align:right;"><div><strong>ID UNIT     :</strong> KELAS_VI</div><div><strong>TGL CETAK   :</strong> ${formatTanggalDDMMYYYY(new Date())}</div></div></div></div><div class="container-bubble">${cetakHTML}</div><script>window.onload=()=>{window.print();window.close();}<\/script></body></html>`);
+        printWindow.document.write(`<html><head><title>Buku Tabungan - ${siswaNama}</title><style>body{font-family:'Courier New',monospace;font-size:12px;margin:0;padding:10px;color:#000;}.bank-header{width:100%;margin-bottom:25px;border-bottom:3px double #000;padding-bottom:12px;}.bank-header .title{font-size:16px;font-weight:bold;letter-spacing:2px;margin-bottom:10px;text-align:center;}.bank-header .meta-grid{display:flex;justify-content:space-between;font-size:11px;}.bubble{display:flex;align-items:center;justify-content:space-between;border:1px solid #000;border-radius:12px;padding:10px 15px;margin-bottom:8px;page-break-inside:avoid;}.no-baris{font-weight:bold;font-size:13px;border-right:1px solid #000;padding-right:12px;width:30px;}.detail-item{flex:1;text-align:left;padding-left:10px;}.paraf{width:90px;text-align:right;font-size:10px;}.empty-bubble{border:1px dashed #ccc;height:40px;margin-bottom:8px;}.warna-setor{color:#10b981!important;font-weight:bold;}.warna-tarik{color:#ef4444!important;font-weight:bold;}.warna-pajak{color:#d97706!important;font-weight:bold;}@media print{body{padding:15mm;-webkit-print-color-adjust:exact;print-color-adjust:exact;}.hide-on-print{display:none!important;}.show-on-print{display:block!important;}}</style></head><body><div class="bank-header ${statusHeaderClass}"><div class="title">LAPORAN MUTASI TABUNGAN SISWA</div><div class="meta-grid"><div class="meta-left"><div><strong>NAMA LENGKAP :</strong> ${siswaNama.toUpperCase()}</div><div><strong>NOMOR INDUK  :</strong> ${siswaNis}</div></div><div class="meta-right" style="text-align:right;"><div><strong>ID UNIT     :</strong> KELAS_VI</div><div><strong>TGL CETAK   :</strong> ${new Date().toLocaleDateString('id-ID')}</div></div></div></div><div class="container-bubble">${cetakHTML}</div><script>window.onload=()=>{window.print();window.close();}<\/script></body></html>`);
         printWindow.document.close();
     }
 
@@ -782,16 +564,16 @@
         
         let totalSetor = 0, totalTarik = 0, rows = "";
         transaksiHariIni.forEach((t, index) => {
-            rows += `<tr><td>${index + 1}</td><td style="text-align:left; padding-left:15px;">${t.nama}</td><td>${t.jenis}</td><td>${formatRupiah(t.nominal)}</td></tr>`;
+            rows += `<tr><td>${index + 1}</td><td>${t.nama}</td><td>${t.jenis}</td><td>${formatRupiah(t.nominal)}</td></tr>`;
             if (t.jenis === 'SETOR') totalSetor += t.nominal; else totalTarik += t.nominal;
         });
 
         const printWindow = window.open('', '_blank', 'height=600,width=800');
-        printWindow.document.write(`<html><head><title>Laporan Harian</title><style>body{font-family:sans-serif; padding:20px;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #333; padding:8px; text-align:center;} h2{text-align:center;}</style></head><body><h2>Laporan Transaksi Harian: ${formatTanggalDDMMYYYY(new Date())}</h2><table><thead><tr><th>No</th><th style="text-align:left; padding-left:15px;">Nama Siswa</th><th>Jenis</th><th>Nominal</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:20px;"><p><strong>Total Setor:</strong> ${formatRupiah(totalSetor)}</p><p><strong>Total Tarik:</strong> ${formatRupiah(totalTarik)}</p></div><script>window.onload = () => { window.print(); window.close(); }<\/script></body></html>`);
+        printWindow.document.write(`<html><head><title>Laporan Harian</title><style>body{font-family:sans-serif; padding:20px;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #333; padding:8px; text-align:center;} h2{text-align:center;}</style></head><body><h2>Laporan Transaksi Harian: ${new Date().toLocaleDateString()}</h2><table><thead><tr><th>No</th><th>Nama Siswa</th><th>Jenis</th><th>Nominal</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:20px;"><p><strong>Total Setor:</strong> ${formatRupiah(totalSetor)}</p><p><strong>Total Tarik:</strong> ${formatRupiah(totalTarik)}</p></div><script>window.onload = () => { window.print(); window.close(); }<\/script></body></html>`);
         printWindow.document.close();
     }
 
-    async function tambahTransaksi(e) {
+    function tambahTransaksi(e) {
         e.preventDefault();
         const obj = JSON.parse(inputSiswa.value);
         const tgl = document.getElementById('inputTanggal').value;
@@ -801,10 +583,10 @@
 
         if (jenis === 'PAJAK' && nominal <= 0) { alert("Saldo tidak cukup untuk pajak."); return; }
         
-        const formatTglCek = formatTanggalDDMMYYYY(tgl);
+        const formatTglCek = new Date(tgl).toLocaleDateString('id-ID');
         const duplikatCek = dataTransaksi.some(t => {
             if (editId && t.id.toString() === editId) return false;
-            const tglToko = formatTanggalDDMMYYYY(t.waktu);
+            const tglToko = new Date(t.waktu).toLocaleDateString('id-ID');
             return tglToko === formatTglCek && t.nama === obj.nama && t.jenis === jenis && t.nominal === nominal;
         });
 
@@ -849,9 +631,7 @@
             dataTransaksi.unshift(targetItem);
         }
 
-        await idbPut('tabunganSiswa', targetItem.id, targetItem);
-        updateMemoryStatusBar();
-
+        localStorage.setItem('dbTabunganSiswa', JSON.stringify(dataTransaksi));
         inputNominal.value = ''; inputNominal.readOnly = false;
         
         hitungDanTampilkan(); 
@@ -926,7 +706,8 @@
             return { ...t, saldoAkhir: saldoBerjalan[t.nama] };
         });
 
-        dataDenganSaldo.reverse().reverse();
+        dataDenganSaldo.reverse().reverse(); // Kembalikan ke urutan terbaru di atas untuk tabel
+        // Tampilkan dengan urutan terbaru di atas
         dataDenganSaldo.reverse().forEach(t => {
             const d = new Date(t.waktu);
             if (t.jenis === 'SETOR') totalSemuaSetor += t.nominal; else totalSemuaTarik += t.nominal;
@@ -936,9 +717,9 @@
             if((filterSiswa === "" || t.nama === filterSiswa) && (t.nama.toLowerCase().includes(filterText) || t.nis.includes(filterText))) {
                 logBody.innerHTML += `
                 <tr>
-                    <td>${formatTanggalDDMMYYYY(t.waktu)}</td>
+                    <td>${d.toLocaleDateString('id-ID')}</td>
                     <td>${t.nis}</td>
-                    <td class="nama-col">${t.nama}</td>
+                    <td>${t.nama}</td>
                     <td style="${warnaJenis}">${t.jenis}</td>
                     <td>${formatRupiah(t.nominal)}</td>
                     <td>${formatRupiah(t.saldoAkhir)}</td>
@@ -957,23 +738,11 @@
         document.getElementById('nettoHariIni').innerText = formatRupiah(totalSemuaSetor - totalSemuaTarik);
     }
 
-    async function hapus(id) { 
-        if(confirm("Hapus transaksi?")) { 
-            dataTransaksi = dataTransaksi.filter(t=>t.id!==id); 
-            const db = await openIndexedDB();
-            const tx = db.transaction('tabunganSiswa', 'readwrite');
-            tx.objectStore('tabunganSiswa').delete(id);
-            updateMemoryStatusBar();
-            hitungDanTampilkan(); 
-            updateNominalOtomatis(); 
-        } 
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        jalankanLoadingBar(() => {
-            inisialisasiDataSiswa(false);
-        });
-    });
+    function hapus(id) { if(confirm("Hapus transaksi?")) { dataTransaksi = dataTransaksi.filter(t=>t.id!==id); localStorage.setItem('dbTabunganSiswa', JSON.stringify(dataTransaksi)); hitungDanTampilkan(); updateNominalOtomatis(); } }
+    
+    tarikDataSiswa();
+    updateNominalOtomatis();
+    hitungDanTampilkan();
 </script>
 </body>
 </html>
