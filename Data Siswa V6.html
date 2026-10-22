@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Data Siswa Kelas VI - IndexedDB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Sistem Data Siswa Kelas VI - Perbaikan Warna Header</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -12,36 +12,37 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         
         body { 
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdfa 50%, #fef9c3 100%); 
-            padding: 30px 20px 70px 20px; 
+            background: linear-gradient(135deg, #f0faf7 0%, #e0f2fe 50%, #e0e7ff 100%); 
+            padding: 30px 20px; 
             min-height: 100vh; 
-            color: #1e293b; 
+            color: #334155; 
         }
 
         .container { 
-            max-width: 1750px; 
+            max-width: 1850px; 
             margin: auto; 
-            background: rgba(255, 255, 255, 0.96); 
+            background: rgba(255, 255, 255, 0.95); 
             border-radius: 24px; 
-            box-shadow: 0 20px 40px rgba(14, 116, 144, 0.12); 
+            box-shadow: 0 20px 40px rgba(148, 163, 184, 0.15); 
             padding: 30px;
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.7);
         }
         
+        /* HEADER SECTION */
         .header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-bottom: 2px solid #bae6fd; 
+            border-bottom: 1px solid #e2e8f0; 
             padding-bottom: 25px; 
-            margin-bottom: 25px; 
+            margin-bottom: 20px; 
             flex-wrap: wrap; 
             gap: 20px; 
         }
         .header-title { display: flex; align-items: center; gap: 18px; }
         .header-title .icon-bg {
-            background: linear-gradient(135deg, #0284c7, #f59e0b);
+            background: linear-gradient(135deg, #0d9488, #0ea5e9);
             width: 55px;
             height: 55px;
             border-radius: 16px;
@@ -50,47 +51,123 @@
             justify-content: center;
             color: white;
             font-size: 24px;
-            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.25);
+            box-shadow: 0 8px 16px rgba(13, 148, 136, 0.2);
         }
-        .header-title h1 { font-size: 24px; color: #0369a1; font-weight: 700; letter-spacing: -0.5px; }
-        .header-title p { font-size: 14px; color: #475569; margin-top: 2px; }
+        .header-title h1 { font-size: 24px; color: #0f172a; font-weight: 700; letter-spacing: -0.5px; }
+        .header-title p { font-size: 14px; color: #64748b; margin-top: 2px; }
         
-        #storageBubbleNotification {
-            position: fixed;
-            top: 20px;
-            right: -350px;
-            z-index: 99999;
-            background: linear-gradient(135deg, #0369a1, #0284c7);
-            color: #ffffff;
-            padding: 14px 20px;
-            border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);
+        /* WIDGET STATUS BAR MEMORI IMUT & PROFESIONAL */
+        .memory-widget {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid #f59e0b;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 10px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(203, 213, 225, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(8px);
+            margin-bottom: 15px;
+            width: fit-content;
         }
-        #storageBubbleNotification.show { right: 20px; }
-        #storageBubbleNotification i { font-size: 18px; color: #f59e0b; }
 
+        .memory-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.25);
+            animation: pulse-cute 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-cute {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .memory-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .memory-title-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .memory-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .memory-value {
+            font-size: 11px;
+            font-weight: 700;
+            color: #8b5cf6;
+        }
+
+        .memory-bar-outer {
+            width: 220px;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .memory-bar-inner {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
+            border-radius: 20px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .memory-bar-inner::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: shimmer 1.8s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* CONTROLS PANEL & BUTTONS */
         .controls-panel { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
         .select-semester { 
             padding: 11px 16px; 
             border-radius: 12px; 
-            border: 2px solid #7dd3fc; 
+            border: 1px solid #cbd5e1; 
             font-size: 14px; 
             font-weight: 600; 
-            color: #0369a1; 
+            color: #334155; 
             outline: none; 
             cursor: pointer; 
-            background: #f0f9ff;
+            background: #fff;
             transition: all 0.2s;
         }
-        .select-semester:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2); }
+        .select-semester:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
         
         .btn { 
             padding: 11px 18px; 
@@ -108,74 +185,63 @@
         .btn:hover { transform: translateY(-2px); }
         .btn:active { transform: translateY(0); }
 
-        .btn-app-save { background: #0284c7; } 
-        .btn-app-save:hover { background: #0369a1; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
+        .btn-app-save { background: #3b82f6; } 
+        .btn-app-save:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
 
-        .btn-back { background: #475569; }
-        .btn-back:hover { background: #334155; box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2); }
+        .btn-sheet-save { background: #059669; }
+        .btn-sheet-save:hover { background: #047857; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); }
+
+        .btn-sheet-pull { background: #7c3aed; }
+        .btn-sheet-pull:hover { background: #6d28d9; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
+
+        .btn-back { background: #64748b; }
+        .btn-back:hover { background: #475569; box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2); }
         
-        .btn-excel { background: #15803d; }
-        .btn-excel:hover { background: #166534; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25); }
+        .btn-excel { background: #16a34a; }
+        .btn-excel:hover { background: #15803d; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25); }
 
-        .btn-import { background: #d97706; }
-        .btn-import:hover { background: #b45309; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25); }
+        .btn-import { background: #ea580c; }
+        .btn-import:hover { background: #c2410c; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25); }
 
-        .btn-template { background: #0891b2; }
-        .btn-template:hover { background: #0e7490; box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25); }
+        .btn-template { background: #0284c7; }
+        .btn-template:hover { background: #0369a1; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
 
-        .btn-format-date { background: #f59e0b; color: #1e293b; font-weight: 700; }
-        .btn-format-date:hover { background: #d97706; color: #fff; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+        .btn-format-date { background: #0891b2; }
+        .btn-format-date:hover { background: #0e7490; box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25); }
 
+        /* TABLE WRAPPER FOR SCROLLING */
         .table-wrap { 
             overflow-x: auto; 
             background: #fff; 
             border-radius: 16px; 
-            border: 2px solid #e0f2fe; 
-            margin-top: 15px;
+            border: 1px solid #e2e8f0; 
+            margin-top: 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
         
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         
         th { 
-            background-color: #0369a1 !important; 
+            background-color: #1e3a8a !important; 
             color: #fff !important; 
             font-weight: 600; 
             padding: 14px 10px; 
             white-space: nowrap; 
             text-align: center; 
             font-size: 13px; 
-            border-bottom: 3px solid #f59e0b;
         }
         
         td { padding: 8px 6px; border-bottom: 1px solid #f1f5f9; text-align: center; background: #fff; }
-        tr:nth-child(even) td { background: #f8fafc; }
+        
+        /* PEWARNAAN TRANSPARAN BERDASARKAN GENDER */
+        tr.row-laki-laki td { background-color: rgba(224, 242, 254, 0.45) !important; }
+        tr.row-perempuan td { background-color: rgba(252, 231, 243, 0.45) !important; }
         
         .col-no { font-weight: 600; color: #64748b; width: 45px; }
         
-        .col-foto { width: 75px; text-align: center; }
-        .foto-wrapper {
-            width: 38px;
-            height: 48px;
-            border-radius: 6px;
-            background: #e2e8f0;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid #bae6fd;
-            position: relative;
-            transition: all 0.2s;
-        }
-        .foto-wrapper:hover { border-color: #0284c7; transform: scale(1.05); box-shadow: 0 4px 8px rgba(2, 132, 199, 0.2); }
-        .foto-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .foto-wrapper i { color: #64748b; font-size: 15px; }
-        .input-file-foto { display: none; }
-
+        /* STICKY COLUMNS FOR NAMA SISWA */
         th.col-nama { 
-            background-color: #0369a1 !important; 
+            background-color: #1e3a8a !important; 
             color: #fff !important;
             z-index: 3;
         }
@@ -190,11 +256,63 @@
             border-right: 1px solid #e2e8f0;
         }
 
-        tr:nth-child(odd) td.col-nama { background-color: #fff !important; }
-        tr:nth-child(even) td.col-nama { background-color: #f8fafc !important; }
-        tr:hover td { background: #f0f9ff !important; } 
-        tr:hover td.col-nama { background: #f0f9ff !important; }
+        /* DUKUNGAN BACKGROUND STICKY UNTUK PEWARNAAN BARIS GENDER */
+        tr.row-laki-laki td.col-nama { background-color: rgba(224, 242, 254, 0.95) !important; }
+        tr.row-perempuan td.col-nama { background-color: rgba(252, 231, 243, 0.95) !important; }
+        tr:nth-child(odd) td.col-nama { background-color: #fff; }
+        tr:nth-child(even) td.col-nama { background-color: #f8fafc; }
 
+        tr:hover td { background-color: #f0fdfa !important; } 
+        tr:hover td.col-nama { background-color: #f0fdfa !important; }
+
+        /* FOTO PROFILE CONTAINER & BUTTONS */
+        .foto-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 75px;
+            margin: 0 auto;
+        }
+
+        .foto-preview {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background: #f1f5f9;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .foto-preview:hover {
+            transform: scale(1.1);
+            border-color: #0ea5e9;
+        }
+
+        .btn-upload-foto {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: #0ea5e9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-upload-foto:hover {
+            background: #0284c7;
+            transform: scale(1.08);
+        }
+
+        /* INPUT STYLE UNIVERSAL */
         .input-data { 
             width: 100%; 
             padding: 8px 12px; 
@@ -209,138 +327,36 @@
             color: #334155;
             box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
-        .input-data:focus { border-color: #0284c7; background: #fff; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+        .input-data:focus { border-color: #0d9488; background: #fff; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
         .input-text { text-align: left; min-width: 130px; }
         .input-angka { width: 65px; }
         select.input-data { cursor: pointer; text-align-last: center; padding-right: 5px; }
 
         .field-jk { min-width: 120px; }
+
         .input-nis-siswa { font-weight: 600; color: #475569; width: 85px; }
-        .input-nama-siswa { font-weight: 600; color: #0369a1; text-align: left; }
+        .input-nama-siswa { font-weight: 600; color: #1e293b; text-align: left; }
 
         .input-data::-webkit-outer-spin-button, .input-data::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .input-data[type=number] { -moz-appearance: textfield; }
 
         .table-wrap::-webkit-scrollbar { height: 10px; }
         .table-wrap::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .table-wrap::-webkit-scrollbar-thumb { background: #7dd3fc; border-radius: 10px; border: 2px solid #f1f5f9; }
-        .table-wrap::-webkit-scrollbar-thumb:hover { background: #0284c7; }
+        .table-wrap::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f1f5f9; }
+        .table-wrap::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         #fileImport { display: none; }
-
-        .memory-status-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #0369a1;
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            font-weight: 600;
-            box-shadow: 0 -4px 15px rgba(2, 132, 199, 0.3);
-            z-index: 9999;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-top: 2px solid #f59e0b;
-        }
-        .memory-status-bar:hover { background: #0284c7; }
-        .memory-info-left { display: flex; align-items: center; gap: 15px; }
-        .memory-bar-container {
-            width: 150px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 8px;
-        }
-        .memory-bar-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.4s ease; }
-
-        #exportImportModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 100000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 20px;
-            width: 420px;
-            max-width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border: 2px solid #bae6fd;
-            animation: modalPopup 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes modalPopup {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 12px;
-        }
-        .modal-header h3 { color: #0369a1; font-size: 18px; display: flex; align-items: center; gap: 10px; }
-        .modal-close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b; }
-        .modal-close-btn:hover { color: #ef4444; }
-        .modal-body { display: flex; flex-direction: column; gap: 12px; }
-        .modal-btn {
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: none;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            transition: transform 0.2s, background 0.2s;
-        }
-        .modal-btn:hover { transform: translateY(-2px); }
-        .m-btn-excel { background: #15803d; }
-        .m-btn-excel:hover { background: #166534; }
-        .m-btn-import { background: #d97706; }
-        .m-btn-import:hover { background: #b45309; }
-        .m-btn-template { background: #0891b2; }
-        .m-btn-template:hover { background: #0e7490; }
-        .m-btn-backup { background: #9333ea; }
-        .m-btn-backup:hover { background: #7e22ce; }
     </style>
 </head>
 <body>
 
-<div id="storageBubbleNotification">
-    <i class="fa-solid fa-database"></i>
-    <div>
-        <div id="bubbleTitle" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">Penyimpanan IndexedDB</div>
-        <div id="bubbleMessage">Memuat database lokal...</div>
-    </div>
-</div>
-
 <div class="container">
     <div class="header">
         <div class="header-title">
-            <div class="icon-bg"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="icon-bg"><i class="fa-solid fa-address-book"></i></div>
             <div>
                 <h1>Data Siswa - Kelas VI</h1>
-                <p>Manajemen Profil, Foto, Identitas, TTL, Fisik & Orang Tua Tersimpan di IndexedDB</p>
+                <p>Manajemen Profil, Identitas, TTL, Fisik & Orang Tua Kandung</p>
             </div>
         </div>
         
@@ -350,15 +366,32 @@
                 <option value="Semester 2">Semester 2</option>
             </select>
             
-            <button class="btn btn-format-date" onclick="rapihkanSemuaTanggal()"><i class="fa-solid fa-wand-magic-sparkles"></i> Rapikan Tanggal</button>
+            <button class="btn btn-format-date" onclick="rapihkanSemuaTanggal()"><i class="fa-solid fa-wand-magic-sparkles"></i> Rapikan Tanggal Lahir</button>
             <button class="btn btn-template" onclick="unduhFormat()"><i class="fa-solid fa-file-arrow-down"></i> Format Excel</button>
             <button class="btn btn-import" onclick="picuImport()"><i class="fa-solid fa-file-import"></i> Import Excel</button>
             <input type="file" id="fileImport" accept=".xlsx, .xls" onchange="prosesImportExcel(event)">
 
             <button class="btn btn-excel" onclick="eksporExcel()"><i class="fa-solid fa-file-excel"></i> Unduh Excel</button>
+            <button class="btn btn-sheet-save" onclick="kirimKeSheet()"><i class="fa-solid fa-file-csv"></i> Kirim ke Sheet</button>
+            <button class="btn btn-sheet-pull" onclick="tarikDataSheet()"><i class="fa-solid fa-cloud-arrow-down"></i> Tarik Data Sheet</button>
             <button class="btn btn-app-save" onclick="simpanKeAplikasi()"><i class="fa-solid fa-floppy-disk"></i> Simpan Aplikasi</button>
-            <!-- Teks tombol tetap 'Kembali', namun fungsi link-nya mengarah ke PENA MANTAP V6.html -->
-            <button class="btn btn-back" onclick="kembaliKePenaMantap()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+            <button class="btn btn-back" onclick="kembaliKeAbsensi()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+        </div>
+    </div>
+
+    <!-- STATUS BAR MEMORI INDEXEDDB -->
+    <div class="memory-widget">
+        <div class="memory-icon">
+            <i class="fa-solid fa-microchip"></i>
+        </div>
+        <div class="memory-info">
+            <div class="memory-title-wrap">
+                <span class="memory-title"><i class="fa-solid fa-database"></i> Memori IndexedDB</span>
+                <span id="memoryText" class="memory-value">Mengukur...</span>
+            </div>
+            <div class="memory-bar-outer">
+                <div id="memoryBarInner" class="memory-bar-inner"></div>
+            </div>
         </div>
     </div>
 
@@ -372,48 +405,10 @@
     </div>
 </div>
 
-<div class="memory-status-bar" onclick="bukaModalExportImport()" title="Klik untuk Menu Ekspor & Impor Data">
-    <div class="memory-info-left">
-        <i class="fa-solid fa-database" style="color: #f59e0b; font-size: 15px;"></i>
-        <span>Status Memori IndexedDB: <strong id="memoryUsageText">Menghitung...</strong></span>
-        <span>
-            Kapasitas Terpakai: 
-            <div class="memory-bar-container">
-                <div id="memoryBarFill" class="memory-bar-fill"></div>
-            </div>
-            <strong id="memoryPercentText">0%</strong>
-        </span>
-    </div>
-    <div style="display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 8px;">
-        <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Klik untuk Menu Ekspor / Impor Data
-    </div>
-</div>
-
-<div id="exportImportModal" onclick="tutupModalDiLuar(event)">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-database" style="color: #f59e0b;"></i> Menu Ekspor & Impor</h3>
-            <button class="modal-close-btn" onclick="tutupModalExportImport()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="modal-body">
-            <p style="font-size: 13px; color: #475569; margin-bottom: 5px;">Pilih tindakan manajemen data yang ingin dilakukan:</p>
-            <button class="modal-btn m-btn-excel" onclick="tutupModalExportImport(); eksporExcel();">
-                <i class="fa-solid fa-file-excel" style="font-size: 16px;"></i> Unduh Data ke Excel (.xlsx)
-            </button>
-            <button class="modal-btn m-btn-import" onclick="tutupModalExportImport(); picuImport();">
-                <i class="fa-solid fa-file-import" style="font-size: 16px;"></i> Import Data dari Excel
-            </button>
-            <button class="modal-btn m-btn-template" onclick="tutupModalExportImport(); unduhFormat();">
-                <i class="fa-solid fa-file-arrow-down" style="font-size: 16px;"></i> Unduh Format Kosong Excel
-            </button>
-            <button class="modal-btn m-btn-backup" onclick="tutupModalExportImport(); backupDatabaseJSON();">
-                <i class="fa-solid fa-file-code" style="font-size: 16px;"></i> Backup Data Full (JSON)
-            </button>
-        </div>
-    </div>
-</div>
-
 <script>
+    // WEB APP LINK CLOUD SPREADSHEET (Sesuai Asli)
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw064d9sxT3q6cgxmXreAh0smQGnmqgFBQCBR_K7LH_UcETIqsXaIX2Nw92_dtFFAtD/exec";
+
     const MASTER_SISWA_DEFAULT = [
         ["3052","Amelia Alita Zahra"],["3223","Angelica Vikar Maharani"],["3085","Anggraeni Abbilah Dhety"],
         ["3087","AZKA NAILUN NABHAN"],["3089","Dany Sabiq El-Fathin"],
@@ -426,155 +421,112 @@
         ["3106","Zhidan Dwi Aprilio Nurosy"],["3107","Zulfan Azhar Ramadhan"]
     ];
 
-    let dbIndexedDB = null;
-    let daftarSiswaKoleksi = MASTER_SISWA_DEFAULT;
+    let daftarSiswaKoleksi = [];
     let databaseSiswa = {};
+    let fotoSiswaMap = {};
 
     const BULAN_INDO = [
         "Januari", "Februari", "Maret", "April", "Mei", "Juni",
         "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
 
-    function tampilkanNotifBubble(pesan, subjudul = "IndexedDB Storage") {
-        const bubble = document.getElementById('storageBubbleNotification');
-        document.getElementById('bubbleTitle').innerText = subjudul;
-        document.getElementById('bubbleMessage').innerText = pesan;
-        bubble.classList.add('show');
-        setTimeout(() => {
-            bubble.classList.remove('show');
-        }, 4000);
-    }
+    /* -------------------------------------------------------------
+     * MANAJEMEN PENYIMPANAN INDEXEDDB & MEMORY STATUS BAR
+     * ------------------------------------------------------------- */
+    const DB_NAME = 'DataSiswaDB';
+    const DB_VERSION = 1;
+    let db = null;
 
-    function bukaModalExportImport() {
-        document.getElementById('exportImportModal').style.display = 'flex';
-        perbaruiStatusMemori();
-    }
-    function tutupModalExportImport() {
-        document.getElementById('exportImportModal').style.display = 'none';
-    }
-    function tutupModalDiLuar(event) {
-        if (event.target === document.getElementById('exportImportModal')) {
-            tutupModalExportImport();
-        }
-    }
-
-    async function perbaruiStatusMemori() {
-        try {
-            let totalBytes = 0;
-            if (dbIndexedDB) {
-                const master = await ambilDariIndexedDB('dbMasterSiswa') || [];
-                const dSiswa = await ambilDariIndexedDB('dbDataSiswa') || {};
-                totalBytes = new Blob([JSON.stringify(master), JSON.stringify(dSiswa)]).size;
-            }
-
-            let ukuranFormatted = "";
-            if (totalBytes < 1024) {
-                ukuranFormatted = totalBytes + " B";
-            } else if (totalBytes < 1024 * 1024) {
-                ukuranFormatted = (totalBytes / 1024).toFixed(1) + " KB";
-            } else {
-                ukuranFormatted = (totalBytes / (1024 * 1024)).toFixed(2) + " MB";
-            }
-
-            document.getElementById('memoryUsageText').innerText = ukuranFormatted;
-
-            const kuotaEstimasi = 50 * 1024 * 1024;
-            let persentase = (totalBytes / kuotaEstimasi) * 100;
-            if (persentase < 1 && totalBytes > 0) persentase = 1; 
-            if (persentase > 100) persentase = 100;
-
-            document.getElementById('memoryBarFill').style.width = persentase.toFixed(1) + '%';
-            document.getElementById('memoryPercentText').innerText = persentase.toFixed(1) + '%';
-        } catch (e) {
-            console.error("Gagal menghitung memori:", e);
-            document.getElementById('memoryUsageText').innerText = "Aktif (Lokal)";
-            document.getElementById('memoryBarFill').style.width = "10%";
-            document.getElementById('memoryPercentText').innerText = "Normal";
-        }
-    }
-
-    function bukaDatabaseIndexedDB() {
+    function bukaDB() {
         return new Promise((resolve, reject) => {
-            const request = indexedDB.open("AplikasiKelasVIDB", 1);
-
-            request.onerror = function(event) {
-                console.error("Gagal membuka IndexedDB:", event.target.error);
-                reject(event.target.error);
-            };
-
-            request.onupgradeneeded = function(event) {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains("pengaturan")) {
-                    db.createObjectStore("pengaturan");
-                }
-                if (!db.objectStoreNames.contains("dataSiswaStore")) {
-                    db.createObjectStore("dataSiswaStore");
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = (e) => {
+                db = e.target.result;
+                if (!db.objectStoreNames.contains('appStore')) {
+                    db.createObjectStore('appStore');
                 }
             };
-
-            request.onsuccess = function(event) {
-                dbIndexedDB = event.target.result;
-                resolve(dbIndexedDB);
+            request.onsuccess = (e) => {
+                db = e.target.result;
+                resolve(db);
             };
+            request.onerror = (e) => reject(e);
         });
     }
 
-    function simpanKeIndexedDB(key, value) {
+    function simpanKeDB(key, val) {
         return new Promise((resolve, reject) => {
-            if (!dbIndexedDB) return reject("IndexedDB belum siap");
-            const transaction = dbIndexedDB.transaction(["pengaturan"], "readwrite");
-            const store = transaction.objectStore("pengaturan");
-            const request = store.put(value, key);
-
-            request.onsuccess = () => {
-                perbaruiStatusMemori();
-                resolve(true);
+            if (!db) return resolve();
+            const tx = db.transaction('appStore', 'readwrite');
+            const store = tx.objectStore('appStore');
+            const req = store.put(val, key);
+            req.onsuccess = () => {
+                updateStatusBarMemori();
+                resolve();
             };
-            request.onerror = (e) => reject(e.target.error);
+            req.onerror = (e) => reject(e);
         });
     }
 
-    function ambilDariIndexedDB(key) {
-        return new Promise((resolve, reject) => {
-            if (!dbIndexedDB) return reject("IndexedDB belum siap");
-            const transaction = dbIndexedDB.transaction(["pengaturan"], "readonly");
-            const store = transaction.objectStore("pengaturan");
-            const request = store.get(key);
-
-            request.onsuccess = (e) => resolve(e.target.result);
-            request.onerror = (e) => reject(e.target.error);
+    function ambilDariDB(key) {
+        return new Promise((resolve) => {
+            if (!db) return resolve(null);
+            const tx = db.transaction('appStore', 'readonly');
+            const store = tx.objectStore('appStore');
+            const req = store.get(key);
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => resolve(null);
         });
     }
 
-    async function muatDataDariDatabaseLokal() {
+    async function muatSemuaDataIndexedDB() {
+        await bukaDB();
+        
+        let master = await ambilDariDB('dbMasterSiswa');
+        if (!master) {
+            master = JSON.parse(localStorage.getItem('dbMasterSiswa')) || MASTER_SISWA_DEFAULT;
+            await simpanKeDB('dbMasterSiswa', master);
+        }
+        daftarSiswaKoleksi = master;
+
+        let dbSiswa = await ambilDariDB('dbDataSiswa');
+        if (!dbSiswa) {
+            dbSiswa = JSON.parse(localStorage.getItem('dbDataSiswa')) || {};
+            await simpanKeDB('dbDataSiswa', dbSiswa);
+        }
+        databaseSiswa = dbSiswa;
+
+        let dbFoto = await ambilDariDB('dbFotoSiswa');
+        fotoSiswaMap = dbFoto || {};
+
+        inisialisasiTabel();
+        updateStatusBarMemori();
+    }
+
+    async function updateStatusBarMemori() {
         try {
-            await bukaDatabaseIndexedDB();
+            // Berikan batas waktu (timeout) 2 detik agar tidak stuck "Mengukur..." jika diblokir browser
+            const estimatePromise = (navigator.storage && navigator.storage.estimate) ? 
+                navigator.storage.estimate() : Promise.reject("API Storage tidak didukung");
+
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject("Timeout"), 2000)
+            );
+
+            const estimate = await Promise.race([estimatePromise, timeoutPromise]);
             
-            const savedMaster = await ambilDariIndexedDB('dbMasterSiswa');
-            if (savedMaster && Array.isArray(savedMaster) && savedMaster.length > 0) {
-                daftarSiswaKoleksi = savedMaster;
-            } else {
-                daftarSiswaKoleksi = MASTER_SISWA_DEFAULT;
-                await simpanKeIndexedDB('dbMasterSiswa', MASTER_SISWA_DEFAULT);
-            }
+            const usedBytes = estimate.usage || 0;
+            const quotaBytes = estimate.quota || 1;
 
-            const savedDataSiswa = await ambilDariIndexedDB('dbDataSiswa');
-            if (savedDataSiswa) {
-                databaseSiswa = savedDataSiswa;
-            } else {
-                databaseSiswa = {};
-                await simpanKeIndexedDB('dbDataSiswa', {});
-            }
+            const usedMB = (usedBytes / (1024 * 1024)).toFixed(2);
+            const percent = Math.min(100, Math.max(0.5, ((usedBytes / quotaBytes) * 100).toFixed(2)));
 
-            tampilkanNotifBubble("Data berhasil dimuat dari memori IndexedDB browser.");
-            perbaruiStatusMemori();
-            inisialisasiTabel();
-        } catch (err) {
-            console.error("Error IndexedDB:", err);
-            daftarSiswaKoleksi = MASTER_SISWA_DEFAULT;
-            databaseSiswa = {};
-            inisialisasiTabel();
-            perbaruiStatusMemori();
+            document.getElementById('memoryText').innerText = `${usedMB} MB / ${percent}%`;
+            document.getElementById('memoryBarInner').style.width = percent + '%';
+        } catch (e) {
+            // Fallback aman jika API dibatasi oleh file:// atau browser
+            document.getElementById('memoryText').innerText = 'Aktif (IndexedDB Aman)';
+            document.getElementById('memoryBarInner').style.width = '15%';
         }
     }
 
@@ -582,17 +534,6 @@
         if (!inputStr) return '';
         let str = String(inputStr).trim();
         if (!str) return '';
-
-        if (!isNaN(str) && Number(str) > 30000 && Number(str) < 60000) {
-            let excelDate = new Date((Number(str) - (25567 + 2)) * 86400 * 1000);
-            if (!isNaN(excelDate.getTime())) {
-                let tgl = excelDate.getDate();
-                let padTgl = tgl < 10 ? '0' + tgl : tgl;
-                let bln = BULAN_INDO[excelDate.getMonth()];
-                let thn = excelDate.getFullYear();
-                return `${padTgl} ${bln} ${thn}`;
-            }
-        }
 
         if (/^\d{1,2}$/.test(str)) {
             let d = parseInt(str, 10);
@@ -630,9 +571,7 @@
             let padTgl = tgl < 10 ? '0' + tgl : tgl;
             let bln = BULAN_INDO[dObj.getMonth()];
             let thn = dObj.getFullYear();
-            if (thn > 1950 && thn < 2050) {
-                return `${padTgl} ${bln} ${thn}`;
-            }
+            return `${padTgl} ${bln} ${thn}`;
         }
 
         return str;
@@ -644,7 +583,7 @@
         
         header.innerHTML = `
             <th>No</th>
-            <th class="col-foto">Foto</th>
+            <th>Foto</th>
             <th>NIS</th>
             <th>NISN</th>
             <th class="col-nama">Nama Siswa</th>
@@ -670,22 +609,29 @@
             const nama = siswa[1];
             
             const dataProfil = databaseSiswa[semAktif][nis] || { 
-                foto: '', nisn: '', jk: '', tempatLahir: '', tglLahir: '', namaAyah: '', namaIbu: '', 
+                nisn: '', jk: '', tempatLahir: '', tglLahir: '', namaAyah: '', namaIbu: '', 
                 kerjaAyah: '', kerjaIbu: '', tb: '', bb: '', wa: '' 
             };
 
-            const isiFotoHtml = dataProfil.foto 
-                ? `<img src="${dataProfil.foto}" alt="Foto Siswa">`
-                : `<i class="fa-solid fa-camera"></i>`;
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-3.8-.85-5.05-2.2.03-1.68 3.37-2.6 5.05-2.6s5.02.92 5.05 2.6C15.8 19.15 14.03 20 12 20z'/></svg>";
+            const fotoSrc = fotoSiswaMap[nis] || defaultAvatar;
+
+            let rowClass = '';
+            if (dataProfil.jk === 'Laki-laki' || dataProfil.jk === 'L') {
+                rowClass = 'row-laki-laki';
+            } else if (dataProfil.jk === 'Perempuan' || dataProfil.jk === 'P') {
+                rowClass = 'row-perempuan';
+            }
 
             body.innerHTML += `
-                <tr data-id-index="${index}">
+                <tr data-id-index="${index}" class="${rowClass}">
                     <td class="col-no">${index + 1}</td>
-                    <td class="col-foto">
-                        <div class="foto-wrapper" onclick="picuUploadFoto(this)" title="Klik untuk unggah/ganti foto">
-                            ${isiFotoHtml}
+                    <td>
+                        <div class="foto-container">
+                            <img src="${fotoSrc}" class="foto-preview" id="preview-${nis}" onclick="triggerUploadFoto('${nis}')" title="Klik untuk ubah foto">
+                            <button class="btn-upload-foto" onclick="triggerUploadFoto('${nis}')" title="Upload Foto"><i class="fa-solid fa-camera"></i></button>
+                            <input type="file" id="fileFoto-${nis}" accept="image/*" style="display:none;" onchange="prosesUploadFoto(event, '${nis}')">
                         </div>
-                        <input type="file" class="input-file-foto" accept="image/*" onchange="prosesUnggahFoto(this)">
                     </td>
                     <td><input type="number" class="input-data input-nis-siswa field-nis" value="${nis}" oninput="simpanDataOtomatis(this)"></td>
                     <td><input type="number" class="input-data field-nisn" style="min-width:110px;" value="${dataProfil.nisn || ''}" oninput="simpanDataOtomatis(this)"></td>
@@ -693,14 +639,14 @@
                         <input type="text" class="input-data input-nama-siswa field-nama" value="${nama}" oninput="simpanDataOtomatis(this)">
                     </td>
                     <td>
-                        <select class="input-data field-jk" onchange="simpanDataOtomatis(this)">
+                        <select class="input-data field-jk" onchange="updateGenderRow(this); simpanDataOtomatis(this);">
                             <option value="">- Pilih -</option>
                             <option value="Laki-laki" ${dataProfil.jk === 'Laki-laki' || dataProfil.jk === 'L' ? 'selected' : ''}>Laki-laki</option>
                             <option value="Perempuan" ${dataProfil.jk === 'Perempuan' || dataProfil.jk === 'P' ? 'selected' : ''}>Perempuan</option>
                         </select>
                     </td>
                     <td><input type="text" class="input-data input-text field-tempatLahir" value="${dataProfil.tempatLahir || ''}" oninput="simpanDataOtomatis(this)"></td>
-                    <td><input type="text" class="input-data input-text field-tglLahir" value="${dataProfil.tglLahir || ''}" oninput="simpanDataOtomatis(this)" onblur="autoFormatInputTanggal(this)" placeholder="Contoh: 01 Maret 2026"></td>
+                    <td><input type="text" class="input-data input-text field-tglLahir" value="${dataProfil.tglLahir || ''}" oninput="simpanDataOtomatis(this)" onblur="autoFormatInputTanggal(this)" placeholder="Contoh: 01 Januari 2014"></td>
                     <td><input type="text" class="input-data input-text field-namaAyah" value="${dataProfil.namaAyah || ''}" oninput="simpanDataOtomatis(this)"></td>
                     <td><input type="text" class="input-data input-text field-namaIbu" value="${dataProfil.namaIbu || ''}" oninput="simpanDataOtomatis(this)"></td>
                     <td><input type="text" class="input-data input-text field-kerjaAyah" value="${dataProfil.kerjaAyah || ''}" oninput="simpanDataOtomatis(this)"></td>
@@ -713,26 +659,37 @@
         });
     }
 
-    function picuUploadFoto(elWrapper) {
-        const inputF = elWrapper.parentElement.querySelector('.input-file-foto');
-        inputF.click();
+    function triggerUploadFoto(nis) {
+        document.getElementById(`fileFoto-${nis}`).click();
     }
 
-    async function prosesUnggahFoto(inputEl) {
-        const file = inputEl.files[0];
+    function prosesUploadFoto(e, nis) {
+        const file = e.target.files[0];
         if (!file) return;
 
+        if (file.size > 3 * 1024 * 1024) {
+            alert("Ukuran foto terlalu besar. Silakan pilih foto dengan ukuran di bawah 3MB.");
+            return;
+        }
+
         const reader = new FileReader();
-        reader.onload = async function(e) {
-            const base64String = e.target.result;
-            const wrapper = inputEl.parentElement.querySelector('.foto-wrapper');
-            wrapper.innerHTML = `<img src="${base64String}" alt="Foto Siswa">`;
-            
-            simpanDataOtomatis(inputEl);
-            await simpanKeAplikasiSilent();
-            tampilkanNotifBubble("Foto siswa berhasil diunggah dan tersimpan permanen!");
+        reader.onload = async function(evt) {
+            const base64Data = evt.target.result;
+            fotoSiswaMap[nis] = base64Data;
+            document.getElementById(`preview-${nis}`).src = base64Data;
+            await simpanKeDB('dbFotoSiswa', fotoSiswaMap);
         };
         reader.readAsDataURL(file);
+    }
+
+    function updateGenderRow(selectEl) {
+        const tr = selectEl.closest('tr');
+        tr.classList.remove('row-laki-laki', 'row-perempuan');
+        if (selectEl.value === 'Laki-laki') {
+            tr.classList.add('row-laki-laki');
+        } else if (selectEl.value === 'Perempuan') {
+            tr.classList.add('row-perempuan');
+        }
     }
 
     function autoFormatInputTanggal(element) {
@@ -756,145 +713,213 @@
                 }
             }
         });
-        simpanKeAplikasiSilent();
-        tampilkanNotifBubble(`${count} Format tanggal berhasil dirapikan & disimpan!`);
+        alert(`Selesai! Sebanyak ${count} tanggal lahir berhasil dirapikan otomatis ke format standar.`);
     }
 
-    function simpanDataOtomatis(el) {
-        const baris = el.closest('tr');
+    async function simpanDataOtomatis(element) {
+        const baris = element.closest('tr');
+        const nis = baris.querySelector('.field-nis').value;
         const semAktif = document.getElementById('semesterSelect').value;
-        const nis = baris.querySelector('.field-nis').value.trim();
-        const nama = baris.querySelector('.field-nama').value.trim();
-        const imgTag = baris.querySelector('.foto-wrapper img');
-        const fotoBase64 = imgTag ? imgTag.src : '';
         
-        if (!databaseSiswa[semAktif]) databaseSiswa[semAktif] = {};
-
+        if (!nis) return;
+        
+        if (!databaseSiswa[semAktif]) { databaseSiswa[semAktif] = {}; }
+        
         databaseSiswa[semAktif][nis] = {
-            foto: fotoBase64,
-            nisn: baris.querySelector('.field-nisn').value.trim(),
+            nisn: baris.querySelector('.field-nisn').value,
             jk: baris.querySelector('.field-jk').value,
-            tempatLahir: baris.querySelector('.field-tempatLahir').value.trim(),
-            tglLahir: baris.querySelector('.field-tglLahir').value.trim(),
-            namaAyah: baris.querySelector('.field-namaAyah').value.trim(),
-            namaIbu: baris.querySelector('.field-namaIbu').value.trim(),
-            kerjaAyah: baris.querySelector('.field-kerjaAyah').value.trim(),
-            kerjaIbu: baris.querySelector('.field-kerjaIbu').value.trim(),
-            tb: baris.querySelector('.field-tb').value.trim(),
-            bb: baris.querySelector('.field-bb').value.trim(),
-            wa: baris.querySelector('.field-wa').value.trim()
+            tempatLahir: baris.querySelector('.field-tempatLahir').value,
+            tglLahir: baris.querySelector('.field-tglLahir').value,
+            namaAyah: baris.querySelector('.field-namaAyah').value,
+            namaIbu: baris.querySelector('.field-namaIbu').value,
+            kerjaAyah: baris.querySelector('.field-kerjaAyah').value,
+            kerjaIbu: baris.querySelector('.field-kerjaIbu').value,
+            tb: baris.querySelector('.field-tb').value,
+            bb: baris.querySelector('.field-bb').value,
+            wa: baris.querySelector('.field-wa').value
         };
-
-        let found = false;
-        for(let i=0; i<daftarSiswaKoleksi.length; i++) {
-            if(daftarSiswaKoleksi[i][0] === nis) {
-                daftarSiswaKoleksi[i][1] = nama;
-                found = true;
-                break;
-            }
-        }
-        if(!found && nis) {
-            daftarSiswaKoleksi.push([nis, nama]);
-        }
-    }
-
-    async function simpanKeAplikasiSilent() {
-        try {
-            await simpanKeIndexedDB('dbMasterSiswa', daftarSiswaKoleksi);
-            await simpanKeIndexedDB('dbDataSiswa', databaseSiswa);
-        } catch (e) {
-            console.error("Gagal menyimpan otomatis ke IndexedDB:", e);
-        }
+        
+        await simpanKeDB('dbDataSiswa', databaseSiswa);
     }
 
     async function simpanKeAplikasi() {
+        const masterBaru = [];
+        document.querySelectorAll('#bodyDataSiswa tr').forEach(baris => {
+            const nis = baris.querySelector('.field-nis').value;
+            const nama = baris.querySelector('.field-nama').value;
+            if (nis) {
+                masterBaru.push([nis, nama]);
+            }
+        });
+
+        daftarSiswaKoleksi = masterBaru;
+        await simpanKeDB('dbMasterSiswa', daftarSiswaKoleksi);
+        alert("Sukses! Perubahan NIS dan Nama Siswa berhasil dikunci & disimpan ke IndexedDB.");
+    }
+
+    /* -------------------------------------------------------------
+     * FITUR KIRIM & TARIK DATA DARI CLOUD GOOGLE SPREADSHEET (LENGKAP)
+     * ------------------------------------------------------------- */
+    function ambilDataKeArrayJSON() {
+        const dataArr = [];
+        document.querySelectorAll('#bodyDataSiswa tr').forEach((baris, idx) => {
+            dataArr.push({
+                "No": idx + 1,
+                "NIS": baris.querySelector('.field-nis').value || '',
+                "NISN": baris.querySelector('.field-nisn').value || '',
+                "Nama Siswa": baris.querySelector('.field-nama').value || '',
+                "Jenis Kelamin": baris.querySelector('.field-jk').value || '',
+                "Tempat Lahir": baris.querySelector('.field-tempatLahir').value || '',
+                "Tanggal Lahir": baris.querySelector('.field-tglLahir').value || '',
+                "Nama Ayah": baris.querySelector('.field-namaAyah').value || '',
+                "Nama Ibu": baris.querySelector('.field-namaIbu').value || '',
+                "Pekerjaan Ayah": baris.querySelector('.field-kerjaAyah').value || '',
+                "Pekerjaan Ibu": baris.querySelector('.field-kerjaIbu').value || '',
+                "TB (cm)": baris.querySelector('.field-tb').value || '',
+                "BB (kg)": baris.querySelector('.field-bb').value || '',
+                "No WA": baris.querySelector('.field-wa').value || ''
+            });
+        });
+        return dataArr;
+    }
+
+    async function kirimKeSheet() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const btnKirim = document.querySelector('.btn-sheet-save');
+        const dataJson = ambilDataKeArrayJSON();
+
+        if (dataJson.length === 0) {
+            alert("Tidak ada data siswa untuk dikirim!");
+            return;
+        }
+
+        const originalText = btnKirim.innerHTML;
+        btnKirim.disabled = true;
+        btnKirim.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
+
+        const payload = {
+            sheetName: "Data Siswa",
+            semester: semAktif,
+            action: "saveDataSiswa",
+            data: dataJson
+        };
+
         try {
-            await simpanKeIndexedDB('dbMasterSiswa', daftarSiswaKoleksi);
-            await simpanKeIndexedDB('dbDataSiswa', databaseSiswa);
-            tampilkanNotifBubble("Semua perubahan berhasil disimpan permanen ke IndexedDB!");
-        } catch (e) {
-            tampilkanNotifBubble("Gagal menyimpan ke memori lokal!", "Error");
-            console.error(e);
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "text/plain"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            alert(`Berhasil! Data siswa (${semAktif}) telah dikirim ke Google Spreadsheet pada tab "Data Siswa".`);
+        } catch (error) {
+            console.error("Gagal mengirim data ke Google Sheet:", error);
+            alert("Terjadi kesalahan saat mengirim data ke Google Spreadsheet. Silakan periksa koneksi internet Anda.");
+        } finally {
+            btnKirim.disabled = false;
+            btnKirim.innerHTML = originalText;
+        }
+    }
+
+    async function tarikDataSheet() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const btnTarik = document.querySelector('.btn-sheet-pull');
+
+        if (!confirm(`Tarik data terbaru dari Google Spreadsheet ke ${semAktif}? Data pada tabel akan diperbarui.`)) {
+            return;
+        }
+
+        const originalText = btnTarik.innerHTML;
+        btnTarik.disabled = true;
+        btnTarik.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menarik Data...`;
+
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL);
+            const resData = await response.json();
+
+            if (resData.status === "success" && resData.data) {
+                let jumlahTerisi = 0;
+                const masterBaruDariSheet = [];
+
+                resData.data.forEach(row => {
+                    const nis = String(row["NIS"] || '').trim();
+                    const namaSiswaSheet = row["Nama Siswa"] || '';
+
+                    if (nis) {
+                        if (!databaseSiswa[semAktif]) { databaseSiswa[semAktif] = {}; }
+
+                        databaseSiswa[semAktif][nis] = {
+                            nisn: row["NISN"] || '',
+                            jk: row["Jenis Kelamin"] || '',
+                            tempatLahir: row["Tempat Lahir"] || '',
+                            tglLahir: row["Tanggal Lahir"] || '',
+                            namaAyah: row["Nama Ayah"] || '',
+                            namaIbu: row["Nama Ibu"] || '',
+                            kerjaAyah: row["Pekerjaan Ayah"] || '',
+                            kerjaIbu: row["Pekerjaan Ibu"] || '',
+                            tb: row["TB (cm)"] || '',
+                            bb: row["BB (kg)"] || '',
+                            wa: row["No WA"] || ''
+                        };
+                        masterBaruDariSheet.push([nis, namaSiswaSheet]);
+                        jumlahTerisi++;
+                    }
+                });
+
+                if (masterBaruDariSheet.length > 0) {
+                    daftarSiswaKoleksi = masterBaruDariSheet;
+                    await simpanKeDB('dbMasterSiswa', daftarSiswaKoleksi);
+                }
+
+                await simpanKeDB('dbDataSiswa', databaseSiswa);
+                inisialisasiTabel();
+                alert(`Berhasil menarik ${jumlahTerisi} data siswa dari cloud Google Spreadsheet ke ${semAktif}!`);
+            } else {
+                alert(`Gagal menarik data: ${resData.message || 'Terjadi kesalahan pada spreadsheet.'}`);
+            }
+        } catch (error) {
+            console.error("Gagal tarik data dari cloud:", error);
+            alert("Terjadi kesalahan saat terhubung ke Google Spreadsheet. Periksa koneksi internet Anda.");
+        } finally {
+            btnTarik.disabled = false;
+            btnTarik.innerHTML = originalText;
         }
     }
 
     function gantiSemester() {
         inisialisasiTabel();
-        tampilkanNotifBubble("Berganti ke " + document.getElementById('semesterSelect').value);
     }
 
-    function backupDatabaseJSON() {
-        const dataBackup = {
-            masterSiswa: daftarSiswaKoleksi,
-            databaseSiswa: databaseSiswa,
-            tanggalBackup: new Date().toISOString()
-        };
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataBackup, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `Backup_DataSiswa_Kelas6_${new Date().toISOString().slice(0,10)}.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-        tampilkanNotifBubble("File Backup JSON berhasil diunduh.");
-    }
-
-    function eksporExcel() {
-        const semAktif = document.getElementById('semesterSelect').value;
-        let dataExport = [];
-
-        daftarSiswaKoleksi.forEach((siswa, index) => {
-            const nis = siswa[0];
-            const nama = siswa[1];
-            const p = (databaseSiswa[semAktif] && databaseSiswa[semAktif][nis]) || {};
-
-            dataExport.push({
-                "No": index + 1,
-                "NIS": nis,
-                "NISN": p.nisn || '',
-                "Nama Siswa": nama,
-                "Jenis Kelamin": p.jk || '',
-                "Tempat Lahir": p.tempatLahir || '',
-                "Tanggal Lahir": p.tglLahir || '',
-                "Nama Ayah": p.namaAyah || '',
-                "Nama Ibu": p.namaIbu || '',
-                "Pekerjaan Ayah": p.kerjaAyah || '',
-                "Pekerjaan Ibu": p.kerjaIbu || '',
-                "TB (cm)": p.tb || '',
-                "BB (kg)": p.bb || '',
-                "No WA": p.wa || ''
-            });
-        });
-
-        const worksheet = XLSX.utils.json_to_sheet(dataExport);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
-        XLSX.writeFile(workbook, `Data_Siswa_Kelas_VI_${semAktif}.xlsx`);
-        tampilkanNotifBubble("File Excel berhasil diunduh.");
+    function kembaliKeAbsensi() {
+        window.location.href = 'PENA MANTAP V6.html'; 
     }
 
     function unduhFormat() {
-        let dataFormat = [{
-            "NIS": "3052",
-            "NISN": "0141234567",
-            "Nama Siswa": "Contoh Nama Siswa",
-            "Jenis Kelamin": "Laki-laki",
-            "Tempat Lahir": "Brebes",
-            "Tanggal Lahir": "01 Maret 2026",
-            "Nama Ayah": "Nama Ayah",
-            "Nama Ibu": "Nama Ibu",
-            "Pekerjaan Ayah": "Wiraswasta",
-            "Pekerjaan Ibu": "Ibu Rumah Tangga",
-            "TB (cm)": "135",
-            "BB (kg)": "30",
-            "No WA": "081234567890"
-        }];
+        const semAktif = document.getElementById('semesterSelect').value;
+        const dataTemplate = daftarSiswaKoleksi.map((siswa, idx) => ({
+            "No": idx + 1,
+            "NIS": siswa[0],
+            "NISN": "",
+            "Nama Siswa": siswa[1],
+            "Jenis Kelamin": "",
+            "Tempat Lahir": "",
+            "Tanggal Lahir": "",
+            "Nama Ayah": "",
+            "Nama Ibu": "",
+            "Pekerjaan Ayah": "",
+            "Pekerjaan Ibu": "",
+            "TB (cm)": "",
+            "BB (kg)": "",
+            "No WA": ""
+        }));
 
-        const worksheet = XLSX.utils.json_to_sheet(dataFormat);
+        const worksheet = XLSX.utils.json_to_sheet(dataTemplate);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Format Import");
-        XLSX.writeFile(workbook, "Format_Import_Data_Siswa.xlsx");
-        tampilkanNotifBubble("Format template Excel berhasil diunduh.");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "FormatDataSiswa");
+        XLSX.writeFile(workbook, `Format_Data_Siswa_Kelas6_${semAktif.replace(' ', '')}.xlsx`);
     }
 
     function picuImport() {
@@ -907,67 +932,69 @@
 
         const reader = new FileReader();
         reader.onload = async function(e) {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-                const json = XLSX.utils.sheet_to_json(worksheet);
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const dataJson = XLSX.utils.sheet_to_json(worksheet, { raw: false });
 
-                const semAktif = document.getElementById('semesterSelect').value;
-                if (!databaseSiswa[semAktif]) databaseSiswa[semAktif] = {};
+            const semAktif = document.getElementById('semesterSelect').value;
+            
+            let jumlahTerisi = 0;
+            const masterBaruDariExcel = [];
 
-                let masterBaru = [];
-                json.forEach(row => {
-                    const nis = String(row["NIS"] || "").trim();
-                    const nama = String(row["Nama Siswa"] || "").trim();
-                    if (nis && nama) {
-                        masterBaru.push([nis, nama]);
-                        const existingFoto = (databaseSiswa[semAktif][nis] && databaseSiswa[semAktif][nis].foto) ? databaseSiswa[semAktif][nis].foto : '';
-                        databaseSiswa[semAktif][nis] = {
-                            foto: existingFoto,
-                            nisn: String(row["NISN"] || "").trim(),
-                            jk: String(row["Jenis Kelamin"] || "").trim(),
-                            tempatLahir: String(row["Tempat Lahir"] || "").trim(),
-                            tglLahir: formatTanggalIndonesia(String(row["Tanggal Lahir"] || "").trim()),
-                            namaAyah: String(row["Nama Ayah"] || "").trim(),
-                            namaIbu: String(row["Nama Ibu"] || "").trim(),
-                            kerjaAyah: String(row["Pekerjaan Ayah"] || "").trim(),
-                            kerjaIbu: String(row["Pekerjaan Ibu"] || "").trim(),
-                            tb: String(row["TB (cm)"] || "").trim(),
-                            bb: String(row["BB (kg)"] || "").trim(),
-                            wa: String(row["No WA"] || "").trim()
-                        };
-                    }
-                });
+            dataJson.forEach(row => {
+                const nis = String(row["NIS"] || '').trim();
+                const namaSiswaExcel = row["Nama Siswa"] || '';
+                
+                let jkExcel = row["Jenis Kelamin"] || row["JK (L/P)"] || row["JK"] || '';
+                if(String(jkExcel).trim().toUpperCase() === 'L') jkExcel = 'Laki-laki';
+                if(String(jkExcel).trim().toUpperCase() === 'P') jkExcel = 'Perempuan';
 
-                if (masterBaru.length > 0) {
-                    daftarSiswaKoleksi = masterBaru;
-                    await simpanKeIndexedDB('dbMasterSiswa', daftarSiswaKoleksi);
-                    await simpanKeIndexedDB('dbDataSiswa', databaseSiswa);
-                    inisialisasiTabel();
-                    tampilkanNotifBubble(`Berhasil mengimpor ${masterBaru.length} data siswa dari Excel!`);
-                } else {
-                    tampilkanNotifBubble("Format kolom Excel tidak dikenali.", "Peringatan");
+                let rawTglLahir = row["Tanggal Lahir"] || row["Tgl Lahir"] || '';
+                let formattedTglLahir = formatTanggalIndonesia(rawTglLahir);
+
+                if (nis) {
+                    if (!databaseSiswa[semAktif]) { databaseSiswa[semAktif] = {}; }
+                    
+                    databaseSiswa[semAktif][nis] = {
+                        nisn: row["NISN"] || '',
+                        jk: jkExcel,
+                        tempatLahir: row["Tempat Lahir"] || '',
+                        tglLahir: formattedTglLahir,
+                        namaAyah: row["Nama Ayah"] || '',
+                        namaIbu: row["Nama Ibu"] || '',
+                        kerjaAyah: row["Pekerjaan Ayah"] || '',
+                        kerjaIbu: row["Pekerjaan Ibu"] || '',
+                        tb: row["TB (cm)"] || '',
+                        bb: row["BB (kg)"] || '',
+                        wa: row["No WA"] || ''
+                    };
+                    masterBaruDariExcel.push([nis, namaSiswaExcel]);
+                    jumlahTerisi++;
                 }
-            } catch (err) {
-                console.error(err);
-                tampilkanNotifBubble("Gagal membaca file Excel.", "Error");
+            });
+
+            if(masterBaruDariExcel.length > 0) {
+                daftarSiswaKoleksi = masterBaruDariExcel;
+                await simpanKeDB('dbMasterSiswa', daftarSiswaKoleksi);
             }
-            event.target.value = '';
+
+            await simpanKeDB('dbDataSiswa', databaseSiswa);
+            inisialisasiTabel();
+            alert(`Berhasil mengimpor ${jumlahTerisi} data & merapikan format tanggal lahir dari Excel!`);
+            document.getElementById('fileImport').value = ''; 
         };
         reader.readAsArrayBuffer(file);
     }
 
-    // Fungsi Navigasi Tombol Kembali Menuju PENA MANTAP V6.html
-    function kembaliKePenaMantap() {
-        window.location.href = "PENA MANTAP V6.html";
+    function eksporExcel() {
+        const semAktif = document.getElementById('semesterSelect').value;
+        const workbook = XLSX.utils.table_to_book(document.getElementById('tabelDataSiswa'), { raw: true });
+        XLSX.writeFile(workbook, `Data_Siswa_Kelas6_${semAktif.replace(' ', '')}.xlsx`);
     }
 
-    window.onload = function() {
-        muatDataDariDatabaseLokal();
-    };
+    window.onload = muatSemuaDataIndexedDB;
 </script>
-
 </body>
 </html>
