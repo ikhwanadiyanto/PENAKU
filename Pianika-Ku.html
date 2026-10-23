@@ -62,8 +62,8 @@
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            height: 6px;
-            width: 6px;
+            height: 4px;
+            width: 4px;
         }
         ::-webkit-scrollbar-track {
             background: rgba(0,0,0,0.05);
@@ -82,192 +82,151 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 h-screen w-screen flex flex-col justify-between p-2 sm:p-4 overflow-hidden">
+<body class="bg-slate-900 text-slate-100 min-h-screen w-screen flex flex-col justify-between p-1.5 sm:p-3 overflow-x-hidden overflow-y-auto">
 
     <!-- PERINGATAN ORIENTASI PORTRAIT -->
     <div id="portraitWarning" class="hidden fixed inset-0 bg-slate-950/95 z-50 flex-col items-center justify-center text-center p-6 backdrop-blur-md">
-        <div class="w-16 h-16 mb-4 text-cyan-400 animate-bounce flex items-center justify-center">
-            <i data-lucide="rotate-ccw" class="w-12 h-12"></i>
+        <div class="w-14 h-14 mb-3 text-cyan-400 animate-bounce flex items-center justify-center">
+            <i data-lucide="rotate-ccw" class="w-10 h-10"></i>
         </div>
-        <h2 class="text-xl sm:text-2xl font-bold text-cyan-300 mb-2">Putar Perangkat ke Landscape</h2>
-        <p class="text-xs sm:text-sm text-slate-300 max-w-sm">
+        <h2 class="text-lg sm:text-xl font-bold text-cyan-300 mb-1.5">Putar Perangkat ke Landscape</h2>
+        <p class="text-xs text-slate-300 max-w-sm">
             Untuk pengalaman bermain Pianika 32-Key Extended yang optimal dan nyaman, silakan miringkan HP atau tablet Anda ke posisi mendatar (landscape).
         </p>
     </div>
 
     <!-- Header Section -->
-    <header class="w-full max-w-7xl mx-auto flex items-center justify-between gap-2 shrink-0">
-        <div class="flex items-center gap-2 sm:gap-3">
-            <div class="p-2 sm:p-2.5 bg-cyan-500 rounded-2xl shadow-lg shadow-cyan-500/30 text-slate-900">
-                <i data-lucide="music" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+    <header class="w-full max-w-7xl mx-auto flex items-center justify-between gap-2 shrink-0 py-1">
+        <div class="flex items-center gap-2">
+            <div class="p-1.5 sm:p-2 bg-cyan-500 rounded-xl shadow-lg shadow-cyan-500/30 text-slate-900">
+                <i data-lucide="music" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             </div>
             <div>
-                <h1 class="text-base sm:text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 leading-none">
+                <h1 class="text-sm sm:text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 leading-none">
                     PIANIKA-KU
                 </h1>
-                <p class="text-[10px] sm:text-xs text-slate-400 font-medium">Melodica 32-Key Extended Synth Range</p>
+                <p class="text-[9px] sm:text-[11px] text-slate-400 font-medium">Melodica 32-Key Extended Synth Range</p>
             </div>
         </div>
 
-        <!-- Song Demo Selector & Controls -->
+        <!-- Controls -->
         <div class="flex items-center gap-2">
-            <div class="hidden md:flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60 shadow-inner">
-                <i data-lucide="disc" class="w-4 h-4 text-cyan-400 animate-spin" style="animation-duration: 8s;"></i>
-                <select id="songSelect" class="bg-transparent text-xs sm:text-sm text-slate-200 font-medium focus:outline-none cursor-pointer pr-2">
-                    <option value="" class="bg-slate-800 text-slate-300">-- Pilih Demo Lagu --</option>
-                    <option value="kartini" class="bg-slate-800 text-slate-200">Ibu Kita Kartini</option>
-                    <option value="gundul" class="bg-slate-800 text-slate-200">Gundul-Gundul Pacul</option>
-                    <option value="twinkle" class="bg-slate-800 text-slate-200">Twinkle Twinkle Little Star</option>
-                    <option value="balonku" class="bg-slate-800 text-slate-200">Balonku Ada Lima</option>
-                </select>
-                <button id="btnPlayDemo" class="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs rounded-lg transition-all shadow-md active:scale-95 flex items-center gap-1.5">
-                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                    <span id="demoBtnText">Putar</span>
-                </button>
-            </div>
-
             <!-- Fullscreen Toggle Button -->
-            <button id="btnFullscreen" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center gap-1.5 text-xs font-semibold text-cyan-300 transition shadow" title="Layar Penuh / Fullscreen">
-                <i data-lucide="maximize" class="w-4 h-4"></i>
+            <button id="btnFullscreen" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center gap-1.5 text-xs font-semibold text-cyan-300 transition shadow" title="Layar Penuh / Fullscreen">
+                <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
                 <span class="hidden sm:inline">Fullscreen</span>
             </button>
         </div>
     </header>
 
     <!-- Main Pianika Body Container -->
-    <main class="w-full max-w-7xl mx-auto flex flex-col items-center justify-center my-auto">
+    <main class="w-full max-w-7xl mx-auto flex flex-col items-center justify-center my-auto py-1">
         
         <!-- Pipe / Flexible Hose & Mouthpiece Illustration -->
-        <div class="w-full flex items-center justify-start pl-4 sm:pl-8 -mb-2.5 z-10">
-            <div class="flex items-center scale-90 sm:scale-100 origin-left">
+        <div class="w-full flex items-center justify-start pl-3 sm:pl-6 -mb-2 z-10">
+            <div class="flex items-center scale-75 sm:scale-90 origin-left">
                 <!-- Mouthpiece -->
                 <div class="w-7 sm:w-9 h-4 sm:h-5 bg-slate-200 rounded-l-full border-2 border-slate-400 shadow-md flex items-center justify-center relative">
                     <div class="w-2 sm:w-2.5 h-2 sm:h-2.5 bg-slate-800 rounded-full"></div>
                 </div>
                 <!-- Flexible Hose Body -->
-                <div class="h-3.5 sm:h-4 w-24 sm:w-48 hose-rib border-y border-cyan-700 shadow-inner relative"></div>
+                <div class="h-3.5 sm:h-4 w-20 sm:w-40 hose-rib border-y border-cyan-700 shadow-inner relative"></div>
                 <!-- Hose Joint Connect to Pianika -->
                 <div class="w-4 sm:w-5 h-6 sm:h-7 bg-slate-700 rounded-r-md border-r-2 border-slate-500 shadow-md"></div>
             </div>
         </div>
 
         <!-- Pianika Body Frame -->
-        <div class="w-full bg-gradient-to-b from-sky-500 via-blue-600 to-indigo-700 p-2.5 sm:p-4 rounded-3xl shadow-2xl border-4 border-sky-400/30 relative">
+        <div class="w-full bg-gradient-to-b from-sky-500 via-blue-600 to-indigo-700 p-2 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-sky-400/30 relative">
             
             <!-- Top Controls Panel on Pianika Body -->
-            <div class="bg-slate-900/60 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 mb-2.5 border border-white/10 flex flex-wrap items-center justify-between gap-2 shadow-inner">
+            <div class="bg-slate-900/70 backdrop-blur-md rounded-xl p-1.5 sm:p-2 mb-2 border border-white/10 flex flex-wrap items-center justify-between gap-1.5 shadow-inner">
                 
                 <!-- Display Not Label Toggle -->
-                <div class="flex items-center gap-1 bg-slate-800/90 p-1 rounded-xl border border-slate-700">
-                    <button id="btnNotationCDE" class="notation-btn px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all bg-cyan-500 text-slate-950 shadow">
+                <div class="flex items-center gap-1 bg-slate-800/90 p-0.5 sm:p-1 rounded-lg border border-slate-700">
+                    <button id="btnNotationCDE" class="notation-btn px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold rounded-md transition-all bg-cyan-500 text-slate-950 shadow">
                         C D E
                     </button>
-                    <button id="btnNotationNum" class="notation-btn px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">
+                    <button id="btnNotationNum" class="notation-btn px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold rounded-md transition-all text-slate-400 hover:text-white">
                         1 2 3
                     </button>
-                    <button id="btnNotationSol" class="notation-btn px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">
+                    <button id="btnNotationSol" class="notation-btn px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold rounded-md transition-all text-slate-400 hover:text-white">
                         Do Re Mi
                     </button>
                 </div>
 
                 <!-- Octave Shift & Vibrato / Pitch Bend -->
-                <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
                     
                     <!-- Octave Controls -->
-                    <div class="flex items-center bg-slate-800/90 rounded-xl p-1 border border-slate-700">
-                        <span class="text-[10px] sm:text-xs text-slate-400 font-semibold px-1">Oktaf:</span>
-                        <button id="btnOctaveDown" class="p-1 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-200 transition active:scale-95">
-                            <i data-lucide="minus" class="w-3 h-3"></i>
+                    <div class="flex items-center bg-slate-800/90 rounded-lg p-0.5 sm:p-1 border border-slate-700">
+                        <span class="text-[9px] sm:text-xs text-slate-400 font-semibold px-1">Oktaf:</span>
+                        <button id="btnOctaveDown" class="p-0.5 sm:p-1 bg-slate-700 hover:bg-slate-600 rounded-md text-slate-200 transition active:scale-95">
+                            <i data-lucide="minus" class="w-2.5 h-2.5 sm:w-3 sm:h-3"></i>
                         </button>
-                        <span id="octaveValue" class="text-xs font-extrabold px-2 text-cyan-400">0</span>
-                        <button id="btnOctaveUp" class="p-1 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-200 transition active:scale-95">
-                            <i data-lucide="plus" class="w-3 h-3"></i>
+                        <span id="octaveValue" class="text-[10px] sm:text-xs font-extrabold px-1.5 text-cyan-400">0</span>
+                        <button id="btnOctaveUp" class="p-0.5 sm:p-1 bg-slate-700 hover:bg-slate-600 rounded-md text-slate-200 transition active:scale-95">
+                            <i data-lucide="plus" class="w-2.5 h-2.5 sm:w-3 sm:h-3"></i>
                         </button>
                     </div>
 
                     <!-- Vibrato Toggle Button -->
-                    <button id="btnVibratoToggle" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-slate-300 transition-all shadow-sm">
+                    <button id="btnVibratoToggle" class="px-2 py-1 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-lg flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-slate-300 transition-all shadow-sm">
                         <i data-lucide="activity" class="w-3 h-3 text-cyan-400"></i>
                         <span>Vibrato: <strong id="vibratoStatusText" class="text-slate-400">MATI</strong></span>
                     </button>
 
                     <!-- Simulator Blow Effect Toggle -->
-                    <button id="btnBlowToggle" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-slate-300 transition-all shadow-sm">
+                    <button id="btnBlowToggle" class="px-2 py-1 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-lg flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-slate-300 transition-all shadow-sm">
                         <div id="blowIndicator" class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></div>
                         <span>Tiupan: <strong id="blowStatusText" class="text-emerald-400">OTOMATIS</strong></span>
                     </button>
                 </div>
 
                 <!-- Volume Control & Pitch Bend Wheel -->
-                <div class="flex items-center gap-2">
-                    <div class="hidden lg:flex items-center gap-1 bg-slate-800/90 px-2 py-1 rounded-xl border border-slate-700">
-                        <span class="text-[10px] text-slate-400 font-bold">Pitch</span>
-                        <input id="pitchBendSlider" type="range" min="-100" max="100" value="0" class="w-16 accent-cyan-400 cursor-pointer">
+                <div class="flex items-center gap-1.5">
+                    <div class="hidden lg:flex items-center gap-1 bg-slate-800/90 px-2 py-1 rounded-lg border border-slate-700">
+                        <span class="text-[9px] text-slate-400 font-bold">Pitch</span>
+                        <input id="pitchBendSlider" type="range" min="-100" max="100" value="0" class="w-14 accent-cyan-400 cursor-pointer">
                     </div>
 
-                    <div class="flex items-center gap-1.5 bg-slate-800/90 px-2.5 py-1 rounded-xl border border-slate-700">
-                        <i data-lucide="volume-2" class="w-3.5 h-3.5 text-cyan-400"></i>
-                        <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.7" class="w-14 sm:w-20 accent-cyan-400 cursor-pointer">
+                    <div class="flex items-center gap-1 bg-slate-800/90 px-2 py-1 rounded-lg border border-slate-700">
+                        <i data-lucide="volume-2" class="w-3 h-3 text-cyan-400"></i>
+                        <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.7" class="w-12 sm:w-16 accent-cyan-400 cursor-pointer">
                     </div>
                 </div>
             </div>
 
             <!-- Pianika Keys Bed / Container (Extended for 32 keys) -->
-            <div class="relative bg-slate-950 p-2 rounded-2xl border-2 border-slate-800 shadow-2xl overflow-x-auto min-h-[180px] sm:min-h-[220px] flex justify-center touch-none">
+            <div class="relative bg-slate-950 p-1.5 sm:p-2 rounded-xl border border-slate-800 shadow-inner overflow-x-auto min-h-[140px] sm:min-h-[180px] flex justify-center touch-none">
                 
                 <!-- Keys Wrapper for 32 keys -->
-                <div id="keyboard" class="relative flex h-36 sm:h-48 min-w-[900px] lg:min-w-[1100px] w-full select-none justify-center touch-none">
+                <div id="keyboard" class="relative flex h-32 sm:h-40 min-w-[750px] lg:min-w-[950px] w-full select-none justify-center touch-none">
                     <!-- Keys dynamically generated via JS -->
                 </div>
 
             </div>
 
-            <!-- Pianika Brand Detail Stamp -->
-            <div class="flex items-center justify-between mt-2 px-1 text-[9px] sm:text-[11px] text-sky-200/70 font-semibold uppercase tracking-widest">
-                <span>PIANIKA-KU Synth Pro-32 (Landscape 32-Key Extended)</span>
-                <span class="flex items-center gap-1">
-                    <i data-lucide="wind" class="w-3 h-3"></i> Air Pressure Synthesis
+            <!-- Pianika Brand Detail Stamp & Mandatory Copyright Footer -->
+            <div class="flex flex-wrap items-center justify-between mt-2 px-1 text-[8px] sm:text-[10px] text-sky-200/80 font-semibold uppercase tracking-wider gap-1">
+                <span class="truncate">PIANIKA-KU Synth Pro-32</span>
+                <span class="text-center truncate">© 2026 PENAKU - Designed by Ikhwan Adi Yanto,S.Pd</span>
+                <span class="flex items-center gap-1 shrink-0">
+                    <i data-lucide="wind" class="w-2.5 h-2.5"></i> Air Pressure Synthesis
                 </span>
             </div>
 
         </div>
 
-        <!-- Manual Blow Button & Mobile Song Select -->
-        <div class="mt-2.5 flex flex-wrap items-center justify-center gap-3">
-            <button id="btnManualBlow" class="px-5 py-1.5 bg-slate-800 border-2 border-cyan-500/40 hover:border-cyan-400 text-cyan-300 font-bold rounded-full shadow-lg transition-all active:scale-95 flex items-center gap-2 text-xs select-none touch-none">
-                <i data-lucide="wind" class="w-3.5 h-3.5"></i>
+        <!-- Manual Blow Button -->
+        <div class="mt-2 flex items-center justify-center">
+            <button id="btnManualBlow" class="px-4 py-1 bg-slate-800 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 font-bold rounded-full shadow transition-all active:scale-95 flex items-center gap-1.5 text-[11px] select-none touch-none">
+                <i data-lucide="wind" class="w-3 h-3"></i>
                 <span>Tahan untuk Meniup (Mode Manual)</span>
             </button>
-
-            <!-- Mobile Demo Song dropdown inside main area if hidden on header -->
-            <div class="flex md:hidden items-center gap-1.5 bg-slate-800/90 px-2.5 py-1 rounded-xl border border-slate-700">
-                <select id="songSelectMobile" class="bg-transparent text-xs text-slate-200 font-medium focus:outline-none cursor-pointer">
-                    <option value="" class="bg-slate-800">-- Pilih Lagu --</option>
-                    <option value="kartini" class="bg-slate-800">Ibu Kita Kartini</option>
-                    <option value="gundul" class="bg-slate-800">Gundul Pacul</option>
-                    <option value="twinkle" class="bg-slate-800">Twinkle Star</option>
-                    <option value="balonku" class="bg-slate-800">Balonku</option>
-                </select>
-                <button id="btnPlayDemoMobile" class="px-2.5 py-1 bg-cyan-500 text-slate-950 font-bold text-xs rounded-lg">Putar</button>
-            </div>
         </div>
 
     </main>
-
-    <!-- Footer & Keyboard Mapping Guide with Copyright -->
-    <footer class="w-full max-w-7xl mx-auto pt-2 border-t border-slate-800 flex flex-col items-center justify-center gap-1 text-center text-[11px] text-slate-400 shrink-0">
-        <div class="flex flex-wrap items-center justify-center gap-2">
-            <span class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-mono border border-slate-700">A - K / Z - M</span>
-            <span>= Tutus Putih</span>
-            <span class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-mono border border-slate-700 ml-1">W, E, T, Y, U, O, P</span>
-            <span>= Tutus Hitam</span>
-        </div>
-        
-        <!-- Mandatory Copyright Footer -->
-        <div class="text-center font-semibold text-slate-300 text-[11px] sm:text-xs">
-            © 2026 PENAKU - Belajar Menyenangkan Setiap Hari! 🎉 Designed by Ikhwan Adi Yanto,S.Pd
-        </div>
-    </footer>
 
     <!-- JavaScript Logic -->
     <script>
@@ -329,39 +288,6 @@
             'F#5': 739.99, 'G5': 783.99, 'G#5': 830.61, 'A5': 880.00, 'A#5': 932.33, 'B5': 987.77, 'C6': 1046.50
         };
 
-        const DEMO_SONGS = {
-            kartini: [
-                { note: 'C4', duration: 400 }, { note: 'D4', duration: 400 }, { note: 'E4', duration: 600 }, { note: 'F4', duration: 400 },
-                { note: 'G4', duration: 800 }, { note: 'E4', duration: 400 }, { note: 'C4', duration: 800 },
-                { note: 'A4', duration: 400 }, { note: 'C5', duration: 400 }, { note: 'B4', duration: 400 }, { note: 'A4', duration: 400 },
-                { note: 'G4', duration: 1000 },
-                { note: 'F4', duration: 400 }, { note: 'A4', duration: 400 }, { note: 'G4', duration: 400 }, { note: 'F4', duration: 400 },
-                { note: 'E4', duration: 800 }, { note: 'C4', duration: 800 },
-                { note: 'D4', duration: 400 }, { note: 'F4', duration: 400 }, { note: 'E4', duration: 400 }, { note: 'D4', duration: 400 },
-                { note: 'C4', duration: 1000 }
-            ],
-            gundul: [
-                { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 }, { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 },
-                { note: 'F4', duration: 350 }, { note: 'G4', duration: 350 }, { note: 'G4', duration: 700 },
-                { note: 'B4', duration: 350 }, { note: 'C5', duration: 350 }, { note: 'B4', duration: 350 }, { note: 'C5', duration: 350 },
-                { note: 'B4', duration: 350 }, { note: 'G4', duration: 700 },
-                { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 }, { note: 'C4', duration: 350 }, { note: 'E4', duration: 350 },
-                { note: 'F4', duration: 350 }, { note: 'G4', duration: 350 }, { note: 'G4', duration: 700 }
-            ],
-            twinkle: [
-                { note: 'C4', duration: 400 }, { note: 'C4', duration: 400 }, { note: 'G4', duration: 400 }, { note: 'G4', duration: 400 },
-                { note: 'A4', duration: 400 }, { note: 'A4', duration: 400 }, { note: 'G4', duration: 800 },
-                { note: 'F4', duration: 400 }, { note: 'F4', duration: 400 }, { note: 'E4', duration: 400 }, { note: 'E4', duration: 400 },
-                { note: 'D4', duration: 400 }, { note: 'D4', duration: 400 }, { note: 'C4', duration: 800 }
-            ],
-            balonku: [
-                { note: 'E4', duration: 350 }, { note: 'F4', duration: 350 }, { note: 'G4', duration: 700 }, { note: 'C5', duration: 700 },
-                { note: 'G4', duration: 700 }, { note: 'E4', duration: 700 },
-                { note: 'G4', duration: 350 }, { note: 'F4', duration: 350 }, { note: 'E4', duration: 350 }, { note: 'D4', duration: 350 },
-                { note: 'C4', duration: 1000 }
-            ]
-        };
-
         /* ==========================================================================
            2. APP STATE & AUDIO SYNTHESIZER
            ========================================================================== */
@@ -376,8 +302,6 @@
         let isVibratoOn = false;
         let currentPitchCents = 0;
         let activeKeysPressed = new Set();
-        let isDemoPlaying = false;
-        let demoTimeoutId = null;
 
         let isMouseDown = false;
         let currentHoverNote = null;
@@ -501,27 +425,27 @@
                 keyEl.dataset.note = item.note;
 
                 if (item.type === 'white') {
-                    keyEl.className = `white-key key-element relative flex flex-col justify-between items-center pb-2 pt-1 rounded-b-xl cursor-pointer select-none border border-slate-300/80 z-0`;
+                    keyEl.className = `white-key key-element relative flex flex-col justify-between items-center pb-1.5 pt-0.5 rounded-b-lg cursor-pointer select-none border border-slate-300/80 z-0`;
                     keyEl.style.width = `calc(100% / ${totalWhiteKeys})`;
                     keyEl.style.height = '100%';
 
                     keyEl.innerHTML = `
-                        <span class="text-[8px] sm:text-[10px] font-bold text-slate-400 font-mono pointer-events-none">${item.key}</span>
+                        <span class="text-[7px] sm:text-[9px] font-bold text-slate-400 font-mono pointer-events-none">${item.key}</span>
                         <div class="text-center pointer-events-none">
-                            <span class="note-label block text-[9px] sm:text-xs font-extrabold text-slate-800">${getLabelText(item)}</span>
+                            <span class="note-label block text-[8px] sm:text-xs font-extrabold text-slate-800">${getLabelText(item)}</span>
                         </div>
                     `;
                     whiteIndex++;
                 } else {
-                    keyEl.className = `black-key key-element absolute flex flex-col justify-between items-center pb-1.5 pt-0.5 rounded-b-lg cursor-pointer select-none z-10`;
+                    keyEl.className = `black-key key-element absolute flex flex-col justify-between items-center pb-1 pt-0.5 rounded-b-md cursor-pointer select-none z-10`;
                     const leftPos = (whiteIndex) * (100 / totalWhiteKeys) - (100 / totalWhiteKeys * 0.32);
                     keyEl.style.left = `${leftPos}%`;
                     keyEl.style.width = `calc(100% / ${totalWhiteKeys} * 0.65)`;
                     keyEl.style.height = '58%';
 
                     keyEl.innerHTML = `
-                        <span class="text-[7px] sm:text-[8px] font-bold text-slate-400 font-mono pointer-events-none">${item.key}</span>
-                        <span class="note-label text-[8px] sm:text-[9px] font-bold text-cyan-300 pointer-events-none">${getLabelText(item)}</span>
+                        <span class="text-[6px] sm:text-[7px] font-bold text-slate-400 font-mono pointer-events-none">${item.key}</span>
+                        <span class="note-label text-[7px] sm:text-[8px] font-bold text-cyan-300 pointer-events-none">${getLabelText(item)}</span>
                     `;
                 }
                 keyboardEl.appendChild(keyEl);
@@ -633,11 +557,6 @@
             stopNoteSound(noteName);
         }
 
-        function stopAllNotes() {
-            activeKeysPressed.forEach(note => triggerNoteOff(note));
-            activeKeysPressed.clear();
-        }
-
         // Fullscreen Toggle Handler
         const btnFullscreen = document.getElementById('btnFullscreen');
         btnFullscreen.addEventListener('click', () => {
@@ -654,9 +573,9 @@
 
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
-                btnFullscreen.innerHTML = `<i data-lucide="minimize" class="w-4 h-4"></i><span class="hidden sm:inline">Keluar</span>`;
+                btnFullscreen.innerHTML = `<i data-lucide="minimize" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Keluar</span>`;
             } else {
-                btnFullscreen.innerHTML = `<i data-lucide="maximize" class="w-4 h-4"></i><span class="hidden sm:inline">Fullscreen</span>`;
+                btnFullscreen.innerHTML = `<i data-lucide="maximize" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Fullscreen</span>`;
             }
             lucide.createIcons();
         });
@@ -726,9 +645,9 @@
         function setNotation(type, activeBtn) {
             currentNotation = type;
             [btnNotationCDE, btnNotationNum, btnNotationSol].forEach(btn => {
-                btn.className = "notation-btn px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white";
+                btn.className = "notation-btn px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold rounded-md transition-all text-slate-400 hover:text-white";
             });
-            activeBtn.className = "notation-btn px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all bg-cyan-500 text-slate-950 shadow";
+            activeBtn.className = "notation-btn px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold rounded-md transition-all bg-cyan-500 text-slate-950 shadow";
             updateLabels();
         }
 
@@ -788,57 +707,6 @@
         btnManualBlow.addEventListener('mouseleave', stopManualBlow);
         btnManualBlow.addEventListener('touchstart', startManualBlow);
         btnManualBlow.addEventListener('touchend', stopManualBlow);
-
-        // Demo Playback (Desktop & Mobile selector)
-        function handleDemoPlay(selectId, btnId) {
-            const selectEl = document.getElementById(selectId);
-            const btnEl = document.getElementById(btnId);
-            const songKey = selectEl.value;
-            if (!songKey) {
-                alert('Silakan pilih lagu demo terlebih dahulu!');
-                return;
-            }
-
-            if (isDemoPlaying) {
-                stopDemoSong();
-            } else {
-                playDemoSong(DEMO_SONGS[songKey], btnEl);
-            }
-        }
-
-        document.getElementById('btnPlayDemo').addEventListener('click', () => handleDemoPlay('songSelect', 'btnPlayDemo'));
-        document.getElementById('btnPlayDemoMobile').addEventListener('click', () => handleDemoPlay('songSelectMobile', 'btnPlayDemoMobile'));
-
-        function playDemoSong(notesList, btnEl) {
-            initAudio();
-            isDemoPlaying = true;
-            document.getElementById('demoBtnText').textContent = 'Berhenti';
-            document.getElementById('btnPlayDemoMobile').textContent = 'Stop';
-
-            let index = 0;
-            function playNextNote() {
-                if (!isDemoPlaying || index >= notesList.length) {
-                    stopDemoSong();
-                    return;
-                }
-                const noteItem = notesList[index];
-                triggerNoteOn(noteItem.note);
-                demoTimeoutId = setTimeout(() => {
-                    triggerNoteOff(noteItem.note);
-                    index++;
-                    demoTimeoutId = setTimeout(playNextNote, 60);
-                }, noteItem.duration);
-            }
-            playNextNote();
-        }
-
-        function stopDemoSong() {
-            isDemoPlaying = false;
-            clearTimeout(demoTimeoutId);
-            stopAllNotes();
-            document.getElementById('demoBtnText').textContent = 'Putar';
-            document.getElementById('btnPlayDemoMobile').textContent = 'Putar';
-        }
 
         // Render Initial
         renderKeyboard();
