@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>e-PR - Kuis Interaktif Bahasa Indonesia</title>
+    <!-- Google Fonts Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #1976d2;    
+            --secondary: #0d47a1;  
+            --danger: #ff5470;     
+            --danger-orange: #ff5722;
+            --success: #00b894;    
+            --bg: #f4f7fc;         
+            --accent: #ffeb3b;     
+            --skip-color: #ff9f1c; 
+            --powerup-purple: #8e44ad;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+            color: #2d3748; 
+            overflow-x: hidden; 
+        }
+
+        /* Ambient Floating Animation Background */
+        .decorations-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-item {
+            position: absolute;
+            bottom: -60px;
+            font-size: 28px;
+            opacity: 0.8;
+            animation: floatUp 10s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(20deg) scale(1.1); opacity: 0; }
+        }
+
+        .fi-1 { left: 10%; background: #ff7675; width: 35px; height: 45px; border-radius: 50%; animation-duration: 9s; animation-delay: 0s; }
+        .fi-2 { left: 30%; animation-duration: 12s; animation-delay: 2s; }
+        .fi-3 { left: 50%; background: #55efc4; width: 35px; height: 45px; border-radius: 50%; animation-duration: 10s; animation-delay: 1s; }
+        .fi-4 { left: 70%; animation-duration: 11s; animation-delay: 3s; }
+        .fi-5 { left: 88%; background: #ffeaa7; width: 35px; height: 45px; border-radius: 50%; animation-duration: 8s; animation-delay: 1.5s; }
+
+        .mobile-container { 
+            width: 100%; 
+            max-width: 480px; 
+            background: white; 
+            min-height: 100vh; 
+            padding: 15px 16px; 
+            display: flex; 
+            flex-direction: column; 
+            border-left: 4px solid var(--primary); 
+            border-right: 4px solid var(--primary); 
+            position: relative; 
+            z-index: 5;
+            box-shadow: 0 0 30px rgba(25, 118, 210, 0.15); 
+        }
+
+        .header { text-align: center; margin-bottom: 8px; position: relative; }
+        
+        .mascot-box {
+            font-size: 50px;
+            display: inline-block;
+            animation: bounceMascot 2s infinite ease-in-out;
+            margin-bottom: 5px;
+        }
+
+        @keyframes bounceMascot {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(5deg); }
+        }
+
+        /* Container Navigasi Soal Ringkas */
+        .question-nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
+            max-height: 75px; 
+            overflow-y: auto;
+            padding: 6px;
+            background: #f8fafc;
+            border: 1.5px dashed #cbd5e0;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-btn {
+            width: 27px;
+            height: 27px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+            background: #edf2f7;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .nav-btn.locked {
+            background: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            opacity: 0.6;
+            font-size: 9px;
+        }
+
+        .nav-btn.unlocked:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .nav-btn.active {
+            border: 2px solid var(--primary) !important;
+            box-shadow: 0 0 6px rgba(25, 118, 210, 0.5);
+            transform: scale(1.1);
+            z-index: 2;
+        }
+
+        .nav-btn.correct {
+            background: var(--success) !important;
+            color: white !important;
+            border-color: var(--success) !important;
+        }
+
+        .nav-btn.wrong {
+            background: var(--danger-orange) !important;
+            color: white !important;
+            border-color: var(--danger-orange) !important;
+            font-size: 11px;
+        }
+
+        .nav-btn.skipped {
+            background: var(--skip-color) !important;
+            color: white !important;
+            border-color: var(--skip-color) !important;
+        }
+
+        .header h3 { color: var(--secondary); margin: 2px 0; font-size: 18px; font-weight: 800; }
+        .designer-credit { font-size: 10px; color: #718096; margin-bottom: 8px; font-weight: 600; background: #e3f2fd; display: inline-block; padding: 3px 10px; border-radius: 15px; }
+        
+        /* Power Up Button Ringkas */
+        .powerup-btn-trigger {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 11px;
+            border: 2px solid #f1c40f;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 3px 10px rgba(142, 68, 173, 0.3);
+            animation: pulsePowerUp 1.5s infinite ease-in-out;
+            margin: 2px 0 6px 0;
+        }
+
+        @keyframes pulsePowerUp {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.6); }
+            70% { transform: scale(1.04); box-shadow: 0 0 0 8px rgba(142, 68, 173, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+        }
+
+        .powerup-btn-trigger:disabled {
+            background: #cbd5e0;
+            border-color: #a0aec0;
+            box-shadow: none;
+            animation: none;
+            cursor: not-allowed;
+        }
+
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
+        
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 14px; 
+            font-size: 14px; 
+            background-color: #f7fafc; 
+            font-weight: 600; 
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: var(--primary); background-color: #fff; outline: none; box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1); }
+        input[readonly] { background-color: #edf2f7; color: #718096; cursor: not-allowed; }
+
+        /* Pop-up Modals */
+        #rulesModal, #powerUpModal, #warningModal, #violationModal, #reasonModal, #feedbackModal, #infoModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+
+        .modal-bubble {
+            background: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            animation: bubblePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bubblePop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .powerup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .powerup-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .powerup-card.used {
+            opacity: 0.5;
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .powerup-card.used::after {
+            content: "TERPAKAI";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-10deg);
+            background: var(--danger);
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .powerup-card:not(.used):hover {
+            border-color: var(--powerup-purple);
+            transform: translateY(-2px);
+            background: #f3e8ff;
+        }
+
+        .powerup-card .icon { font-size: 24px; margin-bottom: 2px; }
+        .powerup-card .title { font-weight: 800; font-size: 12px; color: var(--powerup-purple); }
+        .powerup-card .desc { font-size: 9px; color: #718096; margin-top: 2px; line-height: 1.2; }
+
+        .btn-understand {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--success), #009688);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-understand:active { transform: scale(0.98); }
+
+        .btn-action { 
+            width: 100%; 
+            padding: 14px; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            font-size: 15px; 
+            font-weight: 700; 
+            margin-top: 8px; 
+            cursor: pointer; 
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.25); 
+            transition: transform 0.2s;
+        }
+        .btn-action:active { transform: scale(0.98); }
+        .btn-action:disabled { background: #e2e8f0; color: #a0aec0; box-shadow: none; cursor: not-allowed; }
+        
+        .btn-pas { 
+            width: 100%; 
+            padding: 10px; 
+            background: linear-gradient(135deg, var(--skip-color), #f77f00); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            margin-top: 10px; 
+            cursor: pointer; 
+        }
+
+        .timer-box { font-size: 16px; font-weight: 800; color: var(--danger); text-align: center; margin: 4px 0; background: #fff5f5; border: 1.5px solid #fed7d7; border-radius: 14px; display: inline-block; padding: 2px 16px; }
+        .progress-time-container { width: 100%; height: 6px; background: #edf2f7; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+        .progress-time-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary), #00bbf9); border-radius: 8px; transition: width 0.1s linear; }
+        .progress-time-bar.critical { background: linear-gradient(90deg, var(--danger), #e63946); }
+
+        .option-btn { 
+            display: block; 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 14px; 
+            background: white; 
+            text-align: left; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            color: #4a5568; 
+            transition: all 0.2s;
+        }
+        .option-btn:hover { border-color: var(--primary); background: #f0f7ff; }
+        .option-btn.correct { background: #38b000 !important; color: white; border-color: #38b000; }
+        .option-btn.wrong { background: var(--danger-orange) !important; color: white; border-color: var(--danger-orange); }
+        .option-btn.hidden-option { opacity: 0.1; pointer-events: none; }
+        
+        .hidden { display: none !important; }
+        .quiz-progress { text-align: center; color: var(--secondary); font-weight: 800; font-size: 12px; background: #e3f2fd; display: inline-block; padding: 2px 12px; border-radius: 20px; }
+        
+        .modal-content { background: white; padding: 20px 28px; border-radius: 18px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-emoji { font-size: 55px; margin-bottom: 6px; display: inline-block; }
+        .modal-text { font-size: 18px; font-weight: 800; margin: 0; }
+        
+        /* Active Shield Indicator */
+        .shield-indicator {
+            background: #eef2ff;
+            border: 1.5px solid #6366f1;
+            color: #4f46e5;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        /* Footer Copyright */
+        .footer-copyright {
+            text-align: center;
+            font-size: 11px;
+            color: #718096;
+            font-weight: 600;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Elements -->
+    <audio id="clickSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
+    <audio id="correctSound" src="benar.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="salah.mp3" preload="auto"></audio>
+
+    <!-- Animasi Balon & Emotikon Latar Belakang -->
+    <div class="decorations-container">
+        <div class="floating-item fi-1"></div>
+        <div class="floating-item fi-2">🌸</div>
+        <div class="floating-item fi-3"></div>
+        <div class="floating-item fi-4">⭐</div>
+        <div class="floating-item fi-5"></div>
+    </div>
+
+    <!-- BUBBLE POP-UP ATURAN PENGERJAAN SAAT PERTAMA DIBUKA -->
+    <div id="rulesModal">
+        <div class="modal-bubble" style="border-top: 5px solid var(--primary);">
+            <h4 style="margin: 0 0 10px 0; color: var(--secondary); font-size: 16px; font-weight: 800;">📌 Aturan Pengerjaan ✨</h4>
+            <ol style="margin: 0 0 16px 0; padding-left: 18px; font-size: 12px; color: #4a5568; line-height: 1.5;">
+                <li>Siswa memiliki tepat <b>3 kali kesempatan</b> mengerjakan.</li>
+                <li>Kesempatan akan di-reset otomatis setiap 12 jam.</li>
+                <li>Tetap di dalam aplikasi selama kuis berlangsung (Maksimal 1 kali peringatan).</li>
+                <li>Waktu per soal <b>60 detik</b>. Jika habis, otomatis salah (❌)!</li>
+            </ol>
+            <button class="btn-understand" onclick="playAudioAndDo(closeRulesModal)">Saya Mengerti 👍</button>
+        </div>
+    </div>
+
+    <!-- BUBBLE PERINGATAN PERTAMA KELUAR APLIKASI -->
+    <div id="warningModal" class="hidden">
+        <div class="modal-bubble" style="border-top: 5px solid var(--skip-color); text-align: center;">
+            <div style="font-size: 55px; margin-bottom: 6px;">🚨</div>
+            <h4 style="color: var(--danger-orange); font-size: 16px; font-weight: 800; margin-bottom: 8px;">PERHATIAN!</h4>
+            <p style="font-size: 12px; color: #4a5568; line-height: 1.4; margin-bottom: 16px;">
+                Kamu mencoba keluar dari aplikasi, ini <b>peringatan pertama</b>, jika terulang akan di <b>KELUARKAN</b> dari kuis!
+            </p>
+            <button class="btn-understand" style="background: linear-gradient(135deg, var(--skip-color), #f77f00);" onclick="resumeQuizAfterWarning()">Saya Mengerti & Lanjutkan 🚀</button>
+        </div>
+    </div>
+
+    <!-- BUBBLE NOTIFIKASI PELANGGARAN KEDUA -->
+    <div id="violationModal" class="hidden">
+        <div class="modal-bubble" style="border-top: 6px solid var(--danger); text-align: center;">
+            <div style="font-size: 55px; margin-bottom: 6px;">🛑</div>
+            <div style="color: var(--danger); font-size: 18px; font-weight: 800; margin-bottom: 6px;">Kamu Melanggar Peraturan!</div>
+            <div style="color: #4a5568; font-size: 12px; line-height: 1.4; margin-bottom: 16px;">
+                Terdeteksi berpindah aplikasi atau keluar dari halaman kuis kembali. Sesi kamu dihentikan dan skor dikunci (0).
+            </div>
+            <button class="btn-action" style="background: var(--danger); margin-top: 0;" onclick="playAudioAndDo(() => location.reload())">Keluar ❌</button>
+        </div>
+    </div>
+
+    <!-- BUBBLE POWER UP SELECTION -->
+    <div id="powerUpModal" class="hidden">
+        <div class="modal-bubble" style="border-top: 5px solid var(--powerup-purple);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 style="margin: 0; color: var(--powerup-purple); font-size: 15px; font-weight: 800;">⚡ Pilih Power Up Kamu</h4>
+                <button onclick="closePowerUpModal()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #a0aec0;">✖</button>
+            </div>
+            <p style="font-size: 11px; color: #718096; margin-bottom: 8px;">Masing-masing Power Up hanya bisa digunakan <b>1 kali</b> dan maksimal <b>1 Power Up per soal</b>!</p>
+            
+            <div class="powerup-grid">
+                <div class="powerup-card" id="card-5050" onclick="usePowerUp('5050')">
+                    <div class="icon">🌓</div>
+                    <div class="title">50 : 50</div>
+                    <div class="desc">Hapus 2 jawaban yang salah</div>
+                </div>
+                <div class="powerup-card" id="card-freeze" onclick="usePowerUp('freeze')">
+                    <div class="icon">❄️</div>
+                    <div class="title">Time Freeze</div>
+                    <div class="desc">Hentikan waktu pada soal ini</div>
+                </div>
+                <div class="powerup-card" id="card-extratime" onclick="usePowerUp('extratime')">
+                    <div class="icon">⏳</div>
+                    <div class="title">Extra Time</div>
+                    <div class="desc">Tambah +120 detik waktu</div>
+                </div>
+                <div class="powerup-card" id="card-antiwrong" onclick="usePowerUp('antiwrong')">
+                    <div class="icon">🛡️</div>
+                    <div class="title">Anti Wrong</div>
+                    <div class="desc">Jawaban tidak dianggap salah jika keliru</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INFORMASI INTERNAL -->
+    <div id="infoModal" class="hidden">
+        <div class="modal-bubble" style="border-top: 5px solid var(--primary); text-align: center;">
+            <div id="infoIcon" style="font-size: 40px; margin-bottom: 8px;">✨</div>
+            <h4 id="infoTitle" style="color: var(--secondary); font-size: 15px; font-weight: 800; margin-bottom: 6px;">Informasi</h4>
+            <p id="infoDesc" style="font-size: 12px; color: #4a5568; line-height: 1.4; margin-bottom: 14px;"></p>
+            <button class="btn-understand" onclick="closeInfoModal()">Oke, Siap! 👍</button>
+        </div>
+    </div>
+
+    <!-- BUBBLE ALASAN PERCOBAAN KE-2 & KE-3 -->
+    <div id="reasonModal" class="hidden">
+        <div class="modal-bubble" style="border-top: 5px solid var(--skip-color);">
+            <h4 id="reasonTitle" style="margin: 0 0 8px 0; color: var(--skip-color); font-size: 15px; font-weight: 800;">💬 Konfirmasi Percobaan</h4>
+            <p id="reasonDesc" style="font-size: 12px; color: #4a5568; margin-bottom: 12px; line-height: 1.3;">Ini adalah percobaan ke-X, alasan mencoba : ...</p>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <textarea id="inputAlasan" rows="3" placeholder="Tulis alasan mencoba di sini..."></textarea>
+            </div>
+            <button class="btn-understand" onclick="submitAlasan()">Lanjutkan Kuis 🚀</button>
+        </div>
+    </div>
+
+<div class="mobile-container">
+    <div class="header">
+        <div class="mascot-box" id="mascotBox">🐱✨</div>
+        <div id="questionNav" class="question-nav-container hidden"></div>
+
+        <h3 id="mainTitle">e-PR KUIS CERIA</h3>
+        
+        <div class="designer-credit" id="designerCredit">Design Oleh : Ikhwan Adi Yanto, S.Pd. 💬 0822 2557 5222</div>
+        
+        <div id="powerUpHeaderContainer" class="hidden">
+            <button class="powerup-btn-trigger" id="powerUpBtn" onclick="openPowerUpModal()">
+                <span>⚡ BANTUAN POWER UP ⚡</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- HALAMAN LOGIN -->
+    <div id="startScreen">
+        <div class="form-group">
+            <label>Masukkan Nomor Induk Siswa (NIS) Kamu 🤗✨ :</label>
+            <input type="text" id="inputNIS" oninput="cekNIS()" placeholder="Ketik nomor NIS di sini ya..." autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Kode Tes Aktif 📝 :</label>
+            <input type="text" id="inputKodeTes" value="BINDO-Denkon-TP.1" readonly>
+        </div>
+        <div id="namaDisplay" style="margin: 10px 0; font-weight: bold; text-align: center; min-height: 30px; font-size: 13px;"></div>
+
+        <button class="btn-action" id="startBtn" onclick="playAudioAndDo(handleStartButton)" disabled>Mulai Kuis Sekarang 🚀</button>
+    </div>
+
+    <!-- HALAMAN KUIS -->
+    <div id="quizScreen" class="hidden" style="display: flex; flex-direction: column; flex: 1;">
+        <div style="text-align: center; margin-bottom: 4px;"><div class="quiz-progress" id="progressText">Soal 1 dari 25</div></div>
+        
+        <div style="text-align: center;">
+            <div class="timer-box">⏰ <span id="timer">60s</span></div>
+        </div>
+        
+        <div id="shieldIndicatorBox" class="hidden" style="text-align: center;">
+            <div class="shield-indicator">🛡️ Perisai Anti Jawaban Salah Aktif!</div>
+        </div>
+
+        <div class="progress-time-container"><div id="timeBar" class="progress-time-bar"></div></div>
+        <p id="question" style="font-weight: 700; font-size: 15px; line-height: 1.4; color: #1a202c; text-align: left; margin-bottom: 12px; white-space: pre-line;"></p>
+        <div id="options"></div>
+        <button class="btn-pas" id="btnPas" onclick="playAudioAndDo(lewatSoal)">⏭️ Lewati & Kerjakan Nanti</button>
+    </div>
+
+    <!-- MODAL FEEDBACK -->
+    <div id="feedbackModal" class="hidden">
+        <div class="modal-content">
+            <div id="modalEmoji" class="modal-emoji">👍</div>
+            <h2 id="modalTitle" class="modal-text" style="color: #38b000;">Hebat Sekali!</h2>
+        </div>
+    </div>
+
+    <!-- HALAMAN SKOR AKHIR -->
+    <div id="resultScreen" class="hidden" style="text-align:center; padding-top: 10px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 48px; margin-bottom: 4px;">🏆🎈</div>
+        <h2 id="resultTitle" style="font-size: 20px; color: var(--secondary); font-weight: 800;"></h2>
+        <div id="score" style="font-size: 34px; font-weight: 900; margin: 12px 0; color: #007200; background: #f0fff4; padding: 12px; border-radius: 16px; border: 2.5px dashed var(--primary);"></div>
+        <div id="durationInfo" style="font-size: 13px; font-weight: 700; margin-bottom: 16px; color: #4a5568; background: #e3f2fd; padding: 8px; border-radius: 10px;">
+            ⏳ Total Waktu Ditersisa: <span id="durationText" style="color: var(--secondary);">0 menit 0 detik</span>
+        </div>
+        <button class="btn-action" onclick="playAudioAndDo(() => location.reload())">Selesai & Keluar 🤩</button>
+    </div>
+
+    <!-- FOOTER COPYRIGHT -->
+    <div class="footer-copyright">
+        © 2026 e-PR Pendidikan - Ikhwan Adi Yanto, S.Pd.
+    </div>
+</div>
+
+<script>
+    const MAX_ATTEMPTS = 3;
+    const DEFAULT_TIME_PER_QUESTION = 60;
+    let quizIsRunning = false;
+    let currentAttemptNumber = 1;
+    let alasanSiswaText = "-";
+    
+    let warningCount = 0;
+
+    let powerUpUsedList = {
+        '5050': false,
+        'freeze': false,
+        'extratime': false,
+        'antiwrong': false
+    };
+
+    let powerUpUsedOnCurrentQuestion = false;
+
+    let isTimeFrozen = false;
+    let isAntiWrongActive = false;
+
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzrfBCYtqJu9qkpM1dKlS1VGt2UkBMRsQEhu1rjOOFtcTi07urfEi8SeCDCndV3VuqH/exec";
+
+    const dataSiswa = {
+        "3052": "Amelia Alita Zahra", "3223": "Angelica Vikar Maharani", "3085": "Anggraeni Abbilah Dhety",
+        "3087": "Azka Nailun Nabhan", "3088": "Cinta Anugrah", "3089": "Dany Sabiq El-Fathin",
+        "3090": "Dhea Fiky Mazaya", "3224": "Earlita Arsyifa Salsabila", "3091": "Fadilla Rizqi Khaerani",
+        "3092": "Fathan Almaizan Zhafar", "3093": "Gavin Harry Wiriawan", "3063": "Hafiz Ardiyansah",
+        "3095": "Intan Berliyan", "3096": "Luthfiya Nur Ramadhani", "3069": "M. Miftah Al Fattah",
+        "3097": "Mugi Aditia Ripki", "3098": "Muh Azzka Alpratama", "3099": "Muhamad Ramadhani",
+        "3102": "Nayla Dwi Syafriani", "3108": "Puteri Ayuning Kirana", "3103": "Raisa Rahmawati Septiani",
+        "3104": "Renita Nur Saefitri", "3084": "Shalwa Aisa Nazwa", "3105": "Wifha Alya An Adibah",
+        "3106": "Zhidan Dwi Aprilio Nurosy", "3107": "Zulfan Azhar Ramadhan",
+        "3289": "Tauladani Elang"
+    };
+
+    const originalQuizData = [
+        { id: 1, q: "Perhatikan kalimat berikut!\n\"Kambing hitam itu akhirnya tertangkap oleh polisi setelah buron selama seminggu.\"\nMakna konotatif dari frasa yang dicetak miring adalah...", a: "B", o: ["A. Hewan ternak berwarna hitam", "B. Orang yang disalahkan atau disuruh menanggung kesalahan", "C. Pemimpin kelompok kriminal", "D. Orang yang memiliki ciri-ciri fisik gelap"] },
+        { id: 2, q: "Makna denotatif dari kata \"bunga\" adalah...", a: "A", o: ["A. Bagian tumbuhan yang berhiasan indah dan berwarna-warni", "B. Sesuatu yang sangat disayangi atau dicintai", "C. Tambahan uang yang diberikan saat meminjam uang di bank", "D. Wanita yang menjadi idola di suatu tempat"] },
+        { id: 3, q: "Perhatikan kalimat berikut!\n\"Ayah membeli kambing untuk persiapan Hari Raya Kurban.\"\nKata kambing dalam kalimat tersebut memiliki makna...", a: "B", o: ["A. Konotatif", "B. Denotatif", "C. Kiasan", "D. Ambiguitas"] },
+        { id: 4, q: "Perhatikan kalimat-kalimat berikut:\n1. Meja hijau itu kini menjadi pusat perhatian para wartawan.\n2. Petani menjemur padi di atas tikar berwarna hijau.\nKalimat yang menggunakan kata bermakna konotatif ditunjukkan oleh nomor...", a: "A", o: ["A. 1", "B. 2", "C. 1 dan 2", "D. Tidak ada yang benar"] },
+        { id: 5, q: "Apa perbedaan utama antara makna denotatif dan konotatif?", a: "B", o: ["A. Denotatif bersifat kiasan, sedangkan konotatif bersifat sebenarnya.", "B. Denotatif bersifat sebenarnya (objektif), sedangkan konotatif memiliki makna tambahan atau kiasan (subjektif).", "C. Denotatif hanya digunakan dalam puisi, sedangkan konotatif dalam karya ilmiah.", "D. Denotatif tidak memiliki arti kamus, sedangkan konotatif ada di kamus."] },
+        { id: 6, q: "\"Dewi malam bersinar terang menyinari kegelapan malam.\"\nFrasa Dewi malam pada kalimat tersebut bermakna konotatif yang merujuk kepada...", a: "C", o: ["A. Bintang", "B. Matahari", "C. Bulan", "D. Awan"] },
+        { id: 7, q: "Perhatikan kalimat berikut!\n\"Siti menanam bunga mawar di halaman depan rumahnya.\"\nMakna kata bunga dalam kalimat di atas adalah...", a: "B", o: ["A. Makna kias", "B. Makna denotatif", "C. Makna konotatif negatif", "D. Makna konotatif positif"] },
+        { id: 8, q: "\"Janganlah menjadi anak yang panjang tangan!\"\nUngkapan panjang tangan memiliki makna konotatif yaitu...", a: "B", o: ["A. Suka menolong orang lain", "B. Suka mencuri", "C. Memiliki tangan yang melebihi ukuran normal", "D. Suka bekerja keras"] },
+        { id: 9, q: "Kalimat manakah yang menggunakan kata \"amplop\" dengan makna konotatif?", a: "B", o: ["A. Ibu memasukkan surat lamaran kerja ke dalam amplop cokelat.", "B. Kasus korupsi itu terbongkar karena adanya aliran amplop kepada pejabat terkait.", "C. Rani membeli sebungkus amplop putih di toko buku terdekat.", "D. Amplop surat undangan pernikahan itu sudah disebar."] },
+        { id: 10, q: "\"Anak itu menjadi buah bibir di sekolah karena prestasinya yang luar biasa.\"\nMakna konotatif dari buah bibir adalah...", a: "B", o: ["A. Buah yang rasanya manis", "B. Bahan pembicaraan orang banyak", "C. Pujian yang tulus", "D. Gosip yang belum tentu benar"] },
+        { id: 11, q: "Makna denotatif dari kata \"kursi\" adalah...", a: "B", o: ["A. Jabatan atau kedudukan dalam pemerintahan", "B. Tempat duduk yang berkaki dan bersandaran", "C. Kekuasaan politik di parlemen", "D. Wewenang untuk memimpin suatu instansi"] },
+        { id: 12, q: "Perhatikan kalimat berikut!\n\"Pak Joko kini sudah menduduki kursi panas di kementerian.\"\nMakna dari kata kursi pada kalimat tersebut adalah...", a: "B", o: ["A. Tempat duduk khusus untuk rapat", "B. Kedudukan atau jabatan yang penuh tantangan dan risiko", "C. Kursi yang terbuat dari bahan panas", "D. Kursi roda milik pejabat"] },
+        { id: 13, q: "\"Rendah hati\" adalah contoh kata atau frasa yang memiliki makna konotatif...", a: "C", o: ["A. Negatif", "B. Netral", "C. Positif", "D. Denotatif murni"] },
+        { id: 14, q: "Kalimat yang memuat kata bermakna denotatif adalah...", a: "B", o: ["A. Dia adalah tangan kanan direktur utama perusahaan itu.", "B. Ayah membawa oleh-oleh tas kulit asli dari Bandung.", "C. Hati-hati dengan ucapan pria bermuka dua itu!", "D. Rendah diri tidak akan membawa kita ke mana-mana."] },
+        { id: 15, q: "Kata \"pedas\" dapat bermakna konotatif ketika digunakan dalam kalimat...", a: "B", o: ["A. Sambal buatan ibu terasa sangat pedas di lidah.", "B. Kritikan tajam dan pedas disampaikan oleh pengamat politik itu.", "C. Cabai rawit merah memiliki tingkat kepedasan yang tinggi.", "D. Jangan makan makanan yang pedas agar perut tidak sakit."] },
+        { id: 16, q: "Perhatikan pasangan kalimat berikut!\nI. Kuda hitam memenangkan pacuan kuda di arena balap.\nII. Kandidat kuda hitam dalam pemilihan ketua OSIS berhasil menang secara mengejutkan.\nPenggunaan kata kuda hitam pada kalimat II bermakna...", a: "B", o: ["A. Denotatif", "B. Konotatif", "C. Lugas", "D. Sebenarnya"] },
+        { id: 17, q: "Makna konotatif dari kata \"merah\" sering kali dihubungkan dengan lambang...", a: "B", o: ["A. Kesucian dan ketulusan", "B. Keberanian atau kemarahan", "C. Kesedihan dan kedamaian", "D. Kebersihan dan kesehatan"] },
+        { id: 18, q: "\"Pahlawan devisa\" adalah sebutan konotatif yang sering diberikan kepada...", a: "B", o: ["A. Tentara yang menjaga perbatasan negara", "B. Tenaga Kerja Indonesia (TKI/TMI) di luar negeri", "C. Investor asing yang menanamkan modal", "D. Menteri Keuangan negara"] },
+        { id: 19, q: "Kalimat di bawah ini yang menggunakan kata \"batu\" secara denotatif adalah...", a: "B", o: ["A. Sikap kepala batu anak itu membuat orang tuanya kewalahan.", "B. Para demonstran melempari petugas dengan batu.", "C. Hatinya sudah menjadi batu karena terlalu sering dikecewakan.", "D. Jangan percaya padanya, dia adalah pencari batu karang di lautan hati."] },
+        { id: 20, q: "\"Gigi\" pada kalimat \"Gigi gergaji itu sudah tumpul dan harus diganti\" memiliki makna...", a: "B", o: ["A. Konotatif", "B. Denotatif", "C. Kiasan", "D. Sindiran"] },
+        { id: 21, q: "Apa makna konotatif dari ungkapan \"darah biru\"?", a: "B", o: ["A. Orang yang memiliki penyakit keturunan", "B. Keturunan bangsawan atau ningrat", "C. Pekerja keras di bidang pertambangan", "D. Pendekar atau ahli bela diri"] },
+        { id: 22, q: "Kalimat manakah yang mengandung makna konotatif positif?", a: "C", o: ["A. Ia menjadi tikus kantor di instansi tempatnya bekerja.", "B. Perempuan itu dikenal sebagai kupu-kupu malam.", "C. Lapang dada diperlukan dalam menghadapi berbagai ujian hidup.", "D. Pegawai itu terkenal sebagai tangan panjang di kantornya."] },
+        { id: 23, q: "Manakah kelompok kata di bawah ini yang seluruhnya bermakna denotatif dalam kalimat sehari-hari?", a: "A", o: ["A. Melati, kursi, meja, terbang", "B. Bunga bank, kursi jabatan, meja hijau, darah biru", "C. Kambing hitam, buah tangan, panjang tangan, gigit jari", "D. Sampah masyarakat, tangan kanan, api kemarahan"] },
+        { id: 24, q: "\"Ibu membawa buah tangan dari kunjungannya ke Yogyakarta.\"\nArti frasa buah tangan adalah...", a: "B", o: ["A. Hasil panen buah-buahan", "B. Oleh-oleh atau cinderamata", "C. Tas belanjaan", "D. Cenderamata berbentuk tangan"] },
+        { id: 25, q: "Perhatikan kalimat berikut!\n\"Polisi berhasil membekuk tikus-tikus berdasi yang merugikan negara miliaran rupiah.\"\nMakna kata tikus berdasi dalam kalimat tersebut adalah...", a: "B", o: ["A. Hewan tikus yang mengenakan pakaian manusia", "B. Koruptor atau pejabat yang melakukan tindak kejahatan korupsi", "C. Pegawai kantor yang menyukai binatang peliharaan", "D. Penjahat jalanan kelas teri"] }
+    ];
+
+    let activeQueue = [];
+    let currentIndexInQueue = 0;
+    let score = 0, timer;
+    let totalSisaWaktuKeseluruhan = 0;
+    let questionStatus = {};  
+    let userAnswers = {};     
+    let questionTimeLeft = {}; 
+    let unlockedQuestions = {}; 
+
+    document.addEventListener("visibilitychange", function() {
+        if (quizIsRunning && document.hidden) { handleAppExit(); }
+    });
+    window.addEventListener("blur", function() {
+        if (quizIsRunning) { handleAppExit(); }
+    });
+
+    function handleAppExit() {
+        if (!quizIsRunning) return;
+
+        let isPowerUpOpen = !document.getElementById('powerUpModal').classList.contains('hidden');
+        let isReasonOpen = !document.getElementById('reasonModal').classList.contains('hidden');
+        let isInfoOpen = !document.getElementById('infoModal').classList.contains('hidden');
+        let isRulesOpen = !document.getElementById('rulesModal').classList.contains('hidden');
+
+        if (isPowerUpOpen || isReasonOpen || isInfoOpen || isRulesOpen) return;
+
+        if (warningCount === 0) {
+            warningCount++;
+            quizIsRunning = false;
+            clearInterval(timer);
+            hideFeedbackModal();
+            document.getElementById('warningModal').classList.remove('hidden');
+        } else {
+            triggerViolation();
+        }
+    }
+
+    function resumeQuizAfterWarning() {
+        document.getElementById('warningModal').classList.add('hidden');
+        quizIsRunning = true;
+        showQuestion();
+    }
+
+    function triggerViolation() {
+        quizIsRunning = false;
+        clearInterval(timer);
+        hideFeedbackModal();
+        document.getElementById('warningModal').classList.add('hidden');
+        document.getElementById('violationModal').classList.remove('hidden');
+
+        let targetNIS = document.getElementById('inputNIS').value.trim();
+        let namaSiswa = dataSiswa[targetNIS] || "Siswa";
+        let kodeTes = document.getElementById('inputKodeTes').value.trim() || "-";
+
+        let formData = new FormData();
+        formData.append('nama', namaSiswa + " (Melanggar / Pindah Aplikasi)");
+        formData.append('skor', 0);
+        formData.append('keterangan', kodeTes + " [Alasan: " + alasanSiswaText + "]"); 
+        formData.append('sisaWaktu', "0 detik");
+        formData.append('durasiPengerjaan', "0 menit 0 detik");
+
+        fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: formData }).catch(err => console.error(err));
+    }
+
+    function playAudio(audioId, callback) {
+        let audio = document.getElementById(audioId);
+        let executed = false;
+
+        let runOnce = () => {
+            if (!executed) {
+                executed = true;
+                if (callback) callback();
+            }
+        };
+
+        if (audio) {
+            audio.currentTime = 0;
+            let playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    audio.onended = runOnce;
+                    setTimeout(runOnce, 1000);
+                }).catch(() => runOnce());
+            } else { runOnce(); }
+        } else { runOnce(); }
+    }
+
+    function playAudioAndDo(callback) {
+        playAudio('clickSound', callback);
+    }
+
+    function closeRulesModal() { document.getElementById('rulesModal').classList.add('hidden'); }
+
+    function showInfoModal(icon, title, desc) {
+        document.getElementById('infoIcon').innerText = icon;
+        document.getElementById('infoTitle').innerText = title;
+        document.getElementById('infoDesc').innerText = desc;
+        document.getElementById('infoModal').classList.remove('hidden');
+    }
+
+    function closeInfoModal() {
+        document.getElementById('infoModal').classList.add('hidden');
+    }
+
+    function showFeedbackModal(isCorrect) {
+        let modal = document.getElementById('feedbackModal');
+        let emoji = document.getElementById('modalEmoji');
+        let title = document.getElementById('modalTitle');
+        if (isCorrect) { emoji.innerText = "🎉✨"; title.innerText = "Benar, Hebat Sekali!"; title.style.color = "#38b000"; } 
+        else { emoji.innerText = "🥺💪"; title.innerText = "Kurang Tepat, Semangat!"; title.style.color = "var(--danger)"; }
+        modal.classList.remove('hidden');
+    }
+
+    function hideFeedbackModal() { document.getElementById('feedbackModal').classList.add('hidden'); }
+
+    function openPowerUpModal() {
+        if (!quizIsRunning) return;
+        let q = activeQueue[currentIndexInQueue];
+
+        if (questionStatus[q.id] === 'correct' || questionStatus[q.id] === 'wrong') {
+            showInfoModal("⚠️", "Pemberitahuan", "Power Up tidak dapat digunakan setelah memilih jawaban!");
+            return;
+        }
+
+        if (powerUpUsedOnCurrentQuestion) {
+            showInfoModal("⚠️", "Pemberitahuan", "Kamu sudah menggunakan 1 Power Up pada soal ini!");
+            return;
+        }
+
+        let allUsed = Object.values(powerUpUsedList).every(v => v === true);
+        if (allUsed) {
+            showInfoModal("❌", "Power Up Habis", "Semua jenis Power Up kamu sudah terpakai!");
+            return;
+        }
+
+        for (let key in powerUpUsedList) {
+            let card = document.getElementById('card-' + key);
+            if (card) {
+                if (powerUpUsedList[key]) card.classList.add('used');
+                else card.classList.remove('used');
+            }
+        }
+
+        document.getElementById('powerUpModal').classList.remove('hidden');
+    }
+
+    function closePowerUpModal() {
+        document.getElementById('powerUpModal').classList.add('hidden');
+    }
+
+    function usePowerUp(type) {
+        if (powerUpUsedList[type]) {
+            showInfoModal("⚠️", "Power Up Terpakai", "Jenis Power Up ini sudah pernah kamu gunakan!");
+            return;
+        }
+
+        if (powerUpUsedOnCurrentQuestion) {
+            showInfoModal("⚠️", "Maksimal 1 Power Up", "Kamu hanya bisa menggunakan 1 Power Up per soal!");
+            return;
+        }
+
+        let q = activeQueue[currentIndexInQueue];
+        
+        powerUpUsedList[type] = true;
+        powerUpUsedOnCurrentQuestion = true;
+        closePowerUpModal();
+
+        let allUsed = Object.values(powerUpUsedList).every(v => v === true);
+        if (allUsed) {
+            document.getElementById('powerUpBtn').disabled = true;
+        }
+
+        if (type === '5050') {
+            let optButtons = document.querySelectorAll('#options .option-btn');
+            let removed = 0;
+            optButtons.forEach(btn => {
+                let letter = btn.innerText.trim().charAt(0);
+                if (letter !== q.a && removed < 2) {
+                    btn.classList.add('hidden-option');
+                    removed++;
+                }
+            });
+            showInfoModal("🌓", "Power Up 50:50", "Dua pilihan jawaban yang salah telah dihapus dari layar!");
+        } 
+        else if (type === 'freeze') {
+            isTimeFrozen = true;
+            clearInterval(timer);
+            document.getElementById('timer').innerText = "❄️ BEKU";
+            showInfoModal("❄️", "Power Up Time Freeze", "Waktu pada soal ini telah dibekukan!");
+        } 
+        else if (type === 'extratime') {
+            questionTimeLeft[q.id] += 120;
+            document.getElementById('timer').innerText = Math.ceil(questionTimeLeft[q.id]) + "s";
+            showInfoModal("⏳", "Power Up Extra Time", "Waktu tambahan +120 detik telah ditambahkan ke soal ini!");
+        } 
+        else if (type === 'antiwrong') {
+            isAntiWrongActive = true;
+            document.getElementById('shieldIndicatorBox').classList.remove('hidden');
+            showInfoModal("🛡️", "Power Up Anti Wrong", "Perisai aktif! Jika kamu memilih jawaban salah, kamu tetap aman.");
+        }
+    }
+
+    function cekNIS() {
+        let inputVal = document.getElementById('inputNIS').value.trim();
+        let display = document.getElementById('namaDisplay');
+        let startBtn = document.getElementById('startBtn');
+        
+        startBtn.disabled = true;
+        if (!inputVal) { display.innerText = ""; return; }
+        
+        let namaSiswa = dataSiswa[inputVal];
+        if (!namaSiswa) { display.innerText = "NIS tidak ditemukan ❌"; display.style.color = "var(--danger)"; return; }
+
+        let dataKey = 'kuota_data_bindo_' + inputVal;
+        let savedData = JSON.parse(localStorage.getItem(dataKey));
+        let now = new Date().getTime();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
+        let pemakaian = 0;
+        if (savedData) {
+            if (now - savedData.timestamp > twelveHours) {
+                localStorage.removeItem(dataKey);
+                pemakaian = 0;
+            } else { pemakaian = savedData.count; }
+        }
+
+        let sisa = MAX_ATTEMPTS - pemakaian;
+
+        if (sisa <= 0) {
+            display.innerHTML = `Halo, ${namaSiswa} ❌<br><span style="color:var(--danger); font-size:12px;">Kesempatan 3x kamu sudah habis! (Reset dalam 12 jam)</span>`;
+            startBtn.disabled = true;
+        } else {
+            display.innerHTML = `Halo, ${namaSiswa} ✨<br><span style="color:#007200; font-size:12px;">Sisa kesempatan: <b>${sisa} dari 3 kali</b></span>`;
+            startBtn.disabled = false;
+        }
+    }
+
+    function handleStartButton() {
+        let nis = document.getElementById('inputNIS').value.trim();
+        let dataKey = 'kuota_data_bindo_' + nis;
+        let savedData = JSON.parse(localStorage.getItem(dataKey));
+        let now = new Date().getTime();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
+        let pemakaian = 0;
+        if (savedData) {
+            if (now - savedData.timestamp > twelveHours) { pemakaian = 0; } 
+            else { pemakaian = savedData.count; }
+        }
+
+        currentAttemptNumber = pemakaian + 1;
+
+        if (currentAttemptNumber >= 2) {
+            document.getElementById('reasonTitle').innerText = `💬 Konfirmasi Percobaan ke-${currentAttemptNumber}`;
+            document.getElementById('reasonDesc').innerText = `Ini adalah percobaan ke-${currentAttemptNumber}, alasan mencoba : ...`;
+            document.getElementById('inputAlasan').value = "";
+            document.getElementById('reasonModal').classList.remove('hidden');
+        } else {
+            alasanSiswaText = "Percobaan Pertama";
+            jalankanMulaiQuiz();
+        }
+    }
+
+    function submitAlasan() {
+        let alasanInput = document.getElementById('inputAlasan').value.trim();
+        if (!alasanInput) {
+            showInfoModal("✏️", "Mohon Isi Alasan", "Mohon isi alasan mencoba terlebih dahulu ya! 😊");
+            return;
+        }
+        alasanSiswaText = alasanInput;
+        document.getElementById('reasonModal').classList.add('hidden');
+        jalankanMulaiQuiz();
+    }
+
+    function inisialisasiNavigasiSoal() {
+        let navContainer = document.getElementById('questionNav');
+        navContainer.innerHTML = '';
+        originalQuizData.forEach(item => {
+            let btn = document.createElement('div');
+            btn.className = 'nav-btn locked';
+            btn.id = 'nav-item-' + item.id;
+            btn.innerText = '🔒';
+            btn.onclick = () => jumpToQuestionById(item.id);
+            navContainer.appendChild(btn);
+        });
+    }
+
+    function updateNavigasiSoal(currentId) {
+        originalQuizData.forEach(item => {
+            let btn = document.getElementById('nav-item-' + item.id);
+            if (!btn) return;
+
+            btn.classList.remove('active');
+            if (item.id === currentId) { btn.classList.add('active'); }
+
+            let status = questionStatus[item.id];
+            let isUnlocked = unlockedQuestions[item.id];
+
+            if (status === 'correct') {
+                btn.className = 'nav-btn unlocked correct';
+                btn.innerText = "✔️";
+            } else if (status === 'wrong') {
+                btn.className = 'nav-btn unlocked wrong';
+                btn.innerText = "✖";
+            } else if (status === 'skipped') {
+                btn.className = 'nav-btn unlocked skipped';
+                btn.innerText = item.id;
+            } else if (isUnlocked) {
+                btn.className = 'nav-btn unlocked';
+                btn.innerText = item.id;
+            } else {
+                btn.className = 'nav-btn locked';
+                btn.innerText = "🔒";
+            }
+        });
+    }
+
+    function jumpToQuestionById(targetId) {
+        if (!quizIsRunning) return;
+        if (!unlockedQuestions[targetId]) {
+            showInfoModal("🔒", "Soal Terkunci", "Soal ini masih terkunci! Hanya bisa dibuka setelah pernah dikunjungi.");
+            return;
+        }
+        let index = activeQueue.findIndex(q => q.id === targetId);
+        if (index !== -1) {
+            currentIndexInQueue = index;
+            showQuestion();
+        }
+    }
+
+    function jalankanMulaiQuiz() {
+        let nis = document.getElementById('inputNIS').value.trim();
+        let dataKey = 'kuota_data_bindo_' + nis;
+        let savedData = JSON.parse(localStorage.getItem(dataKey));
+        let now = new Date().getTime();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
+        let pemakaian = 0;
+        if (savedData && (now - savedData.timestamp <= twelveHours)) {
+            pemakaian = savedData.count;
+        }
+
+        if ((MAX_ATTEMPTS - pemakaian) <= 0) { showInfoModal("❌", "Akses Ditolak", "Kesempatan kamu telah habis!"); location.reload(); return; }
+
+        let newData = {
+            count: pemakaian + 1,
+            timestamp: (pemakaian === 0) ? now : savedData.timestamp
+        };
+        localStorage.setItem(dataKey, JSON.stringify(newData));
+
+        score = 0; totalSisaWaktuKeseluruhan = 0;
+        warningCount = 0;
+        
+        powerUpUsedList = { '5050': false, 'freeze': false, 'extratime': false, 'antiwrong': false };
+        powerUpUsedOnCurrentQuestion = false;
+
+        isTimeFrozen = false;
+        isAntiWrongActive = false;
+        
+        questionStatus = {};
+        userAnswers = {};
+        questionTimeLeft = {};
+        unlockedQuestions = {};
+
+        originalQuizData.forEach(item => {
+            questionTimeLeft[item.id] = DEFAULT_TIME_PER_QUESTION;
+        });
+
+        // Sembunyikan Kredit Designer & Judul Utama saat kuis dimulai
+        document.getElementById('designerCredit').classList.add('hidden');
+        document.getElementById('mainTitle').classList.add('hidden');
+        
+        document.getElementById('powerUpHeaderContainer').classList.remove('hidden');
+        document.getElementById('powerUpBtn').disabled = false;
+
+        document.getElementById('mascotBox').classList.add('hidden');
+        document.getElementById('questionNav').classList.remove('hidden');
+        inisialisasiNavigasiSoal();
+
+        activeQueue = [...originalQuizData].sort(() => Math.random() - 0.5);
+        currentIndexInQueue = 0;
+
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('quizScreen').classList.remove('hidden');
+        
+        quizIsRunning = true;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (!quizIsRunning) return;
+
+        if (activeQueue.length === 0) {
+            finishQuiz();
+            return;
+        }
+
+        if (currentIndexInQueue >= activeQueue.length) {
+            currentIndexInQueue = 0;
+        }
+
+        clearInterval(timer);
+
+        powerUpUsedOnCurrentQuestion = false;
+        isTimeFrozen = false;
+
+        let q = activeQueue[currentIndexInQueue];
+        
+        unlockedQuestions[q.id] = true;
+
+        let currentSoalTimeLeft = questionTimeLeft[q.id];
+
+        let timeBar = document.getElementById('timeBar');
+        let initialWidth = (currentSoalTimeLeft / DEFAULT_TIME_PER_QUESTION) * 100;
+        timeBar.style.width = Math.max(0, initialWidth) + "%";
+        if (currentSoalTimeLeft <= 10) timeBar.classList.add('critical');
+        else timeBar.classList.remove('critical');
+
+        document.getElementById('timer').innerText = Math.ceil(currentSoalTimeLeft) + "s";
+        document.getElementById('progressText').innerText = `Soal ${currentIndexInQueue + 1} dari ${activeQueue.length}`;
+        
+        updateNavigasiSoal(q.id);
+
+        document.getElementById('question').innerText = q.q;
+        let optDiv = document.getElementById('options'); optDiv.innerHTML = "";
+        let isAnswered = questionStatus[q.id] === 'correct' || questionStatus[q.id] === 'wrong';
+        
+        document.getElementById('btnPas').style.display = isAnswered ? 'none' : 'block';
+
+        q.o.forEach((o) => {
+            let btn = document.createElement('button'); 
+            btn.className = 'option-btn'; 
+            btn.innerText = o;
+
+            if (isAnswered) {
+                btn.disabled = true;
+                if (o.charAt(0) === q.a) {
+                    btn.classList.add('correct');
+                } else if (userAnswers[q.id] === o) {
+                    btn.classList.add('wrong');
+                }
+            } else {
+                btn.onclick = () => { 
+                    optDiv.querySelectorAll('.option-btn').forEach(b => b.disabled = true); 
+                    clearInterval(timer);
+                    totalSisaWaktuKeseluruhan += questionTimeLeft[q.id];
+
+                    userAnswers[q.id] = o;
+
+                    let isCorrect = o.charAt(0) === q.a;
+
+                    if (!isCorrect && isAntiWrongActive) {
+                        isAntiWrongActive = false; 
+                        document.getElementById('shieldIndicatorBox').classList.add('hidden');
+                        
+                        playAudio('correctSound', () => {
+                            btn.classList.add('correct');
+                            questionStatus[q.id] = 'correct';
+                            score += 4; 
+                            showFeedbackModal(true);
+                            updateNavigasiSoal(q.id);
+                            setTimeout(() => { hideFeedbackModal(); next(); }, 1200);
+                        });
+                        return;
+                    }
+
+                    let soundToPlay = isCorrect ? 'correctSound' : 'wrongSound';
+
+                    playAudio(soundToPlay, () => {
+                        if(isCorrect) { 
+                            btn.classList.add('correct'); 
+                            score += 4; 
+                            questionStatus[q.id] = 'correct';
+                            showFeedbackModal(true); 
+                        } else { 
+                            btn.classList.add('wrong'); 
+                            questionStatus[q.id] = 'wrong';
+                            showFeedbackModal(false); 
+                        }
+                        
+                        updateNavigasiSoal(q.id);
+                        setTimeout(() => { hideFeedbackModal(); next(); }, 1200);
+                    });
+                };
+            }
+            optDiv.appendChild(btn);
+        });
+
+        if (!isAnswered && !isTimeFrozen) {
+            let loopCount = 0;
+            let startSoalTimeLeft = questionTimeLeft[q.id];
+
+            timer = setInterval(() => {
+                if (!quizIsRunning) return;
+                loopCount++;
+                
+                let updatedTimeLeft = startSoalTimeLeft - (loopCount * 0.1);
+                questionTimeLeft[q.id] = Math.max(0, updatedTimeLeft);
+
+                let currentWidth = (updatedTimeLeft / DEFAULT_TIME_PER_QUESTION) * 100;
+                timeBar.style.width = Math.max(0, currentWidth) + "%";
+
+                if (loopCount % 10 === 0) {
+                    let displayTime = Math.ceil(updatedTimeLeft);
+                    document.getElementById('timer').innerText = displayTime + "s";
+                    
+                    if(displayTime > 0 && displayTime <= 10) { timeBar.classList.add('critical'); }
+                    if(updatedTimeLeft <= 0) { 
+                        clearInterval(timer); 
+                        questionTimeLeft[q.id] = 0;
+                        timeBar.style.width = "0%";
+                        optDiv.querySelectorAll('.option-btn').forEach(b => b.disabled = true); 
+
+                        questionStatus[q.id] = 'wrong';
+                        updateNavigasiSoal(q.id);
+
+                        playAudio('wrongSound', () => {
+                            showFeedbackModal(false);
+                            setTimeout(() => { hideFeedbackModal(); next(); }, 1200);
+                        });
+                    }
+                }
+            }, 100);
+        }
+    }
+
+    function lewatSoal() {
+        clearInterval(timer);
+        let q = activeQueue[currentIndexInQueue];
+        if (questionStatus[q.id] !== 'correct' && questionStatus[q.id] !== 'wrong') {
+            questionStatus[q.id] = 'skipped';
+        }
+        updateNavigasiSoal(q.id);
+
+        let skippedQuestion = activeQueue.splice(currentIndexInQueue, 1)[0];
+        activeQueue.push(skippedQuestion);
+        showQuestion(); 
+    }
+
+    function next() {
+        activeQueue.splice(currentIndexInQueue, 1);
+        if (activeQueue.length > 0) {
+            if (currentIndexInQueue >= activeQueue.length) currentIndexInQueue = 0;
+            showQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        quizIsRunning = false; clearInterval(timer);
+        document.getElementById('quizScreen').classList.add('hidden');
+        document.getElementById('resultScreen').classList.remove('hidden');
+        document.getElementById('resultTitle').innerText = score >= 70 ? "Luar Biasa! Kamu Hebat 🎉 🤩" : "Tetap Semangat, Ayo Coba Lagi! 📚 ✨";
+        document.getElementById('score').innerText = "Skor Kamu: " + score;
+        
+        let targetNIS = document.getElementById('inputNIS').value.trim();
+        let namaSiswa = dataSiswa[targetNIS];
+        let kodeTes = document.getElementById('inputKodeTes').value.trim() || "-";
+
+        let totalSisaDetik = Math.round(totalSisaWaktuKeseluruhan);
+        let menit = Math.floor(totalSisaDetik / 60);
+        let detik = totalSisaDetik % 60;
+        let formatDurasi = menit + " menit " + detik + " detik";
+
+        document.getElementById('durationText').innerText = formatDurasi;
+
+        let formData = new FormData();
+        formData.append('nama', namaSiswa + (currentAttemptNumber > 1 ? ` (Percobaan ke-${currentAttemptNumber})` : ""));
+        formData.append('skor', score);
+        formData.append('keterangan', kodeTes + ` [Alasan: ${alasanSiswaText}]`); 
+        formData.append('sisaWaktu', totalSisaDetik + " detik");
+        formData.append('durasiPengerjaan', formatDurasi);
+
+        fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: formData }).catch(err => console.error(err));
+    }
+</script>
+</body>
+</html>
