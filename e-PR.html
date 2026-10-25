@@ -378,6 +378,31 @@
             padding: 25px;
             box-shadow: var(--shadow);
             border: 2px solid #e1f5fe;
+            transition: all 0.3s ease;
+        }
+
+        /* Styling Khusus saat Mode Full Screen Aktif */
+        .timeline-section.fullscreen-mode {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 99999 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff !important;
+            padding: 20px 30px !important;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .timeline-section.fullscreen-mode .timeline-viewport {
+            flex: 1;
+            height: auto !important;
+            max-height: none !important;
         }
 
         .timeline-header {
@@ -427,6 +452,29 @@
             background: linear-gradient(135deg, #dc2626, #b91c1c);
             transform: translateY(-2px);
             box-shadow: 0 5px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Tombol Full Screen */
+        .btn-fullscreen {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-fullscreen:hover {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(139, 92, 246, 0.4);
         }
 
         /* Tombol Pengaturan Identitas Sekolah (ikon Gear) */
@@ -907,162 +955,6 @@
             font-size: 14px;
         }
 
-        /* Custom Soft & Playful Alert Modal */
-        .custom-alert-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            animation: fadeInBg 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes fadeInBg {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .custom-alert-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 480px;
-            border-radius: 28px;
-            padding: 30px 24px 24px 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            animation: popInCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes popInCard {
-            from { transform: scale(0.85) translateY(20px); opacity: 0; }
-            to { transform: scale(1) translateY(0); opacity: 1; }
-        }
-
-        /* Background Confetti & Sparkle Decor */
-        .alert-decor-sparkle {
-            position: absolute;
-            font-size: 14px;
-            opacity: 0.7;
-            pointer-events: none;
-            user-select: none;
-        }
-        .sp-1 { top: 12px; left: 18px; color: #ff7675; animation: pulseSparkle 2s infinite ease-in-out; }
-        .sp-2 { bottom: 15px; left: 20px; color: #74b9ff; animation: pulseSparkle 2.5s infinite ease-in-out 0.5s; }
-        .sp-3 { top: 15px; right: 25px; color: #fd79a8; animation: pulseSparkle 1.8s infinite ease-in-out 0.2s; }
-
-        @keyframes pulseSparkle {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.3); opacity: 1; }
-        }
-
-        .custom-alert-content {
-            flex: 1;
-            z-index: 2;
-        }
-
-        .custom-alert-brand {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .custom-alert-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #0f172a;
-            line-height: 1.35;
-            margin-bottom: 20px;
-        }
-
-        .custom-alert-title span.highlight-pr {
-            color: #ff7675;
-        }
-
-        .custom-alert-btn {
-            background: linear-gradient(135deg, #2b5296, #1e3a8a);
-            color: #ffffff;
-            border: none;
-            padding: 10px 28px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 6px 18px rgba(30, 58, 138, 0.35);
-            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .custom-alert-btn:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 8px 22px rgba(30, 58, 138, 0.45);
-        }
-
-        .custom-alert-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* Animasi Emoji Loving Emoticon */
-        .custom-alert-emoji-box {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            flex-shrink: 0;
-        }
-
-        .loving-emoji-face {
-            font-size: 80px;
-            line-height: 1;
-            animation: floatHeartEmoji 3s infinite ease-in-out;
-            filter: drop-shadow(0 8px 16px rgba(253, 121, 168, 0.3));
-            user-select: none;
-        }
-
-        @keyframes floatHeartEmoji {
-            0%, 100% { transform: translateY(0) rotate(-3deg); }
-            50% { transform: translateY(-8px) rotate(4deg); }
-        }
-
-        .floating-heart {
-            position: absolute;
-            font-size: 20px;
-            animation: popAndFly 2.5s infinite ease-in-out;
-            pointer-events: none;
-            user-select: none;
-        }
-
-        .fh-1 { top: 0px; right: 10px; animation-delay: 0s; }
-        .fh-2 { top: 15px; left: -5px; animation-delay: 0.6s; }
-        .fh-3 { bottom: 10px; right: -5px; animation-delay: 1.2s; }
-
-        @keyframes popAndFly {
-            0% { transform: scale(0.6) translateY(0); opacity: 0; }
-            50% { transform: scale(1.2) translateY(-10px); opacity: 1; }
-            100% { transform: scale(0.8) translateY(-20px); opacity: 0; }
-        }
-
         footer {
             text-align: center;
             padding: 20px;
@@ -1272,7 +1164,7 @@
             </a>
         </div>
 
-        <section class="timeline-section">
+        <section class="timeline-section" id="timelineSection">
             <div class="timeline-header">
                 <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR</h2>
                 <div class="live-status-group">
@@ -1284,6 +1176,11 @@
                     <!-- Tombol CETAK PDF -->
                     <button class="btn-print-pdf" onclick="printPDF()" title="Cetak daftar siswa yang telah mengerjakan">
                         <i class="fa-solid fa-file-pdf"></i> CETAK PDF
+                    </button>
+
+                    <!-- Tombol FULL SCREEN (Layar Penuh) -->
+                    <button class="btn-fullscreen" id="fullscreenBtn" onclick="toggleFullScreen()" title="Tampilkan timeline dalam layar penuh">
+                        <i class="fa-solid fa-expand" id="fullscreenIcon"></i> <span id="fullscreenText">FULL SCREEN</span>
                     </button>
 
                     <!-- Pemilih Tanggal -->
@@ -1370,34 +1267,6 @@
         </div>
     </div>
 
-    <!-- Custom Soft Notification Modal -->
-    <div class="custom-alert-overlay" id="customAlertOverlay">
-        <div class="custom-alert-card">
-            <span class="alert-decor-sparkle sp-1">✦</span>
-            <span class="alert-decor-sparkle sp-2">✦</span>
-            <span class="alert-decor-sparkle sp-3">✨</span>
-
-            <div class="custom-alert-content">
-                <div class="custom-alert-brand">
-                    e-PR Pendidikan 🎈
-                </div>
-                <div class="custom-alert-title">
-                    Bukan <span class="highlight-pr">PR</span> mu hari ini<br>anak pintar
-                </div>
-                <button class="custom-alert-btn" onclick="closeCustomAlert()">
-                    Oke 🎉
-                </button>
-            </div>
-
-            <div class="custom-alert-emoji-box">
-                <div class="loving-emoji-face">🥰</div>
-                <span class="floating-heart fh-1">💖</span>
-                <span class="floating-heart fh-2">💕</span>
-                <span class="floating-heart fh-3">💗</span>
-            </div>
-        </div>
-    </div>
-
     <!-- Area Khusus Cetak Dokumen/PDF Profesional -->
     <div id="printArea" style="display: none;"></div>
 
@@ -1467,22 +1336,8 @@
             card.classList.add('offline-card');
             card.onclick = function(event) {
                 event.preventDefault();
-                showCustomAlert();
+                alert("Maaf, link atau halaman mata pelajaran ini sedang tidak aktif/terkoneksi.");
             };
-        }
-
-        function showCustomAlert() {
-            const modal = document.getElementById('customAlertOverlay');
-            if (modal) {
-                modal.style.display = 'flex';
-            }
-        }
-
-        function closeCustomAlert() {
-            const modal = document.getElementById('customAlertOverlay');
-            if (modal) {
-                modal.style.display = 'none';
-            }
         }
 
         function playAndNavigate(event, targetUrl) {
@@ -1543,467 +1398,4 @@
         let currentFilteredList = [];
         let uploadedLogoBase64 = "";
 
-        // Fungsi Modal Pengaturan Kop Surat & Logo via IndexedDB
-        async function openSettingsModal() {
-            document.getElementById('inputInstansi').value = (await getFromDB('epr_instansi')) || 'PEMERINTAH KABUPATEN';
-            document.getElementById('inputDinas').value = (await getFromDB('epr_dinas')) || 'DINAS PENDIDIKAN DAN KEBUDAYAAN';
-            document.getElementById('inputSekolah').value = (await getFromDB('epr_sekolah')) || 'SD NEGERI ...';
-            document.getElementById('inputAlamat').value = (await getFromDB('epr_alamat')) || 'Alamat: Jl. Pendidikan No. 1';
-            document.getElementById('inputGuru').value = (await getFromDB('epr_guru')) || 'Ikhwan Adi Yanto, S.Pd';
-            
-            uploadedLogoBase64 = (await getFromDB('epr_logo')) || '';
-            const preview = document.getElementById('logoPreview');
-            if (uploadedLogoBase64) {
-                preview.src = uploadedLogoBase64;
-                preview.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-            }
-
-            document.getElementById('settingsModal').style.display = 'flex';
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settingsModal').style.display = 'none';
-        }
-
-        function handleLogoUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedLogoBase64 = e.target.result;
-                    const preview = document.getElementById('logoPreview');
-                    preview.src = uploadedLogoBase64;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function saveSettingsToIndexedDB() {
-            try {
-                await saveToDB('epr_instansi', document.getElementById('inputInstansi').value);
-                await saveToDB('epr_dinas', document.getElementById('inputDinas').value);
-                await saveToDB('epr_sekolah', document.getElementById('inputSekolah').value);
-                await saveToDB('epr_alamat', document.getElementById('inputAlamat').value);
-                await saveToDB('epr_guru', document.getElementById('inputGuru').value);
-                if (uploadedLogoBase64) {
-                    await saveToDB('epr_logo', uploadedLogoBase64);
-                }
-                alert("Identitas dan Logo sekolah berhasil disimpan dengan aman!");
-                closeSettingsModal();
-            } catch (error) {
-                console.error("Gagal menyimpan ke IndexedDB:", error);
-                alert("Terjadi kesalahan saat menyimpan data.");
-            }
-        }
-
-        function changeDate(days) {
-            const dateInput = document.getElementById('filterDateInput');
-            if (!dateInput.value) return;
-
-            let currentDate = new Date(dateInput.value);
-            currentDate.setDate(currentDate.getDate() + days);
-
-            const year = currentDate.getFullYear();
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const day = String(currentDate.getDate()).padStart(2, '0');
-
-            dateInput.value = `${year}-${month}-${day}`;
-            processAndRenderData();
-        }
-
-        function updateChipElement(elementId, count) {
-            const el = document.getElementById(elementId);
-            if (el) {
-                el.innerText = count;
-                if (count > 0) {
-                    el.classList.remove('count-zero');
-                    el.classList.add('count-active');
-                } else {
-                    el.classList.remove('count-active');
-                    el.classList.add('count-zero');
-                }
-            }
-        }
-
-        function processAndRenderData() {
-            const dateInputVal = document.getElementById('filterDateInput').value; 
-            
-            let parts = dateInputVal.split('-');
-            let targetFormattedID = "";
-            let targetFormattedISO = dateInputVal;
-            if (parts.length === 3) {
-                targetFormattedID = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-
-            let filteredByDate = [];
-
-            if (Array.isArray(rawMasterData)) {
-                rawMasterData.forEach(item => {
-                    const rawTime = item.timestamp || item.waktu || item[0] || "";
-                    const rawNama = item.nama || item[1] || "";
-                    const rawNilai = item.skor || item.nilai || item[2] || "0";
-                    const rawKet = item.keterangan || item.mapel || item[3] || "Selesai";
-
-                    if (!rawTime || !rawNama) return;
-
-                    const timeStr = String(rawTime);
-
-                    if (timeStr.includes(targetFormattedID) || timeStr.includes(targetFormattedISO)) {
-                        let jamStr = "--:--";
-                        const matchTime = timeStr.match(/\d{2}:\d{2}/);
-                        if (matchTime) jamStr = matchTime[0];
-
-                        filteredByDate.push({
-                            waktu: jamStr,
-                            nama: cleanStudentName(rawNama),
-                            mapel: parseMapelName(rawKet),
-                            keterangan: rawKet,
-                            nilai: String(rawNilai).trim()
-                        });
-                    }
-                });
-            }
-
-            const cachedStudentsData = filteredByDate.reverse();
-
-            const allUniqueStudents = new Set();
-            const mapelUniqueStudents = {};
-
-            cachedStudentsData.forEach(item => {
-                const mapel = item.mapel;
-                const nama = item.nama ? item.nama.toLowerCase() : "";
-                if (!nama) return;
-
-                allUniqueStudents.add(nama);
-
-                if (mapel) {
-                    if (!mapelUniqueStudents[mapel]) {
-                        mapelUniqueStudents[mapel] = new Set();
-                    }
-                    mapelUniqueStudents[mapel].add(nama);
-                }
-            });
-
-            updateChipElement('count-Semua', allUniqueStudents.size);
-            const mapelList = [
-                'Pend. Pancasila', 'Bahasa Indonesia', 'IPAS', 
-                'Matematika', 'Bahasa Inggris', 'Bahasa Jawa', 
-                'Seni Rupa', 'Seni Musik'
-            ];
-
-            mapelList.forEach(mapel => {
-                const uniqueSize = mapelUniqueStudents[mapel] ? mapelUniqueStudents[mapel].size : 0;
-                updateChipElement(`count-${mapel}`, uniqueSize);
-            });
-
-            renderTimelineList(cachedStudentsData);
-        }
-
-        function onDateChanged() {
-            processAndRenderData();
-        }
-
-        function resetTimelineLoop() {
-            if (globalViewportEl) {
-                globalViewportEl.scrollTop = 0;
-                const bellBtn = document.getElementById('resetTimelineBtn');
-                if (bellBtn) {
-                    bellBtn.style.transform = 'scale(1.3) rotate(360deg)';
-                    setTimeout(() => {
-                        bellBtn.style.transform = 'scale(1) rotate(0deg)';
-                    }, 400);
-                }
-            }
-        }
-
-        function filterTimeline(mapelName, chipElement) {
-            currentFilterMapel = mapelName;
-            document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
-            chipElement.classList.add('active');
-            processAndRenderData();
-        }
-
-        function initDraggableScroll(viewportEl) {
-            globalViewportEl = viewportEl;
-            let isDown = false;
-            let startY;
-            let scrollTop;
-            let isAutoScrolling = true;
-            let resumeTimeout = null;
-
-            viewportEl.addEventListener('mousedown', (e) => {
-                isDown = true;
-                isAutoScrolling = false;
-                startY = e.pageY - viewportEl.offsetTop;
-                scrollTop = viewportEl.scrollTop;
-                if (resumeTimeout) clearTimeout(resumeTimeout);
-            });
-
-            viewportEl.addEventListener('mouseleave', () => { if (isDown) { isDown = false; scheduleResume(); } });
-            viewportEl.addEventListener('mouseup', () => { if (isDown) { isDown = false; scheduleResume(); } });
-            viewportEl.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                const y = e.pageY - viewportEl.offsetTop;
-                const walk = (y - startY) * 1.5;
-                viewportEl.scrollTop = scrollTop - walk;
-            });
-
-            viewportEl.addEventListener('touchstart', (e) => {
-                isDown = true;
-                isAutoScrolling = false;
-                startY = e.touches[0].pageY - viewportEl.offsetTop;
-                scrollTop = viewportEl.scrollTop;
-                if (resumeTimeout) clearTimeout(resumeTimeout);
-            });
-            viewportEl.addEventListener('touchend', () => { isDown = false; scheduleResume(); });
-            viewportEl.addEventListener('touchmove', (e) => {
-                if (!isDown) return;
-                const y = e.touches[0].pageY - viewportEl.offsetTop;
-                const walk = (y - startY) * 1.5;
-                viewportEl.scrollTop = scrollTop - walk;
-            });
-
-            function scheduleResume() {
-                if (resumeTimeout) clearTimeout(resumeTimeout);
-                resumeTimeout = setTimeout(() => { isAutoScrolling = true; }, 2000);
-            }
-
-            setInterval(() => {
-                if (isAutoScrolling && !isDown) {
-                    viewportEl.scrollTop += 0.6;
-                    const halfHeight = viewportEl.scrollHeight / 2;
-                    if (viewportEl.scrollTop >= halfHeight) {
-                        viewportEl.scrollTop = 0;
-                    }
-                }
-            }, 30);
-        }
-
-        function renderTimelineList(filteredList) {
-            const trackContainer = document.getElementById('timelineTrack');
-
-            let finalDisplayList = filteredList;
-            if (currentFilterMapel !== "Semua") {
-                finalDisplayList = filteredList.filter(s => s.mapel.toLowerCase() === currentFilterMapel.toLowerCase());
-            }
-
-            currentFilteredList = finalDisplayList;
-
-            if (finalDisplayList.length === 0) {
-                trackContainer.innerHTML = `
-                    <div class="timeline-empty">
-                        <i class="fa-solid fa-circle-info" style="color: #3b82f6; font-size: 24px; margin-bottom: 8px;"></i>
-                        <p>Tidak ada riwayat pengerjaan pada tanggal ini untuk kategori "${currentFilterMapel}".</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let htmlContent = '';
-            finalDisplayList.forEach((siswa, index) => {
-                const initial = siswa.nama ? siswa.nama.charAt(0).toUpperCase() : 'S';
-                const isZero = (siswa.nilai === "0" || siswa.nilai === "0.00" || siswa.nilai === "");
-                const nilaiClass = isZero ? "badge-nilai zero-score" : "badge-nilai";
-                const nilaiText = isZero ? "0" : siswa.nilai;
-
-                const isNewest = (index === 0 && currentFilterMapel === "Semua");
-                const newestBadgeHtml = isNewest ? `
-                    <div class="newest-item-badge">
-                        🔔 Data Terbaru
-                    </div>
-                ` : '';
-
-                htmlContent += `
-                    <div class="timeline-item">
-                        ${newestBadgeHtml}
-                        <div class="student-info">
-                            <div class="student-avatar">${initial}</div>
-                            <div class="student-details">
-                                <h4>${siswa.nama}</h4>
-                                <p><i class="fa-regular fa-clock"></i> Pukul ${siswa.waktu} WIB</p>
-                            </div>
-                        </div>
-                        <div class="badge-info-group">
-                            <div class="badge-mapel">
-                                <i class="fa-solid fa-book-open"></i> ${siswa.mapel}
-                            </div>
-                            <div class="badge-ket" title="Keterangan">
-                                <i class="fa-solid fa-circle-info"></i> ${siswa.keterangan}
-                            </div>
-                            <div class="${nilaiClass}">
-                                <i class="fa-solid fa-star"></i> Skor: ${nilaiText}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            trackContainer.innerHTML = htmlContent + htmlContent;
-            
-            if (finalDisplayList.length > 0 && (finalDisplayList[0].nilai === "100" || finalDisplayList[0].nilai === "100.0")) {
-                triggerConfettiEffect();
-            }
-        }
-
-        /* FUNGSI CETAK PDF DENGAN MENGAMBIL DATA DARI INDEXEDDB */
-        async function printPDF() {
-            if (!currentFilteredList || currentFilteredList.length === 0) {
-                alert("Tidak ada data siswa yang mengerjakan pada tanggal dan mata pelajaran terpilih ini.");
-                return;
-            }
-
-            const sortedListForPrint = [...currentFilteredList].sort((a, b) => {
-                return a.nama.localeCompare(b.nama, 'id', { sensitivity: 'base' });
-            });
-
-            const rawDate = document.getElementById('filterDateInput').value;
-            let displayDate = rawDate;
-            if (rawDate) {
-                const p = rawDate.split('-');
-                if (p.length === 3) displayDate = `${p[2]}/${p[1]}/${p[0]}`;
-            }
-
-            const cInstansi = (await getFromDB('epr_instansi')) || 'PEMERINTAH KABUPATEN';
-            const cDinas = (await getFromDB('epr_dinas')) || 'DINAS PENDIDIKAN DAN KEBUDAYAAN';
-            const cSekolah = (await getFromDB('epr_sekolah')) || 'SD NEGERI ...';
-            const cAlamat = (await getFromDB('epr_alamat')) || 'Alamat: Jl. Pendidikan No. 1';
-            const cGuru = (await getFromDB('epr_guru')) || 'Ikhwan Adi Yanto, S.Pd';
-            const cLogo = (await getFromDB('epr_logo')) || '';
-
-            const printArea = document.getElementById('printArea');
-            let tableRows = '';
-
-            sortedListForPrint.forEach((s, idx) => {
-                tableRows += `
-                    <tr>
-                        <td style="text-align: center; width: 40px;">${idx + 1}</td>
-                        <td>${s.nama}</td>
-                        <td>${s.mapel}</td>
-                        <td style="text-align: center; width: 90px;">${s.waktu} WIB</td>
-                        <td style="text-align: center; width: 70px;">${s.nilai}</td>
-                    </tr>
-                `;
-            });
-
-            let logoHtml = '';
-            if (cLogo) {
-                logoHtml = `<td style="width: 100px; text-align: center;"><img src="${cLogo}" class="print-logo-img" alt="Logo"></td>`;
-            }
-
-            printArea.innerHTML = `
-                <table class="print-header-table">
-                    <tr>
-                        ${logoHtml}
-                        <td class="print-header-text">
-                            <h3>${cInstansi}</h3>
-                            <h3>${cDinas}</h3>
-                            <h2>${cSekolah}</h2>
-                            <p>${cAlamat}</p>
-                        </td>
-                    </tr>
-                </table>
-
-                <div style="text-align: center; margin-bottom: 15px;">
-                    <h4 style="font-size: 14px; text-transform: uppercase; margin-bottom: 3px;">LAPORAN PENGERJAAN TUGAS e-PR SISWA</h4>
-                    <p style="font-size: 12px; color: #333;">Mata Pelajaran: <b>${currentFilterMapel}</b> | Tanggal Pelaksanaan: <b>${displayDate}</b></p>
-                </div>
-
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Peserta Didik</th>
-                            <th>Mata Pelajaran</th>
-                            <th>Waktu</th>
-                            <th>Skor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${tableRows}
-                    </tbody>
-                </table>
-
-                <div style="margin-top: 15px; font-size: 11px;">
-                    <b>Total Siswa yang Telah Mengerjakan:</b> ${sortedListForPrint.length} Peserta Didik
-                </div>
-
-                <div class="print-footer-signature">
-                    <div class="signature-box">
-                        <p>Mengetahui,</p>
-                        <p>Guru Kelas / Mata Pelajaran</p>
-                        <div class="signature-space"></div>
-                        <p><b>${cGuru}</b></p>
-                    </div>
-                </div>
-            `;
-
-            printArea.style.display = 'block';
-            window.print();
-            printArea.style.display = 'none';
-        }
-
-        function triggerConfettiEffect() {
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 80,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            }
-        }
-
-        async function fetchPrTimelineData() {
-            const trackContainer = document.getElementById('timelineTrack');
-            const viewportEl = document.getElementById('timelineViewport');
-
-            try {
-                updateProgress(25);
-                const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
-                updateProgress(65);
-                const data = await response.json();
-                updateProgress(90);
-
-                rawMasterData = data;
-                updateProgress(100);
-
-                const dateInput = document.getElementById('filterDateInput');
-                if (dateInput && !dateInput.value) {
-                    const now = new Date();
-                    const year = now.getFullYear();
-                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                    const day = String(now.getDate()).padStart(2, '0');
-                    dateInput.value = `${year}-${month}-${day}`;
-                }
-
-                setTimeout(() => {
-                    processAndRenderData();
-                    initDraggableScroll(viewportEl);
-                }, 300);
-
-            } catch (error) {
-                console.error("Gagal mengambil data dari Google Sheets:", error);
-                updateProgress(100);
-                setTimeout(() => {
-                    trackContainer.innerHTML = `
-                        <div class="timeline-empty">
-                            <i class="fa-solid fa-triangle-exclamation" style="color: #ff4757; font-size: 24px; margin-bottom: 8px;"></i>
-                            <p>Gagal memuat data dari Spreadsheet. Pastikan Apps Script telah di-deploy dengan akses 'Anyone'.</p>
-                        </div>
-                    `;
-                }, 300);
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchPrTimelineData();
-            checkSubjectLinks();
-            
-            setInterval(fetchPrTimelineData, 60000);
-        });
-    </script>
-</body>
-</html>
+        // Fungsi Full Screen Toggle untuk Ponsel Landscape / IFP / L
