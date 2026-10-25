@@ -140,6 +140,12 @@
             color: #ffeb3b;
         }
 
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         nav a {
             color: var(--white);
             text-decoration: none;
@@ -215,6 +221,27 @@
             text-decoration: none;
             color: inherit;
             cursor: pointer;
+        }
+
+        /* ANIMASI FRAME BERKEDUT & GLOWING UNTUK CARD ONLINE */
+        .subject-card.online-active-card {
+            animation: cardPulseBorder 2s infinite ease-in-out;
+            border: 2.5px solid #10b981 !important;
+        }
+
+        @keyframes cardPulseBorder {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6), var(--shadow);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(16, 185, 129, 0), 0 12px 28px rgba(16, 185, 129, 0.3);
+                transform: scale(1.02);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0), var(--shadow);
+                transform: scale(1);
+            }
         }
 
         .subject-card:hover {
@@ -319,13 +346,57 @@
             box-shadow: 0 6px 14px rgba(13, 71, 161, 0.35);
         }
 
-        /* OFFLINE CARD */
+        /* BADGES ONLINE & OFFLINE WITH LONCENG ANIMATION */
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            z-index: 5;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+
+        .online-badge {
+            background: #10b981;
+            color: #ffffff;
+            animation: pulseGlow 1.5s infinite;
+        }
+
+        .online-bell-icon {
+            display: inline-block;
+            animation: ringBell 1.2s infinite ease-in-out;
+            color: #fef08a;
+        }
+
+        .offline-badge {
+            display: none;
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .subject-card.offline-card .offline-badge {
+            display: inline-flex;
+        }
+
+        .subject-card.offline-card .online-badge {
+            display: none;
+        }
+
+        /* OFFLINE CARD STYLING */
         .subject-card.offline-card {
             background: #e2e8f0 !important;
             border-top-color: #94a3b8 !important;
+            border: 2px solid #cbd5e1 !important;
             cursor: not-allowed !important;
             opacity: 0.75;
             box-shadow: none !important;
+            animation: none !important;
         }
 
         .subject-card.offline-card:hover {
@@ -349,25 +420,6 @@
             background: #94a3b8 !important;
             box-shadow: none !important;
             cursor: not-allowed !important;
-        }
-
-        .offline-badge {
-            display: none;
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #ef4444;
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            z-index: 5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .subject-card.offline-card .offline-badge {
-            display: inline-block;
         }
 
         /* STYLES TIMELINE & FULL SCREEN FLEX Engine */
@@ -401,7 +453,6 @@
             z-index: 99999 !important;
         }
 
-        /* Memaksa viewport mengisi sisa ruang secara fleksibel tanpa terpotong di full screen */
         .timeline-section:fullscreen .timeline-viewport,
         .timeline-section:-webkit-full-screen .timeline-viewport,
         .timeline-section:-moz-full-screen .timeline-viewport {
@@ -438,7 +489,6 @@
             flex-wrap: wrap;
         }
 
-        /* Tombol Full Screen */
         .btn-fullscreen {
             background: linear-gradient(135deg, #0284c7, #0369a1);
             color: #ffffff;
@@ -461,7 +511,6 @@
             box-shadow: 0 5px 12px rgba(2, 132, 199, 0.4);
         }
 
-        /* Tombol Cetak PDF */
         .btn-print-pdf {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: #ffffff;
@@ -484,7 +533,6 @@
             box-shadow: 0 5px 12px rgba(239, 68, 68, 0.4);
         }
 
-        /* Tombol Pengaturan Identitas Sekolah (ikon Gear) */
         .btn-settings {
             background: linear-gradient(135deg, #475569, #334155);
             color: #ffffff;
@@ -507,7 +555,6 @@
             box-shadow: 0 5px 12px rgba(71, 85, 105, 0.4);
         }
 
-        /* Modal Pop-up Pengaturan */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -614,7 +661,6 @@
             background: var(--primary-blue);
         }
 
-        /* Kontainer Pemilih Tanggal dengan Tombol Navigasi Kiri & Kanan */
         .date-picker-wrapper {
             display: inline-flex;
             align-items: center;
@@ -668,7 +714,6 @@
             padding: 4px 2px;
         }
 
-        /* Tombol Lonceng Interaktif */
         .interactive-bell-btn {
             background: #fff3e0;
             border: 2px solid #ffa726;
@@ -705,19 +750,18 @@
             font-weight: 700;
             padding: 6px 12px;
             border-radius: 20px;
-            animation: pulseBadge 1.5s infinite;
+            animation: pulseGlow 1.5s infinite;
             display: inline-flex;
             align-items: center;
             gap: 5px;
         }
 
-        @keyframes pulseBadge {
+        @keyframes pulseGlow {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.08); opacity: 0.8; }
+            50% { transform: scale(1.06); opacity: 0.85; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Filter Mata Pelajaran Bar */
         .timeline-filters {
             display: flex;
             gap: 8px;
@@ -783,7 +827,6 @@
             color: #ffffff;
         }
 
-        /* VIEWPORT DENGAN FITUR RESIZABLE (Bisa Diperlebar Manual dengan Kursor) */
         .timeline-viewport {
             height: 320px;
             min-height: 120px;
@@ -796,14 +839,13 @@
             border: 1px solid #edf2f7;
             cursor: grab;
             user-select: none;
-            resize: vertical; /* FITUR UTAMA: Bisa ditarik/diperlebar manual dengan kursor */
+            resize: vertical;
         }
 
         .timeline-viewport:active {
             cursor: grabbing;
         }
 
-        /* Handle Bar Kecil di Bawah Viewport sebagai Petunjuk Tarik Manual */
         .resize-hint-bar {
             position: absolute;
             bottom: 2px;
@@ -981,7 +1023,6 @@
             font-size: 14px;
         }
 
-        /* Custom Soft & Playful Alert Modal */
         .custom-alert-overlay {
             display: none;
             position: fixed;
@@ -1025,7 +1066,6 @@
             to { transform: scale(1) translateY(0); opacity: 1; }
         }
 
-        /* Background Confetti & Sparkle Decor */
         .alert-decor-sparkle {
             position: absolute;
             font-size: 14px;
@@ -1094,7 +1134,6 @@
             transform: translateY(0) scale(0.98);
         }
 
-        /* Animasi Emoji Loving Emoticon */
         .custom-alert-emoji-box {
             position: relative;
             width: 120px;
@@ -1156,7 +1195,6 @@
             .badge-info-group { width: 100%; justify-content: flex-start; gap: 6px; }
         }
 
-        /* Gaya Cetak PDF Dokumen Resmi/Profesional dengan Kop Berlogo Besar dan Gagah */
         @media print {
             body * {
                 visibility: hidden;
@@ -1271,6 +1309,7 @@
             <div class="brand-title">e-PR <span>🎈</span></div>
         </div>
         <nav>
+            <a onclick="playAndNavigate(event, 'LKPD.html')"><i class="fa-solid fa-file-lines"></i> LKPD</a>
             <a onclick="playAndNavigate(event, 'index.html')"><i class="fa-solid fa-house"></i> Beranda</a>
         </nav>
     </header>
@@ -1282,57 +1321,65 @@
         </div>
 
         <div class="subjects-grid">
-            <a onclick="playAndNavigate(event, 'e-PR Pend.Pancasila.html')" class="subject-card card-pancasila" data-url="e-PR Pend.Pancasila.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Pend.Pancasila.html')" class="subject-card card-pancasila online-active-card" data-url="e-PR Pend.Pancasila.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-shield-halved"></i><span class="cute-emoji">⭐</span></div>
                 <div class="subject-title">Pend. Pancasila</div>
                 <div class="subject-desc">Belajar nilai Pancasila & kewarganegaraan dengan riang gembira.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Bahasa Indonesia.html')" class="subject-card card-bindo" data-url="e-PR Bahasa Indonesia.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Indonesia.html')" class="subject-card card-bindo online-active-card" data-url="e-PR Bahasa Indonesia.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-book"></i><span class="cute-emoji">📚</span></div>
                 <div class="subject-title">Bahasa Indonesia</div>
                 <div class="subject-desc">Membaca, menulis, dan memahami cerita menarik.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR IPAS.html')" class="subject-card card-ipas" data-url="e-PR IPAS.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR IPAS.html')" class="subject-card card-ipas online-active-card" data-url="e-PR IPAS.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-flask"></i><span class="cute-emoji">🌱</span></div>
                 <div class="subject-title">IPAS</div>
                 <div class="subject-desc">Menjelajahi rahasia alam dan ilmu pengetahuan sosial.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Matematika.html')" class="subject-card card-mtk" data-url="e-PR Matematika.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Matematika.html')" class="subject-card card-mtk online-active-card" data-url="e-PR Matematika.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-calculator"></i><span class="cute-emoji">🔢</span></div>
                 <div class="subject-title">Matematika</div>
                 <div class="subject-desc">Bermain dengan angka, hitungan, dan logika seru.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Bahasa Inggris.html')" class="subject-card card-bing" data-url="e-PR Bahasa Inggris.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Inggris.html')" class="subject-card card-bing online-active-card" data-url="e-PR Bahasa Inggris.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-language"></i><span class="cute-emoji">🔤</span></div>
                 <div class="subject-title">Bahasa Inggris</div>
                 <div class="subject-desc">Belajar kosa kata dan percakapan bahasa internasional.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Bahasa Jawa.html')" class="subject-card card-bjawa" data-url="e-PR Bahasa Jawa.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Bahasa Jawa.html')" class="subject-card card-bjawa online-active-card" data-url="e-PR Bahasa Jawa.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-scroll"></i><span class="cute-emoji">🪘</span></div>
                 <div class="subject-title">Bahasa Jawa</div>
                 <div class="subject-desc">Mengenal kebudayaan, unggah-ungguh, dan bahasa daerah.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Seni Rupa.html')" class="subject-card card-srup" data-url="e-PR Seni Rupa.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Seni Rupa.html')" class="subject-card card-srup online-active-card" data-url="e-PR Seni Rupa.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-palette"></i><span class="cute-emoji">🎨</span></div>
                 <div class="subject-title">Seni Rupa</div>
                 <div class="subject-desc">Mewarnai hari dengan gambar, kreasi, dan bentuk indah.</div>
                 <div class="btn-open-epr">Mulai e-PR <i class="fa-solid fa-arrow-right"></i></div>
             </a>
-            <a onclick="playAndNavigate(event, 'e-PR Seni Musik.html')" class="subject-card card-smus" data-url="e-PR Seni Musik.html">
-                <span class="offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
+            <a onclick="playAndNavigate(event, 'e-PR Seni Musik.html')" class="subject-card card-smus online-active-card" data-url="e-PR Seni Musik.html">
+                <span class="status-badge online-badge"><i class="fa-solid fa-bell online-bell-icon"></i> Online</span>
+                <span class="status-badge offline-badge"><i class="fa-solid fa-triangle-exclamation"></i> Offline</span>
                 <div class="subject-icon-box"><i class="fa-solid fa-music"></i><span class="cute-emoji">🎵</span></div>
                 <div class="subject-title">Seni Musik</div>
                 <div class="subject-desc">Mengenal nada, irama, dan lagu-lagu gembira.</div>
@@ -1344,22 +1391,18 @@
             <div class="timeline-header">
                 <h2><i class="fa-solid fa-clock-rotate-left" style="color: #1976d2;"></i> Timeline Pengerjaan e-PR</h2>
                 <div class="live-status-group">
-                    <!-- Tombol Full Screen -->
                     <button class="btn-fullscreen" id="btnFullscreen" onclick="toggleFullScreen()" title="Tampilkan timeline dalam mode layar penuh (Full Screen)">
                         <i class="fa-solid fa-expand" id="fullscreenIcon"></i> <span id="fullscreenText">FULL SCREEN</span>
                     </button>
 
-                    <!-- Tombol Pengaturan Identitas Sekolah (ikon Gear) -->
                     <button class="btn-settings" onclick="openSettingsModal()" title="Pengaturan Identitas & Logo Kop Surat">
                         <i class="fa-solid fa-gear"></i> KOP SURAT
                     </button>
 
-                    <!-- Tombol CETAK PDF -->
                     <button class="btn-print-pdf" onclick="printPDF()" title="Cetak daftar siswa yang telah mengerjakan">
                         <i class="fa-solid fa-file-pdf"></i> CETAK PDF
                     </button>
 
-                    <!-- Pemilih Tanggal -->
                     <div class="date-picker-wrapper" title="Navigasi tanggal pengisian">
                         <button class="date-nav-btn" onclick="changeDate(-1)" title="Hari Sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
                         <div class="date-inner-group">
@@ -1376,7 +1419,6 @@
                 </div>
             </div>
 
-            <!-- Tombol Filter Mata Pelajaran -->
             <div class="timeline-filters" id="timelineFilters">
                 <button class="filter-chip active" onclick="filterTimeline('Semua', this)">✨ Semua Mapel <span class="chip-count count-zero" id="count-Semua">0</span></button>
                 <button class="filter-chip" onclick="filterTimeline('Pend. Pancasila', this)">Pend. Pancasila <span class="chip-count count-zero" id="count-Pend. Pancasila">0</span></button>
@@ -1389,7 +1431,6 @@
                 <button class="filter-chip" onclick="filterTimeline('Seni Musik', this)">Seni Musik <span class="chip-count count-zero" id="count-Seni Musik">0</span></button>
             </div>
 
-            <!-- Viewport dengan handle penarik bawah (Resizable manual dengan kursor) -->
             <div class="timeline-viewport" id="timelineViewport">
                 <div class="resize-hint-bar" title="Tarik ke atas/bawah untuk memperlebar area baris"></div>
                 <div class="timeline-track" id="timelineTrack">
@@ -1405,7 +1446,6 @@
         </section>
     </main>
 
-    <!-- Modal Pop-up Pengaturan Kop Surat & Logo (IndexedDB Storage) -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -1445,7 +1485,6 @@
         </div>
     </div>
 
-    <!-- Custom Soft Notification Modal -->
     <div class="custom-alert-overlay" id="customAlertOverlay">
         <div class="custom-alert-card">
             <span class="alert-decor-sparkle sp-1">✦</span>
@@ -1473,7 +1512,6 @@
         </div>
     </div>
 
-    <!-- Area Khusus Cetak Dokumen/PDF Profesional -->
     <div id="printArea" style="display: none;"></div>
 
     <footer>
@@ -1481,7 +1519,6 @@
     </footer>
 
     <script>
-        /* === INDEXEDDB CONFIGURATION === */
         const DB_NAME = "ePR_Database";
         const DB_VERSION = 1;
         const STORE_NAME = "settingsStore";
@@ -1539,6 +1576,7 @@
         }
 
         function setCardOffline(card) {
+            card.classList.remove('online-active-card');
             card.classList.add('offline-card');
             card.onclick = function(event) {
                 event.preventDefault();
@@ -1618,11 +1656,8 @@
         let currentFilteredList = [];
         let uploadedLogoBase64 = "";
 
-        // Fungsi Toggle Full Screen untuk Panel Timeline (Responsif Landscape & Portrait)
         function toggleFullScreen() {
             const section = document.getElementById('timelineSection');
-            const icon = document.getElementById('fullscreenIcon');
-            const text = document.getElementById('fullscreenText');
 
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement) {
                 if (section.requestFullscreen) {
@@ -1661,7 +1696,6 @@
             }
         }
 
-        // Fungsi Modal Pengaturan Kop Surat & Logo via IndexedDB
         async function openSettingsModal() {
             document.getElementById('inputInstansi').value = (await getFromDB('epr_instansi')) || 'PEMERINTAH KABUPATEN';
             document.getElementById('inputDinas').value = (await getFromDB('epr_dinas')) || 'DINAS PENDIDIKAN DAN KEBUDAYAAN';
@@ -1853,7 +1887,6 @@
             let resumeTimeout = null;
 
             viewportEl.addEventListener('mousedown', (e) => {
-                // Jika user sedang menyeret handle resize di pojok bawah, abaikan drag scroll
                 if (e.offsetY > viewportEl.clientHeight - 15) return;
                 isDown = true;
                 isAutoScrolling = false;
@@ -1969,7 +2002,6 @@
             }
         }
 
-        /* FUNGSI CETAK PDF DENGAN MENGAMBIL DATA DARI INDEXEDDB */
         async function printPDF() {
             if (!currentFilteredList || currentFilteredList.length === 0) {
                 alert("Tidak ada data siswa yang mengerjakan pada tanggal dan mata pelajaran terpilih ini.");
