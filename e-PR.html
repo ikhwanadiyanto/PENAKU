@@ -223,7 +223,6 @@
             cursor: pointer;
         }
 
-        /* ANIMASI FRAME BERKEDUT & GLOWING UNTUK CARD ONLINE */
         .subject-card.online-active-card {
             animation: cardPulseBorder 2s infinite ease-in-out;
             border: 2.5px solid #10b981 !important;
@@ -388,7 +387,6 @@
             display: none;
         }
 
-        /* OFFLINE CARD STYLING */
         .subject-card.offline-card {
             background: #e2e8f0 !important;
             border-top-color: #94a3b8 !important;
@@ -427,7 +425,7 @@
             margin-top: 50px;
             background: #ffffff;
             border-radius: 20px;
-            padding: 25px;
+            padding: 25px 25px 20px 25px;
             box-shadow: var(--shadow);
             border: 2px solid #e1f5fe;
             transition: all 0.3s ease;
@@ -827,10 +825,11 @@
             color: #ffffff;
         }
 
+        /* VIEWPORT TIMELINE & CONTAINER STYLES */
         .timeline-viewport {
             height: 320px;
-            min-height: 120px;
-            max-height: 80vh;
+            min-height: 140px;
+            max-height: 85vh;
             overflow-y: hidden;
             position: relative;
             background: #f8fafc;
@@ -839,24 +838,47 @@
             border: 1px solid #edf2f7;
             cursor: grab;
             user-select: none;
-            resize: vertical;
         }
 
         .timeline-viewport:active {
             cursor: grabbing;
         }
 
-        .resize-hint-bar {
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 4px;
-            background: #cbd5e1;
-            border-radius: 4px;
-            pointer-events: none;
-            opacity: 0.7;
+        /* HANDLE PENARIK BAWAH TENGAH (FRAME TERPISAH) */
+        .timeline-bottom-resizer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 18px;
+            margin-top: 12px;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            cursor: ns-resize;
+            user-select: none;
+            transition: all 0.3s ease;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .timeline-bottom-resizer:hover {
+            background: #e2e8f0;
+            border-color: #1976d2;
+            color: #0d47a1;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+        }
+
+        .timeline-bottom-resizer .resize-icon {
+            font-size: 14px;
+            color: #1976d2;
+            animation: bounceDown 1.5s infinite ease-in-out;
+        }
+
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(3px); }
         }
 
         .timeline-track {
@@ -1432,7 +1454,6 @@
             </div>
 
             <div class="timeline-viewport" id="timelineViewport">
-                <div class="resize-hint-bar" title="Tarik ke atas/bawah untuk memperlebar area baris"></div>
                 <div class="timeline-track" id="timelineTrack">
                     <div class="loading-container">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Seluruh Data e-PR...</div>
@@ -1442,6 +1463,13 @@
                         <div class="progress-percentage" id="progressText">0%</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- TOMBOL GESER PERLUAS BAWAH TENGAH -->
+            <div class="timeline-bottom-resizer" id="timelineBottomResizer" title="Tarik ke bawah untuk memperluas area timeline">
+                <i class="fa-solid fa-arrows-down-to-line resize-icon"></i>
+                <span>Geser Ke Bawah untu memperluas tampilan</span>
+                <i class="fa-solid fa-arrows-up-down" style="font-size: 11px; opacity: 0.6;"></i>
             </div>
         </section>
     </main>
@@ -1886,8 +1914,9 @@
             let isAutoScrolling = true;
             let resumeTimeout = null;
 
+            initBottomResizeHandle(viewportEl);
+
             viewportEl.addEventListener('mousedown', (e) => {
-                if (e.offsetY > viewportEl.clientHeight - 15) return;
                 isDown = true;
                 isAutoScrolling = false;
                 startY = e.pageY - viewportEl.offsetTop;
@@ -1934,6 +1963,49 @@
                     }
                 }
             }, 30);
+        }
+
+        function initBottomResizeHandle(viewportEl) {
+            const resizer = document.getElementById('timelineBottomResizer');
+            if (!resizer || !viewportEl) return;
+
+            let isResizing = false;
+            let startY = 0;
+            let startHeight = 0;
+
+            const startResize = (e) => {
+                isResizing = true;
+                startY = e.pageY || (e.touches ? e.touches[0].pageY : 0);
+                startHeight = viewportEl.offsetHeight;
+                document.body.style.cursor = 'ns-resize';
+                e.preventDefault();
+            };
+
+            const doResize = (e) => {
+                if (!isResizing) return;
+                const currentY = e.pageY || (e.touches && e.touches[0] ? e.touches[0].pageY : startY);
+                const diffY = currentY - startY;
+                const newHeight = startHeight + diffY;
+
+                if (newHeight >= 150 && newHeight <= window.innerHeight * 0.85) {
+                    viewportEl.style.height = `${newHeight}px`;
+                }
+            };
+
+            const stopResize = () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                }
+            };
+
+            resizer.addEventListener('mousedown', startResize);
+            window.addEventListener('mousemove', doResize);
+            window.addEventListener('mouseup', stopResize);
+
+            resizer.addEventListener('touchstart', startResize, { passive: false });
+            window.addEventListener('touchmove', doResize, { passive: false });
+            window.addEventListener('touchend', stopResize);
         }
 
         function renderTimelineList(filteredList) {
