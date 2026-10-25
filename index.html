@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selamat Datang - PENA KU (Pengelolaan Nilai & Administrasi Kelas Unggul)</title>
+    <title>PENA-KU - Pengelolaan Nilai & Administrasi Kelas Unggul</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body, html {
@@ -19,12 +20,12 @@
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #ffd1ff 50%, #a1c4fd 75%, #c2ffd8 100%);
             background-size: 300% 300%;
-            animation: gradientBG 14s ease infinite;
+            animation: gradientBG 15s ease infinite;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
+            padding: 15px 30px;
             overflow-x: hidden;
             position: relative;
         }
@@ -35,29 +36,51 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Dekorasi Gelembung Warna Manis & Transparan */
+        /* Floating Sweet Bubbles */
         .bubble {
             position: absolute;
             border-radius: 50%;
             pointer-events: none;
-            animation: float 9s infinite ease-in-out;
+            animation: float 10s infinite ease-in-out;
             z-index: 1;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-            50% { transform: translateY(-35px) scale(1.12) rotate(12deg); }
+            50% { transform: translateY(-40px) scale(1.15) rotate(15deg); }
         }
 
-        /* Top Bar Header */
+        /* Top Bar & Hamburger Button */
         .header-bar {
             width: 100%;
             max-width: 1600px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            z-index: 10;
-            margin-bottom: 10px;
+            z-index: 100;
+            margin-bottom: 12px;
+        }
+
+        .drawer-toggle-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #ffffff;
+            color: #1e3799;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(30, 55, 153, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .drawer-toggle-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: #1e3799;
+            color: white;
         }
 
         .top-user-bar {
@@ -90,11 +113,11 @@
             background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
             color: white;
             border: none;
-            padding: 9px 20px;
+            padding: 10px 22px;
             border-radius: 25px;
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-flex;
@@ -112,10 +135,158 @@
             background: linear-gradient(135deg, #ff4757, #ff6b81);
         }
 
-        /* Container Full Screen / Long Grid */
+        /* SLIDE-OUT DRAWER MENU */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(6px);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide-drawer {
+            position: fixed;
+            top: 0;
+            left: -380px;
+            width: 360px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 999;
+            box-shadow: 10px 0 35px rgba(0, 0, 0, 0.2);
+            transition: left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .slide-drawer.active {
+            left: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .drawer-title {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.8rem;
+            color: #1e3799;
+            font-weight: 700;
+        }
+
+        .drawer-close {
+            background: #edf2f7;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .drawer-close:hover {
+            background: #ffe3e3;
+            color: #ff4757;
+        }
+
+        .drawer-profile-box {
+            background: linear-gradient(135deg, #f0f4ff, #e2e8f0);
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 2px solid #ffffff;
+        }
+
+        .drawer-profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: #45aaf2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 4px 10px rgba(69, 170, 242, 0.3);
+        }
+
+        .drawer-profile-info h4 {
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .drawer-profile-info p {
+            font-size: 0.82rem;
+            color: #718096;
+        }
+
+        .drawer-menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .drawer-menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #f8fafc;
+            border-radius: 16px;
+            color: #2d3748;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .drawer-menu-item a:hover {
+            background: #edf2f7;
+            color: #1e3799;
+            border-color: #cbd5e0;
+            transform: translateX(6px);
+        }
+
+        .drawer-menu-item a i {
+            font-size: 1.2rem;
+            color: #45aaf2;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* MAIN CONTAINER */
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.93);
             padding: 35px 50px 45px 50px;
             border-radius: 40px;
             backdrop-filter: blur(18px);
@@ -133,22 +304,36 @@
         }
 
         @keyframes popIn {
-            0% { transform: scale(0.85); opacity: 0; }
+            0% { transform: scale(0.88); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Styling Animasi Emotikon Menunjuk ke Bawah */
-        .pointing-emoji-wrapper {
-            margin-bottom: 5px;
-            display: inline-block;
+        /* Joyful Emoji Header & Animations */
+        .emoji-header-container {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 8px;
         }
 
-        .pointing-emoji {
-            font-size: 4.2rem;
+        .animated-emoji {
+            font-size: 3.8rem;
             display: inline-block;
-            animation: pointingBounce 1.5s infinite ease-in-out;
             filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.15));
             user-select: none;
+        }
+
+        .bounce-emoji {
+            animation: pointingBounce 1.5s infinite ease-in-out;
+        }
+
+        .spin-emoji {
+            animation: spinEmoji 4s infinite linear;
+        }
+
+        .wave-emoji {
+            animation: waveEmoji 2s infinite ease-in-out;
+            transform-origin: 70% 70%;
         }
 
         @keyframes pointingBounce {
@@ -156,16 +341,27 @@
             50% { transform: translateY(14px) scale(1.15); }
         }
 
-        /* Animasi Teks Judul Ceria */
+        @keyframes spinEmoji {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes waveEmoji {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        /* Title Styling */
         h1 {
             font-family: 'Comic Neue', cursive;
             font-weight: 700;
-            font-size: 2.8rem;
+            font-size: 3rem;
             color: #1e3799;
             text-transform: uppercase;
             text-shadow: 3px 3px 0px #f6e58d;
             letter-spacing: 1px;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
             animation: titleGlow 3s ease-in-out infinite alternate;
         }
 
@@ -175,10 +371,10 @@
         }
 
         .subtitle {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             color: #3867d6;
             font-weight: 700;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
             background: linear-gradient(90deg, #1e3799, #0984e3, #00b894, #e17055);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -192,22 +388,22 @@
 
         .section-title {
             font-family: 'Comic Neue', cursive;
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #2f3542;
             text-align: left;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
-        /* LAYOUT GRID LEGA (3 Kolom x 2 Baris) */
+        /* RESPONSIVE GRID 3x2 (Adapted for Laptop & IFP & Mobile) */
         .grid-3x2 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 25px;
             width: 100%;
         }
 
@@ -216,12 +412,12 @@
             flex-direction: row;
             align-items: center;
             justify-content: flex-start;
-            padding: 24px 30px;
-            border-radius: 28px;
+            padding: 26px 32px;
+            border-radius: 30px;
             text-decoration: none;
             color: white;
             font-weight: bold;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
             transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 4px solid #ffffff;
             position: relative;
@@ -231,10 +427,10 @@
         }
 
         .card-kelas i.main-icon, .card-music i.main-icon {
-            font-size: 3.2rem;
+            font-size: 3.4rem;
             transition: transform 0.35s ease;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-            min-width: 60px;
+            min-width: 65px;
             text-align: center;
         }
 
@@ -247,20 +443,20 @@
 
         .card-kelas span.title, .card-music span.title {
             font-family: 'Comic Neue', cursive;
-            font-size: 2rem;
+            font-size: 2.1rem;
             line-height: 1.1;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .card-kelas span.desc, .card-music span.desc {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.88rem;
+            font-size: 0.92rem;
             font-weight: 500;
-            opacity: 0.9;
+            opacity: 0.92;
             margin-top: 4px;
         }
 
-        /* Warna Menu Kelas */
+        /* Class Colors */
         .kelas-1 { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); }
         .kelas-2 { background: linear-gradient(135deg, #ff9f43, #ffbd7a); }
         .kelas-3 { background: linear-gradient(135deg, #feca57, #ffdd67); }
@@ -268,7 +464,7 @@
         .kelas-5 { background: linear-gradient(135deg, #48dbfb, #00d2d3); }
         .kelas-6 { background: linear-gradient(135deg, #54a0ff, #5f27cd); }
 
-        /* Warna Menu Alat Musik */
+        /* Music Colors */
         .music-pianika { background: linear-gradient(135deg, #ff9ff3, #feca57); }
         .music-angklung { background: linear-gradient(135deg, #48dbfb, #0abde3); }
         .music-extra1 { background: linear-gradient(135deg, #ff6b81, #ff4757); }
@@ -276,9 +472,9 @@
         .music-extra3 { background: linear-gradient(135deg, #5f27cd, #341f97); }
         .music-extra4 { background: linear-gradient(135deg, #ffa502, #ff7f50); }
 
-        /* Style Otomatis Ketika File Offline / Belum Tersedia */
+        /* Locked or Offline Styling */
         .card-music.offline-file, .card-kelas.locked {
-            background: linear-gradient(135deg, rgba(178, 190, 195, 0.75), rgba(99, 110, 114, 0.85)) !important;
+            background: linear-gradient(135deg, rgba(178, 190, 195, 0.8), rgba(99, 110, 114, 0.9)) !important;
             backdrop-filter: blur(6px);
             cursor: not-allowed !important;
             opacity: 0.85;
@@ -286,27 +482,21 @@
 
         .card-music.offline-file:hover, .card-kelas.locked:hover {
             transform: none !important;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.12) !important;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
         }
 
-        .card-music.offline-file:hover i.main-icon, .card-kelas.locked:hover i.main-icon {
-            transform: none !important;
-            animation: none !important;
-        }
-
-        /* Badge Status (Gembok atau Belum Tersedia) */
         .status-badge {
             position: absolute;
             top: 15px;
             right: 18px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 5px 12px;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 5px 14px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 6px;
             color: #ffffff;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 600;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             z-index: 3;
@@ -315,10 +505,9 @@
 
         .status-badge i {
             color: #ff7675;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
         }
 
-        /* Animasi Khusus untuk Ikon Pianika & Angklung */
         @keyframes musicBounceAnim {
             0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
             25% { transform: translateY(-6px) rotate(-8deg) scale(1.1); }
@@ -329,9 +518,9 @@
             animation: musicBounceAnim 2s infinite ease-in-out;
         }
 
-        .card-music:not(.offline-file):hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+        .card-music:not(.offline-file):hover, .card-kelas:not(.locked):hover {
+            transform: translateY(-8px) scale(1.025);
+            box-shadow: 0 20px 38px rgba(0,0,0,0.22);
         }
 
         .card-kelas::after, .card-music::after {
@@ -339,13 +528,13 @@
             position: absolute;
             top: -25px;
             right: -25px;
-            width: 90px;
-            height: 90px;
+            width: 95px;
+            height: 95px;
             background: rgba(255,255,255,0.2);
             border-radius: 50%;
         }
 
-        /* Style Menu Pendukung Terpisah "e-PR" di Bawah */
+        /* e-PR Section */
         .epr-section-wrapper {
             margin-top: 25px;
             width: 100%;
@@ -356,8 +545,8 @@
             flex-direction: row;
             align-items: center;
             justify-content: flex-start;
-            padding: 20px 30px;
-            border-radius: 24px;
+            padding: 22px 32px;
+            border-radius: 26px;
             text-decoration: none;
             color: white;
             font-weight: bold;
@@ -372,10 +561,10 @@
         }
 
         .card-epr i {
-            font-size: 2.8rem;
+            font-size: 3rem;
             transition: transform 0.35s ease;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-            min-width: 60px;
+            min-width: 65px;
             text-align: center;
         }
 
@@ -388,29 +577,29 @@
 
         .card-epr span.title {
             font-family: 'Comic Neue', cursive;
-            font-size: 1.8rem;
+            font-size: 1.9rem;
             line-height: 1.1;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .card-epr span.desc {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             font-weight: 500;
-            opacity: 0.9;
+            opacity: 0.92;
             margin-top: 2px;
         }
 
         .card-epr:hover {
             transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 16px 30px rgba(104, 109, 224, 0.4);
+            box-shadow: 0 16px 32px rgba(104, 109, 224, 0.4);
         }
 
         .card-epr:hover i {
             transform: scale(1.15) rotate(10deg);
         }
 
-        /* Footer & Badge Developer */
+        /* Footer */
         .footer-bar {
             width: 100%;
             max-width: 1600px;
@@ -422,12 +611,12 @@
 
         .developer-badge {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             font-weight: 500;
             color: #4b6584;
             background: rgba(255, 255, 255, 0.92);
-            padding: 7px 16px;
-            border-radius: 16px;
+            padding: 8px 18px;
+            border-radius: 18px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.06);
             border: 2px solid #ffffff;
             backdrop-filter: blur(8px);
@@ -438,7 +627,7 @@
             font-weight: 700;
         }
 
-        /* MODAL POPUP LOGIN */
+        /* LOGIN MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -450,7 +639,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 999;
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -533,12 +722,11 @@
             left: 16px;
             color: #a0aec0;
             font-size: 1.1rem;
-            transition: color 0.3s;
         }
 
         .form-control {
             width: 100%;
-            padding: 13px 45px 13px 45px;
+            padding: 13px 45px;
             border: 2px solid #e2e8f0;
             border-radius: 16px;
             font-family: 'Poppins', sans-serif;
@@ -555,10 +743,6 @@
             box-shadow: 0 0 0 4px rgba(69, 170, 242, 0.15);
         }
 
-        .form-control:focus + .input-icon {
-            color: #45aaf2;
-        }
-
         .btn-toggle-pwd {
             position: absolute;
             right: 12px;
@@ -569,26 +753,13 @@
             border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 1rem;
-            color: #718096;
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .btn-toggle-pwd:hover {
-            background-color: #edf2f7;
-            color: #2d3748;
-        }
-
-        .btn-toggle-pwd .emoji-icon {
             font-size: 1.1rem;
+            color: #718096;
         }
 
         .remember-group {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             margin-bottom: 25px;
             font-size: 0.88rem;
         }
@@ -664,49 +835,138 @@
             display: none;
             align-items: center;
             gap: 8px;
-            animation: shake 0.4s ease-in-out;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
+        /* CUSTOM ALERT MESSAGE BOX (No browser alert) */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
 
-        /* RESPONSIVE LAYOUT */
+        .custom-alert-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-alert-box {
+            background: #ffffff;
+            width: 85%;
+            max-width: 380px;
+            padding: 30px 25px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 4px solid #ffffff;
+            transform: scale(0.85);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .custom-alert-overlay.active .custom-alert-box {
+            transform: scale(1);
+        }
+
+        .custom-alert-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .custom-alert-title {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.6rem;
+            color: #1e3799;
+            margin-bottom: 10px;
+        }
+
+        .custom-alert-msg {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .custom-alert-btn {
+            background: linear-gradient(135deg, #1e3799, #45aaf2);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(30, 55, 153, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .custom-alert-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* RESPONSIVE BREAKPOINTS (LAPTOP, MOBILE, IFP) */
+        @media (min-width: 1400px) {
+            .container { padding: 45px 70px 55px 70px; }
+            h1 { font-size: 3.4rem; }
+            .grid-3x2 { gap: 30px; }
+        }
+
         @media (max-width: 1200px) {
             .grid-3x2 {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 18px;
+                gap: 20px;
             }
         }
 
         @media (max-width: 768px) {
-            body, html { padding: 15px; }
+            body, html { padding: 12px; }
             .grid-3x2 {
                 grid-template-columns: 1fr;
-                gap: 14px;
+                gap: 15px;
             }
             .card-kelas, .card-music, .card-epr {
-                padding: 18px 22px;
+                padding: 20px 24px;
             }
-            h1 { font-size: 2rem; }
-            .container { padding: 25px 15px; }
+            h1 { font-size: 2.1rem; }
+            .subtitle { font-size: 1.05rem; }
+            .container { padding: 25px 18px; }
             .footer-bar { justify-content: center; }
-            .pointing-emoji { font-size: 3.5rem; }
+            .animated-emoji { font-size: 3rem; }
+            .slide-drawer { width: 300px; left: -320px; }
+        }
+
+        /* IFP (Interactive Flat Panel) Touch Optimization Mode */
+        @media (min-width: 1800px) {
+            body { font-size: 1.15rem; }
+            .card-kelas, .card-music, .card-epr { padding: 32px 40px; border-radius: 35px; }
+            .card-kelas span.title, .card-music span.title { font-size: 2.5rem; }
+            .card-kelas i.main-icon, .card-music i.main-icon { font-size: 4rem; }
+            .drawer-toggle-btn { width: 64px; height: 64px; font-size: 1.7rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Gelembung Warna Manis dan Transparan -->
-    <div class="bubble" style="width: 100px; height: 100px; top: 5%; left: 4%; background: rgba(255, 182, 193, 0.45); animation-duration: 8s;"></div>
-    <div class="bubble" style="width: 140px; height: 140px; bottom: 10%; left: 6%; background: rgba(173, 216, 230, 0.45); animation-duration: 12s;"></div>
-    <div class="bubble" style="width: 110px; height: 110px; top: 10%; right: 5%; background: rgba(255, 218, 185, 0.45); animation-duration: 9s;"></div>
-    <div class="bubble" style="width: 80px; height: 80px; bottom: 15%; right: 9%; background: rgba(221, 160, 221, 0.45); animation-duration: 7s;"></div>
+    <!-- Sweet Bubbles Background -->
+    <div class="bubble" style="width: 110px; height: 110px; top: 6%; left: 4%; background: rgba(255, 182, 193, 0.45); animation-duration: 9s;"></div>
+    <div class="bubble" style="width: 150px; height: 150px; bottom: 8%; left: 5%; background: rgba(173, 216, 230, 0.45); animation-duration: 13s;"></div>
+    <div class="bubble" style="width: 120px; height: 120px; top: 12%; right: 5%; background: rgba(255, 218, 185, 0.45); animation-duration: 10s;"></div>
+    <div class="bubble" style="width: 90px; height: 90px; bottom: 15%; right: 8%; background: rgba(221, 160, 221, 0.45); animation-duration: 8s;"></div>
 
-    <!-- Header Top User Bar -->
+    <!-- Header Bar with Drawer Toggle & User Info -->
     <div class="header-bar">
+        <button class="drawer-toggle-btn" onclick="toggleDrawer()" title="Buka Menu Laci">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
         <div class="top-user-bar">
             <div class="user-info" id="userInfo">
                 <i class="fa-solid fa-circle-user"></i>
@@ -719,19 +979,56 @@
         </div>
     </div>
 
-    <!-- Container Utama Wide Screen -->
+    <!-- SLIDE-OUT DRAWER MENU -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+    <div class="slide-drawer" id="slideDrawer">
+        <div class="drawer-header">
+            <h3 class="drawer-title">📌 Laci Menu PENA-KU</h3>
+            <button class="drawer-close" onclick="toggleDrawer()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="drawer-profile-box">
+            <div class="drawer-profile-avatar">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="drawer-profile-info">
+                <h4 id="drawerUserName">Status: Tamu</h4>
+                <p>Pusat Administrasi & Nilai</p>
+            </div>
+        </div>
+
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item">
+                <a href="#" onclick="toggleDrawer(); scrollToSection('kelasGrid');"><i class="fa-solid fa-school"></i> Menu Tingkat Kelas</a>
+            </li>
+            <li class="drawer-menu-item">
+                <a href="#" onclick="toggleDrawer(); scrollToSection('musicGrid');"><i class="fa-solid fa-music"></i> Media Alat Musik</a>
+            </li>
+            <li class="drawer-menu-item">
+                <a href="e-PR.html" onclick="checkDrawerNavigation(event, 'e-PR.html')"><i class="fa-solid fa-book-open-reader"></i> e-PR (Pelaporan / Peer Review)</a>
+            </li>
+            <li class="drawer-menu-item">
+                <a href="#" onclick="toggleDrawer(); handleAuthAction();"><i class="fa-solid fa-user-gear"></i> <span id="drawerAuthLabel">Login Guru</span></a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTAINER -->
     <div class="container">
-        <!-- Emotikon Menunjuk ke Bawah dengan Animasi Bounce -->
-        <div class="pointing-emoji-wrapper">
-            <span class="pointing-emoji" role="img" aria-label="Menunjuk ke bawah">👇</span>
+        <!-- Joyful Emoji Header -->
+        <div class="emoji-header-container">
+            <span class="animated-emoji wave-emoji" role="img" aria-label="Melambaikan Tangan">👋</span>
+            <span class="animated-emoji bounce-emoji" role="img" aria-label="Menunjuk ke Bawah">👇</span>
+            <span class="animated-emoji spin-emoji" role="img" aria-label="Bintang Berkilau">🌟</span>
         </div>
         
-        <!-- Teks Judul Animasi -->
         <h1>Selamat Datang Di Aplikasi PENA-KU</h1>
         <div class="subtitle">✨ Pengelolaan Nilai dan Administrasi Kelas Unggul ✨</div>
         
         <!-- 1. Menu Tingkat Kelas (1 s.d 6) -->
-        <div class="section-title">🎈 Menu Tingkat Kelas</div>
+        <div class="section-title" id="kelasHeading">🎈 Menu Tingkat Kelas</div>
         <div class="grid-3x2" id="kelasGrid">
             <a href="PENA MANTAP V1.html" class="card-kelas kelas-1 locked" data-menu="1">
                 <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
@@ -783,10 +1080,9 @@
             </a>
         </div>
 
-        <!-- 2. Menu Alat Musik Interaktif (Pengecekan File Otomatis ke GitHub) -->
-        <div class="section-title" style="margin-top: 35px;">🎵 Menu Media Alat Musik Interaktif</div>
+        <!-- 2. Menu Alat Musik Interaktif -->
+        <div class="section-title" id="musicHeading" style="margin-top: 35px;">🎵 Menu Media Alat Musik Interaktif</div>
         <div class="grid-3x2" id="musicGrid">
-            <!-- PIANIKA -->
             <a href="Pianika-Ku.html" class="card-music music-pianika" data-file="Pianika-Ku.html">
                 <i class="fa-solid fa-music main-icon animated-music-icon"></i>
                 <div class="card-info">
@@ -794,8 +1090,6 @@
                     <span class="desc">Virtual Pianika-Ku Interaktif</span>
                 </div>
             </a>
-
-            <!-- ANGKLUNG -->
             <a href="Angklung-Ku.html" class="card-music music-angklung" data-file="Angklung-Ku.html">
                 <i class="fa-solid fa-bell main-icon animated-music-icon" style="animation-delay: 0.5s;"></i>
                 <div class="card-info">
@@ -803,8 +1097,6 @@
                     <span class="desc">Virtual Angklung-Ku Tradisional</span>
                 </div>
             </a>
-
-            <!-- 4 Alat Musik Tambahan -->
             <a href="Drum-Ku.html" class="card-music music-extra1" data-file="Drum-Ku.html">
                 <i class="fa-solid fa-drum main-icon"></i>
                 <div class="card-info">
@@ -835,7 +1127,7 @@
             </a>
         </div>
 
-        <!-- 3. Menu Pendukung Terpisah "e-PR" -->
+        <!-- 3. Menu Pendukung e-PR -->
         <div class="epr-section-wrapper">
             <a href="e-PR.html" class="card-epr" data-file="e-PR.html">
                 <i class="fa-solid fa-book-open-reader"></i>
@@ -847,7 +1139,7 @@
         </div>
     </div>
 
-    <!-- Footer Developer Info -->
+    <!-- Footer Developer -->
     <div class="footer-bar">
         <div class="developer-badge">
             Aplikasi ini dibuat oleh : <strong>Ikhwan Adi Yanto, S.Pd.</strong> tahun 2026
@@ -871,7 +1163,7 @@
 
             <div class="alert-error" id="loginError">
                 <i class="fa-solid fa-circle-exclamation"></i>
-                <span id="errorMessage">Nama pengguna atau kata sandi yang Anda masukkan salah. Silakan coba lagi.</span>
+                <span id="errorMessage">Nama pengguna atau kata sandi salah.</span>
             </div>
 
             <form id="loginForm" onsubmit="processLogin(event)">
@@ -888,8 +1180,8 @@
                     <div class="input-wrapper">
                         <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required autocomplete="current-password">
                         <i class="fa-solid fa-key input-icon"></i>
-                        <button type="button" class="btn-toggle-pwd" id="togglePasswordBtn" onclick="togglePasswordVisibility()" title="Perlihatkan/Sembunyikan Sandi">
-                            <span class="emoji-icon" id="toggleEmoji">👁️</span>
+                        <button type="button" class="btn-toggle-pwd" id="togglePasswordBtn" onclick="togglePasswordVisibility()" title="Lihat Sandi">
+                            <span id="toggleEmoji">👁️</span>
                         </button>
                     </div>
                 </div>
@@ -908,7 +1200,17 @@
         </div>
     </div>
 
-    <!-- Audio Element Global -->
+    <!-- CUSTOM ALERT MODAL (Replaces browser alert) -->
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+        <div class="custom-alert-box">
+            <div class="custom-alert-icon" id="customAlertEmoji">✨</div>
+            <div class="custom-alert-title" id="customAlertTitle">Pemberitahuan</div>
+            <div class="custom-alert-msg" id="customAlertMsg">Pesan informasi sistem PENA-KU.</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- Global Sound -->
     <audio id="globalSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
 
     <script>
@@ -916,40 +1218,70 @@
         const VALID_PASS = "kelaskuasyik";
 
         const loginModal = document.getElementById('loginModal');
+        const slideDrawer = document.getElementById('slideDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
         const usernameInput = document.getElementById('usernameInput');
         const passwordInput = document.getElementById('passwordInput');
         const rememberMeCheckbox = document.getElementById('rememberMe');
-        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
         const toggleEmoji = document.getElementById('toggleEmoji');
         const loginError = document.getElementById('loginError');
         const userStatusText = document.getElementById('userStatusText');
         const btnAuthText = document.getElementById('btnAuthText');
         const btnAuthAction = document.getElementById('btnAuthAction');
+        const drawerUserName = document.getElementById('drawerUserName');
+        const drawerAuthLabel = document.getElementById('drawerAuthLabel');
         const kelasCards = document.querySelectorAll('.card-kelas');
-        const musicCards = document.querySelectorAll('.card-music');
         const globalSound = document.getElementById('globalSound');
+
+        // Custom alert references
+        const customAlertOverlay = document.getElementById('customAlertOverlay');
+        const customAlertEmoji = document.getElementById('customAlertEmoji');
+        const customAlertTitle = document.getElementById('customAlertTitle');
+        const customAlertMsg = document.getElementById('customAlertMsg');
+        let customAlertCallback = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             checkLoginStatus();
-            checkFilesAvailability(); // Jalankan pengecekan file saat halaman dimuat
+            checkFilesAvailability();
         });
 
-        // --- FUNGSI DETEKSI FILE ONLINE/OFFLINE (UNTUK GITHUB) ---
+        function showCustomAlert(title, message, emoji = "💡", callback = null) {
+            customAlertTitle.textContent = title;
+            customAlertMsg.textContent = message;
+            customAlertEmoji.textContent = emoji;
+            customAlertCallback = callback;
+            customAlertOverlay.classList.add('active');
+        }
+
+        function closeCustomAlert() {
+            customAlertOverlay.classList.remove('active');
+            if (customAlertCallback) {
+                customAlertCallback();
+                customAlertCallback = null;
+            }
+        }
+
+        function toggleDrawer() {
+            slideDrawer.classList.toggle('active');
+            drawerOverlay.classList.toggle('active');
+        }
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
         async function checkFilesAvailability() {
             const checkableCards = document.querySelectorAll('.card-music, .card-epr');
-            
             for (let card of checkableCards) {
                 const fileUrl = card.getAttribute('data-file');
                 if (!fileUrl) continue;
-
                 try {
-                    // Melakukan fetch header untuk memeriksa apakah file tersedia di server/GitHub
                     let response = await fetch(fileUrl, { method: 'HEAD' });
-                    if (!response.ok) {
-                        markCardAsOffline(card);
-                    }
+                    if (!response.ok) markCardAsOffline(card);
                 } catch (error) {
-                    // Jika gagal (file belum di-upload / offline)
                     markCardAsOffline(card);
                 }
             }
@@ -957,7 +1289,6 @@
 
         function markCardAsOffline(card) {
             card.classList.add('offline-file');
-            // Tambahkan badge "Belum Tersedia" di pojok kanan atas kartu
             if (!card.querySelector('.status-badge')) {
                 const badge = document.createElement('div');
                 badge.className = 'status-badge';
@@ -966,13 +1297,9 @@
             }
         }
 
-        // --- FUNGSI GLOBAL PEMUTAR SUARA ---
         function playSoundAndProceed(callback) {
             globalSound.currentTime = 0;
-            globalSound.play().catch(err => {
-                console.log("Audio dicegah oleh browser sebelum interaksi.");
-            });
-
+            globalSound.play().catch(() => {});
             if (callback) {
                 globalSound.onended = function() {
                     callback();
@@ -980,13 +1307,13 @@
                 };
                 setTimeout(() => {
                     if (globalSound.paused) callback();
-                }, 1000);
+                }, 800);
             }
         }
 
         function checkLoginStatus() {
-            const savedUser = localStorage.getItem('pena_user');
             const savedRemember = localStorage.getItem('pena_remember');
+            const savedUser = localStorage.getItem('pena_user');
 
             if (savedRemember === 'true' && savedUser === VALID_USER) {
                 setLoggedInState(savedUser);
@@ -1006,19 +1333,13 @@
             userStatusText.textContent = `Guru (${username})`;
             btnAuthText.textContent = "Keluar";
             btnAuthAction.classList.add('btn-logout');
+            drawerUserName.textContent = `Status: Guru (${username})`;
+            drawerAuthLabel.textContent = "Keluar Akun";
 
             kelasCards.forEach(card => {
                 card.classList.remove('locked');
                 const badge = card.querySelector('.status-badge');
                 if (badge) badge.remove();
-                
-                const menuNum = card.getAttribute('data-menu');
-                if(menuNum === "1") card.className = "card-kelas kelas-1";
-                if(menuNum === "2") card.className = "card-kelas kelas-2";
-                if(menuNum === "3") card.className = "card-kelas kelas-3";
-                if(menuNum === "4") card.className = "card-kelas kelas-4";
-                if(menuNum === "5") card.className = "card-kelas kelas-5";
-                if(menuNum === "6") card.className = "card-kelas kelas-6";
             });
         }
 
@@ -1026,6 +1347,8 @@
             userStatusText.textContent = "Tamu (Belum Login)";
             btnAuthText.textContent = "Masuk";
             btnAuthAction.classList.remove('btn-logout');
+            drawerUserName.textContent = "Status: Tamu";
+            drawerAuthLabel.textContent = "Login Guru";
 
             kelasCards.forEach(card => {
                 card.classList.add('locked');
@@ -1057,11 +1380,9 @@
                 if (passwordInput.type === "password") {
                     passwordInput.type = "text";
                     toggleEmoji.textContent = "🙈";
-                    togglePasswordBtn.setAttribute('title', 'Sembunyikan Sandi');
                 } else {
                     passwordInput.type = "password";
                     toggleEmoji.textContent = "👁️";
-                    togglePasswordBtn.setAttribute('title', 'Perlihatkan Sandi');
                 }
             });
         }
@@ -1074,7 +1395,6 @@
             playSoundAndProceed(() => {
                 if (username === VALID_USER && password === VALID_PASS) {
                     loginError.style.display = 'none';
-                    
                     if (rememberMeCheckbox.checked) {
                         localStorage.setItem('pena_remember', 'true');
                         localStorage.setItem('pena_user', username);
@@ -1083,37 +1403,29 @@
                     } else {
                         localStorage.removeItem('pena_remember');
                         localStorage.removeItem('pena_user');
-                        localStorage.removeItem('pena_saved_username');
-                        localStorage.removeItem('pena_saved_password');
                     }
-
                     sessionStorage.setItem('pena_logged_in', 'true');
                     sessionStorage.setItem('pena_user', username);
 
                     loginModal.classList.remove('active');
                     setLoggedInState(username);
 
-                    setTimeout(() => {
-                        alert(`Selamat datang kembali, ${username}! Login berhasil.`);
-                    }, 100);
-
+                    showCustomAlert("Login Berhasil! 🎉", `Selamat datang kembali, ${username}! Semua menu kelas kini telah terbuka.`, "🚀");
                 } else {
                     loginError.style.display = 'flex';
-                    document.getElementById('errorMessage').textContent = "Nama pengguna atau kata sandi yang Anda masukkan salah. Silakan coba lagi.";
                 }
             });
         }
 
         function processLogout() {
             playSoundAndProceed(() => {
-                if (confirm("Apakah Anda yakin ingin keluar?")) {
-                    sessionStorage.removeItem('pena_logged_in');
-                    sessionStorage.removeItem('pena_user');
+                showCustomAlert("Konfirmasi Keluar", "Apakah Anda yakin ingin keluar dari akun?", "🚪", () => {
+                    sessionStorage.clear();
                     localStorage.removeItem('pena_remember');
                     localStorage.removeItem('pena_user');
                     setLoggedOutState();
-                    alert("Anda telah berhasil keluar.");
-                }
+                    showCustomAlert("Berhasil Keluar", "Anda telah keluar dari sistem.", "👋");
+                });
             });
         }
 
@@ -1125,35 +1437,36 @@
             }
         }
 
-        // --- INTERAKSI KLIK MENU ---
-        const allInteractiveCards = document.querySelectorAll('.card-kelas, .card-music, .card-epr');
+        function checkDrawerNavigation(event, url) {
+            toggleDrawer();
+            // Let normal link work if file is ready
+        }
 
+        // Card Click Interactions
+        const allInteractiveCards = document.querySelectorAll('.card-kelas, .card-music, .card-epr');
         allInteractiveCards.forEach(menu => {
             menu.addEventListener('click', (e) => {
                 const isLocked = menu.classList.contains('locked');
                 const isOffline = menu.classList.contains('offline-file');
                 const targetUrl = menu.getAttribute('href');
 
-                // Jika kelas terkunci
                 if (isLocked) {
                     e.preventDefault();
                     playSoundAndProceed(() => {
                         openLoginModal();
-                        alert("Menu kelas terkunci! Silakan login terlebih dahulu sebagai guru untuk mengaksesnya.");
+                        showCustomAlert("Menu Terkunci 🔒", "Silakan login terlebih dahulu sebagai guru untuk mengakses administrasi dan nilai kelas.", "🔑");
                     });
                     return;
                 }
 
-                // Jika file alat musik berstatus offline / belum tersedia
                 if (isOffline) {
                     e.preventDefault();
                     playSoundAndProceed(() => {
-                        alert("⚠️ Halaman ini masih offline atau file belum tersedia di repositori (GitHub). Silakan unggah file terkait terlebih dahulu.");
+                        showCustomAlert("File Belum Tersedia ⚠️", "Halaman atau file ini masih offline atau belum diunggah ke server/GitHub.", "📁");
                     });
                     return;
                 }
 
-                // Jika file ada dan siap dibuka
                 if (targetUrl && targetUrl !== '#') {
                     e.preventDefault();
                     playSoundAndProceed(() => {
@@ -1166,6 +1479,5 @@
             });
         });
     </script>
-
 </body>
 </html>
