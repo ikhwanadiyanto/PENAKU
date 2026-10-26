@@ -420,7 +420,7 @@
             cursor: not-allowed !important;
         }
 
-        /* FLOATING DRAGGABLE MP3 PLAYER STYLING */
+        /* UPGRADED PROFESSIONAL GLASSMORPHISM MP3 PLAYER STYLING */
         #floatingMp3Player {
             position: fixed;
             bottom: 30px;
@@ -433,30 +433,37 @@
         .mp3-bubble {
             width: 65px;
             height: 65px;
-            background: linear-gradient(135deg, #0a2540, #1976d2);
+            background: rgba(10, 37, 64, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 25px rgba(13, 71, 161, 0.4);
+            box-shadow: 0 10px 30px rgba(13, 71, 161, 0.4), inset 0 0 12px rgba(255, 235, 59, 0.2);
             cursor: grab;
             position: relative;
-            border: 3px solid #ffeb3b;
-            transition: transform 0.2s ease;
+            border: 2px solid rgba(255, 235, 59, 0.8);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease, background-color 0.2s ease;
         }
 
         .mp3-bubble:active {
             cursor: grabbing;
+            transform: scale(0.92);
+            opacity: 0.75;
+            background: rgba(10, 37, 64, 0.55);
         }
 
         .mp3-bubble:hover {
-            transform: scale(1.1);
+            transform: scale(1.08);
+            box-shadow: 0 12px 35px rgba(25, 118, 210, 0.5);
         }
 
         .mp3-bubble-disc {
             font-size: 28px;
             color: #ffeb3b;
             animation: spinDisc 3s linear infinite paused;
+            filter: drop-shadow(0 0 5px rgba(255, 235, 59, 0.5));
         }
 
         #floatingMp3Player.playing .mp3-bubble-disc {
@@ -468,25 +475,32 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* EXPANDED MENU PANEL (FIXED FRAME ANTI-PECAH & SMART ALIGNMENT) */
+        /* UPGRADED EXPANDED MENU PANEL (GLASSMORPHISM & PROFESSIONAL THEME) */
         .mp3-expanded-panel {
             display: none;
             position: absolute;
-            width: 300px;
+            width: 320px;
             max-width: 90vw;
-            background: linear-gradient(135deg, #0a2540, #1976d2);
-            border-radius: 20px;
-            padding: 16px;
+            background: rgba(10, 37, 64, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 18px;
             color: #ffffff;
-            box-shadow: 0 15px 35px rgba(13, 71, 161, 0.35);
-            border: 2px solid rgba(255, 235, 59, 0.4);
-            animation: popUpPanel 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            border: 1.5px solid rgba(255, 235, 59, 0.4);
+            animation: popUpPanel 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 9999;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .mp3-expanded-panel:active {
+            opacity: 0.92;
         }
 
         @keyframes popUpPanel {
-            from { transform: scale(0.7); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from { transform: scale(0.75) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
         }
 
         #floatingMp3Player.expanded .mp3-bubble {
@@ -501,23 +515,24 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             padding-bottom: 8px;
         }
 
         .mp3-panel-title {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #ffeb3b;
             display: flex;
             align-items: center;
             gap: 6px;
             white-space: nowrap;
+            letter-spacing: 0.5px;
         }
 
         .mp3-close-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border: none;
             color: #fff;
             width: 26px;
@@ -528,17 +543,22 @@
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
             flex-shrink: 0;
         }
 
         .mp3-close-btn:hover {
             background: #ff7675;
+            transform: rotate(90deg);
+        }
+
+        .mp3-close-btn:active {
+            opacity: 0.6;
         }
 
         .mp3-panel-track-info {
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .mp3-track-name {
@@ -552,20 +572,60 @@
 
         .mp3-track-sub {
             font-size: 11px;
-            color: #bbdefb;
+            color: #90caf9;
+            margin-top: 2px;
+        }
+
+        /* ANIMATED PROGRESS BAR & DURATION TIME ENGINE */
+        .mp3-progress-container {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .mp3-progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: height 0.2s ease;
+        }
+
+        .mp3-progress-bar-bg:hover {
+            height: 8px;
+        }
+
+        .mp3-progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #42a5f5, #ffeb3b);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 8px rgba(255, 235, 59, 0.6);
+        }
+
+        .mp3-time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #e3f2fd;
+            margin-top: 5px;
+            font-weight: 600;
         }
 
         .mp3-panel-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 12px;
         }
 
         .mp3-ctrl-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
             width: 38px;
             height: 38px;
@@ -576,6 +636,7 @@
             justify-content: center;
             transition: all 0.2s ease;
             font-size: 14px;
+            backdrop-filter: blur(4px);
         }
 
         .mp3-ctrl-btn:hover {
@@ -584,35 +645,56 @@
             transform: scale(1.1);
         }
 
+        .mp3-ctrl-btn:active {
+            opacity: 0.5;
+            transform: scale(0.92);
+        }
+
         .mp3-ctrl-play {
-            background: #ffeb3b;
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d);
             color: #0a2540;
-            width: 44px;
-            height: 44px;
-            font-size: 16px;
+            width: 46px;
+            height: 46px;
+            font-size: 17px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(255, 235, 59, 0.4);
         }
 
         .mp3-ctrl-play:hover {
-            background: #fff;
+            background: #ffffff;
             color: #0d47a1;
+            box-shadow: 0 6px 18px rgba(255, 255, 255, 0.5);
         }
 
         .mp3-select-box {
             width: 100%;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff;
-            padding: 7px 12px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 12px;
             font-size: 12px;
             font-family: 'Poppins', sans-serif;
             outline: none;
             cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+        }
+
+        .mp3-select-box:active {
+            opacity: 0.7;
         }
 
         .mp3-select-box option {
             background: #0a2540;
             color: #ffffff;
+        }
+
+        /* TRACK OFFLINE / GAGAL MUAT STYLES */
+        .mp3-select-box option.track-offline {
+            color: #94a3b8 !important;
+            background: #1e293b !important;
+            font-style: italic;
         }
 
         /* STYLES TIMELINE & FULL SCREEN FLEX Engine */
@@ -1577,27 +1659,38 @@
         </div>
     </div>
 
-    <!-- FLOATING DRAGGABLE MP3 PLAYER (KELASYIK MUSIC PLAYER) -->
+    <!-- UPGRADED FLOATING DRAGGABLE MP3 PLAYER (KELASYIK MUSIC PLAYER PRO) -->
     <div id="floatingMp3Player">
         <audio id="bgMusicAudio" onended="playNextTrack()"></audio>
         
-        <!-- Mode Bubble Melayang (Piringan Hitam Berputar) -->
+        <!-- Mode Bubble Melayang (Piringan Hitam Berputar Transparan) -->
         <div class="mp3-bubble" id="mp3Bubble" onclick="toggleExpandPanel(event)" title="Klik untuk Buka Pemutar Musik">
             <i class="fa-solid fa-compact-disc mp3-bubble-disc"></i>
         </div>
 
-        <!-- Mode Expanded (Menu Lengkap Kelasyik) -->
+        <!-- Mode Expanded (Menu Transparan Glassmorphism Pro) -->
         <div class="mp3-expanded-panel" id="mp3ExpandedPanel">
             <div class="mp3-panel-header">
                 <div class="mp3-panel-title">
-                    <i class="fa-solid fa-music"></i> KELASYIK MUSIC PLAYER
+                    <i class="fa-solid fa-compact-disc fa-spin"></i> KELASYIK MUSIC PLAYER
                 </div>
                 <button class="mp3-close-btn" onclick="toggleExpandPanel(event)" title="Tutup / Perkecil"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="mp3-panel-track-info">
-                <div class="mp3-track-name" id="mp3TrackTitle">Pilih Musik (1 - 50)</div>
-                <div class="mp3-track-sub">Playlist Kelasyik</div>
+                <div class="mp3-track-name" id="mp3TrackTitle">Memuat Track...</div>
+                <div class="mp3-track-sub" id="mp3TrackSub">Playlist Kelasyik</div>
+            </div>
+
+            <!-- ANIMATED PROGRESS BAR & DURASI TIME -->
+            <div class="mp3-progress-container">
+                <div class="mp3-progress-bar-bg" id="mp3ProgressBarBg" onclick="seekTrackTime(event)">
+                    <div class="mp3-progress-bar-fill" id="mp3ProgressBarFill"></div>
+                </div>
+                <div class="mp3-time-display">
+                    <span id="mp3CurrentTime">00:00</span>
+                    <span id="mp3TotalTime">00:00</span>
+                </div>
             </div>
 
             <div class="mp3-panel-controls">
@@ -1835,7 +1928,7 @@
     <div id="printArea" style="display: none;"></div>
 
     <footer>
-        &copy; 2026 e-PR Pendidikan - Belajar Menyenangkan Setiap Hari! 🎉 Designed by Ikhwan Adi Yanto,S.Pd
+        &copy; 2026 e-PR Pendidikan - Belajar Menyenangkan Setiap Hari! 🎉 Designed by Ikhwan Adi Yanto,S.Pd[cite: 1]
     </footer>
 
     <script>
@@ -2012,11 +2105,27 @@
             }
         }
 
-        // --- SCRIPT FLOATING MP3 PLAYER GITHUB (music1.mp3 s.d music50.mp3) ---
+        // --- MAP NAMA TRACK INSTRUMENTAL CUSTOM ---
+        const TRACK_TITLES = {
+            1: "Simsalabim (Instrumental)",
+            2: "Mulutmu Libur Dulu (Instrumental)",
+            3: "Hujan dan Kelasku (Instrumental)"
+        };
+
+        function getTrackTitle(index) {
+            if (TRACK_TITLES[index]) {
+                return TRACK_TITLES[index];
+            }
+            const trackNumStr = index < 10 ? '0' + index : index;
+            return `Musik #${trackNumStr}`;
+        }
+
+        // --- SCRIPT FLOATING MP3 PLAYER PRO ENGINE ---
         let currentTrackIndex = 1;
         const totalTracks = 50;
         const GITHUB_AUDIO_BASE_URL = "https://raw.githubusercontent.com/ikhwanadiyanto/PENAKU/main/"; 
         let hasMoved = false;
+        const offlineTracks = new Set(); // Menyimpan indeks lagu yang rusak / tidak terkoneksi
 
         function initMp3Playlist() {
             const selectEl = document.getElementById('mp3Select');
@@ -2024,21 +2133,91 @@
             
             let optionsHtml = '<option value="" disabled selected>Pilih Musik (1-50)</option>';
             for (let i = 1; i <= totalTracks; i++) {
-                optionsHtml += `<option value="${i}">Musik #0${i < 10 ? '0' + i : i}</option>`;
+                const title = getTrackTitle(i);
+                optionsHtml += `<option value="${i}" id="opt-track-${i}">${title}</option>`;
             }
             selectEl.innerHTML = optionsHtml;
             initDraggablePlayer();
             initClickOutsideListener();
+            setupAudioEventListeners();
+        }
+
+        function setupAudioEventListeners() {
+            const audioEl = document.getElementById('bgMusicAudio');
+            const progressBarFill = document.getElementById('mp3ProgressBarFill');
+            const currentTimeEl = document.getElementById('mp3CurrentTime');
+            const totalTimeEl = document.getElementById('mp3TotalTime');
+
+            // Update time bar & durasi realtime
+            audioEl.ontimeupdate = () => {
+                if (audioEl.duration) {
+                    const pct = (audioEl.currentTime / audioEl.duration) * 100;
+                    progressBarFill.style.width = `${pct}%`;
+                    currentTimeEl.innerText = formatAudioTime(audioEl.currentTime);
+                    totalTimeEl.innerText = formatAudioTime(audioEl.duration);
+                }
+            };
+
+            // Penanganan jika Track Rusak / Gagal Terkoneksi (Error Handler)
+            audioEl.onerror = () => {
+                const titleEl = document.getElementById('mp3TrackTitle');
+                const subEl = document.getElementById('mp3TrackSub');
+                
+                offlineTracks.add(currentTrackIndex);
+                
+                // Ubah option di select box menjadi abu-abu & disabled
+                const optEl = document.getElementById(`opt-track-${currentTrackIndex}`);
+                if (optEl) {
+                    const title = getTrackTitle(currentTrackIndex);
+                    optEl.innerText = `${title} (Offline / Error)`;
+                    optEl.disabled = true;
+                    optEl.classList.add('track-offline');
+                }
+
+                titleEl.innerText = `${getTrackTitle(currentTrackIndex)} (Tidak Terkoneksi)`;
+                subEl.innerText = "❌ File Audio Tidak Ditemukan";
+                subEl.style.color = "#ff7675";
+
+                // Lompat ke lagu berikutnya yang valid setelah 1.5 detik
+                setTimeout(() => {
+                    nextTrack();
+                }, 1500);
+            };
+        }
+
+        function formatAudioTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`;
+        }
+
+        function seekTrackTime(e) {
+            const audioEl = document.getElementById('bgMusicAudio');
+            const barBg = document.getElementById('mp3ProgressBarBg');
+            if (!audioEl.duration) return;
+
+            const rect = barBg.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const seekTime = (clickX / width) * audioEl.duration;
+            audioEl.currentTime = seekTime;
         }
 
         function loadTrack(index) {
             currentTrackIndex = index;
             const audioEl = document.getElementById('bgMusicAudio');
             const titleEl = document.getElementById('mp3TrackTitle');
+            const subEl = document.getElementById('mp3TrackSub');
             const selectEl = document.getElementById('mp3Select');
+            const fillEl = document.getElementById('mp3ProgressBarFill');
             
+            fillEl.style.width = '0%';
+            subEl.innerText = "Playlist Kelasyik";
+            subEl.style.color = "#90caf9";
+
             audioEl.src = `${GITHUB_AUDIO_BASE_URL}music${index}.mp3`;
-            titleEl.innerText = `Musik #0${index < 10 ? '0' + index : index}`;
+            titleEl.innerText = getTrackTitle(index);
             selectEl.value = index;
         }
 
@@ -2052,7 +2231,7 @@
                 playIcon.className = "fa-solid fa-pause";
                 playerWrapper.classList.add('playing');
             }).catch(e => {
-                console.log("Audio autoplay error:", e);
+                console.log("Audio autoplay prevented/error:", e);
             });
         }
 
@@ -2070,7 +2249,7 @@
                     playIcon.className = "fa-solid fa-pause";
                     playerWrapper.classList.add('playing');
                 }).catch(err => {
-                    alert("Gagal memutar audio. Pastikan file music1.mp3 tersedia di repository GitHub Anda.");
+                    console.log("Audio play error:", err);
                 });
             } else {
                 audioEl.pause();
@@ -2081,20 +2260,44 @@
 
         function nextTrack() {
             let next = currentTrackIndex + 1;
+            let checkCount = 0;
+            
+            // Mencari lagu berikutnya yang tidak offline/error
+            while (offlineTracks.has(next) && checkCount < totalTracks) {
+                next++;
+                if (next > totalTracks) next = 1;
+                checkCount++;
+            }
+
             if (next > totalTracks) next = 1; 
             loadTrack(next);
-            document.getElementById('bgMusicAudio').play();
-            document.getElementById('playIcon').className = "fa-solid fa-pause";
-            document.getElementById('floatingMp3Player').classList.add('playing');
+            
+            const audioEl = document.getElementById('bgMusicAudio');
+            audioEl.play().then(() => {
+                document.getElementById('playIcon').className = "fa-solid fa-pause";
+                document.getElementById('floatingMp3Player').classList.add('playing');
+            }).catch(() => {});
         }
 
         function prevTrack() {
             let prev = currentTrackIndex - 1;
+            let checkCount = 0;
+
+            // Mencari lagu sebelumnya yang tidak offline/error
+            while (offlineTracks.has(prev) && checkCount < totalTracks) {
+                prev--;
+                if (prev < 1) prev = totalTracks;
+                checkCount++;
+            }
+
             if (prev < 1) prev = totalTracks;
             loadTrack(prev);
-            document.getElementById('bgMusicAudio').play();
-            document.getElementById('playIcon').className = "fa-solid fa-pause";
-            document.getElementById('floatingMp3Player').classList.add('playing');
+
+            const audioEl = document.getElementById('bgMusicAudio');
+            audioEl.play().then(() => {
+                document.getElementById('playIcon').className = "fa-solid fa-pause";
+                document.getElementById('floatingMp3Player').classList.add('playing');
+            }).catch(() => {});
         }
 
         function playNextTrack() {
@@ -2103,11 +2306,13 @@
 
         function changeTrackBySelect(val) {
             const idx = parseInt(val);
-            if (!isNaN(idx)) {
+            if (!isNaN(idx) && !offlineTracks.has(idx)) {
                 loadTrack(idx);
-                document.getElementById('bgMusicAudio').play();
-                document.getElementById('playIcon').className = "fa-solid fa-pause";
-                document.getElementById('floatingMp3Player').classList.add('playing');
+                const audioEl = document.getElementById('bgMusicAudio');
+                audioEl.play().then(() => {
+                    document.getElementById('playIcon').className = "fa-solid fa-pause";
+                    document.getElementById('floatingMp3Player').classList.add('playing');
+                }).catch(() => {});
             }
         }
 
