@@ -84,6 +84,9 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
 
 .action-buttons-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .kembali-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #475569, #1e293b); text-decoration: none; margin-top:0;}
+.kirim-sheet-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #7c3aed, #6d28d9); margin-top:0;}
+.tarik-ls-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #e11d48, #be123c); margin-top:0;}
+.tarik-idx-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #0284c7, #0369a1); margin-top:0;}
 .face-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #8b5cf6, #6366f1); margin-top:0; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);}
 .scan-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #10b981, #059669); margin-top:0;}
 .rekap-btn-head { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: none; color: white; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #1d4ed8); margin-top:0;}
@@ -155,7 +158,7 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
 
 /* MODAL CONTAINER GENERAL */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 15px; }
-.modal-box { background: #fff; width: 100%; max-width: 750px; border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+.modal-box { background: #fff; width: 100%; max-width: 900px; border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; }
 .modal-header h3 { color: #1e1b4b; font-size: 20px; font-weight: 700; }
 .close-modal { background: none; border: none; font-size: 20px; color: #ef4444; cursor: pointer; padding: 0; margin: 0; }
@@ -320,22 +323,107 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
     justify-content: center;
 }
 
-/* TOP 5 BOARD */
-.top5-board { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-radius: 20px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); border: 1px solid rgba(255, 255, 255, 0.8); }
-.top5-title { text-align: center; font-size: 16px; font-weight: 800; color: #1e1b4b; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.top5-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-.top5-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px 10px; border-radius: 16px; background: #ffffff; border: 2px solid #f1f5f9; }
-.top5-card.rank-1 { background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%); border-color: #fde047; }
-.top5-card.rank-2 { background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); border-color: #cbd5e1; }
-.top5-card.rank-3 { background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%); border-color: #fdba74; }
-.top5-badge-container { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-.top5-rank-badge { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; color: #fff; }
-.rank-1 .top5-rank-badge { background: linear-gradient(135deg, #eab308, #ca8a04); }
-.rank-2 .top5-rank-badge { background: linear-gradient(135deg, #94a3b8, #64748b); }
-.rank-3 .top5-rank-badge { background: linear-gradient(135deg, #f97316, #c2410c); }
-.rank-4 .top5-rank-badge, .rank-5 .top5-rank-badge { background: linear-gradient(135deg, #6366f1, #4338ca); }
-.top5-nama { font-size: 12px; font-weight: 700; color: #1e293b; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.top5-poin-box { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.85); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.06); font-weight: 800; font-size: 11px; color: #059669; margin-top: 6px; }
+/* ---------------------------------------------------------
+   TOP 5 BOARD - DESAIN MEWAH, ELEGAN & PROFESIONAL
+   --------------------------------------------------------- */
+.top5-board { 
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); 
+    backdrop-filter: blur(20px); 
+    border-radius: 24px; 
+    padding: 20px 25px; 
+    margin-bottom: 25px; 
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12); 
+    border: 1px solid rgba(255, 255, 255, 0.9); 
+}
+.top5-title { 
+    text-align: center; 
+    font-size: 17px; 
+    font-weight: 800; 
+    background: linear-gradient(135deg, #b45309, #d97706, #78350f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 10px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.top5-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.top5-card { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
+    padding: 16px 12px; 
+    border-radius: 18px; 
+    background: #ffffff; 
+    border: 2px solid #e2e8f0; 
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.top5-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(99, 102, 241, 0.15);
+}
+.top5-card.rank-1 { background: linear-gradient(180deg, #fffdf0 0%, #fef3c7 100%); border-color: #facc15; box-shadow: 0 10px 25px rgba(234, 179, 8, 0.2); }
+.top5-card.rank-2 { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border-color: #cbd5e1; box-shadow: 0 10px 25px rgba(148, 163, 184, 0.2); }
+.top5-card.rank-3 { background: linear-gradient(180deg, #fffaf5 0%, #ffedd5 100%); border-color: #fb923c; box-shadow: 0 10px 25px rgba(249, 115, 22, 0.2); }
+.top5-card.rank-4, .top5-card.rank-5 { background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%); border-color: #c084fc; }
+
+.top5-badge-container { display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+.top5-rank-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.rank-1 .top5-rank-badge { background: linear-gradient(135deg, #facc15, #ca8a04); }
+.rank-2 .top5-rank-badge { background: linear-gradient(135deg, #94a3b8, #475569); }
+.rank-3 .top5-rank-badge { background: linear-gradient(135deg, #fb923c, #c2410c); }
+.rank-4 .top5-rank-badge, .rank-5 .top5-rank-badge { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+
+.top5-avatar-wrap {
+    position: relative;
+    margin-bottom: 8px;
+}
+.top5-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.rank-1 .top5-avatar { border-color: #eab308; }
+.rank-2 .top5-avatar { border-color: #94a3b8; }
+.rank-3 .top5-avatar { border-color: #f97316; }
+
+.top5-nama { font-size: 13px; font-weight: 700; color: #1e293b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.top5-poin-box { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.95); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); font-weight: 800; font-size: 11px; color: #059669; margin-top: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+
+/* ANIMASI LOADING TOP 5 ELEGAN */
+.top5-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    gap: 12px;
+    color: #4f46e5;
+    font-weight: 600;
+    font-size: 13px;
+    grid-column: span 5;
+}
+.spinner-elegance {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e0e7ff;
+    border-top: 3px solid #4f46e5;
+    border-radius: 50%;
+    animation: spinElegance 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+@keyframes spinElegance {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 /* KOP SURAT TEKS TANPA LOGO */
 .kop-surat-cetak { width: 100%; margin-bottom: 15px; text-align: center; }
@@ -344,20 +432,158 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
 .kop-teks p { font-size: 11px; font-weight: 500; color: #333; margin: 0; line-height: 1.3; }
 .garis-kop { border: none; border-top: 3px solid #000; border-bottom: 1px solid #000; height: 3px; margin-top: 6px; margin-bottom: 15px; }
 
-/* SERTIFIKAT */
+/* ---------------------------------------------------------
+   SERTIFIKAT PROFESIONAL & ELEGAN (GOLD LUXURY THEME)
+   --------------------------------------------------------- */
 .sertifikat-item {
-    width: 100%; max-width: 950px; margin: 0 auto 35px auto; background: #fffdf9; padding: 25px;
-    border-radius: 4px; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); box-sizing: border-box;
+    width: 100%; 
+    max-width: 1100px; 
+    margin: 0 auto 40px auto; 
+    background: #fffdf7; 
+    padding: 30px;
+    border-radius: 8px; 
+    position: relative; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); 
+    box-sizing: border-box;
+    page-break-after: always;
 }
-.sertifikat-border-outer { border: 3px solid #b45309; padding: 8px; position: relative; }
+.sertifikat-border-outer { 
+    border: 4px double #b45309; 
+    padding: 10px; 
+    position: relative; 
+    background: #fff;
+}
 .sertifikat-border-inner {
-    border: 1px solid #d97706; padding: 35px 40px; text-align: center; position: relative;
-    background: radial-gradient(circle, rgba(255,253,249,1) 0%, rgba(254,243,199,0.25) 100%);
+    border: 1px solid #d97706; 
+    padding: 30px 45px; 
+    text-align: center; 
+    position: relative;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(254,243,199,0.3) 100%);
+    overflow: hidden;
 }
-.sertifikat-header-text { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 800; color: #78350f; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4px; }
-.sertifikat-sub-header { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #92400e; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 25px; }
-.sertifikat-body-p { font-size: 14px; color: #4b5563; line-height: 1.6; margin-bottom: 10px; }
-.sertifikat-nama-penerima { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 800; color: #1e1b4b; display: inline-block; padding: 0 30px 6px 30px; border-bottom: 2px solid #d97706; }
+/* Watermark Tengah */
+.sertifikat-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
+    opacity: 0.05;
+    z-index: 0;
+    pointer-events: none;
+    object-fit: contain;
+}
+.sertifikat-konten-utama {
+    position: relative;
+    z-index: 2;
+}
+.sertifikat-top-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.sertifikat-logo-instansi {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+}
+.sertifikat-badge-gold {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(217,119,6,0.3);
+}
+.sertifikat-header-text { 
+    font-family: 'Cinzel', serif; 
+    font-size: 34px; 
+    font-weight: 800; 
+    color: #78350f; 
+    letter-spacing: 5px; 
+    text-transform: uppercase; 
+    margin-bottom: 2px; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+.sertifikat-sub-header { 
+    font-family: 'Poppins', sans-serif; 
+    font-size: 12px; 
+    font-weight: 700; 
+    color: #b45309; 
+    letter-spacing: 4px; 
+    text-transform: uppercase; 
+    margin-bottom: 18px; 
+}
+.sertifikat-body-p { 
+    font-size: 13px; 
+    color: #4b5563; 
+    line-height: 1.5; 
+    margin-bottom: 6px; 
+    font-weight: 500;
+}
+.sertifikat-nama-penerima { 
+    font-family: 'Playfair Display', serif; 
+    font-size: 36px; 
+    font-weight: 800; 
+    color: #1e1b4b; 
+    display: inline-block; 
+    padding: 0 35px 2px 35px; 
+    border-bottom: 3px solid #d97706; 
+    margin: 6px 0;
+}
+
+/* FOTO SISWA DI TENGAH SERTIFIKAT */
+.sertifikat-footer-sign {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+}
+.sign-box {
+    width: 230px;
+    text-align: center;
+    font-size: 12px;
+    color: #1e1811;
+}
+.sign-line {
+    margin-top: 55px;
+    border-top: 2px solid #1e1811;
+    font-weight: 700;
+    padding-top: 4px;
+}
+.sign-nip {
+    font-size: 11px;
+    font-weight: 500;
+    color: #4b5563;
+}
+.sertifikat-foto-tengah-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.sertifikat-foto-profil {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #d97706;
+    box-shadow: 0 6px 15px rgba(217,119,6,0.3);
+    background: #fff;
+}
+.sertifikat-foto-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #b45309;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
 /* TANDA TANGAN WALI KELAS */
 .area-ttd-cetak { display: flex; justify-content: flex-end; margin-top: 35px; page-break-inside: avoid; }
@@ -395,7 +621,7 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
 
 /* CSS PRINT HANYA MENCETAK MODAL TERBUKA */
 @media print {
-    @page { size: A4 portrait; margin: 1.2cm 1.5cm; }
+    @page { size: A4 landscape; margin: 1cm; }
     body * { visibility: hidden !important; }
     .modal-overlay[style*="display: flex"], .modal-overlay[style*="display: flex"] * { visibility: visible !important; }
     .modal-overlay { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: transparent !important; backdrop-filter: none !important; padding: 0 !important; margin: 0 !important; }
@@ -424,7 +650,12 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
             <span>TOP 5 PERINGKAT POIN HARIAN</span>
             <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
         </div>
-        <div id="top5Grid" class="top5-grid"></div>
+        <div id="top5Grid" class="top5-grid">
+            <div class="top5-loading-box">
+                <div class="spinner-elegance"></div>
+                <span>Memuat Peringkat Terbaik...</span>
+            </div>
+        </div>
     </div>
 
     <div id="page-absensi" class="app-page">
@@ -444,6 +675,9 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
 
             <div class="action-buttons-group">
                 <a href="PENA MANTAP V6.html" class="kembali-btn-head"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                <button type="button" class="kirim-sheet-btn-head" onclick="kirimDataKeGoogleSheet()"><i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Sheet</button>
+                <button type="button" class="tarik-ls-btn-head" onclick="tarikDataLocalStorage()"><i class="fa-solid fa-box-archive"></i> Tarik Data LS</button>
+                <button type="button" class="tarik-idx-btn-head" onclick="tarikDataIndexedDB()"><i class="fa-solid fa-database"></i> Tarik Data Index</button>
                 <button type="button" class="face-btn-head" onclick="bukaModalFaceScan()"><i class="fa-solid fa-user-gear"></i> Scan Wajah</button>
                 <button type="button" class="scan-btn-head" onclick="bukaModalScanner()"><i class="fa-solid fa-barcode"></i> Scan Barcode</button>
                 <button type="button" class="terlambat-btn-head" onclick="bukaModalTerlambat()"><i class="fa-solid fa-clock-rotate-left"></i> Top Telat</button>
@@ -515,8 +749,8 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
     <div class="area-ttd-cetak">
         <div class="box-ttd">
             <div>Guru / Wali Kelas VI</div>
-            <div class="nama-wali-kelas">Ikhwan Adi Yanto, S.Pd.</div>
-            <div class="nip-wali-kelas">NIP. 19890802 202221 1 013</div>
+            <div class="nama-wali-kelas" id="lblTtdWaliNama">Ikhwan Adi Yanto, S.Pd.</div>
+            <div class="nip-wali-kelas" id="lblTtdWaliNip">NIP. 19890802 202221 1 013</div>
         </div>
     </div>
 </template>
@@ -598,7 +832,7 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
                 </div>
                 <div>
                     <label style="display:block; font-weight:600; font-size:13px; margin-bottom:5px; color:#1e1b4b;">Jumlah Poin:</label>
-                    <input type="number" id="inputJumlahPoinAdjust" min="1" max="1000" placeholder="Contoh: 10" style="width:100%; padding:10px; border-radius:10px; border:2px solid #cbd5e1; font-family:'Poppins',sans-serif; font-size:14px; outline:none;" required>
+                    <input type="number" id="inputJumlahPoinAdjust" min="1" placeholder="Contoh: 10" style="width:100%; padding:10px; border-radius:10px; border:2px solid #cbd5e1; font-family:'Poppins',sans-serif; font-size:14px; outline:none;" required>
                 </div>
             </div>
 
@@ -730,13 +964,69 @@ button{padding:10px 15px;border:none;border-radius:10px;color:#fff;font-weight:b
 </div>
 
 <div id="modalSertifikat" class="modal-overlay">
-    <div class="modal-box" style="max-width: 980px;">
+    <div class="modal-box" style="max-width: 1000px;">
         <div class="modal-header">
-            <h3><i class="fa-solid fa-award" style="color: #8b5cf6;"></i> Cetak Sertifikat 5 Siswa Terajin</h3>
+            <h3><i class="fa-solid fa-award" style="color: #8b5cf6;"></i> Cetak Sertifikat Penghargaan Siswa Terajin</h3>
             <button type="button" class="close-modal" onclick="tutupModal('modalSertifikat')">&times;</button>
         </div>
-        <div id="areaCetakSertifikat" class="print-area"></div>
-        <button type="button" class="cert-btn-head no-print" style="width:100%; justify-content:center; margin-top:15px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak 5 Sertifikat (PDF)</button>
+        
+        <!-- Panel Kontrol Logo & Biodata Penandatangan Sertifikat -->
+        <div class="no-print" style="background: #f8fafc; padding: 14px 18px; border-radius: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 12px;">
+            <div style="font-size: 13px; font-weight: 600; color: #1e1b4b;">
+                <i class="fa-solid fa-pen-nib" style="color: #4f46e5;"></i> Pengaturan Sertifikat:
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="file" id="inputUploadLogo" accept="image/*" style="display: none;" onchange="prosesUploadLogoSertifikat(event)">
+                <button type="button" class="scan-btn-head" style="margin: 0; padding: 6px 12px; font-size: 12px;" onclick="document.getElementById('inputUploadLogo').click()">
+                    <i class="fa-solid fa-upload"></i> Upload Logo
+                </button>
+                <button type="button" class="reset" style="margin: 0; padding: 6px 12px; font-size: 12px;" onclick="hapusLogoSertifikat()">
+                    <i class="fa-solid fa-trash"></i> Hapus Logo
+                </button>
+                <button type="button" class="adjust-btn-head" style="margin: 0; padding: 6px 12px; font-size: 12px;" onclick="bukaModalEditPenandatangan()">
+                    <i class="fa-solid fa-user-pen"></i> Pengaturan Penandatangan
+                </button>
+            </div>
+        </div>
+
+        <div id="areaCetakSertifikat" class="print-area">
+            <div style="text-align:center; padding: 40px; color: #64748b;"><div class="spinner-elegance" style="margin: auto auto 10px auto;"></div> Menarik data total poin terbaru dari Google Sheets...</div>
+        </div>
+
+        <button type="button" class="cert-btn-head no-print" style="width:100%; justify-content:center; margin-top:15px; padding: 12px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Sertifikat Resmi (A4 Landscape)</button>
+    </div>
+</div>
+
+<!-- MODAL EDIT BIODATA PENANDATANGAN SERTIFIKAT -->
+<div id="modalEditPenandatangan" class="modal-overlay" style="z-index: 100000;">
+    <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-user-pen" style="color: #4f46e5;"></i> Pengaturan Biodata Penandatangan</h3>
+            <button type="button" class="close-modal" onclick="tutupModal('modalEditPenandatangan')">&times;</button>
+        </div>
+        <form onsubmit="simpanBiodataPenandatangan(event)">
+            <h4 style="font-size: 14px; color: #1e1b4b; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Kepala Sekolah</h4>
+            <div style="margin-bottom: 12px;">
+                <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">Nama & Gelar Kasek:</label>
+                <input type="text" id="inputNamaKasek" style="width:100%; padding:9px; border:2px solid #cbd5e1; border-radius:10px; font-size:13px;" required>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">NIP Kasek:</label>
+                <input type="text" id="inputNipKasek" style="width:100%; padding:9px; border:2px solid #cbd5e1; border-radius:10px; font-size:13px;" required>
+            </div>
+
+            <h4 style="font-size: 14px; color: #1e1b4b; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Guru / Wali Kelas VI</h4>
+            <div style="margin-bottom: 12px;">
+                <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">Nama & Gelar Wali Kelas:</label>
+                <input type="text" id="inputNamaWali" style="width:100%; padding:9px; border:2px solid #cbd5e1; border-radius:10px; font-size:13px;" required>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px;">NIP Wali Kelas:</label>
+                <input type="text" id="inputNipWali" style="width:100%; padding:9px; border:2px solid #cbd5e1; border-radius:10px; font-size:13px;" required>
+            </div>
+
+            <button type="submit" class="scan-btn-head" style="width:100%; justify-content:center;"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Biodata</button>
+        </form>
     </div>
 </div>
 
@@ -746,6 +1036,18 @@ let dbAbsensiUrutan = {};
 let dbFotoSiswa = {};
 let dbPenyesuaianPoin = [];
 let dbFotoWajahSiswa = {};
+let dbLogoSekolah = "";
+
+// Biodata Penandatangan Sertifikat Default
+let dbPenandatangan = {
+    namaKasek: "......................................................",
+    nipKasek: "..............................................",
+    namaWali: "Ikhwan Adi Yanto, S.Pd.",
+    nipWali: "19890802 202221 1 013"
+};
+
+// URL Web App GAS Anda
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwGsk0xLtJ4WPQqlMAzAsNE-o1IKd-Z2dWe7ko8D1cEFW7GDMNGWLxV_o8V8-_sg8Db/exec";
 
 const tb = document.getElementById('tb');
 const tglInput = document.getElementById('tgl');
@@ -822,6 +1124,12 @@ async function muatDataRealtimeDariDB() {
         const reqFoto = store.get("dbFotoSiswa");
         reqFoto.onsuccess = (e) => { if (e.target.result) dbFotoSiswa = e.target.result; };
 
+        const reqLogo = store.get("dbLogoSekolah");
+        reqLogo.onsuccess = (e) => { if (e.target.result) dbLogoSekolah = e.target.result; };
+
+        const reqSign = store.get("dbPenandatangan");
+        reqSign.onsuccess = (e) => { if (e.target.result) dbPenandatangan = e.target.result; };
+
     } catch (err) {
         console.log("Gagal memuat data real-time IndexedDB:", err);
         renderTabelDanBubble();
@@ -838,9 +1146,289 @@ function simpanKeIndexedDBPermanen() {
         store.put(dbPenyesuaianPoin, "dbPenyesuaianPoin");
         store.put(dbFotoWajahSiswa, "dbFotoWajahSiswa");
         store.put(dbFotoSiswa, "dbFotoSiswa");
+        store.put(dbLogoSekolah, "dbLogoSekolah");
+        store.put(dbPenandatangan, "dbPenandatangan");
     } catch (e) {
         console.error("Gagal menyimpan ke IndexedDB:", e);
     }
+}
+
+function simpanKeLokalPermanen() {
+    try {
+        localStorage.setItem('dbAbsensiUrutan', JSON.stringify(dbAbsensiUrutan));
+        localStorage.setItem('dbPenyesuaianPoin', JSON.stringify(dbPenyesuaianPoin));
+        localStorage.setItem('dbFotoWajahSiswa', JSON.stringify(dbFotoWajahSiswa));
+        localStorage.setItem('dbFotoSiswa', JSON.stringify(dbFotoSiswa));
+        localStorage.setItem('dbPenandatangan', JSON.stringify(dbPenandatangan));
+        if (dbLogoSekolah) localStorage.setItem('dbLogoSekolah', dbLogoSekolah);
+        if(siswa && siswa.length > 0) localStorage.setItem('dbMasterSiswa', JSON.stringify(siswa));
+    } catch(e) {
+        console.log("Gagal menyimpan ke LocalStorage:", e);
+    }
+}
+
+function simpanSemuaPenyimpanan() {
+    simpanKeIndexedDBPermanen();
+    simpanKeLokalPermanen();
+}
+
+// =========================================================
+// FUNGSI PENGATURAN BIODATA PENANDATANGAN
+// =========================================================
+function bukaModalEditPenandatangan() {
+    document.getElementById('inputNamaKasek').value = dbPenandatangan.namaKasek;
+    document.getElementById('inputNipKasek').value = dbPenandatangan.nipKasek;
+    document.getElementById('inputNamaWali').value = dbPenandatangan.namaWali;
+    document.getElementById('inputNipWali').value = dbPenandatangan.nipWali;
+    document.getElementById('modalEditPenandatangan').style.display = 'flex';
+}
+
+function simpanBiodataPenandatangan(e) {
+    e.preventDefault();
+    dbPenandatangan = {
+        namaKasek: document.getElementById('inputNamaKasek').value.trim(),
+        nipKasek: document.getElementById('inputNipKasek').value.trim(),
+        namaWali: document.getElementById('inputNamaWali').value.trim(),
+        nipWali: document.getElementById('inputNipWali').value.trim()
+    };
+    simpanSemuaPenyimpanan();
+    tutupModal('modalEditPenandatangan');
+    bukaModalSertifikat();
+    alert("✅ Biodata penandatangan berhasil diperbarui!");
+}
+
+// =========================================================
+// FUNGSI UPLOAD LOGO SERTIFIKAT
+// =========================================================
+function prosesUploadLogoSertifikat(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        dbLogoSekolah = e.target.result;
+        simpanSemuaPenyimpanan();
+        bukaModalSertifikat();
+        alert("✅ Logo sekolah & watermark sertifikat berhasil diperbarui!");
+    };
+    reader.readAsDataURL(file);
+}
+
+function hapusLogoSertifikat() {
+    if (confirm("Hapus logo sekolah dari sertifikat?")) {
+        dbLogoSekolah = "";
+        simpanSemuaPenyimpanan();
+        bukaModalSertifikat();
+    }
+}
+
+// =========================================================
+// FUNGSI KIRIM DATA KE GOOGLE SHEET (WEB APP GAS)
+// =========================================================
+async function kirimDataKeGoogleSheet() {
+    const urutanHariIni = getUrutanHariIni();
+    if (!urutanHariIni || urutanHariIni.length === 0) {
+        playTetTotSound();
+        alert("⚠️ Belum ada data kehadiran siswa hari ini untuk dikirim!");
+        return;
+    }
+
+    const tglFormated = tglInput.value;
+    const payloadData = urutanHariIni.map((nis, index) => {
+        let dataS = siswa.find(x => x[0] === nis);
+        let namaSiswa = dataS ? dataS[1] : nis;
+        let poinHariIni = Math.max(1, (siswa.length - index));
+
+        return {
+            no: index + 1,
+            tanggalUpdate: tglFormated,
+            namaSiswa: namaSiswa,
+            totalPoint: poinHariIni
+        };
+    });
+
+    const bodyData = {
+        action: "kirimAbsenUrutan",
+        tabName: "Urutan Absen",
+        data: payloadData
+    };
+
+    try {
+        const btnKirim = document.querySelector('.kirim-sheet-btn-head');
+        if (btnKirim) btnKirim.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
+
+        await fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyData)
+        });
+
+        if (btnKirim) btnKirim.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Sheet`;
+        mainkanSuaraBerhasil();
+        alert("✅ Data kehadiran hari ini berhasil dikirim ke Google Sheets (Tab 'Urutan Absen')!");
+        
+        setTimeout(tarikTop5DariSheet, 1500);
+
+    } catch (err) {
+        console.error("Gagal mengirim data ke Google Sheet:", err);
+        playTetTotSound();
+        alert("❌ Gagal mengirim data ke Google Sheets. Periksa koneksi internet Anda.");
+        const btnKirim = document.querySelector('.kirim-sheet-btn-head');
+        if (btnKirim) btnKirim.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Sheet`;
+    }
+}
+
+// =========================================================
+// FUNGSI TARIK DATA LOCAL STORAGE & INDEXEDDB
+// =========================================================
+function tarikDataLocalStorage() {
+    let adaData = false;
+    
+    const lsMaster = localStorage.getItem('dbMasterSiswa');
+    if (lsMaster) {
+        try {
+            const parsed = JSON.parse(lsMaster);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                siswa = parsed;
+                adaData = true;
+            }
+        } catch(e) {}
+    }
+
+    const lsAbsen = localStorage.getItem('dbAbsensiUrutan');
+    if (lsAbsen) {
+        try { dbAbsensiUrutan = JSON.parse(lsAbsen); adaData = true; } catch(e) {}
+    }
+
+    const lsPoin = localStorage.getItem('dbPenyesuaianPoin');
+    if (lsPoin) {
+        try { dbPenyesuaianPoin = JSON.parse(lsPoin); adaData = true; } catch(e) {}
+    }
+
+    const lsFoto = localStorage.getItem('dbFotoSiswa');
+    if (lsFoto) {
+        try { dbFotoSiswa = JSON.parse(lsFoto); adaData = true; } catch(e) {}
+    }
+
+    const lsWajah = localStorage.getItem('dbFotoWajahSiswa');
+    if (lsWajah) {
+        try { dbFotoWajahSiswa = JSON.parse(lsWajah); adaData = true; } catch(e) {}
+    }
+
+    const lsLogo = localStorage.getItem('dbLogoSekolah');
+    if (lsLogo) {
+        dbLogoSekolah = lsLogo;
+        adaData = true;
+    }
+
+    const lsSign = localStorage.getItem('dbPenandatangan');
+    if (lsSign) {
+        try { dbPenandatangan = JSON.parse(lsSign); adaData = true; } catch(e) {}
+    }
+
+    if (adaData) {
+        simpanKeIndexedDBPermanen();
+        renderTabelDanBubble();
+        mainkanSuaraBerhasil();
+        alert("✅ Berhasil menarik data dari Local Storage!");
+    } else {
+        playTetTotSound();
+        alert("⚠️ Tidak ditemukan data yang tersimpan di Local Storage.");
+    }
+}
+
+async function tarikDataIndexedDB() {
+    try {
+        await muatDataRealtimeDariDB();
+        simpanKeLokalPermanen();
+        mainkanSuaraBerhasil();
+        alert("✅ Berhasil memperbarui & menarik data dari IndexedDB!");
+    } catch (err) {
+        playTetTotSound();
+        alert("❌ Gagal menarik data dari IndexedDB.");
+    }
+}
+
+// =========================================================
+// TARIK AKUMULASI POIN TOP 5 DARI GOOGLE SHEETS DENGAN LOADING ELEGAN
+// =========================================================
+async function tarikTop5DariSheet() {
+    const top5Container = document.getElementById('top5Grid');
+    if (!top5Container) return;
+
+    top5Container.innerHTML = `
+        <div class="top5-loading-box">
+            <div class="spinner-elegance"></div>
+            <span>Memuat akumulasi poin terbaik dari Google Sheets...</span>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`${WEB_APP_URL}?action=getTop5Sheet`);
+        const result = await response.json();
+
+        if (result.status === "success" && Array.isArray(result.data) && result.data.length > 0) {
+            let rekapMap = {};
+
+            result.data.forEach(item => {
+                let nama = item.nama;
+                let poin = parseInt(item.totalPoin) || 0;
+                
+                if (!rekapMap[nama]) {
+                    rekapMap[nama] = 0;
+                }
+                rekapMap[nama] += poin; 
+            });
+
+            let sortedData = Object.keys(rekapMap).map(nama => {
+                let objSiswa = siswa.find(s => s[1].toLowerCase() === nama.toLowerCase());
+                let nis = objSiswa ? objSiswa[0] : null;
+                return {
+                    nama: nama,
+                    totalPoin: rekapMap[nama],
+                    nis: nis
+                };
+            }).sort((a, b) => b.totalPoin - a.totalPoin).slice(0, 5);
+
+            renderTop5BoardSheet(sortedData);
+        } else {
+            renderTop5Board(); 
+        }
+    } catch (err) {
+        console.error("Gagal memuat data dari Spreadsheet, beralih ke lokal:", err);
+        renderTop5Board(); 
+    }
+}
+
+function renderTop5BoardSheet(dataPoin) {
+    const top5Container = document.getElementById('top5Grid');
+    if (!top5Container) return;
+
+    top5Container.innerHTML = '';
+
+    if (dataPoin.length === 0 || dataPoin[0].totalPoin === 0) {
+        top5Container.innerHTML = `<div style="text-align:center; padding: 15px; color: #64748b; font-size:13px; grid-column: span 5;">Belum ada akumulasi poin tercatat.</div>`;
+        return;
+    }
+
+    dataPoin.forEach((item, index) => {
+        top5Container.innerHTML += `
+            <div class="top5-card rank-${index + 1}">
+                <div class="top5-badge-container">
+                    <div class="top5-rank-badge">#${index + 1}</div>
+                </div>
+                <div class="top5-avatar-wrap">
+                    <img src="${getAvatarSiswaUrl(item.nis)}" class="top5-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                </div>
+                <div class="top5-nama" title="${item.nama}">${item.nama}</div>
+                <div class="top5-poin-box">
+                    <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
+                    <span>${item.totalPoin} Poin</span>
+                </div>
+            </div>
+        `;
+    });
 }
 
 // =========================================================
@@ -1019,7 +1607,7 @@ function renderTabelDanBubble() {
         counterBox.classList.add('pulse');
     }
 
-    renderTop5Board();
+    tarikTop5DariSheet();
 }
 
 function pilihSiswaHadir(nis) {
@@ -1032,7 +1620,7 @@ function pilihSiswaHadir(nis) {
         urutan.push(nis);
         mainkanSuaraBerhasil();
     }
-    simpanKeIndexedDBPermanen();
+    simpanSemuaPenyimpanan();
     renderTabelDanBubble();
 }
 
@@ -1054,7 +1642,7 @@ function prosesInputNoAbsen() {
     }
 
     urutan.push(target[0]);
-    simpanKeIndexedDBPermanen();
+    simpanSemuaPenyimpanan();
     renderTabelDanBubble();
     mainkanSuaraBerhasil();
     inputNoAbsen.value = '';
@@ -1067,7 +1655,7 @@ function handleKeyDownNoAbsen(e) {
 function resetUrutanHariIni() {
     if (confirm("Reset data kehadiran hari ini?")) {
         dbAbsensiUrutan[tglInput.value] = [];
-        simpanKeIndexedDBPermanen();
+        simpanSemuaPenyimpanan();
         renderTabelDanBubble();
     }
 }
@@ -1232,7 +1820,7 @@ function mulaiDeteksiWajahLoop() {
                             let urutan = getUrutanHariIni();
                             if (!urutan.includes(nisMatch)) {
                                 urutan.push(nisMatch);
-                                simpanKeIndexedDBPermanen();
+                                simpanSemuaPenyimpanan();
                                 renderTabelDanBubble();
                                 mainkanSuaraBerhasil();
                                 statusOverlay.innerText = `✅ Presensi Berhasil: ${objSiswa[1]}`;
@@ -1293,7 +1881,7 @@ async function ambilSampelWajahSiswa() {
         dbFotoSiswa[nis] = photoDataUrl;
     }
 
-    simpanKeIndexedDBPermanen();
+    simpanSemuaPenyimpanan();
     updateFaceMatcher();
     mainkanSuaraBerhasil();
 
@@ -1452,7 +2040,7 @@ function simpanPenyesuaianPoin(e) {
     if (!Array.isArray(dbPenyesuaianPoin)) dbPenyesuaianPoin = [];
     dbPenyesuaianPoin.push(record);
     
-    simpanKeIndexedDBPermanen();
+    simpanSemuaPenyimpanan();
     renderTabelDanBubble();
     renderTabelRiwayatAdjust();
 
@@ -1467,7 +2055,7 @@ function simpanPenyesuaianPoin(e) {
 function hapusRiwayatAdjust(id) {
     if (confirm("Hapus catatan penyesuaian poin ini?")) {
         dbPenyesuaianPoin = dbPenyesuaianPoin.filter(item => item.id !== id);
-        simpanKeIndexedDBPermanen();
+        simpanSemuaPenyimpanan();
         renderTabelDanBubble();
         renderTabelRiwayatAdjust();
     }
@@ -1520,7 +2108,7 @@ function onScanSuccess(decodedText) {
             document.getElementById('scanResult').innerText = `⚠️ ${siswaFound[1]} SUDAH ABSEN!`;
         } else {
             urutan.push(siswaFound[0]);
-            simpanKeIndexedDBPermanen();
+            simpanSemuaPenyimpanan();
             renderTabelDanBubble();
             mainkanSuaraBerhasil();
 
@@ -1590,12 +2178,9 @@ function renderTop5Board() {
     top5Container.innerHTML = '';
 
     if (dataPoin.length === 0 || dataPoin[0].totalPoin === 0) {
-        top5Container.style.display = 'block';
-        top5Container.innerHTML = `<div style="text-align:center; padding: 10px; color: #64748b; font-size:13px;">Belum ada akumulasi poin.</div>`;
+        top5Container.innerHTML = `<div style="text-align:center; padding: 15px; color: #64748b; font-size:13px; grid-column: span 5;">Belum ada akumulasi poin tercatat.</div>`;
         return;
     }
-
-    top5Container.style.display = 'grid';
 
     dataPoin.forEach((item, index) => {
         top5Container.innerHTML += `
@@ -1603,7 +2188,9 @@ function renderTop5Board() {
                 <div class="top5-badge-container">
                     <div class="top5-rank-badge">#${index + 1}</div>
                 </div>
-                <img src="${getAvatarSiswaUrl(item.nis)}" class="avatar-siswa" style="width:36px; height:36px;" onerror="this.src='${DEFAULT_AVATAR}'">
+                <div class="top5-avatar-wrap">
+                    <img src="${getAvatarSiswaUrl(item.nis)}" class="top5-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                </div>
                 <div class="top5-nama" title="${item.nama}">${item.nama}</div>
                 <div class="top5-poin-box">
                     <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
@@ -1719,30 +2306,112 @@ function bukaModalTerlambat() {
     document.getElementById('modalTerlambat').style.display = 'flex';
 }
 
-function bukaModalSertifikat() {
+// PENYEMPURNAAN MODAL SERTIFIKAT DENGAN FOTO SISWA DI TENGAH & BIODATA PENANDATANGAN KUSTOM
+async function bukaModalSertifikat() {
+    const modal = document.getElementById('modalSertifikat');
+    const container = document.getElementById('areaCetakSertifikat');
+    modal.style.display = 'flex';
+    container.innerHTML = `
+        <div style="text-align:center; padding: 40px; color: #64748b;">
+            <div class="spinner-elegance" style="margin: auto auto 10px auto;"></div>
+            Menarik data total poin terbaru dari Google Sheets...
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`${WEB_APP_URL}?action=getTop5Sheet`);
+        const result = await response.json();
+
+        let top5 = [];
+
+        if (result.status === "success" && Array.isArray(result.data) && result.data.length > 0) {
+            let rekapMap = {};
+            result.data.forEach(item => {
+                let nama = item.nama;
+                let poin = parseInt(item.totalPoin) || 0;
+                if (!rekapMap[nama]) rekapMap[nama] = 0;
+                rekapMap[nama] += poin; 
+            });
+
+            top5 = Object.keys(rekapMap).map(nama => {
+                let objSiswa = siswa.find(s => s[1].toLowerCase() === nama.toLowerCase());
+                let nis = objSiswa ? objSiswa[0] : null;
+                return {
+                    nama: nama,
+                    totalPoin: rekapMap[nama],
+                    nis: nis
+                };
+            }).sort((a, b) => b.totalPoin - a.totalPoin).slice(0, 5);
+        }
+
+        if (top5.length === 0 || top5[0].totalPoin === 0) {
+            top5 = hitungPoinSiswa().slice(0, 5);
+        }
+
+        renderHTMLSertifikat(top5);
+
+    } catch (err) {
+        console.error("Gagal memuat sertifikat dari Google Sheets:", err);
+        let top5Lokal = hitungPoinSiswa().slice(0, 5);
+        renderHTMLSertifikat(top5Lokal);
+    }
+}
+
+function renderHTMLSertifikat(top5Data) {
     const container = document.getElementById('areaCetakSertifikat');
     container.innerHTML = '';
-    let top5 = hitungPoinSiswa().slice(0, 5);
 
-    if (top5.length === 0 || top5[0].totalPoin === 0) {
+    if (top5Data.length === 0 || top5Data[0].totalPoin === 0) {
         container.innerHTML = `<p style="text-align:center; padding:20px; color:#6b7280;">Belum ada data untuk sertifikat.</p>`;
-    } else {
-        top5.forEach((item, index) => {
-            container.innerHTML += `
-            <div class="sertifikat-item">
-                <div class="sertifikat-border-outer">
-                    <div class="sertifikat-border-inner">
+        return;
+    }
+
+    top5Data.forEach((item, index) => {
+        let logoImgHtml = dbLogoSekolah ? `<img src="${dbLogoSekolah}" class="sertifikat-logo-instansi">` : `<div style="width:65px; height:65px; border:2px dashed #d97706; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; color:#b45309; font-weight:700;">LOGO</div>`;
+        let watermarkHtml = dbLogoSekolah ? `<img src="${dbLogoSekolah}" class="sertifikat-watermark">` : '';
+        let fotoSiswaUrl = getAvatarSiswaUrl(item.nis);
+
+        container.innerHTML += `
+        <div class="sertifikat-item">
+            <div class="sertifikat-border-outer">
+                <div class="sertifikat-border-inner">
+                    ${watermarkHtml}
+                    <div class="sertifikat-konten-utama">
+                        <div class="sertifikat-top-header-row">
+                            <div>${logoImgHtml}</div>
+                            <div class="sertifikat-badge-gold">Peringkat #${index + 1} Terajin</div>
+                        </div>
                         <div class="sertifikat-header-text">Sertifikat Penghargaan</div>
-                        <div class="sertifikat-sub-header">Kedisiplinan & Kehadiran Terajin</div>
-                        <p class="sertifikat-body-p">Diberikan kepada:</p>
+                        <div class="sertifikat-sub-header">Atas Prestasi & Kedisiplinan Kehadiran Siswa</div>
+                        <p class="sertifikat-body-p">Sertifikat kehormatan ini dengan bangga diberikan kepada:</p>
                         <div class="sertifikat-nama-penerima">${item.nama}</div>
-                        <p class="sertifikat-body-p" style="margin-top:15px;">Atas pencapaian peringkat <b>#${index + 1} Siswa Terajin</b> dengan perolehan <b>${item.totalPoin} Poin Kehadiran</b>.</p>
+                        <p class="sertifikat-body-p" style="margin-top:8px;">Atas dedikasi dan kedisiplinan luar biasa dengan meraih akumulasi <b>${item.totalPoin} Poin Kehadiran</b> sebagai Peringkat <b>#${index + 1} Siswa Terajin</b> di Kelas VI.</p>
+                        
+                        <div class="sertifikat-footer-sign">
+                            <div class="sign-box">
+                                <div>Mengetahui,</div>
+                                <div>Kepala SD Negeri Kramat 01</div>
+                                <div class="sign-line">${dbPenandatangan.namaKasek}</div>
+                                <div class="sign-nip">NIP. ${dbPenandatangan.nipKasek}</div>
+                            </div>
+                            
+                            <div class="sertifikat-foto-tengah-container">
+                                <img src="${fotoSiswaUrl}" class="sertifikat-foto-profil" onerror="this.src='${DEFAULT_AVATAR}'">
+                                <div class="sertifikat-foto-label">${item.nama.split(' ')[0]}</div>
+                            </div>
+
+                            <div class="sign-box">
+                                <div>Brebes, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</div>
+                                <div>Guru / Wali Kelas VI</div>
+                                <div class="sign-line">${dbPenandatangan.namaWali}</div>
+                                <div class="sign-nip">NIP. ${dbPenandatangan.nipWali}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>`;
-        });
-    }
-    document.getElementById('modalSertifikat').style.display = 'flex';
+            </div>
+        </div>`;
+    });
 }
 
 function tutupModal(id) { 
@@ -1752,8 +2421,9 @@ function tutupModal(id) {
 
 if(tglInput) tglInput.addEventListener('change', renderTabelDanBubble);
 
-window.addEventListener('DOMContentLoaded', () => {
-    muatDataRealtimeDariDB();
+window.addEventListener('DOMContentLoaded', async () => {
+    await muatDataRealtimeDariDB();
+    tarikTop5DariSheet();
 });
 </script>
 </body>
