@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>e-PR - Kuis Interaktif Bahasa Inggris</title>
+    <title>e-PR - Kuis Interaktif Bahasa Indonesia (Literasi)</title>
     <!-- Google Fonts Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -97,91 +97,96 @@
             50% { transform: translateY(-6px) rotate(5deg); }
         }
 
-        /* CONTAINER NAVIGASI KOTAK A DAN KOTAK B */
+        /* CONTAINER 5 FRAME DI DASHBOARD ATAS (4 POWER UP + 1 SKOR) */
         .quiz-top-dashboard {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
             margin-bottom: 10px;
+            align-items: center;
         }
 
-        .box-dashboard-a, .box-dashboard-b {
-            width: 80px;
-            height: 80px;
-            border-radius: 18px;
+        .box-dashboard-item {
+            height: 72px;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
             position: relative;
             background: #ffffff;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-
-        /* KOTAK A: EMOJI CUTE ANIMATION */
-        .box-dashboard-a {
-            border: 3px solid #ff7675;
-            background: linear-gradient(135deg, #fff5f5, #ffffff);
-        }
-
-        .emoji-cute-display {
-            font-size: 40px;
-            line-height: 1;
-            animation: floatCuteEmoji 2.5s infinite ease-in-out;
+            transition: all 0.2s ease;
+            border: 2px solid #e2e8f0;
+            padding: 2px;
+            cursor: pointer;
             user-select: none;
         }
 
-        @keyframes floatCuteEmoji {
-            0%, 100% { transform: translateY(0) scale(1) rotate(-3deg); }
-            50% { transform: translateY(-4px) scale(1.08) rotate(3deg); }
+        .box-dashboard-item:not(.used):hover {
+            transform: translateY(-2px);
+            border-color: var(--powerup-purple);
         }
 
-        .emoji-cute-display.panik {
-            animation: shakeEmoji 0.4s infinite ease-in-out !important;
+        .powerup-frame-icon {
+            font-size: 22px;
+            line-height: 1;
+            margin-bottom: 2px;
         }
 
-        @keyframes shakeEmoji {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px) rotate(-5deg); }
-            75% { transform: translateX(3px) rotate(5deg); }
-        }
-
-        .box-label-tag {
-            position: absolute;
-            bottom: -8px;
-            font-size: 9px;
+        .powerup-frame-title {
+            font-size: 8px;
             font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 10px;
-            color: #ffffff;
-            white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+            color: var(--powerup-purple);
+            text-align: center;
+            line-height: 1;
         }
 
-        .tag-a { background: #d63031; }
-        .tag-b { background: #00b894; }
+        /* FITUR LABEL TERPAKAI DI DALAM FRAME */
+        .box-dashboard-item.used {
+            opacity: 0.55;
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
 
-        /* KOTAK B: SKOR BERJALAN SISWA */
-        .box-dashboard-b {
-            border: 3px solid #00b894;
+        .box-dashboard-item.used::after {
+            content: "Terpakai";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            background: var(--danger);
+            color: white;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        /* FRAME SKOR UTAMA (FRAME KE-5) */
+        .box-dashboard-score {
+            border: 2px solid #00b894;
             background: linear-gradient(135deg, #e6fffa, #ffffff);
+            cursor: default !important;
         }
 
         .score-running-val {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 900;
             color: #00875a;
             line-height: 1;
         }
 
         .score-running-sub {
-            font-size: 9px;
-            font-weight: 700;
+            font-size: 8px;
+            font-weight: 800;
             color: #00b894;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         /* Container Navigasi Soal Ringkas */
@@ -258,38 +263,6 @@
 
         .header h3 { color: var(--secondary); margin: 2px 0; font-size: 18px; font-weight: 800; }
         .designer-credit { font-size: 10px; color: #718096; margin-bottom: 8px; font-weight: 600; background: #e3f2fd; display: inline-block; padding: 3px 10px; border-radius: 15px; }
-        
-        /* Power Up Button Ringkas */
-        .powerup-btn-trigger {
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 11px;
-            border: 2px solid #f1c40f;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: 0 3px 10px rgba(142, 68, 173, 0.3);
-            animation: pulsePowerUp 1.5s infinite ease-in-out;
-            margin: 2px 0 6px 0;
-        }
-
-        @keyframes pulsePowerUp {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.6); }
-            70% { transform: scale(1.04); box-shadow: 0 0 0 8px rgba(142, 68, 173, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
-        }
-
-        .powerup-btn-trigger:disabled {
-            background: #cbd5e0;
-            border-color: #a0aec0;
-            box-shadow: none;
-            animation: none;
-            cursor: not-allowed;
-        }
 
         .form-group { margin-bottom: 12px; text-align: left; }
         .form-group label { display: block; font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
@@ -308,7 +281,7 @@
         input[readonly] { background-color: #edf2f7; color: #718096; cursor: not-allowed; }
 
         /* Pop-up Modals */
-        #rulesModal, #powerUpModal, #warningModal, #violationModal, #reasonModal, #feedbackModal, #infoModal {
+        #rulesModal, #warningModal, #violationModal, #reasonModal, #feedbackModal, #infoModal {
             position: fixed;
             top: 0;
             left: 0;
@@ -337,58 +310,6 @@
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-
-        .powerup-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .powerup-card {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 14px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .powerup-card.used {
-            opacity: 0.55;
-            background: #edf2f7;
-            border-color: #cbd5e0;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .powerup-card.used::after {
-            content: "SUDAH DIGUNAKAN";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-10deg);
-            background: var(--danger);
-            color: white;
-            font-size: 9px;
-            font-weight: 800;
-            padding: 3px 6px;
-            border-radius: 6px;
-            white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        .powerup-card:not(.used):hover {
-            border-color: var(--powerup-purple);
-            transform: translateY(-2px);
-            background: #f3e8ff;
-        }
-
-        .powerup-card .icon { font-size: 24px; margin-bottom: 2px; }
-        .powerup-card .title { font-weight: 800; font-size: 12px; color: var(--powerup-purple); }
-        .powerup-card .desc { font-size: 9px; color: #718096; margin-top: 2px; line-height: 1.2; }
 
         .btn-understand {
             width: 100%;
@@ -439,6 +360,19 @@
         .progress-time-container { width: 100%; height: 6px; background: #edf2f7; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
         .progress-time-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary), #00bbf9); border-radius: 8px; transition: width 0.1s linear; }
         .progress-time-bar.critical { background: linear-gradient(90deg, var(--danger), #e63946); }
+
+        .reading-box {
+            background-color: #f0f4f9;
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #2d3748;
+            margin-bottom: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
 
         .option-btn { 
             display: block; 
@@ -497,10 +431,16 @@
 </head>
 <body>
 
-    <!-- Audio Elements -->
+    <!-- Audio Elements Utama -->
     <audio id="clickSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
     <audio id="correctSound" src="benar.mp3" preload="auto"></audio>
     <audio id="wrongSound" src="salah.mp3" preload="auto"></audio>
+
+    <!-- Audio Elements Power Up -->
+    <audio id="sound5050" src="fifty fifty.mp3" preload="auto"></audio>
+    <audio id="soundFreeze" src="freeze.mp3" preload="auto"></audio>
+    <audio id="soundBomb" src="boom.mp3" preload="auto"></audio>
+    <audio id="soundAntiWrong" src="invincible.mp3" preload="auto"></audio>
 
     <!-- Animasi Balon & Emotikon Latar Belakang -->
     <div class="decorations-container">
@@ -521,7 +461,7 @@
                 <li>Tetap di dalam aplikasi selama kuis berlangsung (Maksimal 1 kali peringatan).</li>
                 <li>Waktu per soal <b>60 detik</b>. Jika habis, otomatis salah (❌)!</li>
             </ol>
-            <button class="btn-understand" onclick="playAudioAndDo(closeRulesModal)">Saya Mengerti 👍</button>
+            <button type="button" class="btn-understand" onclick="playAudioAndDo(closeRulesModal)">Saya Mengerti 👍</button>
         </div>
     </div>
 
@@ -533,7 +473,7 @@
             <p style="font-size: 12px; color: #4a5568; line-height: 1.4; margin-bottom: 16px;">
                 Kamu mencoba keluar dari aplikasi, ini <b>peringatan pertama</b>, jika terulang akan di <b>KELUARKAN</b> dari kuis!
             </p>
-            <button class="btn-understand" style="background: linear-gradient(135deg, var(--skip-color), #f77f00);" onclick="resumeQuizAfterWarning()">Saya Mengerti & Lanjutkan 🚀</button>
+            <button type="button" class="btn-understand" style="background: linear-gradient(135deg, var(--skip-color), #f77f00);" onclick="resumeQuizAfterWarning()">Saya Mengerti & Lanjutkan 🚀</button>
         </div>
     </div>
 
@@ -545,41 +485,7 @@
             <div style="color: #4a5568; font-size: 12px; line-height: 1.4; margin-bottom: 16px;">
                 Terdeteksi berpindah aplikasi atau keluar dari halaman kuis kembali. Sesi kamu dihentikan dan skor dikunci (0).
             </div>
-            <button class="btn-action" style="background: var(--danger); margin-top: 0;" onclick="playAudioAndDo(() => location.reload())">Keluar ❌</button>
-        </div>
-    </div>
-
-    <!-- BUBBLE POWER UP SELECTION -->
-    <div id="powerUpModal" class="hidden">
-        <div class="modal-bubble" style="border-top: 5px solid var(--powerup-purple);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <h4 style="margin: 0; color: var(--powerup-purple); font-size: 15px; font-weight: 800;">⚡ Pilih Power Up Kamu</h4>
-                <button onclick="closePowerUpModal()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #a0aec0;">✖</button>
-            </div>
-            <p style="font-size: 11px; color: #718096; margin-bottom: 8px;">Masing-masing Power Up hanya bisa digunakan <b>1 kali</b> dan maksimal <b>1 Power Up per soal</b>!</p>
-            
-            <div class="powerup-grid">
-                <div class="powerup-card" id="card-5050" onclick="usePowerUp('5050')">
-                    <div class="icon">🌓</div>
-                    <div class="title">50 : 50</div>
-                    <div class="desc">Hapus 2 jawaban yang salah</div>
-                </div>
-                <div class="powerup-card" id="card-freeze" onclick="usePowerUp('freeze')">
-                    <div class="icon">❄️</div>
-                    <div class="title">Time Freeze</div>
-                    <div class="desc">Hentikan waktu pada soal ini</div>
-                </div>
-                <div class="powerup-card" id="card-bomb" onclick="usePowerUp('bomb')">
-                    <div class="icon">💣</div>
-                    <div class="title">Bomb Answer</div>
-                    <div class="desc">Hancurkan 1 jawaban salah</div>
-                </div>
-                <div class="powerup-card" id="card-antiwrong" onclick="usePowerUp('antiwrong')">
-                    <div class="icon">🛡️</div>
-                    <div class="title">Anti Wrong</div>
-                    <div class="desc">Jawaban tidak dianggap salah jika keliru</div>
-                </div>
-            </div>
+            <button type="button" class="btn-action" style="background: var(--danger); margin-top: 0;" onclick="playAudioAndDo(() => location.reload())">Keluar ❌</button>
         </div>
     </div>
 
@@ -589,7 +495,7 @@
             <div id="infoIcon" style="font-size: 40px; margin-bottom: 8px;">✨</div>
             <h4 id="infoTitle" style="color: var(--secondary); font-size: 15px; font-weight: 800; margin-bottom: 6px;">Informasi</h4>
             <p id="infoDesc" style="font-size: 12px; color: #4a5568; line-height: 1.4; margin-bottom: 14px;"></p>
-            <button class="btn-understand" onclick="closeInfoModal()">Oke, Siap! 👍</button>
+            <button type="button" class="btn-understand" onclick="closeInfoModal()">Oke, Siap! 👍</button>
         </div>
     </div>
 
@@ -601,7 +507,7 @@
             <div class="form-group" style="margin-bottom: 12px;">
                 <textarea id="inputAlasan" rows="3" placeholder="Tulis alasan mencoba di sini..."></textarea>
             </div>
-            <button class="btn-understand" onclick="submitAlasan()">Lanjutkan Kuis 🚀</button>
+            <button type="button" class="btn-understand" onclick="submitAlasan()">Lanjutkan Kuis 🚀</button>
         </div>
     </div>
 
@@ -610,29 +516,41 @@
         <div class="mascot-box" id="mascotBox">🐱✨</div>
         <div id="questionNav" class="question-nav-container hidden"></div>
 
-        <h3 id="mainTitle">e-PR KUIS BAHASA INGGRIS</h3>
+        <h3 id="mainTitle">e-PR LITERASI TKA</h3>
         
-        <div class="designer-credit" id="designerCredit">Design Oleh : Ikhwan Adi Yanto, S.Pd. 💬 0822 2557 5222</div>
+        <div class="designer-credit" id="designerCredit">Design Oleh : Ikhwan Adi Yanto, S.Pd. 💬 0822 2557 5222[cite: 1]</div>
         
-        <!-- DASHBOARD KOTAK A (EMOJI CUTE) & KOTAK B (SKOR BERJALAN) -->
+        <!-- DASHBOARD ATAS: 4 FRAME POWER UP + 1 FRAME SKOR -->
         <div id="powerUpHeaderContainer" class="hidden">
             <div class="quiz-top-dashboard">
-                <!-- KOTAK A: EMOJI PERASAAN ANIMASI CUTE -->
-                <div class="box-dashboard-a" title="Perasaan & Respon Kuis">
-                    <span class="emoji-cute-display" id="boxAEmoji">🥳</span>
-                    <span class="box-label-tag tag-a">FEELING</span>
-                </div>
-
-                <!-- TOMBOL UTAMA POWER UP -->
-                <button class="powerup-btn-trigger" id="powerUpBtn" onclick="openPowerUpModal()">
-                    <span>⚡ BANTUAN POWER UP ⚡</span>
+                <!-- FRAME 1: POWER UP 50:50 -->
+                <button type="button" class="box-dashboard-item" id="card-5050" onclick="triggerPowerUp('5050')" title="Hapus 2 Opsi Salah">
+                    <span class="powerup-frame-icon">🌓</span>
+                    <span class="powerup-frame-title">50 : 50</span>
                 </button>
 
-                <!-- KOTAK B: SKOR BERJALAN SISWA REALTIME -->
-                <div class="box-dashboard-b" title="Skor Sementara Siswa">
+                <!-- FRAME 2: TIME FREEZE -->
+                <button type="button" class="box-dashboard-item" id="card-freeze" onclick="triggerPowerUp('freeze')" title="Bekukan Waktu">
+                    <span class="powerup-frame-icon">❄️</span>
+                    <span class="powerup-frame-title">FREEZE</span>
+                </button>
+
+                <!-- FRAME 3: BOMB ANSWER -->
+                <button type="button" class="box-dashboard-item" id="card-bomb" onclick="triggerPowerUp('bomb')" title="Hancurkan 1 Opsi Salah">
+                    <span class="powerup-frame-icon">💣</span>
+                    <span class="powerup-frame-title">BOMB</span>
+                </button>
+
+                <!-- FRAME 4: ANTI WRONG -->
+                <button type="button" class="box-dashboard-item" id="card-antiwrong" onclick="triggerPowerUp('antiwrong')" title="Perisai Jawaban">
+                    <span class="powerup-frame-icon">🛡️</span>
+                    <span class="powerup-frame-title">SHIELD</span>
+                </button>
+
+                <!-- FRAME 5: TOTAL SKOR BERJALAN -->
+                <div class="box-dashboard-item box-dashboard-score" title="Skor Sementara Siswa">
                     <span class="score-running-val" id="boxBScore">0</span>
-                    <span class="score-running-sub">Pts</span>
-                    <span class="box-label-tag tag-b">SKOR</span>
+                    <span class="score-running-sub">SKOR</span>
                 </div>
             </div>
         </div>
@@ -646,11 +564,11 @@
         </div>
         <div class="form-group">
             <label>Kode Tes Aktif 📝 :</label>
-            <input type="text" id="inputKodeTes" value="B.Inggris-01" readonly>
+            <input type="text" id="inputKodeTes" value="B.Indo-Literasi" readonly>
         </div>
         <div id="namaDisplay" style="margin: 10px 0; font-weight: bold; text-align: center; min-height: 30px; font-size: 13px;"></div>
 
-        <button class="btn-action" id="startBtn" onclick="playAudioAndDo(handleStartButton)" disabled>Mulai Kuis Sekarang 🚀</button>
+        <button type="button" class="btn-action" id="startBtn" onclick="playAudioAndDo(handleStartButton)" disabled>Mulai Kuis Sekarang 🚀</button>
     </div>
 
     <!-- HALAMAN KUIS -->
@@ -666,9 +584,13 @@
         </div>
 
         <div class="progress-time-container"><div id="timeBar" class="progress-time-bar"></div></div>
-        <p id="question" style="font-weight: 700; font-size: 15px; line-height: 1.4; color: #1a202c; text-align: left; margin-bottom: 12px; white-space: pre-line;"></p>
+        
+        <!-- TEKS BACAAN KUIS -->
+        <div id="readingContainer" class="reading-box hidden"></div>
+
+        <p id="question" style="font-weight: 700; font-size: 14px; line-height: 1.4; color: #1a202c; text-align: left; margin-bottom: 12px; white-space: pre-line;"></p>
         <div id="options"></div>
-        <button class="btn-pas" id="btnPas" onclick="playAudioAndDo(lewatSoal)">⏭️ Lewati & Kerjakan Nanti</button>
+        <button type="button" class="btn-pas" id="btnPas" onclick="playAudioAndDo(lewatSoal)">⏭️ Lewati & Kerjakan Nanti</button>
     </div>
 
     <!-- MODAL FEEDBACK -->
@@ -687,12 +609,12 @@
         <div id="durationInfo" style="font-size: 13px; font-weight: 700; margin-bottom: 16px; color: #4a5568; background: #e3f2fd; padding: 8px; border-radius: 10px;">
             ⏳ Total Waktu Ditersisa: <span id="durationText" style="color: var(--secondary);">0 menit 0 detik</span>
         </div>
-        <button class="btn-action" onclick="playAudioAndDo(() => location.reload())">Selesai & Keluar 🤩</button>
+        <button type="button" class="btn-action" onclick="playAudioAndDo(() => location.reload())">Selesai & Keluar 🤩</button>
     </div>
 
     <!-- FOOTER COPYRIGHT -->
     <div class="footer-copyright">
-        © 2026 e-PR Pendidikan - Ikhwan Adi Yanto, S.Pd.
+        © 2026 e-PR Pendidikan - Ikhwan Adi Yanto, S.Pd.[cite: 1]
     </div>
 </div>
 
@@ -719,51 +641,90 @@
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzrfBCYtqJu9qkpM1dKlS1VGt2UkBMRsQEhu1rjOOFtcTi07urfEi8SeCDCndV3VuqH/exec";
 
+    // DATA 27 SISWA + 1 ADMIN TESTER LENGKAP
     const dataSiswa = {
         "masterikhwan": "Admin Tester (Master Ikhwan)",
-        "3052": "Amelia Alita Zahra", "3223": "Angelica Vikar Maharani", "3085": "Anggraeni Abbilah Dhety",
-        "3087": "Azka Nailun Nabhan", "3089": "Dany Sabiq El-Fathin",
-        "3090": "Dhea Fiky Mazaya", "3224": "Earlita Arsyifa Salsabila", "3091": "Fadilla Rizqi Khaerani",
-        "3092": "Fathan Almaizan Zhafar", "3093": "Gavin Harry Wiriawan", "3063": "Hafiz Ardiyansah",
-        "3095": "Intan Berliyan", "3096": "Luthfiya Nur Ramadhani", "3069": "M. Miftah Al Fattah",
-        "3097": "Mugi Aditia Ripki", "3098": "Muh Azzka Alpratama", "3099": "Muhamad Ramadhani",
-        "3102": "Nayla Dwi Syafriani", "3108": "Puteri Ayuning Kirana", "3103": "Raisa Rahmawati Septiani",
-        "3104": "Renita Nur Saefitri", "3084": "Shalwa Aisa Nazwa", "3105": "Wifha Alya An Adibah",
-        "3106": "Zhidan Dwi Aprilio Nurosy", "3107": "Zulfan Azhar Ramadhan",
+        "3052": "Amelia Alita Zahra", 
+        "3223": "Angelica Vikar Maharani", 
+        "3085": "Anggraeni Abbilah Dhety",
+        "3087": "Azka Nailun Nabhan", 
+        "3088": "Cinta Anugrah", 
+        "3089": "Dany Sabiq El-Fathin",
+        "3090": "Dhea Fiky Mazaya", 
+        "3224": "Earlita Arsyifa Salsabila", 
+        "3091": "Fadilla Rizqi Khaerani",
+        "3092": "Fathan Almaizan Zhafar", 
+        "3093": "Gavin Harry Wiriawan", 
+        "3063": "Hafiz Ardiyansah",
+        "3095": "Intan Berliyan", 
+        "3096": "Luthfiya Nur Ramadhani", 
+        "3069": "M. Miftah Al Fattah",
+        "3097": "Mugi Aditia Ripki", 
+        "3098": "Muh Azzka Alpratama", 
+        "3099": "Muhamad Ramadhani",
+        "3102": "Nayla Dwi Syafriani", 
+        "3108": "Puteri Ayuning Kirana", 
+        "3103": "Raisa Rahmawati Septiani",
+        "3104": "Renita Nur Saefitri", 
+        "3084": "Shalwa Aisa Nazwa", 
+        "3105": "Wifha Alya An Adibah",
+        "3106": "Zhidan Dwi Aprilio Nurosy", 
+        "3107": "Zulfan Azhar Ramadhan",
         "3289": "Tauladani Elang"
     };
 
+    // BANK TEKS BACAAN LITERASI
+    const readingTexts = {
+        tek1: `<b>Menjaga Keseimbangan Ekosistem Mangrove di Pesisir</b><br><br>Hutan mangrove (bakau) memiliki peran ekologis yang sangat vital bagi wilayah pesisir. Selain berfungsi sebagai benteng alami abrasi dan terjangan badai, mangrove adalah tempat pemijahan (<i>spawning ground</i>) bagi berbagai jenis ikan, udang, dan kepiting komersial. Akar napas mangrove yang unik juga mampu menyerap karbon dioksida di atmosfer secara jauh lebih efisien dibandingkan hutan daratan—sebuah proses yang dikenal sebagai penyerapan <i>blue carbon</i> (karbon biru).<br><br>Namun, konversi lahan mangrove menjadi kawasan tambak udang, pelabuhan, serta alih fungsi untuk permukiman terus mengancam kelestariannya. Data Kementerian Kelautan dan Perikanan menunjukkan bahwa penurunan luas mangrove berdampak langsung pada merosotnya hasil tangkapan nelayan tradisional dalam kurun waktu satu dekade terakhir. Oleh karena itu, rehabilitasi mangrove berbasis partisipasi masyarakat pesisir menjadi kunci utama pemulihan ekosistem ini.`,
+        
+        tek2: `<b>Sejarah Singkat Kopi Nusantara di Pasar Global</b><br><br>Tanaman kopi pertama kali masuk ke Nusantara pada masa kolonial Belanda melalui Batavia (Jakarta) pada abad ke-17. Pemerintah kolonial saat itu memberlakukan sistem tanam paksa (<i>cultuurstelsel</i>) yang mewajibkan pribumi menanam kopi arabika di berbagai wilayah seperti Priangan, Sumatra, dan Sulawesi. Kopi dari Hindia Belanda dengan cepat mendominasi pasar Eropa dan dikenal dengan sebutan <i>Java Coffee</i>.<br><br>Seiring berjalannya waktu, wabah penyakit karat daun (<i>Hemileia vastatrix</i>) sempat memusnahkan sebagian besar perkebunan kopi arabika di Nusantara pada akhir abad ke-19. Pemerintah kolonial kemudian mendatangkan kopi jenis liberika dan robusta yang lebih tahan terhadap penyakit. Hingga kini, Indonesia tetap bertahan sebagai salah satu produsen dan eksportir kopi terbesar di dunia dengan keunikan cita rasa geografis (<i>single origin</i>) yang beragam dari Sabang sampai Merauke.`,
+        
+        tek3: `<b>Dampak Penggunaan Gadget terhadap Kualitas Tidur Remaja</b><br><br>Penelitian kesehatan anak dan remaja menunjukkan bahwa durasi penggunaan layar gawai (<i>screen time</i>) menjelang tidur berdampak buruk terhadap kualitas istirahat malam. Paparan cahaya biru (<i>blue light</i>) yang dipancarkan oleh layar ponsel atau tablet menstimulasi otak untuk menekan produksi melatonin, yaitu hormon yang mengatur siklus tidur manusia. Akibatnya, remaja sering mengalami kesulitan untuk tertidur lelap (<i>sleep onset latency</i>).<br><br>Selain faktor cahaya, aktivitas mental yang tinggi akibat bermain media sosial atau gim daring sebelum tidur membuat otak tetap berada dalam mode siaga (<i>hyperarousal</i>). Kondisi ini memicu penurunan konsentrasi belajar di sekolah keesokan harinya serta melemahkan sistem kekebalan tubuh dalam jangka panjang. Para ahli menyarankan agar gawai dijauhkan setidaknya satu jam sebelum waktu tidur demi menjaga kesehatan fisik dan mental remaja.`,
+        
+        tek4: `<b>Kutipan Cerita: Peta Tua dan Kekeringan</b><br><br>Senja merayap perlahan di balik bukit kapur di ujung desa. Pak Sastro duduk termenung di serambi rumah kayunya sambil memandangi sepetak sawah yang mulai mengering. Musim kemarau tahun ini datang lebih panjang dari biasanya, menguji kesabaran para petani di lembah itu. Saluran irigasi desa telah mengering sejak sebulan lalu, menyisakan tanah retak-retak bagai peta tua yang kehilangan arah.<br><br>"Sudahlah, Pak, mari masuk. Udara malam mulai dingin," ucap Ratih lembut sambil menyodorkan segelas teh hangat.<br><br>Pak Sastro menggeleng pelan. Matanya masih menatap tajam ke arah langit malam yang bersih tanpa gumpalan awan. "Bapak bukan memikirkan panen kita yang gagal, Ratih. Bapak memikirkan anak-anak muda di desa ini. Kalau mereka menyerah pada tanah leluhur ini dan memilih pergi ke kota, siapa yang akan merawat warisan kakek moyang kita?"`,
+        
+        tek5: `<b>Fabel: Duri Tajam Sang Landak</b><br><br>Di sebuah sudut hutan rimba, sang Landak merasa sedih karena tubuhnya dipenuhi duri tajam. Setiap kali ia ingin bermain bersama Kelinci atau Kancil, mereka selalu menjaga jarak karena takut tertusuk. Suatu hari, badai besar melanda hutan. Angin kencang merobohkan sarang burung di atas pohon tinggi, membuat anak burung jatuh ke tanah dalam keadaan kedinginan.<br><br>Tanpa ragu, sang Landak segera melingkarkan tubuhnya di sekeliling anak burung tersebut untuk melindunginya dari terjangan angin dingin dan hujan lebat hingga induk burung datang. Sejak hari itu, para penghuni hutan menyadari bahwa di balik duri tajamnya, sang Landak memiliki hati yang sangat hangat dan mulia.`,
+        
+        tek6: `<b>Data Pengunjung Perpustakaan Daerah (Senin – Jumat)</b><br><br>Berikut adalah rekap data kunjungan perpustakaan daerah dalam seminggu:<br>• <b>Senin:</b> 120 orang<br>• <b>Selasa:</b> 95 orang<br>• <b>Rabu:</b> 150 orang<br>• <b>Kamis:</b> 110 orang<br>• <b>Jumat:</b> 180 orang`
+    };
+
     const originalQuizData = [
-        // Part 1: Narrative Adverbs
-        { id: 1, q: "Rani was reading a book in her room. ________, she heard a loud noise from the kitchen.", a: "A", o: ["A. Suddenly", "B. Soon", "C. Sometimes", "D. Then"] },
-        { id: 2, q: "Budi finished eating his lunch. ________, he washed his hands and went back to play football.", a: "B", o: ["A. Suddenly", "B. Then", "C. Sometimes", "D. About"] },
-        { id: 3, q: "We are waiting for the school bus. It will arrive very ________.", a: "C", o: ["A. suddenly", "B. sometimes", "C. soon", "D. then"] },
-        { id: 4, q: "My father ________ goes fishing on Sunday mornings, but today he is staying at home.", a: "D", o: ["A. suddenly", "B. then", "C. soon", "D. sometimes"] },
-        { id: 5, q: "The sky was clear blue. ________, dark clouds covered the sky and it started to rain heavily.", a: "B", o: ["A. Then", "B. Suddenly", "C. Soon", "D. Sometimes"] },
-        { id: 6, q: "Mother cut the vegetables, ________ she put them into the boiling soup.", a: "C", o: ["A. suddenly", "B. sometimes", "C. then", "D. soon"] },
-        { id: 7, q: "Don't worry, the exam will finish ________ and we can go home.", a: "C", o: ["A. suddenly", "B. sometimes", "C. soon", "D. then"] },
-        { id: 8, q: "Sinta ________ drinks milk before going to bed, but sometimes she drinks warm tea.", a: "B", o: ["A. suddenly", "B. sometimes", "C. then", "D. soon"] },
-        
-        // Part 2: To Be (Present & Past)
-        { id: 9, q: "I ________ a sixth-grade student at SD Merdeka now.", a: "B", o: ["A. is", "B. am", "C. are", "D. was"] },
-        { id: 10, q: "Look at those children! They ________ playing football in the field right now.", a: "C", o: ["A. is", "B. am", "C. are", "D. were"] },
-        { id: 11, q: "Yesterday, Andi and Doni ________ absent from school because they had a fever.", a: "D", o: ["A. is", "B. are", "C. was", "D. were"] },
-        { id: 12, q: "My grandmother ________ very happy when I visited her last week.", a: "B", o: ["A. is", "B. was", "C. were", "D. are"] },
-        { id: 13, q: "The soup ________ very hot. Be careful when you eat it, Siska.", a: "A", o: ["A. is", "B. are", "C. was", "D. were"] },
-        { id: 14, q: "We ________ in the library reading books an hour ago.", a: "D", o: ["A. is", "B. are", "C. was", "D. were"] },
-        { id: 15, q: "English ________ my favorite subject at school.", a: "A", o: ["A. is", "B. am", "C. are", "D. were"] },
-        { id: 16, q: "Lina and I ________ good friends. We always study together.", a: "C", o: ["A. is", "B. am", "C. are", "D. was"] },
-        
-        // Part 3: Adjectives of Taste
-        { id: 17, q: "Lemon and tamarind (asam jawa) have a very ________ taste.", a: "B", o: ["A. sweet", "B. sour", "C. bitter", "D. salty"] },
-        { id: 18, q: "Medicine (obat) usually tastes ________, so children don't like to drink it.", a: "B", o: ["A. sweet", "B. bitter", "C. salty", "D. sour"] },
-        { id: 19, q: "We put too much salt in the fried rice, so now it tastes very ________.", a: "A", o: ["A. salty", "B. sweet", "C. sour", "D. bitter"] },
-        { id: 20, q: "Honey (madu) and sugar taste ________.", a: "C", o: ["A. sour", "B. salty", "C. sweet", "D. bitter"] },
-        { id: 21, q: "Dark chocolate without milk has a slightly ________ taste.", a: "B", o: ["A. sweet", "B. bitter", "C. salty", "D. sour"] },
-        { id: 22, q: "Andi eats green chili (cabai hijau). He says it is very ________.", a: "B", o: ["A. sweet", "B. spicy", "C. sour", "D. salty"] },
-        { id: 23, q: "Unripe mango (mangga muda) usually tastes ________.", a: "C", o: ["A. sweet", "B. bitter", "C. sour", "D. salty"] },
-        { id: 24, q: "Sea water is not good to drink because it is very ________.", a: "B", o: ["A. sweet", "B. salty", "C. bitter", "D. sour"] },
-        { id: 25, q: "This cake is delicious! It has a pleasant ________ taste with chocolate topping.", a: "C", o: ["A. bitter", "B. sour", "C. sweet", "D. salty"] }
+        // Teks 1 (Soal 1-4)
+        { id: 1, reading: readingTexts.tek1, q: "1. Berdasarkan teks di atas, manakah pernyataan berikut yang paling tepat mengenai fungsi utama akar napas mangrove?", a: "B", o: ["A. Menyaring polutan logam berat yang terbawa arus laut menuju daratan.", "B. Menyerap karbon dioksida secara efisien sebagai bagian dari proses blue carbon.", "C. Menyediakan nutrisi langsung bagi pertumbuhan terumbu karang di dekat pesisir.", "D. Menjadi tempat bertelur utama bagi seluruh jenis ikan air tawar di dunia."] },
+        { id: 2, reading: readingTexts.tek1, q: "2. Apa dampak langsung dari alih fungsi lahan mangrove menjadi tambak udang terhadap sektor perikanan tangkap tradisional?", a: "B", o: ["A. Peningkatan populasi kepiting komersial secara signifikan di laut lepas.", "B. Penurunan hasil tangkapan nelayan tradisional akibat hilangnya daerah pemijahan.", "C. Kenaikan harga jual ikan segar di pasar lokal karena pasokan melimpah.", "D. Perpindahan nelayan tradisional menjadi petani tambak secara massal."] },
+        { id: 3, reading: readingTexts.tek1, q: "3. Manakah kesimpulan yang paling logis dari keseluruhan isi teks tersebut?", a: "C", o: ["A. Hutan mangrove hanya berguna untuk melindungi pantai dari badai besar.", "B. Kerusakan mangrove tidak berpengaruh pada kondisi ekonomi masyarakat pesisir.", "C. Pemulihan ekosistem mangrove memerlukan keterlibatan aktif dari masyarakat pesisir.", "D. Penyerapan karbon di daratan jauh lebih efisien daripada di kawasan mangrove."] },
+        { id: 4, reading: readingTexts.tek1, q: "4. Berdasarkan informasi dalam teks, istilah blue carbon merujuk pada...", a: "B", o: ["A. Karbon yang dihasilkan dari emisi kapal-kapal nelayan di pesisir.", "B. Karbon dioksida yang diserap dan disimpan oleh ekosistem pesisir dan laut, seperti mangrove.", "C. Polusi udara berwarna biru yang mencemari kawasan hutan bakau.", "D. Cadangan bahan bakar fosil yang ditemukan di bawah akar pohon bakau."] },
+
+        // Teks 2 (Soal 5-8)
+        { id: 5, reading: readingTexts.tek2, q: "5. Faktor utama yang menyebabkan pemerintah kolonial beralih menanam kopi jenis robusta dan liberika adalah...", a: "B", o: ["A. Permintaan pasar Eropa yang hanya menyukai kopi tanpa kafein.", "B. Terjadinya wabah penyakit karat daun yang merusak perkebunan arabika.", "C. Kebijakan perdagangan bebas yang diberlakukan di seluruh wilayah Batavia.", "D. Keinginan pribumi untuk mengganti tanaman kopi dengan rempah-rempah."] },
+        { id: 6, reading: readingTexts.tek2, q: "6. Pernyataan manakah yang sesuai dengan fakta sejarah dalam teks di atas?", a: "C", o: ["A. Tanaman kopi pertama kali dibudidayakan oleh pedagang asal Timur Tengah di Aceh.", "B. Sistem tanam paksa hanya mewajibkan penanaman kopi jenis robusta.", "C. Java Coffee sempat mendominasi pasar di benua Eropa pada masa kolonial.", "D. Kopi arabika sama sekali tidak terpengaruh oleh wabah penyakit tanaman."] },
+        { id: 7, reading: readingTexts.tek2, q: "7. Mengapa kopi nusantara memiliki daya tarik yang kuat di pasar global hingga saat ini?", a: "B", o: ["A. Karena harganya jauh lebih murah dibandingkan kopi dari negara lain.", "B. Karena memiliki keragaman cita rasa geografis (single origin) yang khas.", "C. Karena proses penanamannya menggunakan teknologi modern otomatis.", "D. Karena pemerintah memberikan subsidi penuh kepada seluruh eksportir kopi."] },
+        { id: 8, reading: readingTexts.tek2, q: "8. Kata cultuurstelsel dalam teks tersebut memiliki arti yang berkaitan dengan...", a: "B", o: ["A. Sistem monopoli perdagangan rempah antarpulau.", "B. Sistem tanam paksa yang diterapkan oleh pemerintah kolonial.", "C. Organisasi dagang bentukan pedagang Eropa di Batavia.", "D. Undang-undang agraria yang melindungi hak tanah pribumi."] },
+
+        // Teks 3 (Soal 9-13)
+        { id: 9, reading: readingTexts.tek3, q: "9. Bagaimana cahaya biru (blue light) dari gawai dapat mengganggu waktu tidur seseorang?", a: "B", o: ["A. Dengan meningkatkan suhu tubuh secara drastis di dalam kamar tidur.", "B. Dengan menekan produksi hormon melatonin yang mengatur siklus tidur.", "C. Dengan mempercepat detak jantung hingga mencapai batas maksimal.", "D. Dengan merusak sel-sel retina mata secara permanen dalam hitungan detik."] },
+        { id: 10, reading: readingTexts.tek3, q: "10. Apa yang dimaksud dengan kondisi hyperarousal berdasarkan konteks bacaan di atas?", a: "A", o: ["A. Keadaan di mana otak tetap berada dalam mode siaga akibat aktivitas mental yang tinggi sebelum tidur.", "B. Penurunan kesadaran secara mendadak saat seseorang menatap layar ponsel terlalu lama.", "C. Kelelahan fisik kronis yang dialami oleh para pekerja kantoran di malam hari.", "D. Peningkatan nafsu makan yang tidak kontrol setelah bermain gim daring."] },
+        { id: 11, reading: readingTexts.tek3, q: "11. Berdasarkan teks tersebut, apa akibat jangka panjang jika remaja sering kekurangan waktu tidur berkualitas?", a: "C", o: ["A. Peningkatan prestasi akademik di sekolah secara drastis.", "B. Penguatan sistem kekebalan tubuh terhadap berbagai penyakit.", "C. Penurunan konsentrasi belajar dan pelemahan sistem kekebalan tubuh.", "D. Perubahan warna retina mata menjadi lebih sensitif terhadap cahaya."] },
+        { id: 12, reading: readingTexts.tek3, q: "12. Solusi apa yang ditawarkan oleh para ahli untuk mengatasi masalah gangguan tidur akibat gawai?", a: "C", o: ["A. Mengonsumsi vitamin penambah tenaga setiap malam sebelum tidur.", "B. Mengganti layar gawai dengan jenis layar monokrom berwarna hitam putih.", "C. Menjauhkan gawai setidaknya satu jam sebelum waktu tidur.", "D. Mematikan seluruh lampu rumah dua jam sebelum beranjak ke tempat tidur."] },
+        { id: 13, reading: readingTexts.tek3, q: "13. Manakah judul yang paling sesuai jika teks tersebut dimuat dalam rubrik kesehatan majalah remaja?", a: "B", o: ["A. Sejarah Perkembangan Teknologi Gawai di Kalangan Remaja", "B. Bahaya Cahaya Biru Ponsel dan Kualitas Tidur Kita", "C. Tips Pintar Mengatur Keuangan untuk Membeli Ponsel Baru", "D. Manfaat Gim Dering untuk Melatih Konsentrasi Otak"] },
+
+        // Teks 4 (Soal 14-17)
+        { id: 14, reading: readingTexts.tek4, q: "14. Suasana apa yang paling dominan digambarkan pada awal paragraf cerita tersebut?", a: "C", o: ["A. Ceria dan penuh semangat menyambut musim panen.", "B. Tegang dan mencekam karena ancaman bencana alam.", "C. Suram, murung, dan penuh keprihatinan akibat kekeringan.", "D. Hangat dan damai di tengah keramaian kota kecil."] },
+        { id: 15, reading: readingTexts.tek4, q: "15. Apa makna kiasan dari kalimat \"menyisakan tanah retak-retak bagai peta tua yang kehilangan arah\" dalam teks tersebut?", a: "B", o: ["A. Tanah di sawah tersebut dapat digunakan untuk menavigasi perjalanan jauh.", "B. Kondisi tanah sangat kering dan pecah-pecah parah akibat musim kemarau panjang.", "C. Petani telah salah jalan dalam mengelola sistem irigasi sawah mereka.", "D. Peta desa tersebut hilang tersapu oleh arus air sungai yang deras."] },
+        { id: 16, reading: readingTexts.tek4, q: "16. Apa kekhawatiran utama yang dirasakan oleh Pak Sastro?", a: "B", o: ["A. Ketiadaan modal untuk membeli pupuk kimia di musim tanam berikutnya.", "B. Keputusan anak-anak muda desa meninggalkan tanah leluhur demi merantau ke kota.", "C. Kesehatan Ratih yang menurun akibat udara malam yang terlalu dingin.", "D. Teguran dari kepala desa mengenai keterlambatan pembayaran pajak tanah."] },
+        { id: 17, reading: readingTexts.tek4, q: "17. Watak tokoh Pak Sastro dalam kutipan cerita di atas dapat digambarkan sebagai seorang yang...", a: "C", o: ["A. Egois dan tidak peduli dengan masa depan keluarganya.", "B. Pesimis serta mudah menyerah pada keadaan alam.", "C. Peduli dan memiliki ikatan emosional yang kuat terhadap tanah leluhur.", "D. Serakah dan ingin menguasai lahan pertanian warga lain."] },
+
+        // Teks 5 (Soal 18-20)
+        { id: 18, reading: readingTexts.tek5, q: "18. Pesan moral (amanat) yang terkandung dalam cerita fabel di atas adalah...", a: "A", o: ["A. Jangan pernah menilai seseorang hanya dari penampilan fisik atau kekurangannya.", "B. Hewan yang bertubuh kecil selalu menjadi penolong di dalam hutan.", "C. Duri tajam adalah senjata yang paling berbahaya di dalam ekosistem hutan.", "D. Kita harus selalu menjauhi hewan yang memiliki penampilan berbeda."] },
+        { id: 19, reading: readingTexts.tek5, q: "19. Konflik utama yang dialami oleh sang Landak pada awal cerita adalah...", a: "C", o: ["A. Ia tidak memiliki tempat tinggal yang layak saat musim hujan tiba.", "B. Ia kesulitan mencari makanan karena dilarang masuk ke area sungai.", "C. Ia merasa dikucilkan oleh hewan lain karena tubuhnya berduri tajam.", "D. Ia bertengkar hebat dengan induk burung di atas pohon tinggi."] },
+        { id: 20, reading: readingTexts.tek5, q: "20. Bagaimana titik balik (turning point) perubahan pandangan hewan hutan terhadap sang Landak?", a: "B", o: ["A. Saat sang Landak memenangkan lomba lari cepat melawan Kancil.", "B. Saat sang Landak melindungi anak burung dari badai dengan tubuhnya.", "C. Saat sang Landak membagi-bagikan makanan kepada seluruh penghuni hutan.", "D. Saat sang Landak meminta maaf kepada Kelinci atas durinya yang tajam."] },
+
+        // Teks 6 (Soal 21-25)
+        { id: 21, reading: readingTexts.tek6, q: "21. Berdasarkan data di atas, pada hari apa jumlah pengunjung perpustakaan mencapai angka tertinggi?", a: "D", o: ["A. Senin", "B. Rabu", "C. Kamis", "D. Jumat"] },
+        { id: 22, reading: readingTexts.tek6, q: "22. Berapa selisih jumlah pengunjung perpustakaan antara hari Jumat dan hari Selasa?", a: "B", o: ["A. 85 orang", "B. 95 orang", "C. 105 orang", "D. 115 orang"] },
+        { id: 23, reading: readingTexts.tek6, q: "23. Pernyataan manakah yang paling akurat menggambarkan tren kunjungan perpustakaan dari hari Senin hingga Jumat?", a: "B", o: ["A. Jumlah pengunjung selalu meningkat secara konsisten setiap hari tanpa henti.", "B. Jumlah pengunjung mengalami fluktuasi (naik turun), dengan titik terendah pada hari Selasa dan tertinggi pada hari Jumat.", "C. Jumlah pengunjung pada hari Senin sama persis dengan hari Kamis.", "D. Perpustakaan ditutup pada hari Rabu karena sepi pengunjung."] },
+        { id: 24, reading: readingTexts.tek6, q: "24. Berapa total jumlah pengunjung perpustakaan dari hari Senin sampai Rabu?", a: "A", o: ["A. 365 orang", "B. 355 orang", "C. 375 orang", "D. 385 orang"] },
+        { id: 25, reading: readingTexts.tek6, q: "25. Mengapa hari Jumat mencatatkan jumlah pengunjung paling banyak dibandingkan hari-hari lainnya?", a: "B", o: ["A. Karena perpustakaan membagikan buku gratis kepada seluruh warga kota.", "B. Kemungkinan besar karena menjelang akhir pekan, banyak pelajar atau masyarakat yang memanfaatkan waktu luang sebelum libur.", "C. Karena hari Jumat merupakan satu-satunya hari perpustakaan dibuka selama sepekan.", "D. Karena pada hari Jumat tidak ada aktivitas belajar mengajar di sekolah manapun."] }
     ];
 
     let activeQueue = [];
@@ -775,34 +736,32 @@
     let questionTimeLeft = {}; 
     let unlockedQuestions = {}; 
 
-    // FUNGSI UPDATE TAMPILAN KOTAK A (EMOJI CUTE) & KOTAK B (SKOR BERJALAN)
-    function updateDashboardBox(stateEmoji = null) {
+    // DETEKSI TANGKAPAN LAYAR (SCREENSHOT) KEYBOARD UNTUK PC/LAPTOP
+    document.addEventListener("keyup", function(e) {
+        if (!quizIsRunning) return;
+        if (e.key === "PrintScreen" || (e.metaKey && e.shiftKey && (e.key === "3" || e.key === "4" || e.key === "s"))) {
+            handleAppExit();
+        }
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (!quizIsRunning) return;
+        if (e.key === "PrintScreen") {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText("");
+            }
+        }
+    });
+
+    function updateDashboardBox() {
         let boxB = document.getElementById('boxBScore');
         if (boxB) boxB.innerText = score;
 
-        let boxA = document.getElementById('boxAEmoji');
-        if (!boxA) return;
-
-        if (stateEmoji) {
-            boxA.innerText = stateEmoji;
-            return;
-        }
-
-        if (isTimeFrozen) {
-            boxA.innerText = "❄️";
-            boxA.classList.remove('panik');
-        } else if (isAntiWrongActive) {
-            boxA.innerText = "🛡️";
-            boxA.classList.remove('panik');
-        } else {
-            let q = activeQueue[currentIndexInQueue];
-            let timeLeft = questionTimeLeft[q ? q.id : 0] || 60;
-            if (timeLeft <= 10) {
-                boxA.innerText = "😱";
-                boxA.classList.add('panik');
-            } else {
-                boxA.innerText = "🥳";
-                boxA.classList.remove('panik');
+        for (let key in powerUpUsedList) {
+            let card = document.getElementById('card-' + key);
+            if (card) {
+                if (powerUpUsedList[key]) card.classList.add('used');
+                else card.classList.remove('used');
             }
         }
     }
@@ -817,16 +776,14 @@
     function handleAppExit() {
         if (!quizIsRunning) return;
 
-        // JIKA AKSES DENGAN AKUN ADMIN TESTER, BYPASS / ABAIKAN PERINGATAN KELUAR!
         let targetNIS = document.getElementById('inputNIS').value.trim();
         if (targetNIS === "masterikhwan") return;
 
-        let isPowerUpOpen = !document.getElementById('powerUpModal').classList.contains('hidden');
         let isReasonOpen = !document.getElementById('reasonModal').classList.contains('hidden');
         let isInfoOpen = !document.getElementById('infoModal').classList.contains('hidden');
         let isRulesOpen = !document.getElementById('rulesModal').classList.contains('hidden');
 
-        if (isPowerUpOpen || isReasonOpen || isInfoOpen || isRulesOpen) return;
+        if (isReasonOpen || isInfoOpen || isRulesOpen) return;
 
         if (warningCount === 0) {
             warningCount++;
@@ -904,7 +861,6 @@
 
     function closeInfoModal() {
         document.getElementById('infoModal').classList.add('hidden');
-        document.getElementById('powerUpModal').classList.add('hidden');
     }
 
     function showFeedbackModal(isCorrect) {
@@ -915,19 +871,17 @@
             emoji.innerText = "🎉✨"; 
             title.innerText = "Benar, Hebat Sekali!"; 
             title.style.color = "#38b000"; 
-            updateDashboardBox("🥳");
         } else { 
             emoji.innerText = "🥺💪"; 
             title.innerText = "Kurang Tepat, Semangat!"; 
             title.style.color = "var(--danger)"; 
-            updateDashboardBox("🥺");
         }
         modal.classList.remove('hidden');
     }
 
     function hideFeedbackModal() { document.getElementById('feedbackModal').classList.add('hidden'); }
 
-    function openPowerUpModal() {
+    function triggerPowerUp(type) {
         if (!quizIsRunning) return;
         let q = activeQueue[currentIndexInQueue];
 
@@ -936,33 +890,6 @@
             return;
         }
 
-        if (powerUpUsedOnCurrentQuestion) {
-            showInfoModal("⚠️", "Pemberitahuan", "Kamu sudah menggunakan 1 Power Up pada soal ini!");
-            return;
-        }
-
-        let allUsed = Object.values(powerUpUsedList).every(v => v === true);
-        if (allUsed) {
-            showInfoModal("❌", "Power Up Habis", "Semua jenis Power Up kamu sudah terpakai!");
-            return;
-        }
-
-        for (let key in powerUpUsedList) {
-            let card = document.getElementById('card-' + key);
-            if (card) {
-                if (powerUpUsedList[key]) card.classList.add('used');
-                else card.classList.remove('used');
-            }
-        }
-
-        document.getElementById('powerUpModal').classList.remove('hidden');
-    }
-
-    function closePowerUpModal() {
-        document.getElementById('powerUpModal').classList.add('hidden');
-    }
-
-    function usePowerUp(type) {
         if (powerUpUsedList[type]) {
             showInfoModal("⚠️", "Power Up Terpakai", "Jenis Power Up ini sudah pernah kamu gunakan!");
             return;
@@ -973,16 +900,44 @@
             return;
         }
 
+        let audioIdMap = {
+            '5050': 'sound5050',
+            'freeze': 'soundFreeze',
+            'bomb': 'soundBomb',
+            'antiwrong': 'soundAntiWrong'
+        };
+
+        let elementId = audioIdMap[type];
+        let audioEl = document.getElementById(elementId);
+
+        if (audioEl) {
+            audioEl.currentTime = 0;
+            let playPromise = audioEl.play();
+
+            let runPowerUpLogic = () => {
+                usePowerUp(type);
+            };
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    runPowerUpLogic();
+                }).catch(() => {
+                    runPowerUpLogic();
+                });
+            } else {
+                runPowerUpLogic();
+            }
+        } else {
+            usePowerUp(type);
+        }
+    }
+
+    function usePowerUp(type) {
         let q = activeQueue[currentIndexInQueue];
-        
+
         powerUpUsedList[type] = true;
         powerUpUsedOnCurrentQuestion = true;
-        closePowerUpModal();
-
-        let allUsed = Object.values(powerUpUsedList).every(v => v === true);
-        if (allUsed) {
-            document.getElementById('powerUpBtn').disabled = true;
-        }
+        updateDashboardBox();
 
         if (type === '5050') {
             let optButtons = document.querySelectorAll('#options .option-btn');
@@ -994,15 +949,17 @@
                     removed++;
                 }
             });
-            updateDashboardBox("🌓");
-            showInfoModal("🌓", "Power Up 50:50", "Dua pilihan jawaban yang salah telah dihapus dari layar!");
+            setTimeout(() => {
+                showInfoModal("🌓", "Power Up 50:50", "Dua pilihan jawaban yang salah telah dihapus!");
+            }, 250);
         } 
         else if (type === 'freeze') {
             isTimeFrozen = true;
             clearInterval(timer);
             document.getElementById('timer').innerText = "❄️ BEKU";
-            updateDashboardBox("❄️");
-            showInfoModal("❄️", "Power Up Time Freeze", "Waktu pada soal ini telah dibekukan!");
+            setTimeout(() => {
+                showInfoModal("❄️", "Power Up Time Freeze", "Waktu pada soal ini telah dibekukan!");
+            }, 250);
         } 
         else if (type === 'bomb') {
             let optButtons = Array.from(document.querySelectorAll('#options .option-btn:not(.hidden-option)'));
@@ -1013,14 +970,16 @@
                 randomWrongBtn.classList.add('hidden-option');
             }
             
-            updateDashboardBox("💣");
-            showInfoModal("💣", "Power Up Bomb Answer", "BOOM! 💣 1 pilihan jawaban yang salah telah berhasil dihancurkan!");
+            setTimeout(() => {
+                showInfoModal("💣", "Power Up Bomb Answer", "BOOM! 💣 1 pilihan jawaban yang salah berhasil dihancurkan!");
+            }, 250);
         } 
         else if (type === 'antiwrong') {
             isAntiWrongActive = true;
             document.getElementById('shieldIndicatorBox').classList.remove('hidden');
-            updateDashboardBox("🛡️");
-            showInfoModal("🛡️", "Power Up Anti Wrong", "Perisai aktif! Jika kamu memilih jawaban salah, kamu tetap aman.");
+            setTimeout(() => {
+                showInfoModal("🛡️", "Power Up Anti Wrong", "Perisai aktif! Jika kamu memilih jawaban salah, kamu tetap aman.");
+            }, 250);
         }
     }
 
@@ -1041,7 +1000,7 @@
             return;
         }
 
-        let dataKey = 'kuota_data_bing_' + inputVal;
+        let dataKey = 'kuota_data_bindo_' + inputVal;
         let savedData = JSON.parse(localStorage.getItem(dataKey));
         let now = new Date().getTime();
         let twelveHours = 12 * 60 * 60 * 1000;
@@ -1074,7 +1033,7 @@
             return;
         }
 
-        let dataKey = 'kuota_data_bing_' + nis;
+        let dataKey = 'kuota_data_bindo_' + nis;
         let savedData = JSON.parse(localStorage.getItem(dataKey));
         let now = new Date().getTime();
         let twelveHours = 12 * 60 * 60 * 1000;
@@ -1169,7 +1128,7 @@
         let nis = document.getElementById('inputNIS').value.trim();
         
         if (nis !== "masterikhwan") {
-            let dataKey = 'kuota_data_bing_' + nis;
+            let dataKey = 'kuota_data_bindo_' + nis;
             let savedData = JSON.parse(localStorage.getItem(dataKey));
             let now = new Date().getTime();
             let twelveHours = 12 * 60 * 60 * 1000;
@@ -1202,13 +1161,13 @@
         questionTimeLeft = {};
         unlockedQuestions = {};
 
-        // INISIALISASI PENGAÇAKAN OPTION JAWABAN SECARA VALID
         activeQueue = originalQuizData.map(item => {
             let correctLetter = item.a;
             let correctObj = item.o.find(opt => opt.startsWith(correctLetter + "."));
             let correctRawText = correctObj ? correctObj.replace(/^[A-D]\.\s*/, "") : "";
 
             let rawOptions = item.o.map(opt => opt.replace(/^[A-D]\.\s*/, ""));
+
             let shuffledRawOptions = [...rawOptions].sort(() => Math.random() - 0.5);
 
             questionTimeLeft[item.id] = DEFAULT_TIME_PER_QUESTION;
@@ -1220,15 +1179,12 @@
             };
         });
 
-        // ACAK URUTAN SOAL
-        activeQueue.sort(() => Math.random() - 0.5);
+        activeQueue.sort((a, b) => a.id - b.id);
 
-        // Sembunyikan Kredit Designer & Judul Utama saat kuis dimulai
         document.getElementById('designerCredit').classList.add('hidden');
         document.getElementById('mainTitle').classList.add('hidden');
         
         document.getElementById('powerUpHeaderContainer').classList.remove('hidden');
-        document.getElementById('powerUpBtn').disabled = false;
 
         document.getElementById('mascotBox').classList.add('hidden');
         document.getElementById('questionNav').classList.remove('hidden');
@@ -1279,6 +1235,14 @@
         updateNavigasiSoal(q.id);
         updateDashboardBox();
 
+        let readingBox = document.getElementById('readingContainer');
+        if (q.reading) {
+            readingBox.innerHTML = q.reading;
+            readingBox.classList.remove('hidden');
+        } else {
+            readingBox.classList.add('hidden');
+        }
+
         document.getElementById('question').innerText = q.q;
         let optDiv = document.getElementById('options'); optDiv.innerHTML = "";
         let isAnswered = questionStatus[q.id] === 'correct' || questionStatus[q.id] === 'wrong';
@@ -1292,6 +1256,7 @@
             let fullOptionText = letterPrefix + ". " + rawText;
 
             let btn = document.createElement('button'); 
+            btn.type = 'button';
             btn.className = 'option-btn'; 
             btn.innerText = fullOptionText;
             btn.setAttribute('data-raw-text', rawText);
@@ -1321,7 +1286,7 @@
                             btn.classList.add('correct');
                             questionStatus[q.id] = 'correct';
                             score += 4; 
-                            updateDashboardBox("🥳");
+                            updateDashboardBox();
                             showFeedbackModal(true);
                             updateNavigasiSoal(q.id);
                             setTimeout(() => { hideFeedbackModal(); next(); }, 1200);
@@ -1336,12 +1301,12 @@
                             btn.classList.add('correct'); 
                             score += 4; 
                             questionStatus[q.id] = 'correct';
-                            updateDashboardBox("🥳");
+                            updateDashboardBox();
                             showFeedbackModal(true); 
                         } else { 
                             btn.classList.add('wrong'); 
                             questionStatus[q.id] = 'wrong';
-                            updateDashboardBox("🥺");
+                            updateDashboardBox();
                             showFeedbackModal(false); 
                         }
                         
@@ -1373,7 +1338,6 @@
                     
                     if(displayTime > 0 && displayTime <= 10) { 
                         timeBar.classList.add('critical'); 
-                        updateDashboardBox("😱");
                     }
 
                     if(updatedTimeLeft <= 0) { 
@@ -1384,7 +1348,7 @@
 
                         questionStatus[q.id] = 'wrong';
                         updateNavigasiSoal(q.id);
-                        updateDashboardBox("🥺");
+                        updateDashboardBox();
 
                         playAudio('wrongSound', () => {
                             showFeedbackModal(false);
@@ -1449,4 +1413,3 @@
 </script>
 </body>
 </html>
-```eof
