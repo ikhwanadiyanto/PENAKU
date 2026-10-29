@@ -194,6 +194,23 @@
     <div class="floating-emoji-container" id="floatingEmojiContainer"></div>
     <audio id="audioChatNotif" src="Chat.mp3" preload="auto"></audio>
 
+    <!-- BUBBLE NOTIFIKASI PESAN MASUK (TOAST POPUP) -->
+    <div id="toastPesanBaru" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[100] max-w-xs sm:max-w-sm w-full bg-white/95 backdrop-blur-md border-2 border-pink-400 shadow-2xl rounded-2xl p-3 flex items-center gap-3 transform -translate-y-24 opacity-0 transition-all duration-300 ease-out pointer-events-none no-print cursor-pointer" onclick="bukaChatDariToast()">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center text-white text-base shrink-0 shadow-md">
+            <i class="fa-solid fa-comment-dots animate-bounce"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-1">
+                <span id="toastPengirim" class="text-xs font-black text-slate-800 truncate">Nama Pengirim</span>
+                <span id="toastGrup" class="text-[9px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full border border-purple-200 truncate">Grup</span>
+            </div>
+            <p id="toastTeksPesan" class="text-xs text-slate-600 font-medium truncate mt-0.5">Pesan terbaru...</p>
+        </div>
+        <button onclick="event.stopPropagation(); tutupToastPesanBaru()" class="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs shrink-0">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
     <!-- INPUT FILE UNTUK PROSES UPLOAD -->
     <input type="file" id="inputUploadBadgeFoto" accept="image/*" class="hidden" onchange="prosesUploadBadgeFoto(event)">
     <input type="file" id="inputUploadFotoProfil" accept="image/*" class="hidden" onchange="prosesUploadFotoProfilSiswa(event)">
@@ -206,11 +223,11 @@
                 <i class="fa-solid fa-face-smile-beam"></i>
             </div>
             <h2 class="text-xl sm:text-2xl font-black text-slate-800 mb-1">Profil Siswa ASYIK</h2>
-            <p class="text-xs text-slate-600 mb-6 font-medium">Masukkan NIS Anda untuk melihat profil ceria / Kode Admin untuk pengeditan.</p>
+            <p class="text-xs text-slate-600 mb-6 font-medium">Masukkan NIS / Nama Siswa Anda atau Kode Admin untuk pengeditan.</p>
 
             <form onsubmit="prosesLoginAkses(event)" class="flex flex-col gap-4">
                 <div class="relative">
-                    <input type="text" id="inputNisLogin" placeholder="Masukkan NIS Siswa / Kode Admin..." class="w-full bg-white text-slate-800 text-center font-bold text-sm sm:text-base border-2 border-pink-300 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 transition-all shadow-inner" required autofocus>
+                    <input type="text" id="inputNisLogin" placeholder="Masukkan NIS / Nama Siswa / Kode Admin..." class="w-full bg-white text-slate-800 text-center font-bold text-sm sm:text-base border-2 border-pink-300 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 transition-all shadow-inner" required autofocus>
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-amber-500 hover:opacity-95 text-white font-black py-3.5 rounded-2xl text-xs sm:text-sm transition-all shadow-lg shadow-pink-500/30 active:scale-95 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rocket"></i> Masuk Ruang Ceria
@@ -220,7 +237,52 @@
         </div>
     </div>
 
-    <!-- MODAL KELOLA BADGE MASSAL (MULTI-SISWA MODEL CENTANG) -->
+    <!-- MODAL KELOLA GRUP CHAT & ANGGOTA (ADMIN ONLY) -->
+    <div id="modalKelolaGrup" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print">
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+                <h3 class="text-sm sm:text-base font-black text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-people-group text-purple-600"></i> Buat Grup Baru & Pilih Anggota
+                </h3>
+                <button onclick="tutupModalKelolaGrup()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="tambahGrupBaru(event)" class="space-y-3 mb-4 shrink-0">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Grup / Kelompok Baru:</label>
+                    <input type="text" id="inputNamaGrupBaru" placeholder="Misal: Kelompok IPA 1..." class="w-full bg-white text-xs border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500 shadow-inner" required>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="text-xs font-bold text-slate-700">Pilih Siswa Anggota Grup (Siswa di luar centang tidak dapat mengakses):</label>
+                        <div class="flex gap-2 text-[10px] font-bold">
+                            <button type="button" onclick="centangSemuaAnggotaGrup(true)" class="text-purple-600 hover:underline">Semua</button>
+                            <span class="text-slate-300">|</span>
+                            <button type="button" onclick="centangSemuaAnggotaGrup(false)" class="text-slate-500 hover:underline">Hapus</button>
+                        </div>
+                    </div>
+
+                    <div id="containerCentangAnggotaGrup" class="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-plus"></i> Simpan Grup Baru
+                </button>
+            </form>
+
+            <hr class="border-slate-200 my-2">
+
+            <div class="text-xs font-bold text-slate-700 mb-2">Daftar Grup Aktif & Anggota:</div>
+            <div id="containerDaftarGrup" class="space-y-2 max-h-48 overflow-y-auto pr-1 flex-1">
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KELOLA BADGE MASSAL -->
     <div id="modalBadgeMassal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print">
         <div class="glass-panel p-5 sm:p-6 rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl relative overflow-hidden max-h-[90vh] flex flex-col">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
@@ -233,7 +295,6 @@
             </div>
 
             <div class="overflow-y-auto pr-1 space-y-4 flex-1">
-                <!-- PILIH SLOT & RENAME -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Slot Badge (1 - 25):</label>
@@ -246,7 +307,6 @@
                     </div>
                 </div>
 
-                <!-- UPLOAD FILE BADGE & PREVIEW -->
                 <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center gap-3">
                     <div class="w-16 h-16 rounded-xl border-2 border-dashed border-pink-400 bg-white flex items-center justify-center overflow-hidden shrink-0 relative" id="previewMassalBadgeContainer">
                         <i class="fa-solid fa-award text-2xl text-slate-400" id="iconMassalBadgeDefault"></i>
@@ -259,7 +319,6 @@
                     </div>
                 </div>
 
-                <!-- SET STATUS AKTIF -->
                 <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 p-2.5 rounded-xl">
                     <input type="checkbox" id="checkMassalAktifkan" checked class="w-4 h-4 accent-pink-600 rounded cursor-pointer">
                     <label for="checkMassalAktifkan" class="text-xs font-bold text-amber-900 cursor-pointer select-none">
@@ -267,7 +326,6 @@
                     </label>
                 </div>
 
-                <!-- DAFTAR SISWA MODEL CENTANG -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
@@ -296,62 +354,66 @@
         </div>
     </div>
 
-    <!-- MODAL CHAT FULL SCREEN (UKURAN PONSEL PORTRAIT) -->
-    <div id="modalChatFullScreen" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-50 hidden no-print">
-        <div class="w-full max-w-sm h-[92vh] max-h-[780px] bg-slate-900 rounded-[42px] p-3 shadow-2xl border-4 border-slate-700 flex flex-col relative overflow-hidden">
-            <!-- Notch HP -->
-            <div class="w-28 h-4 bg-slate-800 rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-slate-900"></div>
-                <div class="w-2 h-2 rounded-full bg-slate-900/50"></div>
-            </div>
-
-            <!-- LayarHP Frame -->
-            <div class="bg-gradient-to-b from-slate-50 via-pink-50/20 to-purple-50/20 rounded-[32px] flex-1 flex flex-col overflow-hidden relative border border-slate-800/20 shadow-inner">
-                <!-- Header Chat HP -->
-                <div class="bg-white/90 backdrop-blur-md p-3 border-b border-slate-200 flex items-center justify-between shadow-sm shrink-0">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center text-white text-sm shadow-md">
-                            <i class="fa-solid fa-comments"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-black text-slate-800 leading-tight">Obrolan Kelas ASYIK</h4>
-                            <span class="text-[9px] font-semibold text-emerald-600 flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Mode Ponsel Portrait
-                            </span>
-                        </div>
+    <!-- MODAL CHAT FULL SCREEN -->
+    <div id="modalChatFullScreen" class="fixed inset-0 bg-slate-900/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-50 hidden no-print">
+        <div id="frameContainerChatFS" class="w-full h-full max-w-5xl max-h-[96vh] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col relative overflow-hidden transition-all duration-300">
+            
+            <!-- Header Chat Full Screen -->
+            <div class="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 p-3 sm:p-4 border-b border-slate-800 flex items-center justify-between shadow-md shrink-0 text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-amber-400 flex items-center justify-center text-white text-lg shadow-lg shadow-pink-500/30">
+                        <i class="fa-solid fa-comments"></i>
                     </div>
-                    <button onclick="tutupChatFullScreen()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs font-bold transition-all">
+                    <div>
+                        <h4 class="text-sm sm:text-base font-black tracking-wide">Obrolan Layar Penuh</h4>
+                        <p class="text-[10px] text-slate-300 font-medium">Ruang Diskusi & Kerja Grup Realtime</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleUkuranChatFS()" id="btnToggleResizerChat" class="bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all" title="Ubah Ukuran Layar Manual">
+                        <i class="fa-solid fa-expand"></i> <span class="hidden sm:inline" id="lblToggleResizerText">Mode Ponsel</span>
+                    </button>
+                    <button onclick="tutupChatFullScreen()" class="w-8 h-8 rounded-full bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white flex items-center justify-center text-sm font-bold transition-all">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
+            </div>
 
-                <!-- Messages Container (Full Screen) -->
-                <div id="chatMessagesContainerFS" class="flex-1 p-3 overflow-y-auto space-y-2.5 scrollbar-thin scrollbar-thumb-pink-300">
-                    <div class="text-center text-xs text-slate-400 italic py-4">Memuat obrolan...</div>
+            <!-- SEMATAN TAB GRUP DI ATAS FRAME CHAT FULLSCREEN -->
+            <div class="bg-slate-100 p-2 border-b border-slate-200 flex items-center justify-between gap-2 overflow-x-auto shrink-0">
+                <div class="flex items-center gap-1.5 overflow-x-auto" id="barGrupTabsFS">
                 </div>
+                <button onclick="bukaModalKelolaGrup()" class="admin-only shrink-0 bg-purple-100 hover:bg-purple-200 text-purple-700 border border-purple-300 px-2.5 py-1 rounded-xl text-[11px] font-extrabold transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-gear"></i> Kelola Grup
+                </button>
+            </div>
 
-                <!-- Input Footer (Full Screen HP) -->
-                <div class="p-2.5 bg-white/95 backdrop-blur-md border-t border-slate-200 shrink-0 relative">
-                    <form onsubmit="kirimPesanObrolan(event, 'FS')" class="flex items-center gap-1.5">
-                        <button type="button" onclick="picuUploadFotoChat()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-sm transition-all shrink-0" title="Sisipkan Foto">
-                            <i class="fa-solid fa-image"></i>
-                        </button>
-                        <button type="button" onclick="toggleEmojiPickerChat(event, 'FS')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-sm transition-all shrink-0" title="Emotikon Lucu">
-                            <i class="fa-solid fa-face-smile-beam"></i>
-                        </button>
-                        <input type="text" id="inputPesanObrolanFS" placeholder="Ketik pesan..." class="flex-1 bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-pink-500 shadow-inner">
-                        <button type="submit" class="w-9 h-9 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white flex items-center justify-center text-xs font-bold shadow-md active:scale-95 transition-all shrink-0">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
+            <!-- Messages Container (Full Screen) -->
+            <div id="chatMessagesContainerFS" class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 bg-slate-50 scrollbar-thin scrollbar-thumb-pink-300">
+                <div class="text-center text-xs text-slate-400 italic py-4">Memuat obrolan...</div>
+            </div>
+
+            <!-- Input Footer (Full Screen) -->
+            <div class="p-3 bg-white border-t border-slate-200 shrink-0 relative">
+                <form onsubmit="kirimPesanObrolan(event, 'FS')" class="flex items-center gap-2 w-full">
+                    <button type="button" onclick="picuUploadFotoChat()" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-base transition-all shrink-0" title="Sisipkan Foto">
+                        <i class="fa-solid fa-image"></i>
+                    </button>
+                    <button type="button" onclick="toggleEmojiPickerChat(event, 'FS')" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-base transition-all shrink-0" title="Emotikon Lucu">
+                        <i class="fa-solid fa-face-smile-beam"></i>
+                    </button>
+                    <input type="text" id="inputPesanObrolanFS" placeholder="Ketik pesan..." class="flex-1 min-w-0 h-10 bg-slate-50 text-slate-800 text-xs sm:text-sm font-medium border border-slate-300 rounded-2xl px-4 focus:outline-none focus:border-pink-500 shadow-inner">
+                    <button type="submit" class="h-10 px-4 sm:px-5 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:opacity-95 text-white font-black text-xs sm:text-sm transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 shrink-0" title="Kirim Pesan">
+                        <i class="fa-solid fa-paper-plane"></i> <span class="hidden sm:inline">Kirim</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- POPOVER EMOTIKON LUCU -->
     <div id="popoverEmojiPicker" class="fixed z-50 hidden bg-white/95 backdrop-blur-md border border-pink-200 shadow-2xl rounded-2xl p-3 w-64 grid grid-cols-6 gap-2 text-xl max-h-48 overflow-y-auto no-print">
-        <!-- Emojis populated dynamically -->
     </div>
 
     <!-- MODAL ZOOM FOTO CHAT -->
@@ -513,41 +575,46 @@
                     </div>
                 </div>
 
-                <!-- OBROLAN -->
+                <!-- OBROLAN MAIN PANEL -->
                 <div class="glass-panel p-5 sm:p-6 rounded-3xl relative overflow-hidden no-print">
-                    <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-3">
-                        <h3 class="text-sm font-black text-slate-800 flex items-center gap-2 tracking-wide">
-                            <i class="fa-solid fa-comments text-pink-500"></i> Obrolan Kelas Realtime
+                    <div class="flex items-center justify-between mb-2 border-b border-slate-200 pb-2">
+                        <h3 class="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-comments text-pink-500"></i> Obrolan Kelas
                         </h3>
-                        <div class="flex items-center gap-2">
-                            <!-- TOMBOL MODE PONSEL FULL SCREEN -->
-                            <button onclick="bukaChatFullScreen()" class="text-slate-500 hover:text-pink-600 p-1.5 rounded-xl hover:bg-pink-50 transition-all text-xs sm:text-sm flex items-center gap-1 font-bold" title="Mode Layar Penuh (Ponsel)">
-                                <i class="fa-solid fa-mobile-screen-button"></i>
-                                <span class="text-[10px] hidden sm:inline">Ponsel</span>
+
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="bukaChatFullScreen()" class="text-slate-600 hover:text-pink-600 p-1.5 rounded-xl hover:bg-pink-50 transition-all text-xs flex items-center gap-1 font-bold" title="Mode Layar Penuh (Ponsel/Laptop)">
+                                <i class="fa-solid fa-expand"></i>
+                                <span class="text-[10px] hidden sm:inline">Full Screen</span>
                             </button>
-                            <div id="iconNotificationBell" class="text-slate-400 text-base transition-all" title="Status Obrolan">
+                            <div id="iconNotificationBell" class="text-slate-400 text-sm transition-all" title="Status Obrolan">
                                 <i class="fa-solid fa-bell"></i>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- PILIH GRUP MAIN PANEL -->
+                    <div class="flex items-center justify-between gap-1 mb-3 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                        <select id="selectGrupChatMain" onchange="gantiGrupChatTerpilih(this.value)" class="w-full bg-white text-slate-800 text-xs font-bold border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-pink-500">
+                        </select>
+                        <button onclick="bukaModalKelolaGrup()" class="admin-only shrink-0 bg-purple-600 hover:bg-purple-700 text-white p-1 rounded-lg text-xs" title="Kelola Grup">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
                     </div>
 
                     <div id="chatMessagesContainer" class="chat-scroll-box flex flex-col gap-2.5 mb-3 pr-1" onclick="tandaiPesanSudahDibaca()">
                         <div class="text-center text-xs text-slate-400 italic py-4 font-medium">Memuat obrolan...</div>
                     </div>
 
-                    <form onsubmit="kirimPesanObrolan(event, 'MAIN')" class="flex items-center gap-1.5 relative">
-                        <!-- SISIPKAN FOTO -->
+                    <form onsubmit="kirimPesanObrolan(event, 'MAIN')" class="flex items-center gap-1.5 relative w-full">
                         <button type="button" onclick="picuUploadFotoChat()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-sm transition-all shrink-0" title="Sisipkan Foto">
                             <i class="fa-solid fa-image"></i>
                         </button>
-                        <!-- EMOTIKON LUCU -->
                         <button type="button" onclick="toggleEmojiPickerChat(event, 'MAIN')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-sm transition-all shrink-0" title="Emotikon Lucu">
                             <i class="fa-solid fa-face-smile-beam"></i>
                         </button>
-                        <!-- INPUT PESAN -->
-                        <input type="text" id="inputPesanObrolan" placeholder="Tulis pesan obrolan..." class="flex-1 bg-white text-slate-800 font-medium text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-pink-500 placeholder:text-slate-400 shadow-inner">
-                        <!-- TOMBOL KIRIM -->
-                        <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1 shrink-0">
+                        <input type="text" id="inputPesanObrolan" placeholder="Tulis pesan obrolan..." class="flex-1 min-w-0 h-9 bg-white text-slate-800 font-medium text-xs border border-slate-300 rounded-xl px-3 focus:outline-none focus:border-pink-500 placeholder:text-slate-400 shadow-inner">
+                        <button type="submit" class="w-9 h-9 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center shrink-0" title="Kirim Pesan">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </form>
@@ -573,7 +640,6 @@
                             <button onclick="toggleTampilanSemuaBadge()" id="btnToggleBadge25" class="no-print bg-slate-100 hover:bg-slate-200 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm">
                                 Tampilkan Semua (25)
                             </button>
-                            <!-- TOMBOL KELOLA BADGE MASSAL (ADMIN ONLY) -->
                             <button onclick="bukaModalBadgeMassal()" class="admin-only no-print bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
                                 <i class="fa-solid fa-users-gear"></i> Kelola Massal
                             </button>
@@ -693,6 +759,14 @@
             "⚡", "🤩", "😎", "🥰", "🔥", "💯", "👍", "👏", "🙌", "✨"
         ];
 
+        /* STRUKTUR DATA GRUP BERBASIS ANGGOTA TERKUNCI PRIVASI */
+        let listGrupChat = [
+            { id: "semua", nama: "Semua Kelas", anggota: [] }
+        ];
+        let currentGrupChat = "Semua Kelas";
+        let isChatFSModePonsel = false;
+        let toastTimer = null;
+
         function initFloatingEmojis() {
             const container = document.getElementById('floatingEmojiContainer');
             const emojis = ['😊', '⭐', '🎉', '🚀', '💖', '👍', '🌟', '🎈', '🏆', '🎯'];
@@ -791,14 +865,19 @@
             } catch (e) {}
         }
 
+        /* AKSES LOGIN */
         function prosesLoginAkses(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
             const inputVal = document.getElementById('inputNisLogin').value.trim();
-            if (!inputVal) return;
+            if (!inputVal) {
+                alert("Silakan masukkan NIS / Nama Siswa atau Kode Admin!");
+                return;
+            }
 
             const selectDropdown = document.getElementById('selectSiswaProfil');
+            const cleanInput = inputVal.toLowerCase();
 
-            if (inputVal.toLowerCase() === ADMIN_NIS.toLowerCase()) {
+            if (cleanInput === ADMIN_NIS.toLowerCase() || cleanInput === 'admin' || cleanInput === 'ikhwan') {
                 isAdminMode = true;
                 playBeepSound(1200, 'sine', 0.2);
                 document.getElementById('badgeModeAkses').innerText = "MODE ADMIN ACTIVE";
@@ -812,13 +891,17 @@
                 }
             } else {
                 isAdminMode = false;
-                const foundSiswa = listMasterSiswa.find(s => String(s[0]) === String(inputVal));
+                const foundSiswa = listMasterSiswa.find(s => 
+                    String(s[0]).trim().toLowerCase() === cleanInput ||
+                    s[1].trim().toLowerCase().includes(cleanInput)
+                );
+
                 if (!foundSiswa) {
-                    alert(`NIS (${inputVal}) tidak terdaftar dalam database siswa! Silakan periksa NIS Anda.`);
+                    alert(`Pencarian "${inputVal}" tidak ditemukan dalam daftar NIS/Nama siswa!`);
                     return;
                 }
 
-                currentNis = String(inputVal);
+                currentNis = String(foundSiswa[0]);
                 playBeepSound(800, 'sine', 0.15);
                 
                 document.getElementById('badgeModeAkses').innerText = `Mode Siswa (${foundSiswa[1]})`;
@@ -836,6 +919,7 @@
                 gantiSiswaProfil(currentNis);
             }
 
+            renderGrupSelectorUI();
             mulaiPollingChat();
         }
 
@@ -849,6 +933,12 @@
         function muatDataLokal() {
             populasiDropdownSiswa();
             initEmojiPickerList();
+
+            const lsGrup = localStorage.getItem("listGrupChatV2");
+            if (lsGrup) {
+                try { listGrupChat = JSON.parse(lsGrup); } catch(e){}
+            }
+
             const lsProfil = localStorage.getItem("dbProfilDetailV1");
             if (lsProfil) {
                 try { dbProfilDetail = JSON.parse(lsProfil); } catch(e){}
@@ -860,6 +950,7 @@
         function simpanSemuaData() {
             try {
                 localStorage.setItem("dbProfilDetailV1", JSON.stringify(dbProfilDetail));
+                localStorage.setItem("listGrupChatV2", JSON.stringify(listGrupChat));
             } catch (e) {
                 console.error("Gagal simpan data lokal:", e);
             }
@@ -899,6 +990,8 @@
             }
 
             renderProfilSiswa(nis);
+            renderGrupSelectorUI();
+            tarikPesanObrolan();
         }
 
         function renderProfilSiswa(nis) {
@@ -1360,16 +1453,178 @@
             alert(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
         }
 
-        /* --- FITUR OBROLAN DENGAN FULLSCREEN PONSEL, FOTO & EMOTIKON LUCU --- */
+        /* --- FITUR OBROLAN GRUP PRIVAT DENGAN HAK AKSES & ISOLASI CHAT --- */
+        function saringGrupUntukUserAktif() {
+            if (isAdminMode) return listGrupChat;
+
+            return listGrupChat.filter(grup => {
+                if (grup.id === "semua" || grup.nama === "Semua Kelas") return true;
+                return Array.isArray(grup.anggota) && grup.anggota.includes(String(currentNis));
+            });
+        }
+
+        function renderGrupSelectorUI() {
+            const grupTersedia = saringGrupUntukUserAktif();
+
+            const adaGrupAktif = grupTersedia.some(g => g.nama === currentGrupChat);
+            if (!adaGrupAktif && grupTersedia.length > 0) {
+                currentGrupChat = grupTersedia[0].nama;
+            }
+
+            const selectMain = document.getElementById('selectGrupChatMain');
+            const tabsFS = document.getElementById('barGrupTabsFS');
+            const listGrupModal = document.getElementById('containerDaftarGrup');
+
+            if (selectMain) selectMain.innerHTML = '';
+            if (tabsFS) tabsFS.innerHTML = '';
+
+            grupTersedia.forEach((grupObj) => {
+                const isMemberBadge = (grupObj.id !== 'semua' && !isAdminMode) ? '📌 ' : '💬 ';
+                if (selectMain) {
+                    selectMain.innerHTML += `<option value="${grupObj.nama}" ${grupObj.nama === currentGrupChat ? 'selected' : ''}>${isMemberBadge} ${grupObj.nama}</option>`;
+                }
+
+                if (tabsFS) {
+                    const isActive = (grupObj.nama === currentGrupChat);
+                    const activeClass = isActive ? 'bg-purple-600 text-white shadow-md font-black' : 'bg-white text-slate-700 hover:bg-slate-200 font-bold';
+                    const iconPin = (grupObj.id !== 'semua') ? '<i class="fa-solid fa-thumbtack text-[10px] text-amber-300 mr-1"></i>' : '';
+                    tabsFS.innerHTML += `
+                        <button onclick="gantiGrupChatTerpilih('${grupObj.nama}')" class="px-3 py-1.5 rounded-xl text-xs transition-all shrink-0 flex items-center ${activeClass}">
+                            ${iconPin} ${grupObj.nama}
+                        </button>
+                    `;
+                }
+            });
+
+            if (listGrupModal && isAdminMode) {
+                listGrupModal.innerHTML = '';
+                listGrupChat.forEach((grupObj, idx) => {
+                    const totalAnggota = grupObj.id === 'semua' ? 'Semua Siswa' : `${grupObj.anggota.length} Siswa`;
+                    listGrupModal.innerHTML += `
+                        <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
+                            <div>
+                                <span class="font-extrabold text-slate-800 text-xs block">${idx + 1}. ${grupObj.nama}</span>
+                                <span class="text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">${totalAnggota}</span>
+                            </div>
+                            ${idx > 0 ? `
+                                <button onclick="hapusGrupChat(${idx})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1 rounded text-xs">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            ` : '<span class="text-[10px] text-slate-400 font-semibold">(Default Utama)</span>'}
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function gantiGrupChatTerpilih(namaGrup) {
+            currentGrupChat = namaGrup;
+            renderGrupSelectorUI();
+            playBeepSound(850, 'sine', 0.08);
+            tarikPesanObrolan();
+        }
+
+        function bukaModalKelolaGrup() {
+            if (!isAdminMode) return;
+            populasiModalKelolaGrupForm();
+            renderGrupSelectorUI();
+            document.getElementById('modalKelolaGrup').classList.remove('hidden');
+        }
+
+        function populasiModalKelolaGrupForm() {
+            const containerCentang = document.getElementById('containerCentangAnggotaGrup');
+            containerCentang.innerHTML = '';
+
+            listMasterSiswa.forEach((s, idx) => {
+                containerCentang.innerHTML += `
+                    <label class="flex items-center gap-2 p-1.5 bg-white rounded-lg border border-slate-200 hover:border-purple-300 cursor-pointer select-none">
+                        <input type="checkbox" value="${s[0]}" class="chk-anggota-grup-baru w-3.5 h-3.5 accent-purple-600 rounded cursor-pointer" checked>
+                        <span class="truncate font-bold text-slate-700 text-[10px]">${idx + 1}. ${s[1]}</span>
+                    </label>
+                `;
+            });
+        }
+
+        function centangSemuaAnggotaGrup(status) {
+            document.querySelectorAll('.chk-anggota-grup-baru').forEach(c => c.checked = status);
+        }
+
+        function tutupModalKelolaGrup() {
+            document.getElementById('modalKelolaGrup').classList.add('hidden');
+        }
+
+        function tambahGrupBaru(e) {
+            e.preventDefault();
+            if (!isAdminMode) return;
+            const input = document.getElementById('inputNamaGrupBaru');
+            const namaBaru = input.value.trim();
+
+            if (!namaBaru) return;
+
+            if (listGrupChat.some(g => g.nama.toLowerCase() === namaBaru.toLowerCase())) {
+                alert("Nama grup tersebut sudah ada!");
+                return;
+            }
+
+            const anggotaSelected = [];
+            document.querySelectorAll('.chk-anggota-grup-baru:checked').forEach(c => anggotaSelected.push(String(c.value)));
+
+            if (anggotaSelected.length === 0) {
+                alert("Pilih minimal satu siswa anggota grup!");
+                return;
+            }
+
+            const newGrupObj = {
+                id: "grup_" + Date.now(),
+                nama: namaBaru,
+                anggota: anggotaSelected
+            };
+
+            listGrupChat.push(newGrupObj);
+            input.value = '';
+            simpanSemuaData();
+            renderGrupSelectorUI();
+            playBeepSound(1000, 'sine', 0.15);
+            alert(`Grup "${namaBaru}" berhasil dibuat dengan ${anggotaSelected.length} siswa terpilih!`);
+        }
+
+        function hapusGrupChat(index) {
+            if (!isAdminMode || index === 0) return;
+            if (confirm(`Hapus grup "${listGrupChat[index].nama}"?`)) {
+                listGrupChat.splice(index, 1);
+                currentGrupChat = "Semua Kelas";
+                simpanSemuaData();
+                renderGrupSelectorUI();
+                tarikPesanObrolan();
+            }
+        }
+
         function bukaChatFullScreen() {
             playBeepSound(900, 'sine', 0.15);
             document.getElementById('modalChatFullScreen').classList.remove('hidden');
+            renderGrupSelectorUI();
             tarikPesanObrolan();
         }
 
         function tutupChatFullScreen() {
             document.getElementById('modalChatFullScreen').classList.add('hidden');
             sembunyikanEmojiPicker();
+        }
+
+        function toggleUkuranChatFS() {
+            isChatFSModePonsel = !isChatFSModePonsel;
+            const frame = document.getElementById('frameContainerChatFS');
+            const btnText = document.getElementById('lblToggleResizerText');
+
+            if (isChatFSModePonsel) {
+                frame.className = "w-full max-w-sm h-[92vh] max-h-[760px] bg-white rounded-[36px] shadow-2xl border-4 border-slate-800 flex flex-col relative overflow-hidden transition-all duration-300";
+                if (btnText) btnText.innerText = "Layar Penuh";
+            } else {
+                frame.className = "w-full h-full max-w-5xl max-h-[96vh] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col relative overflow-hidden transition-all duration-300";
+                if (btnText) btnText.innerText = "Mode Ponsel";
+            }
+
+            playBeepSound(800, 'sine', 0.1);
         }
 
         function initEmojiPickerList() {
@@ -1492,6 +1747,7 @@
                         action: "sendChatMessage",
                         nis: currentNis,
                         nama: namaPengirim,
+                        grup: currentGrupChat,
                         pesan: pesanText,
                         role: roleUser
                     })
@@ -1781,6 +2037,7 @@
                         action: "sendChatMessage",
                         nis: currentNis,
                         nama: namaPengirim,
+                        grup: currentGrupChat,
                         pesan: pesanText,
                         role: roleUser
                     })
@@ -1802,8 +2059,10 @@
                     const currentMessages = result.data;
                     
                     if (lastMessageCount > 0 && currentMessages.length > lastMessageCount) {
+                        const pesanTerbaru = currentMessages[currentMessages.length - 1];
                         playChatAudioNotification();
                         aktifkanAnimasiLonceng();
+                        tampilkanToastPesanBaru(pesanTerbaru);
                     }
                     
                     lastMessageCount = currentMessages.length;
@@ -1812,6 +2071,47 @@
             } catch (err) {
                 console.warn("Gagal tarik chat:", err);
             }
+        }
+
+        function tampilkanToastPesanBaru(pesanObj) {
+            if (!pesanObj) return;
+
+            const toast = document.getElementById('toastPesanBaru');
+            const lblPengirim = document.getElementById('toastPengirim');
+            const lblGrup = document.getElementById('toastGrup');
+            const lblTeks = document.getElementById('toastTeksPesan');
+
+            if (!toast || !lblPengirim || !lblTeks) return;
+
+            lblPengirim.innerText = pesanObj.nama || 'Pesan Baru';
+            if (lblGrup) lblGrup.innerText = pesanObj.grup || 'Umum';
+
+            let teksDisplay = pesanObj.pesan || '';
+            if (teksDisplay.includes('[IMG]') || teksDisplay.startsWith('data:image/')) {
+                teksDisplay = '📷 [Mengirim Foto]';
+            }
+            lblTeks.innerText = teksDisplay;
+
+            toast.classList.remove('-translate-y-24', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                tutupToastPesanBaru();
+            }, 5000);
+        }
+
+        function tutupToastPesanBaru() {
+            const toast = document.getElementById('toastPesanBaru');
+            if (toast) {
+                toast.classList.add('-translate-y-24', 'opacity-0', 'pointer-events-none');
+                toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            }
+        }
+
+        function bukaChatDariToast() {
+            tutupToastPesanBaru();
+            bukaChatFullScreen();
         }
 
         function playChatAudioNotification() {
@@ -1834,12 +2134,18 @@
             if (bell) { bell.classList.remove('bell-animating'); }
         }
 
+        /* STRICT FILTER PESAN: MURNI HANYA TAMPILKAN PESAN DARI GRUP YANG DIPILIH */
         function renderMessagesContainer(messages) {
             const containerMain = document.getElementById('chatMessagesContainer');
             const containerFS = document.getElementById('chatMessagesContainerFS');
 
-            if (messages.length === 0) {
-                const emptyHTML = `<div class="text-center text-xs text-slate-500 italic py-4 font-medium">Belum ada obrolan. Mulai menyapa!</div>`;
+            const filteredMessages = messages.filter(msg => {
+                const msgGrup = (msg.grup || "Semua Kelas").trim();
+                return msgGrup.toLowerCase() === currentGrupChat.trim().toLowerCase();
+            });
+
+            if (filteredMessages.length === 0) {
+                const emptyHTML = `<div class="text-center text-xs text-slate-500 italic py-6 font-medium">Belum ada obrolan di <b>${currentGrupChat}</b>.<br>Mulai kirim pesan pertama Anda!</div>`;
                 if (containerMain) containerMain.innerHTML = emptyHTML;
                 if (containerFS) containerFS.innerHTML = emptyHTML;
                 return;
@@ -1847,7 +2153,7 @@
 
             let fullHTML = '';
 
-            messages.forEach(msg => {
+            filteredMessages.forEach(msg => {
                 const isAdmin = msg.role === 'Admin';
                 let styleClass = "";
 
@@ -1869,7 +2175,7 @@
                 fullHTML += `
                     <div class="p-2.5 sm:p-3 rounded-2xl border text-xs shadow-sm ${styleClass}">
                         <div class="flex items-center justify-between gap-1 mb-1">
-                            <span class="font-extrabold text-slate-800 truncate text-[11px] sm:text-xs tracking-wide flex items-center gap-1.5">
+                            <span class="font-extrabold text-slate-800 truncate text-[11px] sm:text-xs tracking-wide flex items-center gap-1">
                                 ${isAdmin ? '<i class="fa-solid fa-user-shield text-purple-600 text-[10px]"></i>' : '<i class="fa-solid fa-circle-user text-pink-500 text-[10px]"></i>'}
                                 ${msg.nama}
                             </span>
