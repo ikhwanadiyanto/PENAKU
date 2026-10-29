@@ -194,8 +194,10 @@
     <div class="floating-emoji-container" id="floatingEmojiContainer"></div>
     <audio id="audioChatNotif" src="Chat.mp3" preload="auto"></audio>
 
+    <!-- INPUT FILE UNTUK PROSES UPLOAD -->
     <input type="file" id="inputUploadBadgeFoto" accept="image/*" class="hidden" onchange="prosesUploadBadgeFoto(event)">
     <input type="file" id="inputUploadFotoProfil" accept="image/*" class="hidden" onchange="prosesUploadFotoProfilSiswa(event)">
+    <input type="file" id="inputChatFoto" accept="image/*" class="hidden" onchange="prosesUploadFotoChat(event)">
 
     <!-- LOGIN MODAL -->
     <div id="modalBubbleLogin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 no-print">
@@ -215,6 +217,148 @@
                 </button>
             </form>
             <p class="text-[10px] text-slate-400 mt-6 font-semibold">Sistem Integrasi SD &copy; 2026 • Designed by Ikhwan Adi Yanto, S.Pd.</p>
+        </div>
+    </div>
+
+    <!-- MODAL KELOLA BADGE MASSAL (MULTI-SISWA MODEL CENTANG) -->
+    <div id="modalBadgeMassal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print">
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl relative overflow-hidden max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+                <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-pink-500"></i> Kelola & Upload Badge Massal
+                </h3>
+                <button onclick="tutupModalBadgeMassal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto pr-1 space-y-4 flex-1">
+                <!-- PILIH SLOT & RENAME -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Slot Badge (1 - 25):</label>
+                        <select id="selectMassalBadgeIndex" onchange="updateFormBadgeMassalPreview()" class="w-full bg-white text-slate-800 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-pink-500 shadow-inner">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Rename / Ubah Nama Badge:</label>
+                        <input type="text" id="inputMassalNamaBadge" placeholder="Nama Badge Baru..." class="w-full bg-white text-slate-800 border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-pink-500 shadow-inner">
+                    </div>
+                </div>
+
+                <!-- UPLOAD FILE BADGE & PREVIEW -->
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center gap-3">
+                    <div class="w-16 h-16 rounded-xl border-2 border-dashed border-pink-400 bg-white flex items-center justify-center overflow-hidden shrink-0 relative" id="previewMassalBadgeContainer">
+                        <i class="fa-solid fa-award text-2xl text-slate-400" id="iconMassalBadgeDefault"></i>
+                        <img id="imgMassalBadgePreview" src="" class="w-full h-full object-cover hidden">
+                    </div>
+                    <div class="flex-1 w-full">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Unggah File Gambar Badge Baru (Opsional):</label>
+                        <input type="file" id="inputMassalFileBadge" accept="image/*" onchange="previewFotoBadgeMassal(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 cursor-pointer">
+                        <p class="text-[10px] text-slate-400 mt-1">Format PNG/JPG (Rasio 1:1). Jika dikosongkan, gambar lama/default tidak berubah.</p>
+                    </div>
+                </div>
+
+                <!-- SET STATUS AKTIF -->
+                <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 p-2.5 rounded-xl">
+                    <input type="checkbox" id="checkMassalAktifkan" checked class="w-4 h-4 accent-pink-600 rounded cursor-pointer">
+                    <label for="checkMassalAktifkan" class="text-xs font-bold text-amber-900 cursor-pointer select-none">
+                        Buka / Aktifkan Badge ini untuk siswa yang dicentang (Status Terbuka ⭐)
+                    </label>
+                </div>
+
+                <!-- DAFTAR SISWA MODEL CENTANG -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-check text-emerald-600"></i> Pilih Siswa Penerima Badge:
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="pilihSemuaSiswaBadgeMassal(true)" class="text-[10px] font-bold text-pink-600 hover:underline">Centang Semua</button>
+                            <span class="text-slate-300">|</span>
+                            <button type="button" onclick="pilihSemuaSiswaBadgeMassal(false)" class="text-[10px] font-bold text-slate-500 hover:underline">Hapus Semua</button>
+                        </div>
+                    </div>
+
+                    <div id="containerCentangSiswaMassal" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-52 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex items-center justify-end gap-2 mt-2">
+                <button onclick="tutupModalBadgeMassal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all">
+                    Batal
+                </button>
+                <button onclick="terapkanBadgeMassal()" class="px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+                    <i class="fa-solid fa-check"></i> Terapkan ke Siswa Terpilih
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHAT FULL SCREEN (UKURAN PONSEL PORTRAIT) -->
+    <div id="modalChatFullScreen" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-50 hidden no-print">
+        <div class="w-full max-w-sm h-[92vh] max-h-[780px] bg-slate-900 rounded-[42px] p-3 shadow-2xl border-4 border-slate-700 flex flex-col relative overflow-hidden">
+            <!-- Notch HP -->
+            <div class="w-28 h-4 bg-slate-800 rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-slate-900"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-900/50"></div>
+            </div>
+
+            <!-- LayarHP Frame -->
+            <div class="bg-gradient-to-b from-slate-50 via-pink-50/20 to-purple-50/20 rounded-[32px] flex-1 flex flex-col overflow-hidden relative border border-slate-800/20 shadow-inner">
+                <!-- Header Chat HP -->
+                <div class="bg-white/90 backdrop-blur-md p-3 border-b border-slate-200 flex items-center justify-between shadow-sm shrink-0">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center text-white text-sm shadow-md">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-800 leading-tight">Obrolan Kelas ASYIK</h4>
+                            <span class="text-[9px] font-semibold text-emerald-600 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Mode Ponsel Portrait
+                            </span>
+                        </div>
+                    </div>
+                    <button onclick="tutupChatFullScreen()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs font-bold transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Messages Container (Full Screen) -->
+                <div id="chatMessagesContainerFS" class="flex-1 p-3 overflow-y-auto space-y-2.5 scrollbar-thin scrollbar-thumb-pink-300">
+                    <div class="text-center text-xs text-slate-400 italic py-4">Memuat obrolan...</div>
+                </div>
+
+                <!-- Input Footer (Full Screen HP) -->
+                <div class="p-2.5 bg-white/95 backdrop-blur-md border-t border-slate-200 shrink-0 relative">
+                    <form onsubmit="kirimPesanObrolan(event, 'FS')" class="flex items-center gap-1.5">
+                        <button type="button" onclick="picuUploadFotoChat()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-sm transition-all shrink-0" title="Sisipkan Foto">
+                            <i class="fa-solid fa-image"></i>
+                        </button>
+                        <button type="button" onclick="toggleEmojiPickerChat(event, 'FS')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-sm transition-all shrink-0" title="Emotikon Lucu">
+                            <i class="fa-solid fa-face-smile-beam"></i>
+                        </button>
+                        <input type="text" id="inputPesanObrolanFS" placeholder="Ketik pesan..." class="flex-1 bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-pink-500 shadow-inner">
+                        <button type="submit" class="w-9 h-9 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white flex items-center justify-center text-xs font-bold shadow-md active:scale-95 transition-all shrink-0">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPOVER EMOTIKON LUCU -->
+    <div id="popoverEmojiPicker" class="fixed z-50 hidden bg-white/95 backdrop-blur-md border border-pink-200 shadow-2xl rounded-2xl p-3 w-64 grid grid-cols-6 gap-2 text-xl max-h-48 overflow-y-auto no-print">
+        <!-- Emojis populated dynamically -->
+    </div>
+
+    <!-- MODAL ZOOM FOTO CHAT -->
+    <div id="modalZoomFotoChat" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print" onclick="tutupZoomFotoChat()">
+        <div class="relative max-w-xl w-full flex flex-col items-center">
+            <img id="imgZoomChatTarget" src="" class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl border-2 border-white/20 object-contain">
+            <p class="text-white text-xs mt-3 font-semibold bg-slate-800/80 px-3 py-1 rounded-full">Klik di mana saja untuk menutup</p>
         </div>
     </div>
 
@@ -375,8 +519,15 @@
                         <h3 class="text-sm font-black text-slate-800 flex items-center gap-2 tracking-wide">
                             <i class="fa-solid fa-comments text-pink-500"></i> Obrolan Kelas Realtime
                         </h3>
-                        <div id="iconNotificationBell" class="text-slate-400 text-base transition-all" title="Status Obrolan">
-                            <i class="fa-solid fa-bell"></i>
+                        <div class="flex items-center gap-2">
+                            <!-- TOMBOL MODE PONSEL FULL SCREEN -->
+                            <button onclick="bukaChatFullScreen()" class="text-slate-500 hover:text-pink-600 p-1.5 rounded-xl hover:bg-pink-50 transition-all text-xs sm:text-sm flex items-center gap-1 font-bold" title="Mode Layar Penuh (Ponsel)">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                                <span class="text-[10px] hidden sm:inline">Ponsel</span>
+                            </button>
+                            <div id="iconNotificationBell" class="text-slate-400 text-base transition-all" title="Status Obrolan">
+                                <i class="fa-solid fa-bell"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -384,9 +535,19 @@
                         <div class="text-center text-xs text-slate-400 italic py-4 font-medium">Memuat obrolan...</div>
                     </div>
 
-                    <form onsubmit="kirimPesanObrolan(event)" class="flex gap-2">
-                        <input type="text" id="inputPesanObrolan" placeholder="Tulis pesan obrolan..." class="flex-1 bg-white text-slate-800 font-medium text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-pink-500 placeholder:text-slate-400 shadow-inner" required>
-                        <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1">
+                    <form onsubmit="kirimPesanObrolan(event, 'MAIN')" class="flex items-center gap-1.5 relative">
+                        <!-- SISIPKAN FOTO -->
+                        <button type="button" onclick="picuUploadFotoChat()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-sm transition-all shrink-0" title="Sisipkan Foto">
+                            <i class="fa-solid fa-image"></i>
+                        </button>
+                        <!-- EMOTIKON LUCU -->
+                        <button type="button" onclick="toggleEmojiPickerChat(event, 'MAIN')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-sm transition-all shrink-0" title="Emotikon Lucu">
+                            <i class="fa-solid fa-face-smile-beam"></i>
+                        </button>
+                        <!-- INPUT PESAN -->
+                        <input type="text" id="inputPesanObrolan" placeholder="Tulis pesan obrolan..." class="flex-1 bg-white text-slate-800 font-medium text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-pink-500 placeholder:text-slate-400 shadow-inner">
+                        <!-- TOMBOL KIRIM -->
+                        <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1 shrink-0">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </form>
@@ -396,7 +557,7 @@
 
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
-                <!-- BADGES -->
+                <!-- BADGES SECTION -->
                 <div class="glass-panel p-5 sm:p-6 rounded-3xl">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
                         <div>
@@ -411,6 +572,10 @@
                             </span>
                             <button onclick="toggleTampilanSemuaBadge()" id="btnToggleBadge25" class="no-print bg-slate-100 hover:bg-slate-200 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm">
                                 Tampilkan Semua (25)
+                            </button>
+                            <!-- TOMBOL KELOLA BADGE MASSAL (ADMIN ONLY) -->
+                            <button onclick="bukaModalBadgeMassal()" class="admin-only no-print bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
+                                <i class="fa-solid fa-users-gear"></i> Kelola Massal
                             </button>
                         </div>
                     </div>
@@ -521,6 +686,13 @@
             ["3289", "Tauladani Elang"]
         ];
 
+        const CUTE_EMOJIS = [
+            "🥳", "🐱", "💖", "🚀", "🍦", "🧸", "🦄", "🌟", "🌈", "🐣", 
+            "🎁", "🍉", "🐼", "🦊", "🍓", "🍭", "🎀", "🍕", "🎨", "⚽", 
+            "👑", "🍩", "🍔", "🍿", "🍪", "🎉", "🎈", "🤖", "🐶", "🌸", 
+            "⚡", "🤩", "😎", "🥰", "🔥", "💯", "👍", "👏", "🙌", "✨"
+        ];
+
         function initFloatingEmojis() {
             const container = document.getElementById('floatingEmojiContainer');
             const emojis = ['😊', '⭐', '🎉', '🚀', '💖', '👍', '🌟', '🎈', '🏆', '🎯'];
@@ -570,6 +742,8 @@
         let dbTabunganSiswa = {};
         let currentNis = null;
         let selectedBadgeIdxForUpload = null;
+        let tempMassalBase64 = "";
+        let activeEmojiInputTarget = 'MAIN';
         let isAdminMode = false;
         let showAll25Badges = false;
         let isDataFetchedFromSheet = false;
@@ -674,6 +848,7 @@
 
         function muatDataLokal() {
             populasiDropdownSiswa();
+            initEmojiPickerList();
             const lsProfil = localStorage.getItem("dbProfilDetailV1");
             if (lsProfil) {
                 try { dbProfilDetail = JSON.parse(lsProfil); } catch(e){}
@@ -717,7 +892,7 @@
                 dbProfilDetail[nis] = {
                     fotoProfil: "",
                     bintang: 0,
-                    badges: Array(25).fill().map(() => ({ active: false, img: "", title: "" })),
+                    badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
                     pelanggaran: [],
                     nilai: {}
                 };
@@ -811,7 +986,7 @@
             let singleBadgeObject = {};
             let badgesArr = pData.badges || [];
             for (let i = 0; i < 25; i++) {
-                let b = badgesArr[i] || { active: false, img: "", title: "" };
+                let b = badgesArr[i] || { active: false, img: "", title: BADGE_DESCS[i] };
                 singleBadgeObject[`badge_${i + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[i] });
             }
 
@@ -858,7 +1033,7 @@
             const totalBadgesToRender = showAll25Badges ? 25 : 10;
 
             for (let i = 0; i < 25; i++) {
-                const badgeObj = badgesArray[i] || { active: false, img: "", title: "" };
+                const badgeObj = badgesArray[i] || { active: false, img: "", title: BADGE_DESCS[i] };
                 const isActive = badgeObj.active === true || badgeObj === true;
                 if (isActive) countActive++;
             }
@@ -867,7 +1042,7 @@
             document.getElementById('barBadgeProgress').style.width = `${(countActive / 25) * 100}%`;
 
             for (let i = 0; i < totalBadgesToRender; i++) {
-                const badgeObj = badgesArray[i] || { active: false, img: "", title: "" };
+                const badgeObj = badgesArray[i] || { active: false, img: "", title: BADGE_DESCS[i] };
                 const isActive = badgeObj.active === true || badgeObj === true;
                 const badgeImg = typeof badgeObj === 'object' && badgeObj.img ? badgeObj.img : "";
                 const badgeTitle = (typeof badgeObj === 'object' && badgeObj.title) ? badgeObj.title : BADGE_DESCS[i];
@@ -917,7 +1092,7 @@
             event.stopPropagation();
             if (!currentNis || !isAdminMode) return;
             const pData = dbProfilDetail[currentNis];
-            if (!pData.badges) pData.badges = Array(25).fill().map(() => ({ active: false, img: "", title: "" }));
+            if (!pData.badges) pData.badges = Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] }));
 
             const defaultTitle = pData.badges[index]?.title || BADGE_DESCS[index];
             const newTitle = prompt("Masukkan Nama Badge Baru:", defaultTitle);
@@ -936,7 +1111,7 @@
         function toggleBadgeItem(index) {
             if (!currentNis || !isAdminMode) return;
             const pData = dbProfilDetail[currentNis];
-            if (!pData.badges) pData.badges = Array(25).fill().map(() => ({ active: false, img: "", title: "" }));
+            if (!pData.badges) pData.badges = Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] }));
 
             if (typeof pData.badges[index] !== 'object') {
                 pData.badges[index] = { active: false, img: "", title: BADGE_DESCS[index] };
@@ -1020,6 +1195,320 @@
             playBeepSound(500, 'sawtooth', 0.1);
             simpanSemuaData();
             render25Badges(pData.badges);
+        }
+
+        /* --- KELOLA BADGE MASSAL MULTI-SISWA --- */
+        function bukaModalBadgeMassal() {
+            if (!isAdminMode) {
+                alert("Fitur ini khusus Mode Admin!");
+                return;
+            }
+
+            const selectBadge = document.getElementById('selectMassalBadgeIndex');
+            selectBadge.innerHTML = '';
+
+            for (let i = 0; i < 25; i++) {
+                let currentTitle = BADGE_DESCS[i];
+                if (currentNis && dbProfilDetail[currentNis] && dbProfilDetail[currentNis].badges && dbProfilDetail[currentNis].badges[i]) {
+                    let b = dbProfilDetail[currentNis].badges[i];
+                    if (typeof b === 'object' && b.title) currentTitle = b.title;
+                }
+                selectBadge.innerHTML += `<option value="${i}">Badge Slot ${i + 1}: ${currentTitle}</option>`;
+            }
+
+            const containerCentang = document.getElementById('containerCentangSiswaMassal');
+            containerCentang.innerHTML = '';
+
+            listMasterSiswa.forEach((s, idx) => {
+                containerCentang.innerHTML += `
+                    <label class="flex items-center gap-2 p-1.5 bg-white rounded-xl border border-slate-200 hover:border-pink-300 cursor-pointer select-none">
+                        <input type="checkbox" value="${s[0]}" class="chk-siswa-badge-massal w-4 h-4 accent-pink-600 rounded cursor-pointer" checked>
+                        <span class="truncate font-semibold text-slate-700 text-[11px]">${idx + 1}. ${s[1]}</span>
+                    </label>
+                `;
+            });
+
+            tempMassalBase64 = "";
+            document.getElementById('inputMassalFileBadge').value = '';
+            document.getElementById('imgMassalBadgePreview').src = '';
+            document.getElementById('imgMassalBadgePreview').classList.add('hidden');
+            document.getElementById('iconMassalBadgeDefault').classList.remove('hidden');
+
+            updateFormBadgeMassalPreview();
+
+            document.getElementById('modalBadgeMassal').classList.remove('hidden');
+        }
+
+        function tutupModalBadgeMassal() {
+            document.getElementById('modalBadgeMassal').classList.add('hidden');
+        }
+
+        function updateFormBadgeMassalPreview() {
+            const idx = parseInt(document.getElementById('selectMassalBadgeIndex').value) || 0;
+            let defaultTitle = BADGE_DESCS[idx];
+
+            if (currentNis && dbProfilDetail[currentNis] && dbProfilDetail[currentNis].badges && dbProfilDetail[currentNis].badges[idx]) {
+                let b = dbProfilDetail[currentNis].badges[idx];
+                if (typeof b === 'object' && b.title) defaultTitle = b.title;
+            }
+
+            document.getElementById('inputMassalNamaBadge').value = defaultTitle;
+        }
+
+        function previewFotoBadgeMassal(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 300;
+                    const MAX_HEIGHT = 300;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    tempMassalBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+                    document.getElementById('imgMassalBadgePreview').src = tempMassalBase64;
+                    document.getElementById('imgMassalBadgePreview').classList.remove('hidden');
+                    document.getElementById('iconMassalBadgeDefault').classList.add('hidden');
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function pilihSemuaSiswaBadgeMassal(status) {
+            const checkboxes = document.querySelectorAll('.chk-siswa-badge-massal');
+            checkboxes.forEach(chk => chk.checked = status);
+        }
+
+        function terapkanBadgeMassal() {
+            if (!isAdminMode) return;
+
+            const badgeIdx = parseInt(document.getElementById('selectMassalBadgeIndex').value) || 0;
+            const newTitle = document.getElementById('inputMassalNamaBadge').value.trim();
+            const setAktif = document.getElementById('checkMassalAktifkan').checked;
+
+            const checkedBoxes = document.querySelectorAll('.chk-siswa-badge-massal:checked');
+            if (checkedBoxes.length === 0) {
+                alert("Pilih minimal satu siswa terlebih dahulu!");
+                return;
+            }
+
+            let countUpdated = 0;
+
+            checkedBoxes.forEach(chk => {
+                const nis = String(chk.value);
+                if (!dbProfilDetail[nis]) {
+                    dbProfilDetail[nis] = {
+                        fotoProfil: "", bintang: 0,
+                        badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
+                        pelanggaran: [], nilai: {}
+                    };
+                }
+
+                if (!dbProfilDetail[nis].badges || dbProfilDetail[nis].badges.length < 25) {
+                    let existing = dbProfilDetail[nis].badges || [];
+                    dbProfilDetail[nis].badges = Array(25).fill().map((_, i) => {
+                        let old = existing[i];
+                        if (typeof old === 'object') return old;
+                        return { active: !!old, img: "", title: BADGE_DESCS[i] };
+                    });
+                }
+
+                let currentBadgeObj = dbProfilDetail[nis].badges[badgeIdx];
+                if (typeof currentBadgeObj !== 'object') {
+                    currentBadgeObj = { active: false, img: "", title: BADGE_DESCS[badgeIdx] };
+                }
+
+                if (newTitle) currentBadgeObj.title = newTitle;
+                if (tempMassalBase64) currentBadgeObj.img = tempMassalBase64;
+                if (setAktif || tempMassalBase64) currentBadgeObj.active = true;
+
+                dbProfilDetail[nis].badges[badgeIdx] = currentBadgeObj;
+                countUpdated++;
+            });
+
+            playBeepSound(1100, 'sine', 0.25);
+            simpanSemuaData();
+
+            if (currentNis) {
+                renderProfilSiswa(currentNis);
+            }
+
+            tutupModalBadgeMassal();
+            alert(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
+        }
+
+        /* --- FITUR OBROLAN DENGAN FULLSCREEN PONSEL, FOTO & EMOTIKON LUCU --- */
+        function bukaChatFullScreen() {
+            playBeepSound(900, 'sine', 0.15);
+            document.getElementById('modalChatFullScreen').classList.remove('hidden');
+            tarikPesanObrolan();
+        }
+
+        function tutupChatFullScreen() {
+            document.getElementById('modalChatFullScreen').classList.add('hidden');
+            sembunyikanEmojiPicker();
+        }
+
+        function initEmojiPickerList() {
+            const popover = document.getElementById('popoverEmojiPicker');
+            popover.innerHTML = '';
+
+            CUTE_EMOJIS.forEach(emoji => {
+                popover.innerHTML += `
+                    <button type="button" onclick="sisipEmojiKeInput('${emoji}')" class="hover:scale-125 transition-all text-center flex items-center justify-center p-1 rounded hover:bg-pink-100">
+                        ${emoji}
+                    </button>
+                `;
+            });
+        }
+
+        function toggleEmojiPickerChat(e, targetMode) {
+            e.stopPropagation();
+            activeEmojiInputTarget = targetMode;
+
+            const popover = document.getElementById('popoverEmojiPicker');
+            const btn = e.currentTarget;
+            const rect = btn.getBoundingClientRect();
+
+            if (!popover.classList.contains('hidden') && activeEmojiInputTarget === targetMode) {
+                popover.classList.add('hidden');
+                return;
+            }
+
+            popover.style.top = (rect.top - 205) + 'px';
+            popover.style.left = Math.min(rect.left, window.innerWidth - 270) + 'px';
+            popover.classList.remove('hidden');
+        }
+
+        function sembunyikanEmojiPicker() {
+            const popover = document.getElementById('popoverEmojiPicker');
+            if (popover) popover.classList.add('hidden');
+        }
+
+        document.addEventListener('click', (e) => {
+            const popover = document.getElementById('popoverEmojiPicker');
+            if (popover && !popover.contains(e.target)) {
+                popover.classList.add('hidden');
+            }
+        });
+
+        function sisipEmojiKeInput(emoji) {
+            const inputId = activeEmojiInputTarget === 'FS' ? 'inputPesanObrolanFS' : 'inputPesanObrolan';
+            const input = document.getElementById(inputId);
+
+            if (input) {
+                input.value += emoji;
+                input.focus();
+                playBeepSound(850, 'sine', 0.08);
+            }
+
+            sembunyikanEmojiPicker();
+        }
+
+        function picuUploadFotoChat() {
+            document.getElementById('inputChatFoto').click();
+        }
+
+        function prosesUploadFotoChat(e) {
+            const file = e.target.files[0];
+            if (!file || !currentNis) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 350;
+                    const MAX_HEIGHT = 350;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const base64Data = canvas.toDataURL('image/jpeg', 0.7);
+                    const pesanFoto = `[IMG]${base64Data}[/IMG]`;
+
+                    kirimPesanObrolanLangsung(pesanFoto);
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        async function kirimPesanObrolanLangsung(pesanText) {
+            if (!pesanText || !currentNis || !DEFAULT_SCRIPT_URL) return;
+
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
+            const namaPengirim = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
+            const roleUser = isAdminMode ? "Admin" : "Siswa";
+
+            playBeepSound(950, 'sine', 0.12);
+
+            try {
+                await fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: "sendChatMessage",
+                        nis: currentNis,
+                        nama: namaPengirim,
+                        pesan: pesanText,
+                        role: roleUser
+                    })
+                });
+                tarikPesanObrolan();
+            } catch (err) {
+                console.error("Gagal mengirim pesan foto:", err);
+            }
+        }
+
+        function lihatFotoChatZoom(src) {
+            document.getElementById('imgZoomChatTarget').src = src;
+            document.getElementById('modalZoomFotoChat').classList.remove('hidden');
+        }
+
+        function tutupZoomFotoChat() {
+            document.getElementById('modalZoomFotoChat').classList.add('hidden');
         }
 
         function ubahBintang(delta) {
@@ -1269,17 +1758,18 @@
             }
         }
 
-        async function kirimPesanObrolan(e) {
-            e.preventDefault();
-            const inputPesan = document.getElementById('inputPesanObrolan');
-            const pesanText = inputPesan.value.trim();
+        async function kirimPesanObrolan(e, source = 'MAIN') {
+            if (e) e.preventDefault();
+            const inputId = source === 'FS' ? 'inputPesanObrolanFS' : 'inputPesanObrolan';
+            const inputPesan = document.getElementById(inputId);
+            const pesanText = inputPesan ? inputPesan.value.trim() : '';
             if (!pesanText || !currentNis || !DEFAULT_SCRIPT_URL) return;
 
             const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
             const namaPengirim = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
             const roleUser = isAdminMode ? "Admin" : "Siswa";
 
-            inputPesan.value = '';
+            if (inputPesan) inputPesan.value = '';
             playBeepSound(900, 'sine', 0.1);
 
             try {
@@ -1345,13 +1835,18 @@
         }
 
         function renderMessagesContainer(messages) {
-            const container = document.getElementById('chatMessagesContainer');
+            const containerMain = document.getElementById('chatMessagesContainer');
+            const containerFS = document.getElementById('chatMessagesContainerFS');
+
             if (messages.length === 0) {
-                container.innerHTML = `<div class="text-center text-xs text-slate-500 italic py-4 font-medium">Belum ada obrolan. Mulai menyapa!</div>`;
+                const emptyHTML = `<div class="text-center text-xs text-slate-500 italic py-4 font-medium">Belum ada obrolan. Mulai menyapa!</div>`;
+                if (containerMain) containerMain.innerHTML = emptyHTML;
+                if (containerFS) containerFS.innerHTML = emptyHTML;
                 return;
             }
 
-            container.innerHTML = '';
+            let fullHTML = '';
+
             messages.forEach(msg => {
                 const isAdmin = msg.role === 'Admin';
                 let styleClass = "";
@@ -1363,7 +1858,15 @@
                     styleClass = `${softColor.bg} ${softColor.title}`;
                 }
 
-                container.innerHTML += `
+                let kontenPesanFormatted = msg.pesan || '';
+                if (kontenPesanFormatted.includes('[IMG]') && kontenPesanFormatted.includes('[/IMG]')) {
+                    const imgSrc = kontenPesanFormatted.replace('[IMG]', '').replace('[/IMG]', '').trim();
+                    kontenPesanFormatted = `<img src="${imgSrc}" class="max-w-[180px] sm:max-w-[220px] rounded-xl my-1 border border-pink-200 cursor-pointer shadow-sm hover:scale-[1.02] transition-all" onclick="lihatFotoChatZoom(this.src)" title="Klik untuk memperbesar">`;
+                } else if (kontenPesanFormatted.startsWith('data:image/')) {
+                    kontenPesanFormatted = `<img src="${kontenPesanFormatted}" class="max-w-[180px] sm:max-w-[220px] rounded-xl my-1 border border-pink-200 cursor-pointer shadow-sm hover:scale-[1.02] transition-all" onclick="lihatFotoChatZoom(this.src)" title="Klik untuk memperbesar">`;
+                }
+
+                fullHTML += `
                     <div class="p-2.5 sm:p-3 rounded-2xl border text-xs shadow-sm ${styleClass}">
                         <div class="flex items-center justify-between gap-1 mb-1">
                             <span class="font-extrabold text-slate-800 truncate text-[11px] sm:text-xs tracking-wide flex items-center gap-1.5">
@@ -1372,12 +1875,19 @@
                             </span>
                             <span class="text-[9px] text-slate-500 font-semibold shrink-0">${msg.waktu ? msg.waktu.split(' ')[1] : ''}</span>
                         </div>
-                        <p class="text-slate-700 font-medium leading-relaxed break-words text-xs">${msg.pesan}</p>
+                        <div class="text-slate-700 font-medium leading-relaxed break-words text-xs">${kontenPesanFormatted}</div>
                     </div>
                 `;
             });
 
-            container.scrollTop = container.scrollHeight;
+            if (containerMain) {
+                containerMain.innerHTML = fullHTML;
+                containerMain.scrollTop = containerMain.scrollHeight;
+            }
+            if (containerFS) {
+                containerFS.innerHTML = fullHTML;
+                containerFS.scrollTop = containerFS.scrollHeight;
+            }
         }
 
         function mulaiPollingChat() {
@@ -1435,7 +1945,7 @@
             let singleBadgeObject = {};
             let badgesArr = pData.badges || [];
             for (let i = 0; i < 25; i++) {
-                let b = badgesArr[i] || { active: false, img: "", title: "" };
+                let b = badgesArr[i] || { active: false, img: "", title: BADGE_DESCS[i] };
                 singleBadgeObject[`badge_${i + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[i] });
             }
 
