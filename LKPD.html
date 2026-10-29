@@ -2232,63 +2232,80 @@
 
             if (!DEFAULT_SCRIPT_URL) return;
 
-            if (!currentNis) {
-                alert("Pilih siswa terlebih dahulu!");
+            if (!confirm("Apakah Anda ingin mengirim/menyimpan data SELURUH SISWA sekaligus ke Google Sheet?")) {
                 return;
             }
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
-            const pData = dbProfilDetail[currentNis] || {};
-            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+            playBeepSound(1000, 'sine', 0.15);
 
-            let totalPoinMinus = 0;
-            let pelanggaranArr = pData.pelanggaran || [];
-            let pelanggaranTeks = pelanggaranArr.map(p => {
-                totalPoinMinus += parseInt(p.poin) || 0;
-                return `[${p.tgl}] ${p.nama} (-${p.poin})`;
-            }).join(" | ");
+            let suksesCount = 0;
 
-            let singleBadgeObject = {};
-            let badgesArr = pData.badges || [];
-            for (let i = 0; i < 25; i++) {
-                let b = badgesArr[i] || { active: false, img: "", title: BADGE_DESCS[i] };
-                singleBadgeObject[`badge_${i + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[i] });
+            for (let i = 0; i < listMasterSiswa.length; i++) {
+                const nisSiswa = String(listMasterSiswa[i][0]);
+                const namaSiswa = listMasterSiswa[i][1];
+
+                if (!dbProfilDetail[nisSiswa]) {
+                    dbProfilDetail[nisSiswa] = {
+                        fotoProfil: "",
+                        bintang: 0,
+                        badges: Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] })),
+                        pelanggaran: [],
+                        nilai: {}
+                    };
+                }
+
+                const pData = dbProfilDetail[nisSiswa];
+                const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+
+                let totalPoinMinus = 0;
+                let pelanggaranArr = pData.pelanggaran || [];
+                let pelanggaranTeks = pelanggaranArr.map(p => {
+                    totalPoinMinus += parseInt(p.poin) || 0;
+                    return `[${p.tgl}] ${p.nama} (-${p.poin})`;
+                }).join(" | ");
+
+                let singleBadgeObject = {};
+                let badgesArr = pData.badges || [];
+                for (let j = 0; j < 25; j++) {
+                    let b = badgesArr[j] || { active: false, img: "", title: BADGE_DESCS[j] };
+                    singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
+                }
+
+                const payload = {
+                    action: "saveProfilSiswa",
+                    nis: nisSiswa,
+                    nama: namaSiswa,
+                    fotoProfil: pData.fotoProfil || "",
+                    bintang: pData.bintang || 0,
+                    tabungan: pData.tabungan || (dbTabunganSiswa[nisSiswa] || 0),
+                    rataRata: parseFloat(kalkulasi.avg).toFixed(2),
+                    skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
+                    nilaiDetail: pData.nilai || {},
+                    ...singleBadgeObject,
+                    pelanggaranJSON: JSON.stringify(pelanggaranArr),
+                    pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
+                    jumlahPelanggaran: pelanggaranArr.length,
+                    totalPoinMinus: totalPoinMinus
+                };
+
+                try {
+                    await fetch(DEFAULT_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    suksesCount++;
+                } catch (err) {
+                    console.error(`Gagal mengirim data siswa NIS ${nisSiswa}:`, err);
+                }
             }
 
-            const payload = {
-                action: "saveProfilSiswa",
-                nis: currentNis,
-                nama: dataSiswa ? dataSiswa[1] : "",
-                fotoProfil: pData.fotoProfil || "",
-                bintang: pData.bintang || 0,
-                tabungan: pData.tabungan || (dbTabunganSiswa[currentNis] || 0),
-                rataRata: parseFloat(kalkulasi.avg).toFixed(2),
-                skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
-                nilaiDetail: pData.nilai || {},
-                ...singleBadgeObject,
-                pelanggaranJSON: JSON.stringify(pelanggaranArr),
-                pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
-                jumlahPelanggaran: pelanggaranArr.length,
-                totalPoinMinus: totalPoinMinus
-            };
-
-            try {
-                await fetch(DEFAULT_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                playBeepSound(1200, 'sine', 0.25);
-                alert(`Data Profil Siswa (${dataSiswa[1]}) berhasil dikirim ke Google Sheet!\n(Struktur kolom tabungan, mapel & 25 badge telah disiapkan)`);
-                
-                isDataFetchedFromSheet = true;
-                if (currentNis) renderProfilSiswa(currentNis);
-            } catch (err) {
-                console.error("Gagal mengirim data ke Sheet:", err);
-                alert("Gagal mengirim data ke Google Sheet. Periksa koneksi internet Anda.");
-            }
+            playBeepSound(1200, 'sine', 0.25);
+            alert(`Berhasil mengirim data untuk ${suksesCount} dari ${listMasterSiswa.length} siswa ke Google Sheet secara massal!`);
+            
+            isDataFetchedFromSheet = true;
+            if (currentNis) renderProfilSiswa(currentNis);
         }
 
         async function tarikDataDariSheet(isManual = false) {
