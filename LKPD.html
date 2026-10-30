@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Siswa ASYIK</title>
+    <title>SIXBOOK (Social Media For Six Classmate)</title>
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -80,7 +80,7 @@
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(226, 232, 240, 0.8);
@@ -105,7 +105,6 @@
             transform: scale(1.02);
         }
 
-        /* EFEK BERSINAR FRAME FOTO KHUSUS JUARA 1 (RATA-RATA TERTINGGI) */
         @keyframes goldenFrameGlow {
             0% {
                 border-color: #f59e0b;
@@ -177,7 +176,6 @@
             100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.8)); }
         }
 
-        /* ANIMASI MAHKOTA BERKEDUT (JUARA 1) */
         @keyframes crownPulseBounce {
             0% { transform: rotate(25deg) scale(1); filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5)); }
             50% { transform: rotate(28deg) scale(1.18); filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.8)); }
@@ -203,15 +201,70 @@
         }
 
         .chat-scroll-box {
-            max-height: 280px;
+            max-height: 380px;
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: rgba(217, 70, 239, 0.4) rgba(241, 245, 249, 0.8);
         }
 
+        /* DRAWER CHAT MELAYANG (FACEBOOK DRAWER STYLE) */
+        .chat-drawer {
+            position: fixed;
+            bottom: 0;
+            right: 1.5rem;
+            width: 360px;
+            max-width: calc(100vw - 2rem);
+            z-index: 60;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .chat-drawer.collapsed {
+            transform: translateY(calc(100% - 52px));
+        }
+
+        .tab-btn {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: #c026d3;
+            font-weight: 800;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #d946ef, #a21caf);
+            border-radius: 99px;
+        }
+
+        /* STYLES CHAT BUBBLE FEED FOR SIXBOOK */
+        .feed-chat-bubble {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .feed-chat-bubble-reply {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            border-top-left-radius: 2px;
+        }
+
         @media print {
             body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
-            .no-print, .floating-emoji-container { display: none !important; }
+            .no-print, .floating-emoji-container, .chat-drawer { display: none !important; }
             .print-card-area {
                 background: #ffffff !important; color: #000000 !important; border: 2px solid #000 !important;
                 box-shadow: none !important; margin: 0 !important; padding: 20px !important; width: 100% !important; max-width: 100% !important; border-radius: 0 !important;
@@ -222,12 +275,12 @@
         }
     </style>
 </head>
-<body class="p-3 sm:p-6 md:p-8 relative">
+<body class="p-3 sm:p-6 md:p-8 relative pb-20">
 
     <div class="floating-emoji-container" id="floatingEmojiContainer"></div>
     <audio id="audioChatNotif" src="Chat.mp3" preload="auto"></audio>
 
-    <!-- BUBBLE NOTIFIKASI PESAN MASUK (TOAST POPUP) -->
+    <!-- TOAST POPUP NOTIFIKASI PESAN -->
     <div id="toastPesanBaru" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[100] max-w-xs sm:max-w-sm w-full bg-white/95 backdrop-blur-md border-2 border-pink-400 shadow-2xl rounded-2xl p-3 flex items-center gap-3 transform -translate-y-24 opacity-0 transition-all duration-300 ease-out pointer-events-none no-print cursor-pointer" onclick="bukaChatDariToast()">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center text-white text-base shrink-0 shadow-md">
             <i class="fa-solid fa-comment-dots animate-bounce"></i>
@@ -244,10 +297,11 @@
         </button>
     </div>
 
-    <!-- INPUT FILE UNTUK PROSES UPLOAD -->
+    <!-- FILE INPUTS -->
     <input type="file" id="inputUploadBadgeFoto" accept="image/*" class="hidden" onchange="prosesUploadBadgeFoto(event)">
     <input type="file" id="inputUploadFotoProfil" accept="image/*" class="hidden" onchange="prosesUploadFotoProfilSiswa(event)">
     <input type="file" id="inputChatFoto" accept="image/*" class="hidden" onchange="prosesUploadFotoChat(event)">
+    <input type="file" id="inputFotoStatus" accept="image/*" class="hidden" onchange="previewFotoStatusPost(event)">
 
     <!-- LOGIN MODAL -->
     <div id="modalBubbleLogin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 no-print">
@@ -255,8 +309,8 @@
             <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-pink-500 to-amber-400 rounded-3xl flex items-center justify-center text-white text-2xl sm:text-3xl mx-auto mb-4 sm:mb-5 shadow-lg shadow-pink-500/30">
                 <i class="fa-solid fa-face-smile-beam"></i>
             </div>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-800 mb-1">Profil Siswa ASYIK</h2>
-            <p class="text-xs text-slate-600 mb-6 font-medium">Masukkan NIS / Nama Siswa Anda atau Kode Admin untuk pengeditan.</p>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-800 mb-1">SIXBOOK</h2>
+            <p class="text-xs text-slate-600 mb-6 font-medium">Social Media For Six Classmate. Masukkan NIS / Nama Siswa atau Kode Admin.</p>
 
             <form onsubmit="prosesLoginAkses(event)" class="flex flex-col gap-4">
                 <div class="relative">
@@ -290,7 +344,7 @@
 
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="text-xs font-bold text-slate-700">Pilih Siswa Anggota Grup (Siswa di luar centang tidak dapat mengakses):</label>
+                        <label class="text-xs font-bold text-slate-700">Pilih Siswa Anggota Grup:</label>
                         <div class="flex gap-2 text-[10px] font-bold">
                             <button type="button" onclick="centangSemuaAnggotaGrup(true)" class="text-purple-600 hover:underline">Semua</button>
                             <span class="text-slate-300">|</span>
@@ -391,7 +445,6 @@
     <div id="modalChatFullScreen" class="fixed inset-0 bg-slate-900/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-50 hidden no-print">
         <div id="frameContainerChatFS" class="w-full h-full max-w-5xl max-h-[96vh] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col relative overflow-hidden transition-all duration-300">
             
-            <!-- Header Chat Full Screen -->
             <div class="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 p-3 sm:p-4 border-b border-slate-800 flex items-center justify-between shadow-md shrink-0 text-white">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-amber-400 flex items-center justify-center text-white text-lg shadow-lg shadow-pink-500/30">
@@ -413,7 +466,6 @@
                 </div>
             </div>
 
-            <!-- SEMATAN TAB GRUP DI ATAS FRAME CHAT FULLSCREEN -->
             <div class="bg-slate-100 p-2 border-b border-slate-200 flex items-center justify-between gap-2 overflow-x-auto shrink-0">
                 <div class="flex items-center gap-1.5 overflow-x-auto" id="barGrupTabsFS">
                 </div>
@@ -422,12 +474,10 @@
                 </button>
             </div>
 
-            <!-- Messages Container (Full Screen) -->
             <div id="chatMessagesContainerFS" class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 bg-slate-50 scrollbar-thin scrollbar-thumb-pink-300">
                 <div class="text-center text-xs text-slate-400 italic py-4">Memuat obrolan...</div>
             </div>
 
-            <!-- Input Footer (Full Screen) -->
             <div class="p-3 bg-white border-t border-slate-200 shrink-0 relative">
                 <form onsubmit="kirimPesanObrolan(event, 'FS')" class="flex items-center gap-2 w-full">
                     <button type="button" onclick="picuUploadFotoChat()" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-base transition-all shrink-0" title="Sisipkan Foto">
@@ -449,7 +499,7 @@
     <div id="popoverEmojiPicker" class="fixed z-50 hidden bg-white/95 backdrop-blur-md border border-pink-200 shadow-2xl rounded-2xl p-3 w-64 grid grid-cols-6 gap-2 text-xl max-h-48 overflow-y-auto no-print">
     </div>
 
-    <!-- MODAL ZOOM FOTO CHAT -->
+    <!-- MODAL ZOOM FOTO CHAT / STATUS -->
     <div id="modalZoomFotoChat" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print" onclick="tutupZoomFotoChat()">
         <div class="relative max-w-xl w-full flex flex-col items-center">
             <img id="imgZoomChatTarget" src="" class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl border-2 border-white/20 object-contain">
@@ -463,21 +513,21 @@
         <header class="glass-panel p-4 sm:p-6 rounded-3xl mb-6 sm:mb-8 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 no-print">
             <div class="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-pink-500 to-amber-400 flex items-center justify-center text-white text-xl sm:text-2xl shadow-lg shadow-pink-500/20 shrink-0">
-                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-users"></i>
                 </div>
                 <div>
                     <div class="flex items-center gap-2 flex-wrap">
                         <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800">
-                            Profil Siswa ASYIK ✨
+                            SIXBOOK ✨
                         </h1>
                         <span id="badgeModeAkses" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300">Mode Siswa</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium">Sistem Integrasi Profil, Prestasi & Level Kedisiplinan Ceria</p>
+                    <p class="text-xs text-slate-600 font-medium">Social Media For Six Classmate</p>
                 </div>
             </div>
 
             <div class="w-full md:w-auto flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
-                <a href="PENA MANTAP V6.html" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
+                <a href="Pena Mantap V6.html" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
                     <i class="fa-solid fa-house"></i> Kembali
                 </a>
                 
@@ -513,9 +563,24 @@
             </div>
         </header>
 
+        <!-- FRAME NAVIGATION TABS (DAPAT DISESUAIKAN, DEFAULT MEMBUKA STATUS/FEEDS SIXBOOK) -->
+        <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-center gap-4 sm:gap-8 no-print border border-pink-100 shadow-sm">
+            <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-4 py-2 text-xs sm:text-sm font-bold flex items-center gap-2">
+                <i class="fa-solid fa-newspaper text-purple-600"></i> SIXBOOK
+                <span id="badgeFeedUnread" class="bg-pink-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">Feeds</span>
+            </button>
+            <button onclick="gantiTabFrame('profil')" id="tabBtnProfil" class="tab-btn px-4 py-2 text-xs sm:text-sm font-bold text-slate-600 flex items-center gap-2">
+                <i class="fa-solid fa-id-card text-pink-500"></i> Profil & Prestasi
+            </button>
+            <button onclick="gantiTabFrame('nilai')" id="tabBtnNilai" class="tab-btn px-4 py-2 text-xs sm:text-sm font-bold text-slate-600 flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-amber-500"></i> Transkrip Nilai Mapel
+            </button>
+        </div>
+
         <!-- PRINT AREA CARD -->
         <div id="printAreaCard" class="print-card-area grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
             
+            <!-- LEFT COLUMN (STAYS PERMANENT OR ADAPTS) -->
             <div class="lg:col-span-4 flex flex-col gap-6">
                 
                 <div class="glass-panel p-5 sm:p-6 rounded-3xl flex flex-col items-center text-center relative overflow-hidden">
@@ -523,7 +588,6 @@
                     
                     <div id="photoFrameBoxContainer" class="w-40 h-40 sm:w-48 sm:h-48 photo-frame-box mb-4 bg-slate-100 flex items-center justify-center relative group cursor-pointer" onclick="picuUploadFotoProfilSiswa()">
                         
-                        <!-- MAHKOTA RANKING 1 (RATA-RATA HIGHEST) MILIK SISWA TERTINGGI -->
                         <div id="badgeMahkotaTertinggi" class="hidden absolute -top-3.5 -right-3.5 z-20 crown-top-rank text-amber-400 text-3xl sm:text-4xl pointer-events-none drop-shadow-md" title="Juara 1 Rata-Rata Nilai Tertinggi!">
                             <i class="fa-solid fa-crown"></i>
                         </div>
@@ -556,7 +620,6 @@
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fa-solid fa-award text-amber-500"></i> Bintang Prestasi
                             </span>
-                            <!-- HANYA MUNCUL DI ATAS KHUSUS ADMIN -->
                             <span id="lblTotalBintang" class="admin-only text-lg sm:text-xl font-black text-amber-600">0 ⭐</span>
                         </div>
                         
@@ -580,7 +643,7 @@
                         </div>
                     </div>
 
-                    <!-- TABUNGAN (READ-ONLY SHEET) -->
+                    <!-- TABUNGAN -->
                     <div class="w-full mt-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
@@ -622,137 +685,143 @@
                     </div>
                 </div>
 
-                <!-- OBROLAN MAIN PANEL -->
-                <div class="glass-panel p-5 sm:p-6 rounded-3xl relative overflow-hidden no-print">
-                    <div class="flex items-center justify-between mb-2 border-b border-slate-200 pb-2">
-                        <h3 class="text-sm font-black text-slate-800 flex items-center gap-1.5">
-                            <i class="fa-solid fa-comments text-pink-500"></i> Obrolan Kelas
-                        </h3>
-
-                        <div class="flex items-center gap-1.5">
-                            <button onclick="bukaChatFullScreen()" class="text-slate-600 hover:text-pink-600 p-1.5 rounded-xl hover:bg-pink-50 transition-all text-xs flex items-center gap-1 font-bold" title="Mode Layar Penuh (Ponsel/Laptop)">
-                                <i class="fa-solid fa-expand"></i>
-                                <span class="text-[10px] hidden sm:inline">Full Screen</span>
-                            </button>
-                            <div id="iconNotificationBell" class="text-slate-400 text-sm transition-all" title="Status Obrolan">
-                                <i class="fa-solid fa-bell"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PILIH GRUP MAIN PANEL -->
-                    <div class="flex items-center justify-between gap-1 mb-3 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
-                        <select id="selectGrupChatMain" onchange="gantiGrupChatTerpilih(this.value)" class="w-full bg-white text-slate-800 text-xs font-bold border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-pink-500">
-                        </select>
-                        <button onclick="bukaModalKelolaGrup()" class="admin-only shrink-0 bg-purple-600 hover:bg-purple-700 text-white p-1 rounded-lg text-xs" title="Kelola Grup">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                    </div>
-
-                    <div id="chatMessagesContainer" class="chat-scroll-box flex flex-col gap-2.5 mb-3 pr-1" onclick="tandaiPesanSudahDibaca()">
-                        <div class="text-center text-xs text-slate-400 italic py-4 font-medium">Memuat obrolan...</div>
-                    </div>
-
-                    <form onsubmit="kirimPesanObrolan(event, 'MAIN')" class="flex items-center gap-1.5 relative w-full">
-                        <button type="button" onclick="picuUploadFotoChat()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-sm transition-all shrink-0" title="Sisipkan Foto">
-                            <i class="fa-solid fa-image"></i>
-                        </button>
-                        <button type="button" onclick="toggleEmojiPickerChat(event, 'MAIN')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-sm transition-all shrink-0" title="Emotikon Lucu">
-                            <i class="fa-solid fa-face-smile-beam"></i>
-                        </button>
-                        <input type="text" id="inputPesanObrolan" placeholder="Tulis pesan obrolan..." class="flex-1 min-w-0 h-9 bg-white text-slate-800 font-medium text-xs border border-slate-300 rounded-xl px-3 focus:outline-none focus:border-pink-500 placeholder:text-slate-400 shadow-inner">
-                        <button type="submit" class="w-9 h-9 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center shrink-0" title="Kirim Pesan">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
-
             </div>
 
+            <!-- RIGHT COLUMN (FRAME SWITCHING TAB CONTENT) -->
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
-                <!-- BADGES SECTION -->
-                <div class="glass-panel p-5 sm:p-6 rounded-3xl">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-boxes-stacked text-indigo-600"></i> Badge Challenge Kedisiplinan
-                            </h3>
-                            <p class="text-xs text-slate-600">Pencapaian tantangan kedisiplinan dan karakter siswa</p>
+                <!-- FRAME TAB 1: LINIMASA KELAS / FEEDS & STATUS (SIXBOOK STYLE) -->
+                <div id="frameSectionStatus" class="space-y-6">
+                    
+                    <!-- FORM BUAT STATUS BARU -->
+                    <div class="glass-panel p-4 sm:p-5 rounded-3xl">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img id="imgAvatarPostForm" src="" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shrink-0">
+                            <div class="flex-1 min-w-0">
+                                <h4 id="lblNamaPostForm" class="text-xs font-bold text-slate-800 truncate">Nama Siswa</h4>
+                                <p class="text-[10px] text-slate-500 font-medium">Bagikan cerita ceriamu di SIXBOOK hari ini...</p>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span id="lblBadgeCounter" class="text-xs font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-xl">
-                                0 / 25 Terbuka
+
+                        <textarea id="inputTeksStatus" rows="3" placeholder="Apa yang sedang kamu pikirkan atau kerjakan hari ini?" class="w-full bg-slate-50 text-slate-800 text-xs sm:text-sm font-medium border border-slate-200 rounded-2xl p-3 focus:outline-none focus:border-pink-500 shadow-inner resize-none mb-3"></textarea>
+
+                        <!-- PREVIEW FOTO POST -->
+                        <div id="containerPreviewFotoPost" class="hidden relative mb-3 rounded-2xl overflow-hidden border border-slate-200 max-h-60 bg-slate-100 flex items-center justify-center">
+                            <img id="imgPreviewFotoPost" src="" class="max-h-60 object-contain">
+                            <button onclick="batalPreviewFotoPost()" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between border-t border-slate-200 pt-3">
+                            <button onclick="document.getElementById('inputFotoStatus').click()" class="text-xs font-bold text-slate-600 hover:text-pink-600 flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-pink-50 transition-all">
+                                <i class="fa-solid fa-image text-emerald-500 text-base"></i> Unggah Foto
+                            </button>
+
+                            <button onclick="publikasikanStatusBaru()" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs px-5 py-2 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+                                <i class="fa-solid fa-paper-plane"></i> Bagikan Status
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DAFTAR STATUS FEEDS -->
+                    <div id="containerFeedsList" class="space-y-4">
+                        <div class="text-center text-xs text-slate-400 italic py-8">Memuat linimasa kelas...</div>
+                    </div>
+
+                </div>
+
+                <!-- FRAME TAB 2: PROFIL & PRESTASI -->
+                <div id="frameSectionProfil" class="space-y-6 hidden">
+                    
+                    <!-- BADGES SECTION -->
+                    <div class="glass-panel p-5 sm:p-6 rounded-3xl">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-boxes-stacked text-indigo-600"></i> Badge Challenge Kedisiplinan
+                                </h3>
+                                <p class="text-xs text-slate-600">Pencapaian tantangan kedisiplinan dan karakter siswa</p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span id="lblBadgeCounter" class="text-xs font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-xl">
+                                    0 / 25 Terbuka
+                                </span>
+                                <button onclick="toggleTampilanSemuaBadge()" id="btnToggleBadge25" class="no-print bg-slate-100 hover:bg-slate-200 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                    Tampilkan Semua (25)
+                                </button>
+                                <button onclick="bukaModalBadgeMassal()" class="admin-only no-print bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
+                                    <i class="fa-solid fa-users-gear"></i> Kelola Massal
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-5 border border-slate-200">
+                            <div id="barBadgeProgress" class="h-full bg-gradient-to-r from-indigo-500 to-pink-500 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+
+                        <div class="badge-box-grid" id="grid10Badges"></div>
+                    </div>
+
+                    <!-- PELANGGARAN -->
+                    <div class="glass-panel p-5 sm:p-6 rounded-3xl">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Catatan Pelanggaran Kedisiplinan
+                                </h3>
+                                <p class="text-xs text-slate-600">Catatan sikap dan kedisiplinan harian siswa</p>
+                            </div>
+                            <span id="lblSkorSikap" class="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+                                Skor Kedisiplinan: 100
                             </span>
-                            <button onclick="toggleTampilanSemuaBadge()" id="btnToggleBadge25" class="no-print bg-slate-100 hover:bg-slate-200 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm">
-                                Tampilkan Semua (25)
+                        </div>
+
+                        <form onsubmit="tambahPelanggaran(event)" class="admin-only grid grid-cols-1 sm:grid-cols-12 gap-3 mb-5 no-print">
+                            <input type="date" id="inputTglMelanggar" class="sm:col-span-3 bg-white text-slate-800 text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-rose-500 shadow-inner" required>
+                            <input type="text" id="inputNamaPelanggaran" placeholder="Jenis Pelanggaran (misal: Terlambat)" class="sm:col-span-5 bg-white text-slate-800 text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-rose-500 shadow-inner" required>
+                            <input type="number" id="inputPoinPengurangan" placeholder="Poin (-)" min="1" max="100" class="sm:col-span-2 bg-white text-slate-800 text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-rose-500 shadow-inner" required>
+                            <button type="submit" class="sm:col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl py-2.5 transition-all shadow-md active:scale-95">
+                                + Catat
                             </button>
-                            <button onclick="bukaModalBadgeMassal()" class="admin-only no-print bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
-                                <i class="fa-solid fa-users-gear"></i> Kelola Massal
-                            </button>
+                        </form>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-slate-500 font-semibold uppercase">
+                                        <th class="py-2 px-3">Tanggal</th>
+                                        <th class="py-2 px-3">Bentuk Pelanggaran</th>
+                                        <th class="py-2 px-3 text-center">Poin</th>
+                                        <th class="py-2 px-3 text-right no-print admin-only">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPelanggaran"></tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-5 border border-slate-200">
-                        <div id="barBadgeProgress" class="h-full bg-gradient-to-r from-indigo-500 to-pink-500 transition-all duration-500" style="width: 0%"></div>
-                    </div>
-
-                    <div class="badge-box-grid" id="grid10Badges"></div>
                 </div>
 
-                <!-- PELANGGARAN -->
-                <div class="glass-panel p-5 sm:p-6 rounded-3xl">
-                    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Catatan Pelanggaran Kedisiplinan
-                            </h3>
-                            <p class="text-xs text-slate-600">Catatan sikap dan kedisiplinan harian siswa</p>
+                <!-- FRAME TAB 3: NILAI MAPEL -->
+                <div id="frameSectionNilai" class="space-y-6 hidden">
+                    
+                    <div class="glass-panel p-5 sm:p-6 rounded-3xl">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-graduation-cap text-amber-500"></i> Nilai Mata Pelajaran & Penentu Level
+                                </h3>
+                                <p class="text-xs text-slate-600" id="lblMapelInfoText">Nilai Mapel SD (Inisialisasi Pertama Bisa Diisi Admin, Selanjutnya Lock Read-Only)</p>
+                            </div>
+                            <span id="lblBadgeStatusMapel" class="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full flex items-center gap-1">
+                                <i class="fa-solid fa-edit"></i> Setup Mode Admin
+                            </span>
                         </div>
-                        <span id="lblSkorSikap" class="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                            Skor Kedisiplinan: 100
-                        </span>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="gridMapelInputs"></div>
                     </div>
 
-                    <form onsubmit="tambahPelanggaran(event)" class="admin-only grid grid-cols-1 sm:grid-cols-12 gap-3 mb-5 no-print">
-                        <input type="date" id="inputTglMelanggar" class="sm:col-span-3 bg-white text-slate-800 text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-rose-500 shadow-inner" required>
-                        <input type="text" id="inputNamaPelanggaran" placeholder="Jenis Pelanggaran (misal: Terlambat)" class="sm:col-span-5 bg-white text-slate-800 text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-rose-500 shadow-inner" required>
-                        <input type="number" id="inputPoinPengurangan" placeholder="Poin (-)" min="1" max="100" class="sm:col-span-2 bg-white text-slate-800 text-xs border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:border-rose-500 shadow-inner" required>
-                        <button type="submit" class="sm:col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl py-2.5 transition-all shadow-md active:scale-95">
-                            + Catat
-                        </button>
-                    </form>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-200 text-slate-500 font-semibold uppercase">
-                                    <th class="py-2 px-3">Tanggal</th>
-                                    <th class="py-2 px-3">Bentuk Pelanggaran</th>
-                                    <th class="py-2 px-3 text-center">Poin</th>
-                                    <th class="py-2 px-3 text-right no-print admin-only">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyPelanggaran"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- NILAI MAPEL -->
-                <div class="glass-panel p-5 sm:p-6 rounded-3xl">
-                    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-graduation-cap text-amber-500"></i> Nilai Mata Pelajaran & Penentu Level
-                            </h3>
-                            <p class="text-xs text-slate-600" id="lblMapelInfoText">Nilai Mapel SD (Inisialisasi Pertama Bisa Diisi Admin, Selanjutnya Lock Read-Only)</p>
-                        </div>
-                        <span id="lblBadgeStatusMapel" class="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full flex items-center gap-1">
-                            <i class="fa-solid fa-edit"></i> Setup Mode Admin
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="gridMapelInputs"></div>
                 </div>
 
             </div>
@@ -760,9 +829,66 @@
         </div>
 
         <footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-200 pt-6 pb-4">
-            <p class="font-medium">Profil Siswa ASYIK &copy; 2026</p>
+            <p class="font-medium">SIXBOOK (Social Media For Six Classmate) &copy; 2026</p>
             <p class="font-bold text-pink-600 mt-1">Designed by Ikhwan Adi Yanto, S.Pd. tahun 2026</p>
         </footer>
+
+    </div>
+
+    <!-- CHAT LACT / DRAWER MELAYANG (SEMBUNYI SAAT BELUM LOGIN) -->
+    <div id="chatDrawerContainer" class="chat-drawer glass-panel shadow-2xl border-t-2 border-pink-400 collapsed no-print hidden">
+        
+        <!-- DRAWER HEADER (SELALU KELIHATAN SAAT SUDAH LOGIN) -->
+        <div onclick="toggleChatDrawer()" class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-3.5 flex items-center justify-between cursor-pointer rounded-t-[18px]">
+            <div class="flex items-center gap-2.5">
+                <div class="relative">
+                    <i class="fa-solid fa-comments text-amber-300 text-base"></i>
+                    <span id="badgeUnreadChatDrawer" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black tracking-wide leading-none">Obrolan Kelas</h4>
+                    <span id="lblGrupDrawerSelected" class="text-[9px] text-pink-200 font-medium">Semua Kelas</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1">
+                <button onclick="event.stopPropagation(); bukaChatFullScreen()" class="w-6 h-6 hover:bg-white/20 rounded-lg flex items-center justify-center text-xs text-amber-300" title="Full Screen">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <div id="iconDrawerChevron" class="w-6 h-6 flex items-center justify-center text-xs text-slate-300 transition-transform">
+                    <i class="fa-solid fa-chevron-up"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- DRAWER BODY (SLIDE UP) -->
+        <div class="p-3 bg-white flex flex-col h-96">
+            
+            <div class="flex items-center justify-between gap-1 mb-2 bg-slate-50 p-1 rounded-xl border border-slate-200 shrink-0">
+                <select id="selectGrupChatDrawer" onchange="gantiGrupChatTerpilih(this.value)" class="w-full bg-white text-slate-800 text-[11px] font-bold border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:border-pink-500">
+                </select>
+                <button onclick="bukaModalKelolaGrup()" class="admin-only shrink-0 bg-purple-600 hover:bg-purple-700 text-white p-1 rounded-lg text-xs" title="Kelola Grup">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+
+            <div id="chatMessagesContainerDrawer" class="chat-scroll-box flex-1 flex flex-col gap-2 mb-2 pr-1 text-xs">
+                <div class="text-center text-xs text-slate-400 italic py-4">Memuat obrolan...</div>
+            </div>
+
+            <form onsubmit="kirimPesanObrolan(event, 'DRAWER')" class="flex items-center gap-1.5 shrink-0 pt-1 border-t border-slate-100">
+                <button type="button" onclick="picuUploadFotoChat()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-pink-100 text-slate-600 hover:text-pink-600 flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-image"></i>
+                </button>
+                <button type="button" onclick="toggleEmojiPickerChat(event, 'DRAWER')" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-600 flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-face-smile-beam"></i>
+                </button>
+                <input type="text" id="inputPesanObrolanDrawer" placeholder="Ketik pesan..." class="flex-1 min-w-0 h-8 bg-slate-50 text-slate-800 font-medium text-xs border border-slate-200 rounded-xl px-2.5 focus:outline-none focus:border-pink-500">
+                <button type="submit" class="w-8 h-8 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
 
     </div>
 
@@ -806,13 +932,17 @@
             "⚡", "🤩", "😎", "🥰", "🔥", "💯", "👍", "👏", "🙌", "✨"
         ];
 
-        /* STRUKTUR DATA GRUP BERBASIS ANGGOTA TERKUNCI PRIVASI */
         let listGrupChat = [
             { id: "semua", nama: "Semua Kelas", anggota: [] }
         ];
         let currentGrupChat = "Semua Kelas";
         let isChatFSModePonsel = false;
+        let isChatDrawerOpen = false;
         let toastTimer = null;
+        let tempFotoStatusBase64 = "";
+
+        // DATA FEEDS / LINIMASA SIXBOOK
+        let listFeedsPost = [];
 
         function initFloatingEmojis() {
             const container = document.getElementById('floatingEmojiContainer');
@@ -864,7 +994,7 @@
         let currentNis = null;
         let selectedBadgeIdxForUpload = null;
         let tempMassalBase64 = "";
-        let activeEmojiInputTarget = 'MAIN';
+        let activeEmojiInputTarget = 'DRAWER';
         let isAdminMode = false;
         let showAll25Badges = false;
         let isDataFetchedFromSheet = false;
@@ -874,6 +1004,7 @@
 
         const ADMIN_NIS = "ikhwan22";
         const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23d946ef'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+        const ADMIN_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%237e22ce'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
         const MAPEL_LIST = [
             { id: 'pancasila', name: 'Pendidikan Pancasila', icon: '⭐' },
@@ -910,6 +1041,57 @@
                 osc.start();
                 osc.stop(ctx.currentTime + duration);
             } catch (e) {}
+        }
+
+        /* PERPINDAHAN TAB FRAME */
+        function gantiTabFrame(tabName) {
+            document.getElementById('frameSectionProfil').classList.add('hidden');
+            document.getElementById('frameSectionStatus').classList.add('hidden');
+            document.getElementById('frameSectionNilai').classList.add('hidden');
+
+            document.getElementById('tabBtnProfil').classList.remove('active');
+            document.getElementById('tabBtnStatus').classList.remove('active');
+            document.getElementById('tabBtnNilai').classList.remove('active');
+
+            if (tabName === 'profil') {
+                document.getElementById('frameSectionProfil').classList.remove('hidden');
+                document.getElementById('tabBtnProfil').classList.add('active');
+            } else if (tabName === 'status') {
+                document.getElementById('frameSectionStatus').classList.remove('hidden');
+                document.getElementById('tabBtnStatus').classList.add('active');
+                renderFeedsStatusUI();
+            } else if (tabName === 'nilai') {
+                document.getElementById('frameSectionNilai').classList.remove('hidden');
+                document.getElementById('tabBtnNilai').classList.add('active');
+            }
+
+            playBeepSound(800, 'sine', 0.08);
+        }
+
+        /* AKSI BUKA PROFIL TEMAN DARI FEEDS / KOMENTAR */
+        function bukaProfilTeman(nis) {
+            if (!nis || nis === 'admin') return;
+            const selectDropdown = document.getElementById('selectSiswaProfil');
+            selectDropdown.value = nis;
+            gantiSiswaProfil(nis);
+            gantiTabFrame('profil');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* TOGGLE LACI CHAT DRAWER */
+        function toggleChatDrawer() {
+            const drawer = document.getElementById('chatDrawerContainer');
+            const icon = document.getElementById('iconDrawerChevron');
+            isChatDrawerOpen = !isChatDrawerOpen;
+
+            if (isChatDrawerOpen) {
+                drawer.classList.remove('collapsed');
+                icon.style.transform = "rotate(180deg)";
+                tandaiPesanSudahDibaca();
+            } else {
+                drawer.classList.add('collapsed');
+                icon.style.transform = "rotate(0deg)";
+            }
         }
 
         /* AKSES LOGIN */
@@ -963,10 +1145,16 @@
             document.getElementById('modalBubbleLogin').classList.add('hidden');
             document.getElementById('mainAppContainer').classList.remove('hidden');
 
+            // TAMPILKAN DRAWER CHAT HANYA APABILA SUDAH LOGIN
+            document.getElementById('chatDrawerContainer').classList.remove('hidden');
+
             if (currentNis) {
                 selectDropdown.value = currentNis;
                 gantiSiswaProfil(currentNis);
             }
+
+            // TAMPILAN AWAL MEMBUKA MENU FEEDS/SIXBOOK
+            gantiTabFrame('status');
 
             renderGrupSelectorUI();
             mulaiPollingChat();
@@ -977,6 +1165,9 @@
             document.getElementById('inputNisLogin').value = '';
             document.getElementById('modalBubbleLogin').classList.remove('hidden');
             document.getElementById('mainAppContainer').classList.add('hidden');
+
+            // SEMBUNYIKAN KEMBALI TAB CHAT JIKA BELUM LOGIN
+            document.getElementById('chatDrawerContainer').classList.add('hidden');
         }
 
         function muatDataLokal() {
@@ -992,6 +1183,29 @@
             if (lsProfil) {
                 try { dbProfilDetail = JSON.parse(lsProfil); } catch(e){}
             }
+
+            const lsFeeds = localStorage.getItem("listFeedsPostV1");
+            if (lsFeeds) {
+                try { listFeedsPost = JSON.parse(lsFeeds); } catch(e){}
+            } else {
+                listFeedsPost = [
+                    {
+                        id: "post_sample_1",
+                        nis: "3052",
+                        nama: "Amelia Alita Zahra",
+                        waktu: "1 jam lalu",
+                        teks: "Semangat belajar kelompok hari ini kawan-kawan SIXBOOK! Jangan lupa tugas e-PR dikerjakan ya ✨",
+                        foto: "",
+                        likes: ["3085"],
+                        loves: ["3087", "3088"],
+                        sads: [],
+                        comments: [
+                            { nis: "3087", nama: "Azka Nailun", teks: "Siap Amelia, sudah selesai!" }
+                        ]
+                    }
+                ];
+            }
+
             tarikDataDariSheet(false);
             tarikDataTabunganDariSheet();
         }
@@ -1000,6 +1214,7 @@
             try {
                 localStorage.setItem("dbProfilDetailV1", JSON.stringify(dbProfilDetail));
                 localStorage.setItem("listGrupChatV2", JSON.stringify(listGrupChat));
+                localStorage.setItem("listFeedsPostV1", JSON.stringify(listFeedsPost));
             } catch (e) {
                 console.error("Gagal simpan data lokal:", e);
             }
@@ -1026,6 +1241,13 @@
                 document.getElementById('lblNamaSiswa').innerText = dataSiswa[1];
                 document.getElementById('lblNisSiswa').innerText = `NIS: ${dataSiswa[0]}`;
                 document.getElementById('lblNoAbsen').innerText = `Absen: ${indexSiswa + 1}`;
+                
+                // Form Post nama disesuaikan
+                if (isAdminMode) {
+                    document.getElementById('lblNamaPostForm').innerText = "Guru / Admin Kelas";
+                } else {
+                    document.getElementById('lblNamaPostForm').innerText = dataSiswa[1];
+                }
             }
 
             if (!dbProfilDetail[nis]) {
@@ -1043,7 +1265,6 @@
             tarikPesanObrolan();
         }
 
-        /* MENENTUKAN SISWA TERTINGGI UNTUK MAHKOTA & FRAME BERSINAR JUARA 1 */
         function updateTampilanSiswaTertinggi() {
             let maxAvg = -1;
             let highestNis = null;
@@ -1082,8 +1303,17 @@
 
         function renderProfilSiswa(nis) {
             const pData = dbProfilDetail[nis] || {};
+            const avatarSrc = pData.fotoProfil ? pData.fotoProfil : DEFAULT_AVATAR;
 
-            document.getElementById('imgFotoSiswa').src = pData.fotoProfil ? pData.fotoProfil : DEFAULT_AVATAR;
+            document.getElementById('imgFotoSiswa').src = avatarSrc;
+            
+            // Mengatur Avatar Form Post (Jika Admin jangan gunakan foto siswa)
+            if (isAdminMode) {
+                document.getElementById('imgAvatarPostForm').src = ADMIN_AVATAR;
+            } else {
+                document.getElementById('imgAvatarPostForm').src = avatarSrc;
+            }
+
             const bnt = pData.bintang || 0;
             document.getElementById('lblTotalBintang').innerText = `${bnt} ⭐`;
             
@@ -1146,6 +1376,9 @@
                     playBeepSound(1100, 'sine', 0.2);
                     simpanSemuaData();
                     document.getElementById('imgFotoSiswa').src = base64Data;
+                    if (!isAdminMode) {
+                        document.getElementById('imgAvatarPostForm').src = base64Data;
+                    }
 
                     kirimFotoSiswaMandiriKeSheet(currentNis, base64Data);
                 };
@@ -1204,6 +1437,7 @@
             }
         }
 
+        /* LOGIKA BADGES */
         function toggleTampilanSemuaBadge() {
             showAll25Badges = !showAll25Badges;
             const btn = document.getElementById('btnToggleBadge25');
@@ -1383,12 +1617,9 @@
             render25Badges(pData.badges);
         }
 
-        /* --- KELOLA BADGE MASSAL MULTI-SISWA --- */
+        /* KELOLA BADGE MASSAL */
         function bukaModalBadgeMassal() {
-            if (!isAdminMode) {
-                alert("Fitur ini khusus Mode Admin!");
-                return;
-            }
+            if (!isAdminMode) return;
 
             const selectBadge = document.getElementById('selectMassalBadgeIndex');
             selectBadge.innerHTML = '';
@@ -1421,7 +1652,6 @@
             document.getElementById('iconMassalBadgeDefault').classList.remove('hidden');
 
             updateFormBadgeMassalPreview();
-
             document.getElementById('modalBadgeMassal').classList.remove('hidden');
         }
 
@@ -1546,7 +1776,250 @@
             alert(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
         }
 
-        /* --- FITUR OBROLAN GRUP PRIVAT DENGAN HAK AKSES & ISOLASI CHAT --- */
+        /* LOGIKA SYSTEM FEEDS STATUS (SIXBOOK CHAT-BUBBLE STYLE) */
+        function previewFotoStatusPost(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 600;
+                    const MAX_HEIGHT = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    tempFotoStatusBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('imgPreviewFotoPost').src = tempFotoStatusBase64;
+                    document.getElementById('containerPreviewFotoPost').classList.remove('hidden');
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function batalPreviewFotoPost() {
+            tempFotoStatusBase64 = "";
+            document.getElementById('inputFotoStatus').value = '';
+            document.getElementById('containerPreviewFotoPost').classList.add('hidden');
+        }
+
+        function publikasikanStatusBaru() {
+            const teksInput = document.getElementById('inputTeksStatus').value.trim();
+            if (!teksInput && !tempFotoStatusBase64) {
+                alert("Tuliskan status atau unggah foto terlebih dahulu!");
+                return;
+            }
+
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
+            const namaPenulis = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
+            const nisPenulis = isAdminMode ? "admin" : currentNis;
+
+            const newPost = {
+                id: "post_" + Date.now(),
+                nis: nisPenulis,
+                nama: namaPenulis,
+                waktu: "Baru saja",
+                teks: teksInput,
+                foto: tempFotoStatusBase64,
+                likes: [],
+                loves: [],
+                sads: [],
+                comments: []
+            };
+
+            listFeedsPost.unshift(newPost);
+            document.getElementById('inputTeksStatus').value = '';
+            batalPreviewFotoPost();
+
+            playBeepSound(1000, 'sine', 0.15);
+            simpanSemuaData();
+            renderFeedsStatusUI();
+        }
+
+        function beriTanggapanPost(postId, jenisReaksi) {
+            const post = listFeedsPost.find(p => p.id === postId);
+            if (!post) return;
+
+            const myNis = String(currentNis);
+
+            post.likes = post.likes.filter(id => id !== myNis);
+            post.loves = post.loves.filter(id => id !== myNis);
+            post.sads = post.sads.filter(id => id !== myNis);
+
+            if (jenisReaksi === 'like') post.likes.push(myNis);
+            else if (jenisReaksi === 'love') post.loves.push(myNis);
+            else if (jenisReaksi === 'sad') post.sads.push(myNis);
+
+            playBeepSound(850, 'sine', 0.08);
+            simpanSemuaData();
+            renderFeedsStatusUI();
+        }
+
+        function tambahKomentarPost(e, postId) {
+            e.preventDefault();
+            const inputEl = document.getElementById(`inputKom_${postId}`);
+            const teksKom = inputEl ? inputEl.value.trim() : '';
+
+            if (!teksKom) return;
+
+            const post = listFeedsPost.find(p => p.id === postId);
+            if (!post) return;
+
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
+            const namaPenulis = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
+            const nisPenulis = isAdminMode ? "admin" : currentNis;
+
+            post.comments.push({
+                nis: nisPenulis,
+                nama: namaPenulis,
+                teks: teksKom
+            });
+
+            inputEl.value = '';
+            playBeepSound(900, 'sine', 0.1);
+            simpanSemuaData();
+            renderFeedsStatusUI();
+        }
+
+        function hapusPostStatus(postId) {
+            if (!isAdminMode) return;
+            if (confirm("Hapus postingan ini secara permanen?")) {
+                listFeedsPost = listFeedsPost.filter(p => p.id !== postId);
+                simpanSemuaData();
+                renderFeedsStatusUI();
+            }
+        }
+
+        function renderFeedsStatusUI() {
+            const container = document.getElementById('containerFeedsList');
+            if (!container) return;
+
+            if (listFeedsPost.length === 0) {
+                container.innerHTML = `<div class="text-center text-xs text-slate-400 italic py-8">Belum ada postingan di SIXBOOK. Jadilah yang pertama!</div>`;
+                return;
+            }
+
+            let html = '';
+
+            listFeedsPost.forEach(post => {
+                const isPostAdmin = post.nis === 'admin' || post.nama.includes('Guru') || post.nama.includes('Admin');
+                let avatar = DEFAULT_AVATAR;
+
+                if (isPostAdmin) {
+                    avatar = ADMIN_AVATAR;
+                } else if (post.nis && dbProfilDetail[post.nis]) {
+                    avatar = dbProfilDetail[post.nis].fotoProfil ? dbProfilDetail[post.nis].fotoProfil : DEFAULT_AVATAR;
+                }
+
+                const myNis = String(currentNis);
+                const hasLiked = post.likes.includes(myNis);
+                const hasLoved = post.loves.includes(myNis);
+                const hasSaded = post.sads.includes(myNis);
+
+                let commentsHTML = '';
+                post.comments.forEach(c => {
+                    const isKomAdmin = c.nis === 'admin' || c.nama.includes('Guru') || c.nama.includes('Admin');
+                    let avatarKom = DEFAULT_AVATAR;
+
+                    if (isKomAdmin) {
+                        avatarKom = ADMIN_AVATAR;
+                    } else if (c.nis && dbProfilDetail[c.nis]) {
+                        avatarKom = dbProfilDetail[c.nis].fotoProfil ? dbProfilDetail[c.nis].fotoProfil : DEFAULT_AVATAR;
+                    }
+
+                    commentsHTML += `
+                        <div class="flex items-start gap-2 mb-2">
+                            <img src="${avatarKom}" class="w-7 h-7 rounded-full object-cover border border-purple-300 cursor-pointer hover:scale-105 transition-all mt-0.5" onclick="bukaProfilTeman('${c.nis}')" title="Klik untuk lihat profil">
+                            <div class="feed-chat-bubble-reply p-2.5 flex-1 min-w-0">
+                                <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-purple-600 transition-colors block" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
+                                <span class="text-slate-700 text-xs leading-relaxed break-words font-medium">${c.teks}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    <div class="flex items-start gap-3">
+                        <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 cursor-pointer hover:scale-105 transition-all shrink-0 mt-1 shadow-sm" onclick="bukaProfilTeman('${post.nis}')" title="Klik untuk lihat profil">
+                        
+                        <div class="feed-chat-bubble p-4 sm:p-5 flex-1 min-w-0 space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <div>
+                                    <h4 class="text-xs sm:text-sm font-black text-slate-800 cursor-pointer hover:text-pink-600 transition-colors" onclick="bukaProfilTeman('${post.nis}')">${post.nama}</h4>
+                                    <p class="text-[10px] text-slate-400 font-medium">${post.waktu}</p>
+                                </div>
+                                ${isAdminMode ? `
+                                    <button onclick="hapusPostStatus('${post.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+
+                            ${post.teks ? `<p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">${post.teks}</p>` : ''}
+
+                            ${post.foto ? `
+                                <div class="rounded-2xl overflow-hidden border border-slate-200 max-h-80 bg-slate-50 flex items-center justify-center">
+                                    <img src="${post.foto}" class="max-h-80 object-contain cursor-pointer hover:scale-[1.01] transition-transform" onclick="lihatFotoChatZoom(this.src)">
+                                </div>
+                            ` : ''}
+
+                            <!-- REACTION BAR -->
+                            <div class="flex items-center justify-between border-y border-slate-100 py-2 text-xs">
+                                <div class="flex items-center gap-1.5 sm:gap-2">
+                                    <button onclick="beriTanggapanPost('${post.id}', 'like')" class="px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasLiked ? 'bg-blue-100 text-blue-600' : 'hover:bg-slate-100 text-slate-600'}">
+                                        👍 ${post.likes.length}
+                                    </button>
+                                    <button onclick="beriTanggapanPost('${post.id}', 'love')" class="px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasLoved ? 'bg-pink-100 text-pink-600' : 'hover:bg-slate-100 text-slate-600'}">
+                                        ❤️ ${post.loves.length}
+                                    </button>
+                                    <button onclick="beriTanggapanPost('${post.id}', 'sad')" class="px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasSaded ? 'bg-amber-100 text-amber-700' : 'hover:bg-slate-100 text-slate-600'}">
+                                        😢 ${post.sads.length}
+                                    </button>
+                                </div>
+
+                                <span class="text-[10px] text-slate-400 font-bold">${post.comments.length} Balasan</span>
+                            </div>
+
+                            <!-- KOMENTAR CONTAINER -->
+                            <div class="space-y-2 pt-1">
+                                <div class="max-h-48 overflow-y-auto pr-1">
+                                    ${commentsHTML}
+                                </div>
+
+                                <form onsubmit="tambahKomentarPost(event, '${post.id}')" class="flex items-center gap-2 pt-1">
+                                    <input type="text" id="inputKom_${post.id}" placeholder="Balas obrolan ini..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-pink-500 shadow-inner">
+                                    <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all active:scale-95 shadow-sm">Kirim</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        /* FITUR OBROLAN GRUP PRIVAT */
         function saringGrupUntukUserAktif() {
             if (isAdminMode) return listGrupChat;
 
@@ -1564,17 +2037,19 @@
                 currentGrupChat = grupTersedia[0].nama;
             }
 
-            const selectMain = document.getElementById('selectGrupChatMain');
+            const selectDrawer = document.getElementById('selectGrupChatDrawer');
             const tabsFS = document.getElementById('barGrupTabsFS');
             const listGrupModal = document.getElementById('containerDaftarGrup');
+            const lblGrupDrawer = document.getElementById('lblGrupDrawerSelected');
 
-            if (selectMain) selectMain.innerHTML = '';
+            if (selectDrawer) selectDrawer.innerHTML = '';
             if (tabsFS) tabsFS.innerHTML = '';
+            if (lblGrupDrawer) lblGrupDrawer.innerText = currentGrupChat;
 
             grupTersedia.forEach((grupObj) => {
                 const isMemberBadge = (grupObj.id !== 'semua' && !isAdminMode) ? '📌 ' : '💬 ';
-                if (selectMain) {
-                    selectMain.innerHTML += `<option value="${grupObj.nama}" ${grupObj.nama === currentGrupChat ? 'selected' : ''}>${isMemberBadge} ${grupObj.nama}</option>`;
+                if (selectDrawer) {
+                    selectDrawer.innerHTML += `<option value="${grupObj.nama}" ${grupObj.nama === currentGrupChat ? 'selected' : ''}>${isMemberBadge} ${grupObj.nama}</option>`;
                 }
 
                 if (tabsFS) {
@@ -1764,7 +2239,9 @@
         });
 
         function sisipEmojiKeInput(emoji) {
-            const inputId = activeEmojiInputTarget === 'FS' ? 'inputPesanObrolanFS' : 'inputPesanObrolan';
+            let inputId = 'inputPesanObrolanDrawer';
+            if (activeEmojiInputTarget === 'FS') inputId = 'inputPesanObrolanFS';
+
             const input = document.getElementById(inputId);
 
             if (input) {
@@ -2137,9 +2614,11 @@
             }
         }
 
-        async function kirimPesanObrolan(e, source = 'MAIN') {
+        async function kirimPesanObrolan(e, source = 'DRAWER') {
             if (e) e.preventDefault();
-            const inputId = source === 'FS' ? 'inputPesanObrolanFS' : 'inputPesanObrolan';
+            let inputId = 'inputPesanObrolanDrawer';
+            if (source === 'FS') inputId = 'inputPesanObrolanFS';
+
             const inputPesan = document.getElementById(inputId);
             const pesanText = inputPesan ? inputPesan.value.trim() : '';
             if (!pesanText || !currentNis || !DEFAULT_SCRIPT_URL) return;
@@ -2248,18 +2727,21 @@
         }
 
         function aktifkanAnimasiLonceng() {
-            const bell = document.getElementById('iconNotificationBell');
-            if (bell) { bell.classList.add('bell-animating'); }
+            const badgeDrawer = document.getElementById('badgeUnreadChatDrawer');
+            if (badgeDrawer) {
+                badgeDrawer.classList.remove('hidden');
+            }
         }
 
         function tandaiPesanSudahDibaca() {
-            const bell = document.getElementById('iconNotificationBell');
-            if (bell) { bell.classList.remove('bell-animating'); }
+            const badgeDrawer = document.getElementById('badgeUnreadChatDrawer');
+            if (badgeDrawer) {
+                badgeDrawer.classList.add('hidden');
+            }
         }
 
-        /* STRICT FILTER PESAN: MURNI HANYA TAMPILKAN PESAN DARI GRUP YANG DIPILIH */
         function renderMessagesContainer(messages) {
-            const containerMain = document.getElementById('chatMessagesContainer');
+            const containerDrawer = document.getElementById('chatMessagesContainerDrawer');
             const containerFS = document.getElementById('chatMessagesContainerFS');
 
             const filteredMessages = messages.filter(msg => {
@@ -2269,7 +2751,7 @@
 
             if (filteredMessages.length === 0) {
                 const emptyHTML = `<div class="text-center text-xs text-slate-500 italic py-6 font-medium">Belum ada obrolan di <b>${currentGrupChat}</b>.<br>Mulai kirim pesan pertama Anda!</div>`;
-                if (containerMain) containerMain.innerHTML = emptyHTML;
+                if (containerDrawer) containerDrawer.innerHTML = emptyHTML;
                 if (containerFS) containerFS.innerHTML = emptyHTML;
                 return;
             }
@@ -2298,7 +2780,7 @@
                 fullHTML += `
                     <div class="p-2.5 sm:p-3 rounded-2xl border text-xs shadow-sm ${styleClass}">
                         <div class="flex items-center justify-between gap-1 mb-1">
-                            <span class="font-extrabold text-slate-800 truncate text-[11px] sm:text-xs tracking-wide flex items-center gap-1">
+                            <span class="font-extrabold text-slate-800 truncate text-[11px] sm:text-xs tracking-wide flex items-center gap-1 cursor-pointer hover:underline" onclick="bukaProfilTeman('${msg.nis}')">
                                 ${isAdmin ? '<i class="fa-solid fa-user-shield text-purple-600 text-[10px]"></i>' : '<i class="fa-solid fa-circle-user text-pink-500 text-[10px]"></i>'}
                                 ${msg.nama}
                             </span>
@@ -2309,9 +2791,9 @@
                 `;
             });
 
-            if (containerMain) {
-                containerMain.innerHTML = fullHTML;
-                containerMain.scrollTop = containerMain.scrollHeight;
+            if (containerDrawer) {
+                containerDrawer.innerHTML = fullHTML;
+                containerDrawer.scrollTop = containerDrawer.scrollHeight;
             }
             if (containerFS) {
                 containerFS.innerHTML = fullHTML;
