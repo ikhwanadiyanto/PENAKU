@@ -93,7 +93,7 @@
             aspect-ratio: 1/1;
             position: relative;
             border-radius: 20px;
-            overflow: hidden;
+            overflow: visible;
             border: 3px solid #cbd5e1;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
@@ -103,6 +103,27 @@
             border-color: #d946ef;
             box-shadow: 0 6px 20px rgba(217, 70, 239, 0.25);
             transform: scale(1.02);
+        }
+
+        /* EFEK BERSINAR FRAME FOTO KHUSUS JUARA 1 (RATA-RATA TERTINGGI) */
+        @keyframes goldenFrameGlow {
+            0% {
+                border-color: #f59e0b;
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.6), 0 0 30px rgba(251, 191, 36, 0.3);
+            }
+            50% {
+                border-color: #fbbf24;
+                box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 0 45px rgba(251, 191, 36, 0.6);
+            }
+            100% {
+                border-color: #f59e0b;
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.6), 0 0 30px rgba(251, 191, 36, 0.3);
+            }
+        }
+
+        .photo-frame-box.top-rank-glow {
+            animation: goldenFrameGlow 2s infinite ease-in-out !important;
+            border-width: 4px !important;
         }
 
         .badge-box-grid {
@@ -154,6 +175,18 @@
         @keyframes starPulse {
             0% { transform: scale(1); filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.4)); }
             100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.8)); }
+        }
+
+        /* ANIMASI MAHKOTA BERKEDUT (JUARA 1) */
+        @keyframes crownPulseBounce {
+            0% { transform: rotate(25deg) scale(1); filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5)); }
+            50% { transform: rotate(28deg) scale(1.18); filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.8)); }
+            100% { transform: rotate(25deg) scale(1); filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5)); }
+        }
+
+        .crown-top-rank {
+            animation: crownPulseBounce 1.5s infinite ease-in-out;
+            transform-origin: center center;
         }
 
         .piggy-shine {
@@ -444,7 +477,7 @@
             </div>
 
             <div class="w-full md:w-auto flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
-                <a href="PENA MANTAP V6.html" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
+                <a href="Pena Mantap V6.html" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
                     <i class="fa-solid fa-house"></i> Kembali
                 </a>
                 
@@ -488,16 +521,24 @@
                 <div class="glass-panel p-5 sm:p-6 rounded-3xl flex flex-col items-center text-center relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-pink-100 rounded-full blur-2xl"></div>
                     
-                    <div class="w-40 h-40 sm:w-48 sm:h-48 photo-frame-box mb-4 bg-slate-100 flex items-center justify-center relative group cursor-pointer" onclick="picuUploadFotoProfilSiswa()">
-                        <img id="imgFotoSiswa" src="" alt="Foto Profil" class="w-full h-full object-cover">
+                    <div id="photoFrameBoxContainer" class="w-40 h-40 sm:w-48 sm:h-48 photo-frame-box mb-4 bg-slate-100 flex items-center justify-center relative group cursor-pointer" onclick="picuUploadFotoProfilSiswa()">
                         
-                        <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-1.5 no-print">
+                        <!-- MAHKOTA RANKING 1 (RATA-RATA HIGHEST) MILIK SISWA TERTINGGI -->
+                        <div id="badgeMahkotaTertinggi" class="hidden absolute -top-3.5 -right-3.5 z-20 crown-top-rank text-amber-400 text-3xl sm:text-4xl pointer-events-none drop-shadow-md" title="Juara 1 Rata-Rata Nilai Tertinggi!">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+
+                        <div class="w-full h-full rounded-[17px] overflow-hidden">
+                            <img id="imgFotoSiswa" src="" alt="Foto Profil" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-1.5 no-print rounded-[17px]">
                             <i class="fa-solid fa-camera text-amber-300 text-2xl sm:text-3xl"></i>
                             <span class="text-[10px] sm:text-[11px] font-black text-white uppercase tracking-wider">Unggah Foto Saya</span>
                             <span class="text-[9px] text-amber-200 font-semibold">(Otomatis Simpan Cloud)</span>
                         </div>
 
-                        <div id="statusBadge" class="absolute bottom-2 right-2 bg-emerald-500 text-white font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-md border border-white flex items-center gap-1 pointer-events-none">
+                        <div id="statusBadge" class="absolute bottom-2 right-2 bg-emerald-500 text-white font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-md border border-white flex items-center gap-1 pointer-events-none z-10">
                             <i class="fa-solid fa-circle-check"></i> Aktif
                         </div>
                     </div>
@@ -515,20 +556,26 @@
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fa-solid fa-award text-amber-500"></i> Bintang Prestasi
                             </span>
-                            <span id="lblTotalBintang" class="text-lg sm:text-xl font-black text-amber-600">0 ⭐</span>
+                            <!-- HANYA MUNCUL DI ATAS KHUSUS ADMIN -->
+                            <span id="lblTotalBintang" class="admin-only text-lg sm:text-xl font-black text-amber-600">0 ⭐</span>
                         </div>
                         
                         <div class="bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200 flex items-center justify-between gap-3 shadow-sm">
-                            <div class="text-3xl sm:text-4xl text-amber-500 star-shine">
+                            <div class="text-3xl sm:text-4xl text-amber-500 star-shine shrink-0">
                                 <i class="fa-solid fa-star"></i>
                             </div>
-                            <div class="text-left flex-1">
-                                <p class="text-xs font-semibold text-slate-800">Poin Bintang Kebaikan</p>
-                                <p class="text-[10px] sm:text-[11px] text-slate-500">Apresiasi khusus dari guru</p>
+                            <div class="text-left flex-1 min-w-0">
+                                <p class="text-xs font-semibold text-slate-800 truncate">Poin Bintang Kebaikan</p>
+                                <p class="text-[10px] sm:text-[11px] text-slate-500 hidden xs:block truncate">Apresiasi khusus dari guru</p>
                             </div>
-                            <div class="admin-only flex items-center gap-1 no-print">
+                            <div class="admin-only flex items-center gap-1 no-print shrink-0">
                                 <button onclick="ubahBintang(-1)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white hover:bg-rose-500 text-rose-500 hover:text-white font-bold text-base transition-all flex items-center justify-center border border-slate-200 active:scale-90 shadow-sm">-</button>
                                 <button onclick="ubahBintang(1)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white hover:bg-emerald-500 text-emerald-600 hover:text-white font-bold text-base transition-all flex items-center justify-center border border-slate-200 active:scale-90 shadow-sm">+</button>
+                            </div>
+                            <div class="student-only flex items-center gap-1 shrink-0">
+                                <span id="lblTotalBintangInside" class="text-2xl sm:text-3xl font-black text-amber-500 flex items-center gap-1 drop-shadow-sm">
+                                    0 <i class="fa-solid fa-star text-amber-400 text-xl sm:text-2xl"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -563,8 +610,8 @@
                         <span id="lblBadgeLevelName" class="text-xs font-black px-3 py-1 rounded-lg bg-pink-100 text-pink-700 border border-pink-200">Level 1</span>
                     </div>
 
-                    <div id="lblLevelTitle" class="text-base sm:text-lg font-black text-slate-800 mb-1">Novice Student</div>
-                    <p id="lblLevelDesc" class="text-xs text-slate-600 mb-4">Level diperbarui otomatis berdasarkan capaian rata-rata nilai mata pelajaran.</p>
+                    <div id="lblLevelTitle" class="text-base sm:text-lg font-black text-slate-800 mb-1">🌱 Tunas Bintang Cilik</div>
+                    <p id="lblLevelDesc" class="text-xs text-slate-600 mb-4">Ayo mulai petualangan belajarmu dengan senyuman ceria!</p>
 
                     <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden border border-slate-200 p-0.5">
                         <div id="barExpFill" class="xp-bar-fill h-full bg-gradient-to-r from-amber-400 via-pink-500 to-emerald-400 rounded-full" style="width: 0%"></div>
@@ -884,6 +931,7 @@
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-300";
                 
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+                document.querySelectorAll('.student-only').forEach(el => el.style.display = 'none');
                 selectDropdown.disabled = false;
                 
                 if (!currentNis && listMasterSiswa.length > 0) {
@@ -908,6 +956,7 @@
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300";
 
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.student-only').forEach(el => el.style.display = '');
                 selectDropdown.disabled = true;
             }
 
@@ -994,11 +1043,54 @@
             tarikPesanObrolan();
         }
 
+        /* MENENTUKAN SISWA TERTINGGI UNTUK MAHKOTA & FRAME BERSINAR JUARA 1 */
+        function updateTampilanSiswaTertinggi() {
+            let maxAvg = -1;
+            let highestNis = null;
+
+            listMasterSiswa.forEach(s => {
+                const nisKey = String(s[0]);
+                const pData = dbProfilDetail[nisKey];
+                if (pData && pData.nilai) {
+                    let total = 0;
+                    let count = 0;
+                    MAPEL_LIST.forEach(m => {
+                        if (pData.nilai[m.id] !== undefined && pData.nilai[m.id] !== '' && !isNaN(pData.nilai[m.id])) {
+                            total += parseFloat(pData.nilai[m.id]);
+                            count++;
+                        }
+                    });
+                    const avg = count > 0 ? (total / count) : 0;
+                    if (avg > maxAvg && avg > 0) {
+                        maxAvg = avg;
+                        highestNis = nisKey;
+                    }
+                }
+            });
+
+            const mahkotaEl = document.getElementById('badgeMahkotaTertinggi');
+            const frameBoxEl = document.getElementById('photoFrameBoxContainer');
+
+            if (currentNis && highestNis && String(currentNis) === String(highestNis)) {
+                if (mahkotaEl) mahkotaEl.classList.remove('hidden');
+                if (frameBoxEl) frameBoxEl.classList.add('top-rank-glow');
+            } else {
+                if (mahkotaEl) mahkotaEl.classList.add('hidden');
+                if (frameBoxEl) frameBoxEl.classList.remove('top-rank-glow');
+            }
+        }
+
         function renderProfilSiswa(nis) {
             const pData = dbProfilDetail[nis] || {};
 
             document.getElementById('imgFotoSiswa').src = pData.fotoProfil ? pData.fotoProfil : DEFAULT_AVATAR;
-            document.getElementById('lblTotalBintang').innerText = `${pData.bintang || 0} ⭐`;
+            const bnt = pData.bintang || 0;
+            document.getElementById('lblTotalBintang').innerText = `${bnt} ⭐`;
+            
+            const elInside = document.getElementById('lblTotalBintangInside');
+            if (elInside) {
+                elInside.innerHTML = `${bnt} <i class="fa-solid fa-star text-amber-400 text-xl sm:text-2xl"></i>`;
+            }
 
             const saldoTabungan = pData.tabungan !== undefined ? pData.tabungan : (dbTabunganSiswa[nis] !== undefined ? dbTabunganSiswa[nis] : 0);
             document.getElementById('lblSaldoTabungan').innerText = formatRupiah(saldoTabungan);
@@ -1007,6 +1099,7 @@
             renderPelanggaran(pData.pelanggaran || []);
             renderMapelInputs(pData.nilai || {});
             hitungKalkulasiLevel(pData.nilai || {});
+            updateTampilanSiswaTertinggi();
         }
 
         function picuUploadFotoProfilSiswa() {
@@ -1777,6 +1870,10 @@
 
             simpanSemuaData();
             document.getElementById('lblTotalBintang').innerText = `${pData.bintang} ⭐`;
+            const elInside = document.getElementById('lblTotalBintangInside');
+            if (elInside) {
+                elInside.innerHTML = `${pData.bintang} <i class="fa-solid fa-star text-amber-400 text-xl sm:text-2xl"></i>`;
+            }
         }
 
         function renderPelanggaran(listPelanggaran) {
@@ -1903,6 +2000,7 @@
             playBeepSound(800, 'sine', 0.08);
             simpanSemuaData();
             hitungKalkulasiLevel(pData.nilai);
+            updateTampilanSiswaTertinggi();
         }
 
         function hitungKalkulasiLevel(nilaiObj) {
@@ -1921,36 +2019,61 @@
             document.getElementById('lblRataRataVal').innerText = avgFormatted;
 
             let levelBadge = "Level 1";
-            let levelTitle = "Novice Student";
-            let levelDesc = "Peningkatan nilai awal pembelajaran.";
-            let expPercent = (avgRaw / 60) * 100;
+            let levelTitle = "🌱 Tunas Bintang Cilik";
+            let levelDesc = "Ayo mulai petualangan belajarmu dengan senyuman ceria!";
+            let expPercent = (avgRaw / 10) * 100;
 
             if (avgRaw >= 90) {
-                levelBadge = "Level 5";
-                levelTitle = "💎 Diamond Legend";
-                levelDesc = "Siswa unggulan berprestasi puncak sempurna!";
-                expPercent = 100;
-            } else if (avgRaw >= 82) {
-                levelBadge = "Level 4";
-                levelTitle = "🥇 Gold Master Scholar";
-                levelDesc = "Sangat menguasai seluruh indikator mata pelajaran.";
-                expPercent = ((avgRaw - 82) / (90 - 82)) * 100;
-            } else if (avgRaw >= 75) {
-                levelBadge = "Level 3";
-                levelTitle = "🥈 Silver Scholar";
-                levelDesc = "Pencapaian akademis yang sangat solid & baik.";
-                expPercent = ((avgRaw - 75) / (82 - 75)) * 100;
+                levelBadge = "Level 10";
+                levelTitle = "👑 Maharaja Bintang Utama";
+                levelDesc = "Luar Biasa! Kamu adalah Bintang Paling Bersinar di Kelas!";
+                expPercent = ((avgRaw - 90) / (100 - 90)) * 100;
+            } else if (avgRaw >= 80) {
+                levelBadge = "Level 9";
+                levelTitle = "🦄 Pahlawan Pelangi Ceria";
+                levelDesc = "Hebat banget! Pintar dan selalu mewarnai kelas dengan ceria!";
+                expPercent = ((avgRaw - 80) / (90 - 80)) * 100;
+            } else if (avgRaw >= 70) {
+                levelBadge = "Level 8";
+                levelTitle = "🚀 Astronot Roket Super";
+                levelDesc = "Keren! Nilaimu melesat tinggi menembus angkasa!";
+                expPercent = ((avgRaw - 70) / (80 - 70)) * 100;
             } else if (avgRaw >= 60) {
+                levelBadge = "Level 7";
+                levelTitle = "🐱 Ksatria Kucing Manis";
+                levelDesc = "Pintar dan gesit! Terus tingkatkan prestasimu ya!";
+                expPercent = ((avgRaw - 60) / (70 - 60)) * 100;
+            } else if (avgRaw >= 50) {
+                levelBadge = "Level 6";
+                levelTitle = "🦊 Rubah Cerdik Hebat";
+                levelDesc = "Wah, kamu semakin cerdas dan jago menyelesaikan tugas!";
+                expPercent = ((avgRaw - 50) / (60 - 50)) * 100;
+            } else if (avgRaw >= 40) {
+                levelBadge = "Level 5";
+                levelTitle = "🐼 Panda Rajin Belajar";
+                levelDesc = "Kerja bagus! Semangat belajarmu patut diacungi jempol!";
+                expPercent = ((avgRaw - 40) / (50 - 40)) * 100;
+            } else if (avgRaw >= 30) {
+                levelBadge = "Level 4";
+                levelTitle = "🐧 Pinguin Pintar Ceria";
+                levelDesc = "Asyik! Langkah belajarmu semakin mantap setiap hari!";
+                expPercent = ((avgRaw - 30) / (40 - 30)) * 100;
+            } else if (avgRaw >= 20) {
+                levelBadge = "Level 3";
+                levelTitle = "🐣 Anak Ayam Berkilau";
+                levelDesc = "Ayo terus terbang tinggi, kamu pasti bisa jadi juara!";
+                expPercent = ((avgRaw - 20) / (30 - 20)) * 100;
+            } else if (avgRaw >= 10) {
                 levelBadge = "Level 2";
-                levelTitle = "🥉 Bronze Learner";
-                levelDesc = "Tingkat tuntas standar minimal kriteria.";
-                expPercent = ((avgRaw - 60) / (75 - 60)) * 100;
+                levelTitle = "🐰 Kelinci Lompat Cepat";
+                levelDesc = "Semangat! Pelan-pelan lompat meraih nilai terbaikmu!";
+                expPercent = ((avgRaw - 10) / (20 - 10)) * 100;
             }
 
             document.getElementById('lblBadgeLevelName').innerText = levelBadge;
             document.getElementById('lblLevelTitle').innerText = levelTitle;
             document.getElementById('lblLevelDesc').innerText = levelDesc;
-            document.getElementById('barExpFill').style.width = `${Math.min(100, expPercent)}%`;
+            document.getElementById('barExpFill').style.width = `${Math.min(100, Math.max(0, expPercent))}%`;
             document.getElementById('lblExpTargetText').innerText = `Target: ${avgFormatted} / 100 Poin`;
 
             return { levelBadge, levelTitle, avg: avgFormatted };
