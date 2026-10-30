@@ -3,10 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PENA-KU - Pengelolaan Nilai & Administrasi Kelas Unggul</title>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>PENA-KU - Pengelolaan Nilai & Administrasi Kelas Unggulan</title>
+    
+    <!-- Typography & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
+        :root {
+            --primary-blue: #1e3799;
+            --primary-dark: #0c2461;
+            --accent-cyan: #00d2d3;
+            --accent-coral: #ff6b6b;
+            --card-glass: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 10px 25px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.12);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,82 +37,67 @@
         body, html {
             min-height: 100vh;
             width: 100%;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #ffd1ff 50%, #a1c4fd 75%, #c2ffd8 100%);
-            background-size: 300% 300%;
-            animation: gradientBG 15s ease infinite;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(30, 55, 153, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 107, 107, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 210, 211, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(72, 219, 251, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #1e293b;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
+            padding: 20px 30px;
             overflow-x: hidden;
-            position: relative;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Floating Sweet Bubbles */
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: float 10s infinite ease-in-out;
-            z-index: 1;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-            50% { transform: translateY(-40px) scale(1.15) rotate(15deg); }
-        }
-
-        /* Top Bar & Hamburger Button */
+        /* TOP NAVIGATION BAR */
         .header-bar {
             width: 100%;
-            max-width: 1600px;
+            max-width: 1500px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
 
         .drawer-toggle-btn {
-            background: rgba(255, 255, 255, 0.95);
-            border: 3px solid #ffffff;
-            color: #1e3799;
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: var(--primary-blue);
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(30, 55, 153, 0.2);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
         }
 
         .drawer-toggle-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: #1e3799;
-            color: white;
+            background: var(--primary-blue);
+            color: #ffffff;
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .top-user-bar {
             display: flex;
             align-items: center;
-            gap: 14px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 10px 22px;
-            border-radius: 35px;
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.18);
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 10px 8px 20px;
+            border-radius: 40px;
+            box-shadow: var(--shadow-sm);
             backdrop-filter: blur(12px);
-            border: 3px solid #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         .user-info {
@@ -100,54 +105,61 @@
             align-items: center;
             gap: 10px;
             font-weight: 600;
-            color: #2f3542;
-            font-size: 1rem;
+            color: #334155;
+            font-size: 0.92rem;
         }
 
         .user-info i {
-            color: #ff6b6b;
-            font-size: 1.2rem;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
         }
 
         .btn-auth {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-            color: white;
+            background: var(--primary-blue);
+            color: #ffffff;
             border: none;
             padding: 10px 22px;
-            border-radius: 25px;
-            font-family: 'Poppins', sans-serif;
+            border-radius: 30px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.35);
+            box-shadow: 0 4px 12px rgba(30, 55, 153, 0.25);
         }
 
         .btn-auth:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(30, 55, 153, 0.35);
         }
 
         .btn-logout {
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            background: #ef4444;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
         }
 
-        /* SLIDE-OUT DRAWER MENU */
+        .btn-logout:hover {
+            background: #dc2626;
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+        }
+
+        /* SLIDE DRAWER NAVIGATION */
         .drawer-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(6px);
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
             z-index: 998;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .drawer-overlay.active {
@@ -159,15 +171,15 @@
             position: fixed;
             top: 0;
             left: -380px;
-            width: 360px;
+            width: 350px;
             height: 100%;
             background: #ffffff;
             z-index: 999;
-            box-shadow: 10px 0 35px rgba(0, 0, 0, 0.2);
-            transition: left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-lg);
+            transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
-            padding: 25px;
+            padding: 28px 24px;
             overflow-y: auto;
         }
 
@@ -179,258 +191,226 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #edf2f7;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .drawer-title {
-            font-family: 'Comic Neue', cursive;
-            font-size: 1.8rem;
-            color: #1e3799;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            color: #0f172a;
             font-weight: 700;
         }
 
         .drawer-close {
-            background: #edf2f7;
-            border: none;
-            width: 38px;
-            height: 38px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #4a5568;
+            color: #64748b;
             cursor: pointer;
-            font-size: 1.1rem;
             transition: all 0.2s;
         }
 
         .drawer-close:hover {
-            background: #ffe3e3;
-            color: #ff4757;
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #fca5a5;
         }
 
         .drawer-profile-box {
-            background: linear-gradient(135deg, #f0f4ff, #e2e8f0);
+            background: #f8fafc;
             padding: 18px;
-            border-radius: 20px;
-            margin-bottom: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 14px;
-            border: 2px solid #ffffff;
+            border: 1px solid #e2e8f0;
         }
 
         .drawer-profile-avatar {
-            width: 50px;
-            height: 50px;
-            background: #45aaf2;
-            color: white;
-            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            background: rgba(30, 55, 153, 0.1);
+            color: var(--primary-blue);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
-            box-shadow: 0 4px 10px rgba(69, 170, 242, 0.3);
+            font-size: 1.3rem;
         }
 
         .drawer-profile-info h4 {
-            font-size: 1rem;
-            color: #2d3748;
+            font-size: 0.95rem;
+            color: #0f172a;
             font-weight: 700;
         }
 
         .drawer-profile-info p {
-            font-size: 0.82rem;
-            color: #718096;
+            font-size: 0.8rem;
+            color: #64748b;
         }
 
         .drawer-menu-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
             flex-grow: 1;
         }
 
         .drawer-menu-item a {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 14px 18px;
-            background: #f8fafc;
-            border-radius: 16px;
-            color: #2d3748;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #ffffff;
+            border-radius: var(--radius-sm);
+            color: #334155;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            border: 2px solid transparent;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border: 1px solid #f1f5f9;
         }
 
         .drawer-menu-item a:hover {
-            background: #edf2f7;
-            color: #1e3799;
-            border-color: #cbd5e0;
-            transform: translateX(6px);
+            background: #f8fafc;
+            color: var(--primary-blue);
+            border-color: #cbd5e1;
+            transform: translateX(4px);
         }
 
         .drawer-menu-item a i {
-            font-size: 1.2rem;
-            color: #45aaf2;
-            width: 24px;
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+            width: 20px;
             text-align: center;
         }
 
-        /* MAIN CONTAINER */
+        /* MAIN APP CONTAINER */
         .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.93);
-            padding: 35px 50px 45px 50px;
-            border-radius: 40px;
-            backdrop-filter: blur(18px);
-            box-shadow: 0 25px 70px rgba(255, 107, 107, 0.2);
-            border: 5px solid #ffffff;
             width: 100%;
-            max-width: 1600px;
+            max-width: 1500px;
+            background: var(--card-glass);
+            padding: 40px 50px;
+            border-radius: 32px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--card-border);
             position: relative;
             z-index: 2;
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.88); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Joyful Emoji Header & Animations */
-        .emoji-header-container {
+        .header-brand {
+            text-align: center;
+            margin-bottom: 35px;
             display: flex;
-            justify-content: center;
-            gap: 18px;
-            margin-bottom: 8px;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .animated-emoji {
-            font-size: 3.8rem;
-            display: inline-block;
-            filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.15));
-            user-select: none;
+        /* LOGO STYLING */
+        .app-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 6px 12px rgba(30, 55, 153, 0.15));
+            animation: floatLogo 4s ease-in-out infinite;
         }
 
-        .bounce-emoji {
-            animation: pointingBounce 1.5s infinite ease-in-out;
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
         }
 
-        .spin-emoji {
-            animation: spinEmoji 4s infinite linear;
-        }
-
-        .wave-emoji {
-            animation: waveEmoji 2s infinite ease-in-out;
-            transform-origin: 70% 70%;
-        }
-
-        @keyframes pointingBounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(14px) scale(1.15); }
-        }
-
-        @keyframes spinEmoji {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes waveEmoji {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(20deg); }
-            75% { transform: rotate(-15deg); }
-        }
-
-        /* Title Styling */
-        h1 {
-            font-family: 'Comic Neue', cursive;
+        .app-badge-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(30, 55, 153, 0.08);
+            color: var(--primary-blue);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.82rem;
             font-weight: 700;
-            font-size: 3rem;
-            color: #1e3799;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
             text-transform: uppercase;
-            text-shadow: 3px 3px 0px #f6e58d;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            animation: titleGlow 3s ease-in-out infinite alternate;
         }
 
-        @keyframes titleGlow {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.02); }
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
         }
 
         .subtitle {
-            font-size: 1.3rem;
-            color: #3867d6;
-            font-weight: 700;
-            margin-bottom: 30px;
-            background: linear-gradient(90deg, #1e3799, #0984e3, #00b894, #e17055);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbowText 8s linear infinite;
-        }
-
-        @keyframes rainbowText {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
+            font-size: 1.05rem;
+            color: #64748b;
+            font-weight: 500;
         }
 
         .section-title {
-            font-family: 'Comic Neue', cursive;
-            font-size: 2rem;
-            color: #2f3542;
-            text-align: left;
-            margin-bottom: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            color: #0f172a;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
         }
 
-        /* RESPONSIVE GRID 3x2 (Adapted for Laptop & IFP & Mobile) */
+        .section-title i {
+            color: var(--primary-blue);
+        }
+
+        /* GRID LAYOUT (RESPONSIVE 3 COLUMNS) */
         .grid-3x2 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
+            gap: 22px;
             width: 100%;
         }
 
+        /* PROFESSIONAL CARDS */
         .card-kelas, .card-music {
             display: flex;
-            flex-direction: row;
             align-items: center;
-            justify-content: flex-start;
-            padding: 26px 32px;
-            border-radius: 30px;
+            padding: 24px 28px;
+            border-radius: var(--radius-lg);
             text-decoration: none;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid #ffffff;
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            gap: 25px;
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .card-kelas i.main-icon, .card-music i.main-icon {
-            font-size: 3.4rem;
-            transition: transform 0.35s ease;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-            min-width: 65px;
+            font-size: 2.6rem;
+            transition: transform 0.3s ease;
+            min-width: 55px;
             text-align: center;
         }
 
@@ -438,203 +418,169 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            text-align: left;
+            z-index: 2;
         }
 
         .card-kelas span.title, .card-music span.title {
-            font-family: 'Comic Neue', cursive;
-            font-size: 2.1rem;
-            line-height: 1.1;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
         }
 
         .card-kelas span.desc, .card-music span.desc {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.92rem;
-            font-weight: 500;
-            opacity: 0.92;
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.9;
             margin-top: 4px;
         }
 
-        /* Class Colors */
-        .kelas-1 { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); }
-        .kelas-2 { background: linear-gradient(135deg, #ff9f43, #ffbd7a); }
-        .kelas-3 { background: linear-gradient(135deg, #feca57, #ffdd67); }
-        .kelas-4 { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
-        .kelas-5 { background: linear-gradient(135deg, #48dbfb, #00d2d3); }
-        .kelas-6 { background: linear-gradient(135deg, #54a0ff, #5f27cd); }
+        /* Subtle Gradients */
+        .kelas-1 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .kelas-2 { background: linear-gradient(135deg, #0ea5e9, #0369a1); }
+        .kelas-3 { background: linear-gradient(135deg, #10b981, #047857); }
+        .kelas-4 { background: linear-gradient(135deg, #f59e0b, #b45309); }
+        .kelas-5 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .kelas-6 { background: linear-gradient(135deg, #ec4899, #be185d); }
 
-        /* Music Colors */
-        .music-pianika { background: linear-gradient(135deg, #ff9ff3, #feca57); }
-        .music-angklung { background: linear-gradient(135deg, #48dbfb, #0abde3); }
-        .music-extra1 { background: linear-gradient(135deg, #ff6b81, #ff4757); }
-        .music-extra2 { background: linear-gradient(135deg, #10ac84, #1dd1a1); }
-        .music-extra3 { background: linear-gradient(135deg, #5f27cd, #341f97); }
-        .music-extra4 { background: linear-gradient(135deg, #ffa502, #ff7f50); }
+        .music-pianika { background: linear-gradient(135deg, #0284c7, #0369a1); }
+        .music-angklung { background: linear-gradient(135deg, #059669, #047857); }
+        .music-extra1 { background: linear-gradient(135deg, #dc2626, #991b1b); }
+        .music-extra2 { background: linear-gradient(135deg, #d97706, #92400e); }
+        .music-extra3 { background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+        .music-extra4 { background: linear-gradient(135deg, #0d9488, #115e59); }
 
-        /* Locked or Offline Styling */
+        .card-music:not(.offline-file):hover, .card-kelas:not(.locked):hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-music:not(.offline-file):hover i.main-icon, .card-kelas:not(.locked):hover i.main-icon {
+            transform: scale(1.1);
+        }
+
+        /* LOCKED & OFFLINE STATES */
         .card-music.offline-file, .card-kelas.locked {
-            background: linear-gradient(135deg, rgba(178, 190, 195, 0.8), rgba(99, 110, 114, 0.9)) !important;
-            backdrop-filter: blur(6px);
+            background: linear-gradient(135deg, #94a3b8, #64748b) !important;
             cursor: not-allowed !important;
             opacity: 0.85;
         }
 
         .card-music.offline-file:hover, .card-kelas.locked:hover {
             transform: none !important;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
+            box-shadow: var(--shadow-sm) !important;
         }
 
         .status-badge {
             position: absolute;
-            top: 15px;
-            right: 18px;
-            background: rgba(0, 0, 0, 0.45);
-            padding: 5px 14px;
+            top: 14px;
+            right: 16px;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 6px;
             color: #ffffff;
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 3;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
-        .status-badge i {
-            color: #ff7675;
-            font-size: 0.88rem;
-        }
-
-        @keyframes musicBounceAnim {
-            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-            25% { transform: translateY(-6px) rotate(-8deg) scale(1.1); }
-            75% { transform: translateY(-6px) rotate(8deg) scale(1.1); }
-        }
-
-        .animated-music-icon {
-            animation: musicBounceAnim 2s infinite ease-in-out;
-        }
-
-        .card-music:not(.offline-file):hover, .card-kelas:not(.locked):hover {
-            transform: translateY(-8px) scale(1.025);
-            box-shadow: 0 20px 38px rgba(0,0,0,0.22);
-        }
-
-        .card-kelas::after, .card-music::after {
-            content: '';
-            position: absolute;
-            top: -25px;
-            right: -25px;
-            width: 95px;
-            height: 95px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-        }
-
-        /* e-PR Section */
+        /* e-PR BANNER SECTION */
         .epr-section-wrapper {
-            margin-top: 25px;
+            margin-top: 30px;
             width: 100%;
         }
 
         .card-epr {
             display: flex;
-            flex-direction: row;
             align-items: center;
-            justify-content: flex-start;
-            padding: 22px 32px;
-            border-radius: 26px;
+            padding: 24px 32px;
+            border-radius: var(--radius-lg);
             text-decoration: none;
-            color: white;
-            font-weight: bold;
-            background: linear-gradient(135deg, #e056fd, #686de0);
-            box-shadow: 0 10px 25px rgba(104, 109, 224, 0.3);
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid #ffffff;
+            color: #ffffff;
+            background: linear-gradient(135deg, #1e3799, #3c6382);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            gap: 25px;
+            gap: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .card-epr i {
-            font-size: 3rem;
-            transition: transform 0.35s ease;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-            min-width: 65px;
+            font-size: 2.8rem;
+            min-width: 55px;
             text-align: center;
+            transition: transform 0.3s ease;
         }
 
         .card-epr .card-info {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            text-align: left;
         }
 
         .card-epr span.title {
-            font-family: 'Comic Neue', cursive;
-            font-size: 1.9rem;
-            line-height: 1.1;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .card-epr span.desc {
-            font-family: 'Poppins', sans-serif;
             font-size: 0.88rem;
-            font-weight: 500;
-            opacity: 0.92;
-            margin-top: 2px;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: 4px;
         }
 
         .card-epr:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 16px 32px rgba(104, 109, 224, 0.4);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
         }
 
         .card-epr:hover i {
-            transform: scale(1.15) rotate(10deg);
+            transform: scale(1.1);
         }
 
-        /* Footer */
+        /* FOOTER BRANDING */
         .footer-bar {
             width: 100%;
-            max-width: 1600px;
+            max-width: 1500px;
             display: flex;
             justify-content: flex-end;
-            margin-top: 15px;
+            margin-top: 20px;
             z-index: 10;
         }
 
         .developer-badge {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            color: #4b6584;
-            background: rgba(255, 255, 255, 0.92);
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.8);
             padding: 8px 18px;
-            border-radius: 18px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-            border: 2px solid #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
             backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-sm);
         }
 
         .developer-badge strong {
-            color: #2d3436;
+            color: #0f172a;
             font-weight: 700;
         }
 
-        /* LOGIN MODAL */
+        /* LOGIN FORM MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.65);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(8px);
             display: flex;
             justify-content: center;
@@ -653,62 +599,61 @@
         .login-card {
             background: #ffffff;
             width: 90%;
-            max-width: 440px;
-            border-radius: 30px;
-            padding: 40px 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 4px solid #ffffff;
+            max-width: 420px;
+            border-radius: 28px;
+            padding: 36px 32px;
+            box-shadow: var(--shadow-lg);
             position: relative;
-            transform: scale(0.8) translateY(20px);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.95);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .modal-overlay.active .login-card {
-            transform: scale(1) translateY(0);
+            transform: scale(1);
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .login-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-            color: #2b569a;
+            width: 60px;
+            height: 60px;
+            background: rgba(30, 55, 153, 0.08);
+            color: var(--primary-blue);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 15px auto;
-            box-shadow: 0 8px 15px rgba(161, 196, 253, 0.4);
+            font-size: 1.5rem;
+            margin: 0 auto 14px auto;
         }
 
         .login-header h2 {
-            font-family: 'Comic Neue', cursive;
-            font-size: 2rem;
-            color: #2d3748;
-            margin-bottom: 5px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: #0f172a;
+            font-weight: 700;
         }
 
         .login-header p {
-            color: #718096;
-            font-size: 0.9rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 4px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 8px;
+            color: #334155;
+            margin-bottom: 6px;
         }
 
         .input-wrapper {
@@ -719,28 +664,28 @@
 
         .input-icon {
             position: absolute;
-            left: 16px;
-            color: #a0aec0;
-            font-size: 1.1rem;
+            left: 14px;
+            color: #94a3b8;
+            font-size: 1rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 13px 45px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            color: #2d3748;
+            padding: 12px 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: #0f172a;
             background-color: #f8fafc;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #45aaf2;
+            border-color: var(--primary-blue);
             background-color: #ffffff;
-            box-shadow: 0 0 0 4px rgba(69, 170, 242, 0.15);
+            box-shadow: 0 0 0 3px rgba(30, 55, 153, 0.12);
         }
 
         .btn-toggle-pwd {
@@ -749,19 +694,14 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 6px 8px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            font-size: 1.1rem;
-            color: #718096;
+            color: #64748b;
+            font-size: 0.95rem;
         }
 
         .remember-group {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
-            font-size: 0.88rem;
+            margin-bottom: 22px;
         }
 
         .checkbox-container {
@@ -769,44 +709,36 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: #4a5568;
-            user-select: none;
+            color: #475569;
+            font-size: 0.82rem;
             font-weight: 500;
-        }
-
-        .checkbox-container input {
-            width: 18px;
-            height: 18px;
-            accent-color: #ff6b6b;
-            cursor: pointer;
-            border-radius: 4px;
         }
 
         .btn-submit-login {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            border-radius: var(--radius-sm);
+            background: var(--primary-blue);
             color: white;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.92rem;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(30, 55, 153, 0.25);
+            transition: all 0.2s ease;
         }
 
         .btn-submit-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 25px rgba(255, 107, 107, 0.4);
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
         .btn-close-modal {
             position: absolute;
-            top: 18px;
-            right: 20px;
-            background: #edf2f7;
+            top: 16px;
+            right: 16px;
+            background: #f1f5f9;
             border: none;
             width: 32px;
             height: 32px;
@@ -814,30 +746,30 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #718096;
+            color: #64748b;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn-close-modal:hover {
-            background: #e2e8f0;
-            color: #e53e3e;
+            background: #fee2e2;
+            color: #ef4444;
         }
 
         .alert-error {
-            background-color: #fff5f5;
-            border-left: 4px solid #f56565;
-            color: #c53030;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            margin-bottom: 18px;
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            margin-bottom: 16px;
             display: none;
             align-items: center;
             gap: 8px;
         }
 
-        /* CUSTOM ALERT MESSAGE BOX (No browser alert) */
+        /* CUSTOM NOTIFICATION DIALOG */
         .custom-alert-overlay {
             position: fixed;
             top: 0;
@@ -845,14 +777,14 @@
             width: 100%;
             height: 100%;
             background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
 
         .custom-alert-overlay.active {
@@ -863,14 +795,13 @@
         .custom-alert-box {
             background: #ffffff;
             width: 85%;
-            max-width: 380px;
-            padding: 30px 25px;
-            border-radius: 25px;
+            max-width: 360px;
+            padding: 28px 24px;
+            border-radius: 24px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            border: 4px solid #ffffff;
-            transform: scale(0.85);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .custom-alert-overlay.active .custom-alert-box {
@@ -878,92 +809,73 @@
         }
 
         .custom-alert-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
         }
 
         .custom-alert-title {
-            font-family: 'Comic Neue', cursive;
-            font-size: 1.6rem;
-            color: #1e3799;
-            margin-bottom: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
         .custom-alert-msg {
-            font-size: 0.95rem;
-            color: #4a5568;
+            font-size: 0.88rem;
+            color: #475569;
             margin-bottom: 20px;
             line-height: 1.5;
         }
 
         .custom-alert-btn {
-            background: linear-gradient(135deg, #1e3799, #45aaf2);
+            background: var(--primary-blue);
             color: white;
             border: none;
-            padding: 10px 25px;
-            border-radius: 16px;
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
             font-weight: 600;
+            font-size: 0.88rem;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(30, 55, 153, 0.3);
-            transition: transform 0.2s;
+            transition: background 0.2s;
         }
 
         .custom-alert-btn:hover {
-            transform: scale(1.05);
+            background: var(--primary-dark);
         }
 
-        /* RESPONSIVE BREAKPOINTS (LAPTOP, MOBILE, IFP) */
-        @media (min-width: 1400px) {
-            .container { padding: 45px 70px 55px 70px; }
-            h1 { font-size: 3.4rem; }
-            .grid-3x2 { gap: 30px; }
-        }
-
+        /* MEDIA QUERIES (RESPONSIVE DESIGN) */
         @media (max-width: 1200px) {
-            .grid-3x2 {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+            .grid-3x2 { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 768px) {
             body, html { padding: 12px; }
-            .grid-3x2 {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            .card-kelas, .card-music, .card-epr {
-                padding: 20px 24px;
-            }
-            h1 { font-size: 2.1rem; }
-            .subtitle { font-size: 1.05rem; }
-            .container { padding: 25px 18px; }
+            .container { padding: 24px 20px; border-radius: 24px; }
+            .grid-3x2 { grid-template-columns: 1fr; gap: 14px; }
+            .card-kelas, .card-music, .card-epr { padding: 18px 20px; }
+            h1 { font-size: 1.8rem; }
+            .subtitle { font-size: 0.92rem; }
             .footer-bar { justify-content: center; }
-            .animated-emoji { font-size: 3rem; }
             .slide-drawer { width: 300px; left: -320px; }
+            .app-logo { width: 80px; height: 80px; }
         }
 
-        /* IFP (Interactive Flat Panel) Touch Optimization Mode */
+        /* Interactive Flat Panel (IFP) Touch Optimization */
         @media (min-width: 1800px) {
-            body { font-size: 1.15rem; }
-            .card-kelas, .card-music, .card-epr { padding: 32px 40px; border-radius: 35px; }
-            .card-kelas span.title, .card-music span.title { font-size: 2.5rem; }
-            .card-kelas i.main-icon, .card-music i.main-icon { font-size: 4rem; }
-            .drawer-toggle-btn { width: 64px; height: 64px; font-size: 1.7rem; }
+            .container { padding: 50px 60px; }
+            .card-kelas, .card-music, .card-epr { padding: 30px 36px; }
+            .card-kelas span.title, .card-music span.title { font-size: 1.8rem; }
+            .card-kelas i.main-icon, .card-music i.main-icon { font-size: 3.2rem; }
+            .app-logo { width: 120px; height: 120px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Sweet Bubbles Background -->
-    <div class="bubble" style="width: 110px; height: 110px; top: 6%; left: 4%; background: rgba(255, 182, 193, 0.45); animation-duration: 9s;"></div>
-    <div class="bubble" style="width: 150px; height: 150px; bottom: 8%; left: 5%; background: rgba(173, 216, 230, 0.45); animation-duration: 13s;"></div>
-    <div class="bubble" style="width: 120px; height: 120px; top: 12%; right: 5%; background: rgba(255, 218, 185, 0.45); animation-duration: 10s;"></div>
-    <div class="bubble" style="width: 90px; height: 90px; bottom: 15%; right: 8%; background: rgba(221, 160, 221, 0.45); animation-duration: 8s;"></div>
-
-    <!-- Header Bar with Drawer Toggle & User Info -->
+    <!-- Header Navigation -->
     <div class="header-bar">
-        <button class="drawer-toggle-btn" onclick="toggleDrawer()" title="Buka Menu Laci">
+        <button class="drawer-toggle-btn" onclick="toggleDrawer()" title="Menu Navigasi">
             <i class="fa-solid fa-bars"></i>
         </button>
 
@@ -979,11 +891,11 @@
         </div>
     </div>
 
-    <!-- SLIDE-OUT DRAWER MENU -->
+    <!-- Slide Drawer Menu -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <div class="slide-drawer" id="slideDrawer">
         <div class="drawer-header">
-            <h3 class="drawer-title">📌 Laci Menu PENA-KU</h3>
+            <h3 class="drawer-title">Navigasi Sistem</h3>
             <button class="drawer-close" onclick="toggleDrawer()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -995,19 +907,19 @@
             </div>
             <div class="drawer-profile-info">
                 <h4 id="drawerUserName">Status: Tamu</h4>
-                <p>Pusat Administrasi & Nilai</p>
+                <p>Pena-Ku Administration</p>
             </div>
         </div>
 
         <ul class="drawer-menu-list">
             <li class="drawer-menu-item">
-                <a href="#" onclick="toggleDrawer(); scrollToSection('kelasGrid');"><i class="fa-solid fa-school"></i> Menu Tingkat Kelas</a>
+                <a href="#" onclick="toggleDrawer(); scrollToSection('kelasHeading');"><i class="fa-solid fa-school"></i> Administrasi Kelas Unggulan</a>
             </li>
             <li class="drawer-menu-item">
-                <a href="#" onclick="toggleDrawer(); scrollToSection('musicGrid');"><i class="fa-solid fa-music"></i> Media Alat Musik</a>
+                <a href="#" onclick="toggleDrawer(); scrollToSection('musicHeading');"><i class="fa-solid fa-music"></i> Media Alat Musik</a>
             </li>
             <li class="drawer-menu-item">
-                <a href="e-PR.html" onclick="checkDrawerNavigation(event, 'e-PR.html')"><i class="fa-solid fa-book-open-reader"></i> e-PR (Pelaporan / Peer Review)</a>
+                <a href="e-PR.html" onclick="checkDrawerNavigation(event, 'e-PR.html')"><i class="fa-solid fa-book-open-reader"></i> e-PR (Pelaporan)</a>
             </li>
             <li class="drawer-menu-item">
                 <a href="#" onclick="toggleDrawer(); handleAuthAction();"><i class="fa-solid fa-user-gear"></i> <span id="drawerAuthLabel">Login Guru</span></a>
@@ -1015,27 +927,26 @@
         </ul>
     </div>
 
-    <!-- MAIN CONTAINER -->
+    <!-- Main Content Container -->
     <div class="container">
-        <!-- Joyful Emoji Header -->
-        <div class="emoji-header-container">
-            <span class="animated-emoji wave-emoji" role="img" aria-label="Melambaikan Tangan">👋</span>
-            <span class="animated-emoji bounce-emoji" role="img" aria-label="Menunjuk ke Bawah">👇</span>
-            <span class="animated-emoji spin-emoji" role="img" aria-label="Bintang Berkilau">🌟</span>
+        <div class="header-brand">
+            <img src="logo.png" alt="Logo SDN Kramat 01" class="app-logo">
+            <div class="app-badge-tag"><i class="fa-solid fa-award"></i> SDN Kramat 01</div>
+            <h1>PENA-KU SYSTEM</h1>
+            <p class="subtitle">Pengelolaan Nilai & Administrasi Kelas Unggulan Interaktif</p>
         </div>
-        
-        <h1>Selamat Datang Di Aplikasi PENA-KU</h1>
-        <div class="subtitle">✨ Pengelolaan Nilai dan Administrasi Kelas Unggul ✨</div>
-        
-        <!-- 1. Menu Tingkat Kelas (1 s.d 6) -->
-        <div class="section-title" id="kelasHeading">🎈 Menu Tingkat Kelas</div>
+
+        <!-- Section 1: Administrasi Kelas Unggulan -->
+        <div class="section-title" id="kelasHeading">
+            <i class="fa-solid fa-graduation-cap"></i> Administrasi & Nilai Kelas Unggulan
+        </div>
         <div class="grid-3x2" id="kelasGrid">
             <a href="PENA MANTAP V1.html" class="card-kelas kelas-1 locked" data-menu="1">
                 <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
-                <i class="fa-solid fa-face-smile-beam main-icon"></i>
+                <i class="fa-solid fa-child-reaching main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 1</span>
-                    <span class="desc">Administrasi & Nilai Kelas 1</span>
+                    <span class="desc">Administrasi & Nilai Unggulan 1</span>
                 </div>
             </a>
             <a href="PENA MANTAP V2.html" class="card-kelas kelas-2 locked" data-menu="2">
@@ -1043,7 +954,7 @@
                 <i class="fa-solid fa-shapes main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 2</span>
-                    <span class="desc">Administrasi & Nilai Kelas 2</span>
+                    <span class="desc">Administrasi & Nilai Unggulan 2</span>
                 </div>
             </a>
             <a href="PENA MANTAP V3.html" class="card-kelas kelas-3 locked" data-menu="3">
@@ -1051,7 +962,7 @@
                 <i class="fa-solid fa-palette main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 3</span>
-                    <span class="desc">Administrasi & Nilai Kelas 3</span>
+                    <span class="desc">Administrasi & Nilai Unggulan 3</span>
                 </div>
             </a>
             <a href="PENA MANTAP V4.html" class="card-kelas kelas-4 locked" data-menu="4">
@@ -1059,39 +970,41 @@
                 <i class="fa-solid fa-rocket main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 4</span>
-                    <span class="desc">Administrasi & Nilai Kelas 4</span>
+                    <span class="desc">Administrasi & Nilai Unggulan 4</span>
                 </div>
             </a>
             <a href="PENA MANTAP V5.html" class="card-kelas kelas-5 locked" data-menu="5">
                 <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
-                <i class="fa-solid fa-flask-vial main-icon"></i>
+                <i class="fa-solid fa-atom main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 5</span>
-                    <span class="desc">Administrasi & Nilai Kelas 5</span>
+                    <span class="desc">Administrasi & Nilai Unggulan 5</span>
                 </div>
             </a>
             <a href="PENA MANTAP V6.html" class="card-kelas kelas-6 locked" data-menu="6">
                 <div class="status-badge"><i class="fa-solid fa-lock"></i> Terkunci</div>
-                <i class="fa-solid fa-graduation-cap main-icon"></i>
+                <i class="fa-solid fa-user-graduate main-icon"></i>
                 <div class="card-info">
                     <span class="title">Kelas 6</span>
-                    <span class="desc">Administrasi & Nilai Utama Kelas 6</span>
+                    <span class="desc">Administrasi & Nilai Utama Unggulan 6</span>
                 </div>
             </a>
         </div>
 
-        <!-- 2. Menu Alat Musik Interaktif -->
-        <div class="section-title" id="musicHeading" style="margin-top: 35px;">🎵 Menu Media Alat Musik Interaktif</div>
+        <!-- Section 2: Media Alat Musik Interaktif -->
+        <div class="section-title" id="musicHeading" style="margin-top: 36px;">
+            <i class="fa-solid fa-music"></i> Media Alat Musik Interaktif
+        </div>
         <div class="grid-3x2" id="musicGrid">
             <a href="Pianika-Ku.html" class="card-music music-pianika" data-file="Pianika-Ku.html">
-                <i class="fa-solid fa-music main-icon animated-music-icon"></i>
+                <i class="fa-solid fa-music main-icon"></i>
                 <div class="card-info">
                     <span class="title">Pianika</span>
                     <span class="desc">Virtual Pianika-Ku Interaktif</span>
                 </div>
             </a>
             <a href="Angklung-Ku.html" class="card-music music-angklung" data-file="Angklung-Ku.html">
-                <i class="fa-solid fa-bell main-icon animated-music-icon" style="animation-delay: 0.5s;"></i>
+                <i class="fa-solid fa-bell main-icon"></i>
                 <div class="card-info">
                     <span class="title">Angklung</span>
                     <span class="desc">Virtual Angklung-Ku Tradisional</span>
@@ -1127,26 +1040,26 @@
             </a>
         </div>
 
-        <!-- 3. Menu Pendukung e-PR -->
+        <!-- Section 3: Modul e-PR -->
         <div class="epr-section-wrapper">
             <a href="e-PR.html" class="card-epr" data-file="e-PR.html">
                 <i class="fa-solid fa-book-open-reader"></i>
                 <div class="card-info">
                     <span class="title">e-PR (Electronic Peer Review / Pelaporan)</span>
-                    <span class="desc">Menu pendukung interaktif publik yang dapat diakses langsung oleh tamu</span>
+                    <span class="desc">Modul pendukung evaluasi & pelaporan interaktif publik</span>
                 </div>
             </a>
         </div>
     </div>
 
-    <!-- Footer Developer -->
+    <!-- Developer Footer -->
     <div class="footer-bar">
         <div class="developer-badge">
-            Aplikasi ini dibuat oleh : <strong>Ikhwan Adi Yanto, S.Pd.</strong> tahun 2026
+            Dikembangkan oleh: <strong>Ikhwan Adi Yanto, S.Pd.</strong> © 2026
         </div>
     </div>
 
-    <!-- MODAL POPUP LOGIN -->
+    <!-- Login Modal -->
     <div class="modal-overlay" id="loginModal">
         <div class="login-card">
             <button class="btn-close-modal" onclick="closeLoginModal()">
@@ -1155,15 +1068,15 @@
 
             <div class="login-header">
                 <div class="login-icon">
-                    <i class="fa-solid fa-lock"></i>
+                    <i class="fa-solid fa-user-lock"></i>
                 </div>
-                <h2>Login Akun PENA KU</h2>
-                <p>Masukkan kredensial untuk membuka kunci sistem kelas</p>
+                <h2>Autentikasi Guru</h2>
+                <p>Masukkan kredensial akun untuk membuka akses</p>
             </div>
 
             <div class="alert-error" id="loginError">
                 <i class="fa-solid fa-circle-exclamation"></i>
-                <span id="errorMessage">Nama pengguna atau kata sandi salah.</span>
+                <span id="errorMessage">Nama pengguna atau kata sandi tidak valid.</span>
             </div>
 
             <form id="loginForm" onsubmit="processLogin(event)">
@@ -1181,7 +1094,7 @@
                         <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required autocomplete="current-password">
                         <i class="fa-solid fa-key input-icon"></i>
                         <button type="button" class="btn-toggle-pwd" id="togglePasswordBtn" onclick="togglePasswordVisibility()" title="Lihat Sandi">
-                            <span id="toggleEmoji">👁️</span>
+                            <i class="fa-solid fa-eye" id="toggleEyeIcon"></i>
                         </button>
                     </div>
                 </div>
@@ -1189,28 +1102,28 @@
                 <div class="remember-group">
                     <label class="checkbox-container">
                         <input type="checkbox" id="rememberMe">
-                        <span>Selalu ingat password</span>
+                        <span>Ingat kredensial di perangkat ini</span>
                     </label>
                 </div>
 
                 <button type="submit" class="btn-submit-login">
-                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Sistem
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- CUSTOM ALERT MODAL (Replaces browser alert) -->
+    <!-- Custom Alert Notification Dialog -->
     <div class="custom-alert-overlay" id="customAlertOverlay">
         <div class="custom-alert-box">
-            <div class="custom-alert-icon" id="customAlertEmoji">✨</div>
+            <div class="custom-alert-icon" id="customAlertEmoji">💡</div>
             <div class="custom-alert-title" id="customAlertTitle">Pemberitahuan</div>
-            <div class="custom-alert-msg" id="customAlertMsg">Pesan informasi sistem PENA-KU.</div>
+            <div class="custom-alert-msg" id="customAlertMsg">Pesan informasi dari sistem PENA-KU.</div>
             <button class="custom-alert-btn" onclick="closeCustomAlert()">Mengerti</button>
         </div>
     </div>
 
-    <!-- Global Sound -->
+    <!-- Audio Effect System -->
     <audio id="globalSound" src="sergequadrado-child-says-ok-113118.mp3" preload="auto"></audio>
 
     <script>
@@ -1223,7 +1136,7 @@
         const usernameInput = document.getElementById('usernameInput');
         const passwordInput = document.getElementById('passwordInput');
         const rememberMeCheckbox = document.getElementById('rememberMe');
-        const toggleEmoji = document.getElementById('toggleEmoji');
+        const toggleEyeIcon = document.getElementById('toggleEyeIcon');
         const loginError = document.getElementById('loginError');
         const userStatusText = document.getElementById('userStatusText');
         const btnAuthText = document.getElementById('btnAuthText');
@@ -1233,7 +1146,7 @@
         const kelasCards = document.querySelectorAll('.card-kelas');
         const globalSound = document.getElementById('globalSound');
 
-        // Custom alert references
+        // Custom Notification References
         const customAlertOverlay = document.getElementById('customAlertOverlay');
         const customAlertEmoji = document.getElementById('customAlertEmoji');
         const customAlertTitle = document.getElementById('customAlertTitle');
@@ -1292,7 +1205,7 @@
             if (!card.querySelector('.status-badge')) {
                 const badge = document.createElement('div');
                 badge.className = 'status-badge';
-                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Belum Tersedia';
+                badge.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Offline';
                 card.appendChild(badge);
             }
         }
@@ -1307,7 +1220,7 @@
                 };
                 setTimeout(() => {
                     if (globalSound.paused) callback();
-                }, 800);
+                }, 600);
             }
         }
 
@@ -1333,7 +1246,7 @@
             userStatusText.textContent = `Guru (${username})`;
             btnAuthText.textContent = "Keluar";
             btnAuthAction.classList.add('btn-logout');
-            drawerUserName.textContent = `Status: Guru (${username})`;
+            drawerUserName.textContent = `Guru (${username})`;
             drawerAuthLabel.textContent = "Keluar Akun";
 
             kelasCards.forEach(card => {
@@ -1379,10 +1292,10 @@
             playSoundAndProceed(() => {
                 if (passwordInput.type === "password") {
                     passwordInput.type = "text";
-                    toggleEmoji.textContent = "🙈";
+                    toggleEyeIcon.className = "fa-solid fa-eye-slash";
                 } else {
                     passwordInput.type = "password";
-                    toggleEmoji.textContent = "👁️";
+                    toggleEyeIcon.className = "fa-solid fa-eye";
                 }
             });
         }
@@ -1410,7 +1323,7 @@
                     loginModal.classList.remove('active');
                     setLoggedInState(username);
 
-                    showCustomAlert("Login Berhasil! 🎉", `Selamat datang kembali, ${username}! Semua menu kelas kini telah terbuka.`, "🚀");
+                    showCustomAlert("Akses Diterima", `Selamat datang kembali, ${username}. Seluruh modul kelas unggulan siap diakses.`, "🔓");
                 } else {
                     loginError.style.display = 'flex';
                 }
@@ -1419,12 +1332,12 @@
 
         function processLogout() {
             playSoundAndProceed(() => {
-                showCustomAlert("Konfirmasi Keluar", "Apakah Anda yakin ingin keluar dari akun?", "🚪", () => {
+                showCustomAlert("Konfirmasi Keluar", "Apakah Anda yakin ingin mengakhiri sesi login saat ini?", "❓", () => {
                     sessionStorage.clear();
                     localStorage.removeItem('pena_remember');
                     localStorage.removeItem('pena_user');
                     setLoggedOutState();
-                    showCustomAlert("Berhasil Keluar", "Anda telah keluar dari sistem.", "👋");
+                    showCustomAlert("Berhasil Keluar", "Sesi telah berakhir.", "👋");
                 });
             });
         }
@@ -1439,10 +1352,9 @@
 
         function checkDrawerNavigation(event, url) {
             toggleDrawer();
-            // Let normal link work if file is ready
         }
 
-        // Card Click Interactions
+        // Card Click Interaction Handlers
         const allInteractiveCards = document.querySelectorAll('.card-kelas, .card-music, .card-epr');
         allInteractiveCards.forEach(menu => {
             menu.addEventListener('click', (e) => {
@@ -1454,7 +1366,7 @@
                     e.preventDefault();
                     playSoundAndProceed(() => {
                         openLoginModal();
-                        showCustomAlert("Menu Terkunci 🔒", "Silakan login terlebih dahulu sebagai guru untuk mengakses administrasi dan nilai kelas.", "🔑");
+                        showCustomAlert("Akses Terbatas", "Silakan login sebagai guru untuk mengelola modul administrasi dan nilai kelas unggulan.", "🔒");
                     });
                     return;
                 }
@@ -1462,7 +1374,7 @@
                 if (isOffline) {
                     e.preventDefault();
                     playSoundAndProceed(() => {
-                        showCustomAlert("File Belum Tersedia ⚠️", "Halaman atau file ini masih offline atau belum diunggah ke server/GitHub.", "📁");
+                        showCustomAlert("Modul Belum Tersedia", "Halaman atau berkas yang Anda pilih belum diunggah ke server.", "📁");
                     });
                     return;
                 }
