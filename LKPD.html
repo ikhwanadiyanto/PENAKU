@@ -176,14 +176,14 @@
             100% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.8)); }
         }
 
-        @keyframes crownPulseBounce {
-            0% { transform: rotate(25deg) scale(1); filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5)); }
-            50% { transform: rotate(28deg) scale(1.18); filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.8)); }
-            100% { transform: rotate(25deg) scale(1); filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.5)); }
+        @keyframes crownGlowSparkle {
+            0% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) drop-shadow(0 0 12px rgba(251, 191, 36, 0.6)); }
+            50% { transform: scale(1.15) rotate(6deg); filter: drop-shadow(0 0 14px rgba(245, 158, 11, 1)) drop-shadow(0 0 24px rgba(251, 191, 36, 0.9)); }
+            100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) drop-shadow(0 0 12px rgba(251, 191, 36, 0.6)); }
         }
 
-        .crown-top-rank {
-            animation: crownPulseBounce 1.5s infinite ease-in-out;
+        .crown-shining-glow {
+            animation: crownGlowSparkle 1.8s infinite ease-in-out;
             transform-origin: center center;
         }
 
@@ -314,7 +314,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <p class="text-xs text-slate-600 mb-3">Pilih salah satu badge yang sudah terbuka (⭐) untuk dipamerkan di lingkaran hijau profilmu pada linimasa SIXBOOK:</p>
+            <p class="text-xs text-slate-600 mb-3">Pilih salah satu badge yang sudah terbuka (⭐) untuk dipamerkan di sebelah namamu pada linimasa SIXBOOK:</p>
             <div id="containerListBadgePilihan" class="grid grid-cols-3 gap-2 overflow-y-auto max-h-72 p-2 bg-slate-50 rounded-2xl border border-slate-200 flex-1">
                 <!-- Diisi secara dinamis -->
             </div>
@@ -606,8 +606,12 @@
                     
                     <div id="photoFrameBoxContainer" class="w-40 h-40 sm:w-48 sm:h-48 photo-frame-box mb-4 bg-slate-100 flex items-center justify-center relative group cursor-pointer" onclick="picuUploadFotoProfilSiswa()">
                         
-                        <div id="badgeMahkotaTertinggi" class="hidden absolute -top-3.5 -right-3.5 z-20 crown-top-rank text-amber-400 text-3xl sm:text-4xl pointer-events-none drop-shadow-md" title="Juara 1 Rata-Rata Nilai Tertinggi!">
-                            <i class="fa-solid fa-crown"></i>
+                        <!-- MAHKOTA BERSINAR BERKILAU DI PROFIL -->
+                        <div id="badgeMahkotaTertinggi" class="hidden absolute -top-4 -right-3 z-20 crown-shining-glow pointer-events-none" title="Juara 1 Rata-Rata Nilai Tertinggi!">
+                            <div class="relative flex items-center justify-center">
+                                <i class="fa-solid fa-crown text-3xl sm:text-4xl text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.9)]"></i>
+                                <i class="fa-solid fa-sparkles absolute -top-1 -right-1 text-xs text-yellow-200 animate-ping"></i>
+                            </div>
                         </div>
 
                         <div class="w-full h-full rounded-[17px] overflow-hidden">
@@ -721,29 +725,25 @@
                     <!-- FORM BUAT STATUS BARU -->
                     <div class="glass-panel p-4 sm:p-5 rounded-3xl">
                         <div class="flex items-center gap-3 mb-3">
-                            <!-- CONTAINER FOTO DENGAN TIGA LINGKARAN INDIKATOR -->
                             <div class="relative shrink-0 w-12 h-12 flex items-center justify-center">
                                 <img id="imgAvatarPostForm" src="" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400">
                                 
-                                <!-- 1. LINGKARAN KUNING: MAHKOTA JIKA TERTINGGI -->
-                                <div id="indicatorTopCrown" class="hidden absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-[10px] text-slate-950 shadow-sm" title="Juara 1 Rata-Rata Nilai Tertinggi!">
-                                    <i class="fa-solid fa-crown text-[9px] text-slate-950 animate-bounce"></i>
-                                </div>
-
-                                <!-- 2. LINGKARAN MERAH: LEVEL SISWA -->
-                                <div id="indicatorLevelRed" class="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center text-[9px] font-black text-white shadow-sm" title="Level Akademik">
-                                    L1
-                                </div>
-
-                                <!-- 3. LINGKARAN HIJAU: BADGE PILIHAN -->
-                                <div id="indicatorBadgeGreen" class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white shadow-sm overflow-hidden" title="Badge Pameran Profil">
-                                    <i class="fa-solid fa-medal text-[9px]"></i>
+                                <!-- INDIKATOR MAHKOTA BERSINAR PADA FOTO FORM POSTING -->
+                                <div id="indicatorTopCrown" class="hidden absolute -top-1 -right-1 z-10 crown-shining-glow" title="Juara 1 Rata-Rata Nilai Tertinggi!">
+                                    <div class="w-5 h-5 rounded-full bg-gradient-to-tr from-amber-300 via-yellow-400 to-amber-500 border-2 border-white flex items-center justify-center shadow-md">
+                                        <i class="fa-solid fa-crown text-[10px] text-amber-950 drop-shadow-[0_0_2px_rgba(255,255,255,0.8)]"></i>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="flex-1 min-w-0">
-                                <h4 id="lblNamaPostForm" class="text-xs font-bold text-slate-800 truncate">Nama Siswa</h4>
-                                <p class="text-[10px] text-slate-500 font-medium">Bagikan cerita ceriamu di SIXBOOK hari ini...</p>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 id="lblNamaPostForm" class="text-xs font-bold text-slate-800 truncate">Nama Siswa</h4>
+                                    <!-- LEVEL DAN BADGE PINDAH KE SEBELAH KANAN NAMA -->
+                                    <span id="lblLevelPostForm" class="text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-500 text-white shadow-sm">L1</span>
+                                    <div id="containerBadgePostForm" class="inline-flex items-center"></div>
+                                </div>
+                                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Bagikan cerita ceriamu di SIXBOOK hari ini...</p>
                             </div>
                         </div>
 
@@ -1109,12 +1109,24 @@
             playBeepSound(800, 'sine', 0.08);
         }
 
+        /* PERBAIKAN: FITUR KLIK PROFIL TEMAN DENGAN SWITCH CURRENT NIS */
         function bukaProfilTeman(nis) {
             if (!nis || nis === 'admin') return;
             const selectDropdown = document.getElementById('selectSiswaProfil');
+            
+            // 1. Alihkan identitas sesi aktif ke siswa yang profilnya diklik
+            currentNis = String(nis);
+            
+            // 2. Set dropdown siswa ke NIS pilihan
             selectDropdown.value = nis;
+            
+            // 3. Render ulang profil siswa tersebut
             gantiSiswaProfil(nis);
+            
+            // 4. Buka tab profil
             gantiTabFrame('profil');
+            
+            playBeepSound(900, 'sine', 0.12);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1332,39 +1344,38 @@
                 if (frameBoxEl) frameBoxEl.classList.remove('top-rank-glow');
             }
 
-            // Perbarui juga indikator di form post jika ada currentNis
             if (currentNis) {
                 updateIndikatorFormPost(currentNis, highestNis);
             }
         }
 
+        /* PERBAIKAN: KETERANGAN LEVEL & BADGE PINDAH KE SEBELAH KANAN NAMA */
         function updateIndikatorFormPost(nis, highestNis) {
             const pData = dbProfilDetail[nis] || {};
             const isHighest = (highestNis && String(nis) === String(highestNis));
 
-            // 1. Lingkaran Kuning (Mahkota tertinggi)
+            // 1. Mahkota Kuning Bersinar di foto profil jika Juara 1
             const indCrown = document.getElementById('indicatorTopCrown');
             if (indCrown) {
                 if (isHighest) indCrown.classList.remove('hidden');
                 else indCrown.classList.add('hidden');
             }
 
-            // 2. Lingkaran Merah (Level Siswa)
+            // 2. Keterangan Level Merah di sebelah kanan nama
             const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
-            const indLevel = document.getElementById('indicatorLevelRed');
-            if (indLevel) {
+            const lvlPostEl = document.getElementById('lblLevelPostForm');
+            if (lvlPostEl) {
                 const lvlNum = kalkulasi.levelBadge.replace('Level ', 'L');
-                indLevel.innerText = lvlNum;
+                lvlPostEl.innerText = lvlNum;
             }
 
-            // 3. Lingkaran Hijau (Badge Pilihan Pamer)
-            const indBadge = document.getElementById('indicatorBadgeGreen');
-            if (indBadge) {
+            // 3. Badge Hijau Pameran di sebelah kanan level
+            const containerBadge = document.getElementById('containerBadgePostForm');
+            if (containerBadge) {
                 let badgeIdx = pData.pamerBadgeIdx !== undefined ? pData.pamerBadgeIdx : 0;
                 let badgeObj = pData.badges && pData.badges[badgeIdx] ? pData.badges[badgeIdx] : null;
                 let activeBadgeImg = (badgeObj && typeof badgeObj === 'object' && badgeObj.img) ? badgeObj.img : "";
                 
-                // Jika belum set atau tidak aktif, cari badge aktif pertama
                 if (!activeBadgeImg && pData.badges) {
                     for (let i = 0; i < pData.badges.length; i++) {
                         let b = pData.badges[i];
@@ -1376,9 +1387,9 @@
                 }
 
                 if (activeBadgeImg) {
-                    indBadge.innerHTML = `<img src="${activeBadgeImg}" class="w-full h-full object-cover">`;
+                    containerBadge.innerHTML = `<img src="${activeBadgeImg}" class="w-5 h-5 rounded-full object-cover border border-emerald-400 shadow-sm" title="Badge Pameran Profil">`;
                 } else {
-                    indBadge.innerHTML = `<i class="fa-solid fa-medal text-[9px]"></i>`;
+                    containerBadge.innerHTML = `<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[9px] shadow-sm" title="Badge Pameran Profil"><i class="fa-solid fa-medal"></i></span>`;
                 }
             }
         }
@@ -2040,7 +2051,7 @@
             }
         }
 
-        /* MENCARI SISWA TERTERTINGGI UNTUK LOGIKA LINGKARAN KECIL */
+        /* MENCARI SISWA TERTERTINGGI UNTUK LOGIKA MAHKOTA BERKILAU */
         function getHighestNis() {
             let maxAvg = -1;
             let highestNis = null;
@@ -2066,6 +2077,7 @@
             return highestNis;
         }
 
+        /* PERBAIKAN RENDER FEEDS STATUS DENGAN KETERANGAN LEVEL & BADGE DI SEBELAH KANAN NAMA */
         function renderFeedsStatusUI() {
             const container = document.getElementById('containerFeedsList');
             if (!container) return;
@@ -2088,12 +2100,11 @@
                     avatar = dbProfilDetail[post.nis].fotoProfil ? dbProfilDetail[post.nis].fotoProfil : DEFAULT_AVATAR;
                 }
 
-                // Hitung data untuk 3 lingkaran kecil penulis post
                 let postNis = String(post.nis);
                 let pDataPost = dbProfilDetail[postNis] || {};
                 let isHighestPost = (highestNis && postNis === String(highestNis));
                 
-                // Level Kalkulasi
+                // Hitung Level
                 let totalMapel = 0, countMapel = 0;
                 MAPEL_LIST.forEach(m => {
                     if (pDataPost.nilai && pDataPost.nilai[m.id] !== undefined && pDataPost.nilai[m.id] !== '') {
@@ -2113,7 +2124,7 @@
                 else if (avgPost >= 20) lvlBadgePost = "L3";
                 else if (avgPost >= 10) lvlBadgePost = "L2";
 
-                // Badge Hijau Pamer
+                // Gambar Badge Pamer
                 let badgeIdxPost = pDataPost.pamerBadgeIdx !== undefined ? pDataPost.pamerBadgeIdx : 0;
                 let badgeObjPost = pDataPost.badges && pDataPost.badges[badgeIdxPost] ? pDataPost.badges[badgeIdxPost] : null;
                 let greenBadgeImg = (badgeObjPost && typeof badgeObjPost === 'object' && badgeObjPost.img) ? badgeObjPost.img : "";
@@ -2143,7 +2154,6 @@
                         avatarKom = dbProfilDetail[c.nis].fotoProfil ? dbProfilDetail[c.nis].fotoProfil : DEFAULT_AVATAR;
                     }
 
-                    // 3 Lingkaran kecil untuk komentar
                     let cNis = String(c.nis);
                     let pDataKom = dbProfilDetail[cNis] || {};
                     let isHighestKom = (highestNis && cNis === String(highestNis));
@@ -2184,19 +2194,24 @@
                         <div class="flex items-start gap-2 mb-2">
                             <div class="relative shrink-0 w-8 h-8 flex items-center justify-center mt-0.5">
                                 <img src="${avatarKom}" class="w-7 h-7 rounded-full object-cover border border-purple-300 cursor-pointer hover:scale-105 transition-all" onclick="bukaProfilTeman('${c.nis}')" title="Klik untuk lihat profil">
-                                
-                                ${isHighestKom ? '<div class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-400 border border-white flex items-center justify-center text-[7px] text-slate-950 shadow-sm"><i class="fa-solid fa-crown text-[6px]"></i></div>' : ''}
-                                
-                                <div class="absolute -bottom-1 -left-1 w-3.5 h-3.5 rounded-full bg-rose-500 border border-white flex items-center justify-center text-[6px] font-black text-white shadow-sm">${lvlKom}</div>
-                                
-                                <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white flex items-center justify-center text-[7px] text-white shadow-sm overflow-hidden">
-                                    ${greenBadgeKom ? `<img src="${greenBadgeKom}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-medal text-[6px]"></i>`}
-                                </div>
+                                ${isHighestKom ? `
+                                    <div class="absolute -top-1 -right-1 z-10 crown-shining-glow" title="Juara 1">
+                                        <div class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-amber-300 via-yellow-400 to-amber-500 border border-white flex items-center justify-center shadow">
+                                            <i class="fa-solid fa-crown text-[7px] text-amber-950"></i>
+                                        </div>
+                                    </div>
+                                ` : ''}
                             </div>
 
                             <div class="feed-chat-bubble-reply p-2.5 flex-1 min-w-0">
-                                <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-purple-600 transition-colors block" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
-                                <span class="text-slate-700 text-xs leading-relaxed break-words font-medium">${c.teks}</span>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-purple-600 transition-colors" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
+                                    ${!isKomAdmin ? `
+                                        <span class="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-rose-500 text-white shadow-xs">${lvlKom}</span>
+                                        ${greenBadgeKom ? `<img src="${greenBadgeKom}" class="w-4 h-4 rounded-full object-cover border border-emerald-400 shadow-xs" title="Badge Pameran">` : `<span class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px]"><i class="fa-solid fa-medal"></i></span>`}
+                                    ` : ''}
+                                </div>
+                                <span class="text-slate-700 text-xs leading-relaxed break-words font-medium mt-0.5 block">${c.teks}</span>
                             </div>
                         </div>
                     `;
@@ -2207,24 +2222,30 @@
                         <div class="relative shrink-0 w-12 h-12 flex items-center justify-center mt-1">
                             <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 cursor-pointer hover:scale-105 transition-all shadow-sm" onclick="bukaProfilTeman('${post.nis}')" title="Klik untuk lihat profil">
                             
-                            <!-- 1. Lingkaran Kuning Mahkota -->
-                            ${isHighestPost ? '<div class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-[10px] text-slate-950 shadow-sm" title="Juara Tertinggi"><i class="fa-solid fa-crown text-[9px] animate-bounce"></i></div>' : ''}
-                            
-                            <!-- 2. Lingkaran Merah Level -->
-                            <div class="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center text-[9px] font-black text-white shadow-sm" title="Level">${lvlBadgePost}</div>
-                            
-                            <!-- 3. Lingkaran Hijau Badge Pamer -->
-                            <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white shadow-sm overflow-hidden" title="Badge Pamer">
-                                ${greenBadgeImg ? `<img src="${greenBadgeImg}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-medal text-[9px]"></i>`}
-                            </div>
+                            <!-- MAHKOTA BERSINAR DI FEEDS -->
+                            ${isHighestPost ? `
+                                <div class="absolute -top-1.5 -right-1 z-10 crown-shining-glow" title="Juara 1 Nilai Rata-Rata Tertinggi!">
+                                    <div class="w-5 h-5 rounded-full bg-gradient-to-tr from-amber-300 via-yellow-400 to-amber-500 border-2 border-white flex items-center justify-center shadow-md">
+                                        <i class="fa-solid fa-crown text-[10px] text-amber-950 drop-shadow-[0_0_2px_rgba(255,255,255,0.8)]"></i>
+                                    </div>
+                                </div>
+                            ` : ''}
                         </div>
                         
                         <div class="feed-chat-bubble p-4 sm:p-5 flex-1 min-w-0 space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                                <div>
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <h4 class="text-xs sm:text-sm font-black text-slate-800 cursor-pointer hover:text-pink-600 transition-colors" onclick="bukaProfilTeman('${post.nis}')">${post.nama}</h4>
-                                    <p class="text-[10px] text-slate-400 font-medium">${post.waktu}</p>
+                                    
+                                    <!-- LEVEL DAN BADGE DI SEBELAH KANAN NAMA -->
+                                    ${!isPostAdmin ? `
+                                        <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-500 text-white shadow-sm">${lvlBadgePost}</span>
+                                        ${greenBadgeImg ? `<img src="${greenBadgeImg}" class="w-5 h-5 rounded-full object-cover border border-emerald-400 shadow-sm" title="Badge Pameran Profil">` : `<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[9px] shadow-sm" title="Badge Pameran Profil"><i class="fa-solid fa-medal"></i></span>`}
+                                    ` : ''}
+
+                                    <p class="text-[10px] text-slate-400 font-medium w-full">${post.waktu}</p>
                                 </div>
+
                                 ${isAdminMode ? `
                                     <button onclick="hapusPostStatus('${post.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1">
                                         <i class="fa-solid fa-trash"></i>
