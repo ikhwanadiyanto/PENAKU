@@ -303,6 +303,24 @@
     <input type="file" id="inputChatFoto" accept="image/*" class="hidden" onchange="prosesUploadFotoChat(event)">
     <input type="file" id="inputFotoStatus" accept="image/*" class="hidden" onchange="previewFotoStatusPost(event)">
 
+    <!-- MODAL PILIH BADGE UNTUK DIPAMERKAN (KHUSUS SISWA) -->
+    <div id="modalPilihBadgeProfil" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print">
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+                <h3 class="text-sm sm:text-base font-black text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-medal text-amber-500"></i> Pasang Badge di Profilmu
+                </h3>
+                <button onclick="tutupModalPilihBadge()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">Pilih salah satu badge yang sudah terbuka (⭐) untuk dipamerkan di lingkaran hijau profilmu pada linimasa SIXBOOK:</p>
+            <div id="containerListBadgePilihan" class="grid grid-cols-3 gap-2 overflow-y-auto max-h-72 p-2 bg-slate-50 rounded-2xl border border-slate-200 flex-1">
+                <!-- Diisi secara dinamis -->
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIN MODAL -->
     <div id="modalBubbleLogin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 no-print">
         <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full text-center border border-slate-200 shadow-2xl relative overflow-hidden">
@@ -563,7 +581,7 @@
             </div>
         </header>
 
-        <!-- FRAME NAVIGATION TABS (DAPAT DISESUAIKAN, DEFAULT MEMBUKA STATUS/FEEDS SIXBOOK) -->
+        <!-- FRAME NAVIGATION TABS -->
         <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-center gap-4 sm:gap-8 no-print border border-pink-100 shadow-sm">
             <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-4 py-2 text-xs sm:text-sm font-bold flex items-center gap-2">
                 <i class="fa-solid fa-newspaper text-purple-600"></i> SIXBOOK
@@ -580,7 +598,7 @@
         <!-- PRINT AREA CARD -->
         <div id="printAreaCard" class="print-card-area grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
             
-            <!-- LEFT COLUMN (STAYS PERMANENT OR ADAPTS) -->
+            <!-- LEFT COLUMN -->
             <div class="lg:col-span-4 flex flex-col gap-6">
                 
                 <div class="glass-panel p-5 sm:p-6 rounded-3xl flex flex-col items-center text-center relative overflow-hidden">
@@ -611,6 +629,13 @@
                     <div class="flex items-center gap-2 mb-4 flex-wrap justify-center">
                         <span id="lblNisSiswa" class="text-xs font-bold text-pink-700 bg-pink-50 border border-pink-200 px-3 py-1 rounded-full">NIS: -</span>
                         <span id="lblNoAbsen" class="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">Absen: -</span>
+                    </div>
+
+                    <!-- TOMBOL MENU KHUSUS SISWA: PASANG BADGE DI PROFILMU -->
+                    <div class="student-only w-full mb-3 no-print">
+                        <button onclick="bukaModalPilihBadge()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 text-white font-black py-2.5 px-4 rounded-2xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-medal"></i> Pasang Badge di Profilmu
+                        </button>
                     </div>
 
                     <hr class="w-full border-slate-200 my-2">
@@ -687,16 +712,35 @@
 
             </div>
 
-            <!-- RIGHT COLUMN (FRAME SWITCHING TAB CONTENT) -->
+            <!-- RIGHT COLUMN -->
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
-                <!-- FRAME TAB 1: LINIMASA KELAS / FEEDS & STATUS (SIXBOOK STYLE) -->
+                <!-- FRAME TAB 1: LINIMASA KELAS / FEEDS & STATUS -->
                 <div id="frameSectionStatus" class="space-y-6">
                     
                     <!-- FORM BUAT STATUS BARU -->
                     <div class="glass-panel p-4 sm:p-5 rounded-3xl">
                         <div class="flex items-center gap-3 mb-3">
-                            <img id="imgAvatarPostForm" src="" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shrink-0">
+                            <!-- CONTAINER FOTO DENGAN TIGA LINGKARAN INDIKATOR -->
+                            <div class="relative shrink-0 w-12 h-12 flex items-center justify-center">
+                                <img id="imgAvatarPostForm" src="" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400">
+                                
+                                <!-- 1. LINGKARAN KUNING: MAHKOTA JIKA TERTINGGI -->
+                                <div id="indicatorTopCrown" class="hidden absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-[10px] text-slate-950 shadow-sm" title="Juara 1 Rata-Rata Nilai Tertinggi!">
+                                    <i class="fa-solid fa-crown text-[9px] text-slate-950 animate-bounce"></i>
+                                </div>
+
+                                <!-- 2. LINGKARAN MERAH: LEVEL SISWA -->
+                                <div id="indicatorLevelRed" class="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center text-[9px] font-black text-white shadow-sm" title="Level Akademik">
+                                    L1
+                                </div>
+
+                                <!-- 3. LINGKARAN HIJAU: BADGE PILIHAN -->
+                                <div id="indicatorBadgeGreen" class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white shadow-sm overflow-hidden" title="Badge Pameran Profil">
+                                    <i class="fa-solid fa-medal text-[9px]"></i>
+                                </div>
+                            </div>
+
                             <div class="flex-1 min-w-0">
                                 <h4 id="lblNamaPostForm" class="text-xs font-bold text-slate-800 truncate">Nama Siswa</h4>
                                 <p class="text-[10px] text-slate-500 font-medium">Bagikan cerita ceriamu di SIXBOOK hari ini...</p>
@@ -835,10 +879,9 @@
 
     </div>
 
-    <!-- CHAT LACT / DRAWER MELAYANG (SEMBUNYI SAAT BELUM LOGIN) -->
+    <!-- CHAT LACT / DRAWER MELAYANG -->
     <div id="chatDrawerContainer" class="chat-drawer glass-panel shadow-2xl border-t-2 border-pink-400 collapsed no-print hidden">
         
-        <!-- DRAWER HEADER (SELALU KELIHATAN SAAT SUDAH LOGIN) -->
         <div onclick="toggleChatDrawer()" class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-3.5 flex items-center justify-between cursor-pointer rounded-t-[18px]">
             <div class="flex items-center gap-2.5">
                 <div class="relative">
@@ -861,7 +904,6 @@
             </div>
         </div>
 
-        <!-- DRAWER BODY (SLIDE UP) -->
         <div class="p-3 bg-white flex flex-col h-96">
             
             <div class="flex items-center justify-between gap-1 mb-2 bg-slate-50 p-1 rounded-xl border border-slate-200 shrink-0">
@@ -941,7 +983,6 @@
         let toastTimer = null;
         let tempFotoStatusBase64 = "";
 
-        // DATA FEEDS / LINIMASA SIXBOOK
         let listFeedsPost = [];
 
         function initFloatingEmojis() {
@@ -1068,7 +1109,6 @@
             playBeepSound(800, 'sine', 0.08);
         }
 
-        /* AKSI BUKA PROFIL TEMAN DARI FEEDS / KOMENTAR */
         function bukaProfilTeman(nis) {
             if (!nis || nis === 'admin') return;
             const selectDropdown = document.getElementById('selectSiswaProfil');
@@ -1078,7 +1118,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* TOGGLE LACI CHAT DRAWER */
         function toggleChatDrawer() {
             const drawer = document.getElementById('chatDrawerContainer');
             const icon = document.getElementById('iconDrawerChevron');
@@ -1094,7 +1133,6 @@
             }
         }
 
-        /* AKSES LOGIN */
         function prosesLoginAkses(e) {
             if (e) e.preventDefault();
             const inputVal = document.getElementById('inputNisLogin').value.trim();
@@ -1144,8 +1182,6 @@
 
             document.getElementById('modalBubbleLogin').classList.add('hidden');
             document.getElementById('mainAppContainer').classList.remove('hidden');
-
-            // TAMPILKAN DRAWER CHAT HANYA APABILA SUDAH LOGIN
             document.getElementById('chatDrawerContainer').classList.remove('hidden');
 
             if (currentNis) {
@@ -1153,9 +1189,7 @@
                 gantiSiswaProfil(currentNis);
             }
 
-            // TAMPILAN AWAL MEMBUKA MENU FEEDS/SIXBOOK
             gantiTabFrame('status');
-
             renderGrupSelectorUI();
             mulaiPollingChat();
         }
@@ -1165,8 +1199,6 @@
             document.getElementById('inputNisLogin').value = '';
             document.getElementById('modalBubbleLogin').classList.remove('hidden');
             document.getElementById('mainAppContainer').classList.add('hidden');
-
-            // SEMBUNYIKAN KEMBALI TAB CHAT JIKA BELUM LOGIN
             document.getElementById('chatDrawerContainer').classList.add('hidden');
         }
 
@@ -1242,7 +1274,6 @@
                 document.getElementById('lblNisSiswa').innerText = `NIS: ${dataSiswa[0]}`;
                 document.getElementById('lblNoAbsen').innerText = `Absen: ${indexSiswa + 1}`;
                 
-                // Form Post nama disesuaikan
                 if (isAdminMode) {
                     document.getElementById('lblNamaPostForm').innerText = "Guru / Admin Kelas";
                 } else {
@@ -1255,6 +1286,7 @@
                     fotoProfil: "",
                     bintang: 0,
                     badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
+                    pamerBadgeIdx: 0,
                     pelanggaran: [],
                     nilai: {}
                 };
@@ -1299,6 +1331,56 @@
                 if (mahkotaEl) mahkotaEl.classList.add('hidden');
                 if (frameBoxEl) frameBoxEl.classList.remove('top-rank-glow');
             }
+
+            // Perbarui juga indikator di form post jika ada currentNis
+            if (currentNis) {
+                updateIndikatorFormPost(currentNis, highestNis);
+            }
+        }
+
+        function updateIndikatorFormPost(nis, highestNis) {
+            const pData = dbProfilDetail[nis] || {};
+            const isHighest = (highestNis && String(nis) === String(highestNis));
+
+            // 1. Lingkaran Kuning (Mahkota tertinggi)
+            const indCrown = document.getElementById('indicatorTopCrown');
+            if (indCrown) {
+                if (isHighest) indCrown.classList.remove('hidden');
+                else indCrown.classList.add('hidden');
+            }
+
+            // 2. Lingkaran Merah (Level Siswa)
+            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+            const indLevel = document.getElementById('indicatorLevelRed');
+            if (indLevel) {
+                const lvlNum = kalkulasi.levelBadge.replace('Level ', 'L');
+                indLevel.innerText = lvlNum;
+            }
+
+            // 3. Lingkaran Hijau (Badge Pilihan Pamer)
+            const indBadge = document.getElementById('indicatorBadgeGreen');
+            if (indBadge) {
+                let badgeIdx = pData.pamerBadgeIdx !== undefined ? pData.pamerBadgeIdx : 0;
+                let badgeObj = pData.badges && pData.badges[badgeIdx] ? pData.badges[badgeIdx] : null;
+                let activeBadgeImg = (badgeObj && typeof badgeObj === 'object' && badgeObj.img) ? badgeObj.img : "";
+                
+                // Jika belum set atau tidak aktif, cari badge aktif pertama
+                if (!activeBadgeImg && pData.badges) {
+                    for (let i = 0; i < pData.badges.length; i++) {
+                        let b = pData.badges[i];
+                        if (b && (b.active === true || b === true) && b.img) {
+                            activeBadgeImg = b.img;
+                            break;
+                        }
+                    }
+                }
+
+                if (activeBadgeImg) {
+                    indBadge.innerHTML = `<img src="${activeBadgeImg}" class="w-full h-full object-cover">`;
+                } else {
+                    indBadge.innerHTML = `<i class="fa-solid fa-medal text-[9px]"></i>`;
+                }
+            }
         }
 
         function renderProfilSiswa(nis) {
@@ -1307,7 +1389,6 @@
 
             document.getElementById('imgFotoSiswa').src = avatarSrc;
             
-            // Mengatur Avatar Form Post (Jika Admin jangan gunakan foto siswa)
             if (isAdminMode) {
                 document.getElementById('imgAvatarPostForm').src = ADMIN_AVATAR;
             } else {
@@ -1330,6 +1411,56 @@
             renderMapelInputs(pData.nilai || {});
             hitungKalkulasiLevel(pData.nilai || {});
             updateTampilanSiswaTertinggi();
+        }
+
+        /* MODAL PILIH BADGE UNTUK DIPAMERKAN DI PROFIL */
+        function bukaModalPilihBadge() {
+            if (!currentNis || isAdminMode) return;
+            const pData = dbProfilDetail[currentNis] || {};
+            const badges = pData.badges || [];
+            const container = document.getElementById('containerListBadgePilihan');
+            container.innerHTML = '';
+
+            let hasUnlocked = false;
+
+            badges.forEach((b, idx) => {
+                const isActive = (b && (b.active === true || b === true));
+                if (isActive) {
+                    hasUnlocked = true;
+                    const bTitle = (typeof b === 'object' && b.title) ? b.title : BADGE_DESCS[idx];
+                    const bImg = (typeof b === 'object' && b.img) ? b.img : "";
+                    const isSelected = (pData.pamerBadgeIdx === idx);
+
+                    container.innerHTML += `
+                        <div onclick="pilihBadgePameran(${idx})" class="p-2 rounded-xl border-2 ${isSelected ? 'border-amber-500 bg-amber-50' : 'border-slate-200 bg-white hover:border-pink-300'} flex flex-col items-center text-center cursor-pointer transition-all relative">
+                            ${bImg ? `<img src="${bImg}" class="w-12 h-12 object-cover rounded-lg mb-1">` : `<div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center text-amber-500 text-xl mb-1"><i class="fa-solid fa-award"></i></div>`}
+                            <span class="text-[10px] font-bold text-slate-700 line-clamp-2">${bTitle}</span>
+                            ${isSelected ? '<span class="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-white rounded-full text-[9px] flex items-center justify-center font-bold"><i class="fa-solid fa-check"></i></span>' : ''}
+                        </div>
+                    `;
+                }
+            });
+
+            if (!hasUnlocked) {
+                container.innerHTML = `<div class="col-span-3 text-center text-xs text-slate-400 italic py-6">Belum ada badge yang terbuka (⭐). Selesaikan tantangan untuk membuka badge!</div>`;
+            }
+
+            document.getElementById('modalPilihBadgeProfil').classList.remove('hidden');
+        }
+
+        function tutupModalPilihBadge() {
+            document.getElementById('modalPilihBadgeProfil').classList.add('hidden');
+        }
+
+        function pilihBadgePameran(idx) {
+            if (!currentNis) return;
+            const pData = dbProfilDetail[currentNis];
+            pData.pamerBadgeIdx = idx;
+            playBeepSound(1000, 'sine', 0.15);
+            simpanSemuaData();
+            tutupModalPilihBadge();
+            renderProfilSiswa(currentNis);
+            alert("Berhasil memperbarui Badge yang dipamerkan di profil!");
         }
 
         function picuUploadFotoProfilSiswa() {
@@ -1416,6 +1547,7 @@
                 fotoProfil: fotoBase64,
                 bintang: pData.bintang || 0,
                 tabungan: pData.tabungan || 0,
+                pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                 rataRata: parseFloat(kalkulasi.avg).toFixed(2),
                 skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
                 ...singleBadgeObject,
@@ -1437,7 +1569,6 @@
             }
         }
 
-        /* LOGIKA BADGES */
         function toggleTampilanSemuaBadge() {
             showAll25Badges = !showAll25Badges;
             const btn = document.getElementById('btnToggleBadge25');
@@ -1617,7 +1748,6 @@
             render25Badges(pData.badges);
         }
 
-        /* KELOLA BADGE MASSAL */
         function bukaModalBadgeMassal() {
             if (!isAdminMode) return;
 
@@ -1739,6 +1869,7 @@
                     dbProfilDetail[nis] = {
                         fotoProfil: "", bintang: 0,
                         badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
+                        pamerBadgeIdx: 0,
                         pelanggaran: [], nilai: {}
                     };
                 }
@@ -1776,7 +1907,6 @@
             alert(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
         }
 
-        /* LOGIKA SYSTEM FEEDS STATUS (SIXBOOK CHAT-BUBBLE STYLE) */
         function previewFotoStatusPost(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1910,6 +2040,32 @@
             }
         }
 
+        /* MENCARI SISWA TERTERTINGGI UNTUK LOGIKA LINGKARAN KECIL */
+        function getHighestNis() {
+            let maxAvg = -1;
+            let highestNis = null;
+            listMasterSiswa.forEach(s => {
+                const nisKey = String(s[0]);
+                const pData = dbProfilDetail[nisKey];
+                if (pData && pData.nilai) {
+                    let total = 0;
+                    let count = 0;
+                    MAPEL_LIST.forEach(m => {
+                        if (pData.nilai[m.id] !== undefined && pData.nilai[m.id] !== '' && !isNaN(pData.nilai[m.id])) {
+                            total += parseFloat(pData.nilai[m.id]);
+                            count++;
+                        }
+                    });
+                    const avg = count > 0 ? (total / count) : 0;
+                    if (avg > maxAvg && avg > 0) {
+                        maxAvg = avg;
+                        highestNis = nisKey;
+                    }
+                }
+            });
+            return highestNis;
+        }
+
         function renderFeedsStatusUI() {
             const container = document.getElementById('containerFeedsList');
             if (!container) return;
@@ -1919,6 +2075,7 @@
                 return;
             }
 
+            const highestNis = getHighestNis();
             let html = '';
 
             listFeedsPost.forEach(post => {
@@ -1929,6 +2086,45 @@
                     avatar = ADMIN_AVATAR;
                 } else if (post.nis && dbProfilDetail[post.nis]) {
                     avatar = dbProfilDetail[post.nis].fotoProfil ? dbProfilDetail[post.nis].fotoProfil : DEFAULT_AVATAR;
+                }
+
+                // Hitung data untuk 3 lingkaran kecil penulis post
+                let postNis = String(post.nis);
+                let pDataPost = dbProfilDetail[postNis] || {};
+                let isHighestPost = (highestNis && postNis === String(highestNis));
+                
+                // Level Kalkulasi
+                let totalMapel = 0, countMapel = 0;
+                MAPEL_LIST.forEach(m => {
+                    if (pDataPost.nilai && pDataPost.nilai[m.id] !== undefined && pDataPost.nilai[m.id] !== '') {
+                        totalMapel += parseFloat(pDataPost.nilai[m.id]);
+                        countMapel++;
+                    }
+                });
+                let avgPost = countMapel > 0 ? (totalMapel / countMapel) : 0;
+                let lvlBadgePost = "L1";
+                if (avgPost >= 90) lvlBadgePost = "L10";
+                else if (avgPost >= 80) lvlBadgePost = "L9";
+                else if (avgPost >= 70) lvlBadgePost = "L8";
+                else if (avgPost >= 60) lvlBadgePost = "L7";
+                else if (avgPost >= 50) lvlBadgePost = "L6";
+                else if (avgPost >= 40) lvlBadgePost = "L5";
+                else if (avgPost >= 30) lvlBadgePost = "L4";
+                else if (avgPost >= 20) lvlBadgePost = "L3";
+                else if (avgPost >= 10) lvlBadgePost = "L2";
+
+                // Badge Hijau Pamer
+                let badgeIdxPost = pDataPost.pamerBadgeIdx !== undefined ? pDataPost.pamerBadgeIdx : 0;
+                let badgeObjPost = pDataPost.badges && pDataPost.badges[badgeIdxPost] ? pDataPost.badges[badgeIdxPost] : null;
+                let greenBadgeImg = (badgeObjPost && typeof badgeObjPost === 'object' && badgeObjPost.img) ? badgeObjPost.img : "";
+                if (!greenBadgeImg && pDataPost.badges) {
+                    for (let i = 0; i < pDataPost.badges.length; i++) {
+                        let b = pDataPost.badges[i];
+                        if (b && (b.active === true || b === true) && b.img) {
+                            greenBadgeImg = b.img;
+                            break;
+                        }
+                    }
                 }
 
                 const myNis = String(currentNis);
@@ -1947,9 +2143,57 @@
                         avatarKom = dbProfilDetail[c.nis].fotoProfil ? dbProfilDetail[c.nis].fotoProfil : DEFAULT_AVATAR;
                     }
 
+                    // 3 Lingkaran kecil untuk komentar
+                    let cNis = String(c.nis);
+                    let pDataKom = dbProfilDetail[cNis] || {};
+                    let isHighestKom = (highestNis && cNis === String(highestNis));
+                    
+                    let totalMK = 0, countMK = 0;
+                    MAPEL_LIST.forEach(m => {
+                        if (pDataKom.nilai && pDataKom.nilai[m.id] !== undefined && pDataKom.nilai[m.id] !== '') {
+                            totalMK += parseFloat(pDataKom.nilai[m.id]);
+                            countMK++;
+                        }
+                    });
+                    let avgKom = countMK > 0 ? (totalMK / countMK) : 0;
+                    let lvlKom = "L1";
+                    if (avgKom >= 90) lvlKom = "L10";
+                    else if (avgKom >= 80) lvlKom = "L9";
+                    else if (avgKom >= 70) lvlKom = "L8";
+                    else if (avgKom >= 60) lvlKom = "L7";
+                    else if (avgKom >= 50) lvlKom = "L6";
+                    else if (avgKom >= 40) lvlKom = "L5";
+                    else if (avgKom >= 30) lvlKom = "L4";
+                    else if (avgKom >= 20) lvlKom = "L3";
+                    else if (avgKom >= 10) lvlKom = "L2";
+
+                    let bIdxK = pDataKom.pamerBadgeIdx !== undefined ? pDataKom.pamerBadgeIdx : 0;
+                    let bObjK = pDataKom.badges && pDataKom.badges[bIdxK] ? pDataKom.badges[bIdxK] : null;
+                    let greenBadgeKom = (bObjK && typeof bObjK === 'object' && bObjK.img) ? bObjK.img : "";
+                    if (!greenBadgeKom && pDataKom.badges) {
+                        for (let i = 0; i < pDataKom.badges.length; i++) {
+                            let b = pDataKom.badges[i];
+                            if (b && (b.active === true || b === true) && b.img) {
+                                greenBadgeKom = b.img;
+                                break;
+                            }
+                        }
+                    }
+
                     commentsHTML += `
                         <div class="flex items-start gap-2 mb-2">
-                            <img src="${avatarKom}" class="w-7 h-7 rounded-full object-cover border border-purple-300 cursor-pointer hover:scale-105 transition-all mt-0.5" onclick="bukaProfilTeman('${c.nis}')" title="Klik untuk lihat profil">
+                            <div class="relative shrink-0 w-8 h-8 flex items-center justify-center mt-0.5">
+                                <img src="${avatarKom}" class="w-7 h-7 rounded-full object-cover border border-purple-300 cursor-pointer hover:scale-105 transition-all" onclick="bukaProfilTeman('${c.nis}')" title="Klik untuk lihat profil">
+                                
+                                ${isHighestKom ? '<div class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-400 border border-white flex items-center justify-center text-[7px] text-slate-950 shadow-sm"><i class="fa-solid fa-crown text-[6px]"></i></div>' : ''}
+                                
+                                <div class="absolute -bottom-1 -left-1 w-3.5 h-3.5 rounded-full bg-rose-500 border border-white flex items-center justify-center text-[6px] font-black text-white shadow-sm">${lvlKom}</div>
+                                
+                                <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white flex items-center justify-center text-[7px] text-white shadow-sm overflow-hidden">
+                                    ${greenBadgeKom ? `<img src="${greenBadgeKom}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-medal text-[6px]"></i>`}
+                                </div>
+                            </div>
+
                             <div class="feed-chat-bubble-reply p-2.5 flex-1 min-w-0">
                                 <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-purple-600 transition-colors block" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
                                 <span class="text-slate-700 text-xs leading-relaxed break-words font-medium">${c.teks}</span>
@@ -1960,7 +2204,20 @@
 
                 html += `
                     <div class="flex items-start gap-3">
-                        <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 cursor-pointer hover:scale-105 transition-all shrink-0 mt-1 shadow-sm" onclick="bukaProfilTeman('${post.nis}')" title="Klik untuk lihat profil">
+                        <div class="relative shrink-0 w-12 h-12 flex items-center justify-center mt-1">
+                            <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 cursor-pointer hover:scale-105 transition-all shadow-sm" onclick="bukaProfilTeman('${post.nis}')" title="Klik untuk lihat profil">
+                            
+                            <!-- 1. Lingkaran Kuning Mahkota -->
+                            ${isHighestPost ? '<div class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-[10px] text-slate-950 shadow-sm" title="Juara Tertinggi"><i class="fa-solid fa-crown text-[9px] animate-bounce"></i></div>' : ''}
+                            
+                            <!-- 2. Lingkaran Merah Level -->
+                            <div class="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center text-[9px] font-black text-white shadow-sm" title="Level">${lvlBadgePost}</div>
+                            
+                            <!-- 3. Lingkaran Hijau Badge Pamer -->
+                            <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white shadow-sm overflow-hidden" title="Badge Pamer">
+                                ${greenBadgeImg ? `<img src="${greenBadgeImg}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-medal text-[9px]"></i>`}
+                            </div>
+                        </div>
                         
                         <div class="feed-chat-bubble p-4 sm:p-5 flex-1 min-w-0 space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2019,7 +2276,6 @@
             container.innerHTML = html;
         }
 
-        /* FITUR OBROLAN GRUP PRIVAT */
         function saringGrupUntukUserAktif() {
             if (isAdminMode) return listGrupChat;
 
@@ -2854,6 +3110,7 @@
                         fotoProfil: "",
                         bintang: 0,
                         badges: Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] })),
+                        pamerBadgeIdx: 0,
                         pelanggaran: [],
                         nilai: {}
                     };
@@ -2883,6 +3140,7 @@
                     fotoProfil: pData.fotoProfil || "",
                     bintang: pData.bintang || 0,
                     tabungan: pData.tabungan || (dbTabunganSiswa[nisSiswa] || 0),
+                    pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                     rataRata: parseFloat(kalkulasi.avg).toFixed(2),
                     skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
                     nilaiDetail: pData.nilai || {},
@@ -2932,6 +3190,7 @@
 
                         if (item.fotoProfil) dbProfilDetail[nis].fotoProfil = item.fotoProfil;
                         dbProfilDetail[nis].bintang = parseInt(item.bintang) || 0;
+                        if (item.pamerBadgeIdx !== undefined) dbProfilDetail[nis].pamerBadgeIdx = parseInt(item.pamerBadgeIdx) || 0;
                         
                         if (item.tabungan !== undefined && item.tabungan !== null && item.tabungan !== "") {
                             dbProfilDetail[nis].tabungan = parseFloat(item.tabungan) || 0;
