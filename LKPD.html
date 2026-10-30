@@ -303,7 +303,7 @@
     <input type="file" id="inputChatFoto" accept="image/*" class="hidden" onchange="prosesUploadFotoChat(event)">
     <input type="file" id="inputFotoStatus" accept="image/*" class="hidden" onchange="previewFotoStatusPost(event)">
 
-    <!-- MODAL PILIH BADGE UNTUK DIPAMERKAN (KHUSUS SISWA) -->
+    <!-- MODAL PILIH BADGE UNTUK DIPAMERKAN (KHUSUS SISWA LOGGED IN) -->
     <div id="modalPilihBadgeProfil" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print">
         <div class="glass-panel p-5 sm:p-6 rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl relative max-h-[90vh] flex flex-col">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
@@ -584,7 +584,7 @@
         <!-- FRAME NAVIGATION TABS -->
         <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-center gap-4 sm:gap-8 no-print border border-pink-100 shadow-sm">
             <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-4 py-2 text-xs sm:text-sm font-bold flex items-center gap-2">
-                <i class="fa-solid fa-newspaper text-purple-600"></i> SIXBOOK
+                <i class="fa-solid fa-newspaper text-purple-600"></i> SIXBOOK Feed
                 <span id="badgeFeedUnread" class="bg-pink-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">Feeds</span>
             </button>
             <button onclick="gantiTabFrame('profil')" id="tabBtnProfil" class="tab-btn px-4 py-2 text-xs sm:text-sm font-bold text-slate-600 flex items-center gap-2">
@@ -604,6 +604,16 @@
                 <div class="glass-panel p-5 sm:p-6 rounded-3xl flex flex-col items-center text-center relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-pink-100 rounded-full blur-2xl"></div>
                     
+                    <!-- BANNER PERINGATAN LOGGED-IN SISWA JIKA SEDANG MENGINTIP PROFIL TEMAN -->
+                    <div id="bannerModeTemanProfil" class="hidden w-full mb-3 bg-amber-50 border border-amber-300 text-amber-900 p-2.5 rounded-2xl flex items-center justify-between gap-2 text-xs font-bold shadow-sm">
+                        <span class="flex items-center gap-1.5 truncate">
+                            <i class="fa-solid fa-eye text-amber-600 text-sm animate-pulse"></i> Viewing Friend Profile
+                        </span>
+                        <button onclick="kembaliKeProfilSaya()" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shrink-0 shadow-sm transition-all active:scale-95">
+                            Profil Saya
+                        </button>
+                    </div>
+
                     <div id="photoFrameBoxContainer" class="w-40 h-40 sm:w-48 sm:h-48 photo-frame-box mb-4 bg-slate-100 flex items-center justify-center relative group cursor-pointer" onclick="picuUploadFotoProfilSiswa()">
                         
                         <!-- MAHKOTA BERSINAR BERKILAU DI PROFIL -->
@@ -618,7 +628,7 @@
                             <img id="imgFotoSiswa" src="" alt="Foto Profil" class="w-full h-full object-cover">
                         </div>
                         
-                        <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-1.5 no-print rounded-[17px]">
+                        <div id="overlayUploadFotoSiswa" class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-1.5 no-print rounded-[17px]">
                             <i class="fa-solid fa-camera text-amber-300 text-2xl sm:text-3xl"></i>
                             <span class="text-[10px] sm:text-[11px] font-black text-white uppercase tracking-wider">Unggah Foto Saya</span>
                             <span class="text-[9px] text-amber-200 font-semibold">(Otomatis Simpan Cloud)</span>
@@ -635,8 +645,8 @@
                         <span id="lblNoAbsen" class="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">Absen: -</span>
                     </div>
 
-                    <!-- TOMBOL MENU KHUSUS SISWA: PASANG BADGE DI PROFILMU -->
-                    <div class="student-only w-full mb-3 no-print">
+                    <!-- TOMBOL MENU KHUSUS SISWA LOGGED IN: PASANG BADGE DI PROFILMU -->
+                    <div id="btnContainerPasangBadge" class="student-only w-full mb-3 no-print">
                         <button onclick="bukaModalPilihBadge()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 text-white font-black py-2.5 px-4 rounded-2xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-medal"></i> Pasang Badge di Profilmu
                         </button>
@@ -722,7 +732,7 @@
                 <!-- FRAME TAB 1: LINIMASA KELAS / FEEDS & STATUS -->
                 <div id="frameSectionStatus" class="space-y-6">
                     
-                    <!-- FORM BUAT STATUS BARU -->
+                    <!-- FORM BUAT STATUS BARU (SELALU GUNAKAN AKUN LOGGED IN) -->
                     <div class="glass-panel p-4 sm:p-5 rounded-3xl">
                         <div class="flex items-center gap-3 mb-3">
                             <div class="relative shrink-0 w-12 h-12 flex items-center justify-center">
@@ -757,12 +767,13 @@
                             </button>
                         </div>
 
-                        <div class="flex items-center justify-between border-t border-slate-200 pt-3">
-                            <button onclick="document.getElementById('inputFotoStatus').click()" class="text-xs font-bold text-slate-600 hover:text-pink-600 flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-pink-50 transition-all">
+                        <!-- RESPONSIVE TOMBOL POSTING DI MODE PONSEL PORTRAIT -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 border-t border-slate-200 pt-3">
+                            <button type="button" onclick="document.getElementById('inputFotoStatus').click()" class="text-xs font-bold text-slate-600 hover:text-pink-600 flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl hover:bg-pink-50 transition-all border border-slate-200 sm:border-transparent">
                                 <i class="fa-solid fa-image text-emerald-500 text-base"></i> Unggah Foto
                             </button>
 
-                            <button onclick="publikasikanStatusBaru()" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs px-5 py-2 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+                            <button type="button" onclick="publikasikanStatusBaru()" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-black text-xs px-6 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-paper-plane"></i> Bagikan Status
                             </button>
                         </div>
@@ -879,14 +890,15 @@
 
     </div>
 
-    <!-- CHAT LACT / DRAWER MELAYANG -->
+    <!-- CHAT DRAWER MELAYANG -->
     <div id="chatDrawerContainer" class="chat-drawer glass-panel shadow-2xl border-t-2 border-pink-400 collapsed no-print hidden">
         
         <div onclick="toggleChatDrawer()" class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-3.5 flex items-center justify-between cursor-pointer rounded-t-[18px]">
             <div class="flex items-center gap-2.5">
                 <div class="relative">
                     <i class="fa-solid fa-comments text-amber-300 text-base"></i>
-                    <span id="badgeUnreadChatDrawer" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    <!-- ANGKA NOTIFIKASI PESAN BARU -->
+                    <span id="badgeUnreadChatDrawer" class="hidden absolute -top-2 -right-2 bg-rose-500 text-white text-[9px] font-black min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center border-2 border-white shadow-md">0</span>
                 </div>
                 <div>
                     <h4 class="text-xs font-black tracking-wide leading-none">Obrolan Kelas</h4>
@@ -985,6 +997,11 @@
 
         let listFeedsPost = [];
 
+        // PENYEMPURNAAN 1: PISAHKAN IDENTITAS LOGIN ASLI DENGAN NIS SISWA YANG DIPERIKSA (PROFIL)
+        let loggedInNis = null;  // NIS / identitas yang benar-benar login
+        let currentNis = null;   // NIS siswa yang profilnya sedang ditampilkan di halaman profil
+        let unreadChatCount = 0; // Hitungan notifikasi angka pesan baru
+
         function initFloatingEmojis() {
             const container = document.getElementById('floatingEmojiContainer');
             const emojis = ['😊', '⭐', '🎉', '🚀', '💖', '👍', '🌟', '🎈', '🏆', '🎯'];
@@ -1032,7 +1049,6 @@
 
         let dbProfilDetail = {};
         let dbTabunganSiswa = {};
-        let currentNis = null;
         let selectedBadgeIdxForUpload = null;
         let tempMassalBase64 = "";
         let activeEmojiInputTarget = 'DRAWER';
@@ -1100,6 +1116,8 @@
             } else if (tabName === 'status') {
                 document.getElementById('frameSectionStatus').classList.remove('hidden');
                 document.getElementById('tabBtnStatus').classList.add('active');
+                // PENYEMPURNAAN 2: MEMASTIKAN TAB FEEDS SELALU MENAMPILKAN FORM LOGGED IN USER & FEED TERBARU
+                renderFormPostUser();
                 renderFeedsStatusUI();
             } else if (tabName === 'nilai') {
                 document.getElementById('frameSectionNilai').classList.remove('hidden');
@@ -1109,25 +1127,34 @@
             playBeepSound(800, 'sine', 0.08);
         }
 
-        /* PERBAIKAN: FITUR KLIK PROFIL TEMAN DENGAN SWITCH CURRENT NIS */
+        /* PENYEMPURNAAN 1: PENANGANAN SELEKSI DAN KLIK AKUN TEMAN TANPA MENGGANTI SESI LOGGED IN */
         function bukaProfilTeman(nis) {
-            if (!nis || nis === 'admin') return;
-            const selectDropdown = document.getElementById('selectSiswaProfil');
-            
-            // 1. Alihkan identitas sesi aktif ke siswa yang profilnya diklik
+            if (!nis) return;
+            if (nis === 'admin') {
+                alert("Guru / Admin tidak memiliki halaman profil siswa.");
+                return;
+            }
+
+            // Atur NIS yang sedang DILIHAT (currentNis) ke teman, SEMENTARA loggedInNis TIDAK BERUBAH
             currentNis = String(nis);
             
-            // 2. Set dropdown siswa ke NIS pilihan
-            selectDropdown.value = nis;
+            const selectDropdown = document.getElementById('selectSiswaProfil');
+            if (selectDropdown) selectDropdown.value = nis;
             
-            // 3. Render ulang profil siswa tersebut
             gantiSiswaProfil(nis);
-            
-            // 4. Buka tab profil
             gantiTabFrame('profil');
             
             playBeepSound(900, 'sine', 0.12);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function kembaliKeProfilSaya() {
+            if (!loggedInNis || loggedInNis === 'admin') return;
+            currentNis = String(loggedInNis);
+            const selectDropdown = document.getElementById('selectSiswaProfil');
+            if (selectDropdown) selectDropdown.value = loggedInNis;
+            gantiSiswaProfil(loggedInNis);
+            playBeepSound(800, 'sine', 0.1);
         }
 
         function toggleChatDrawer() {
@@ -1158,6 +1185,7 @@
 
             if (cleanInput === ADMIN_NIS.toLowerCase() || cleanInput === 'admin' || cleanInput === 'ikhwan') {
                 isAdminMode = true;
+                loggedInNis = "admin";
                 playBeepSound(1200, 'sine', 0.2);
                 document.getElementById('badgeModeAkses').innerText = "MODE ADMIN ACTIVE";
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-300";
@@ -1181,7 +1209,9 @@
                     return;
                 }
 
+                loggedInNis = String(foundSiswa[0]);
                 currentNis = String(foundSiswa[0]);
+                
                 playBeepSound(800, 'sine', 0.15);
                 
                 document.getElementById('badgeModeAkses').innerText = `Mode Siswa (${foundSiswa[1]})`;
@@ -1189,7 +1219,7 @@
 
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
                 document.querySelectorAll('.student-only').forEach(el => el.style.display = '');
-                selectDropdown.disabled = true;
+                selectDropdown.disabled = false; // Membolehkan siswa memilih untuk melihat profil teman
             }
 
             document.getElementById('modalBubbleLogin').classList.add('hidden');
@@ -1201,6 +1231,7 @@
                 gantiSiswaProfil(currentNis);
             }
 
+            renderFormPostUser();
             gantiTabFrame('status');
             renderGrupSelectorUI();
             mulaiPollingChat();
@@ -1208,6 +1239,8 @@
 
         function keluarSesiLogin() {
             if (chatPollingTimer) clearInterval(chatPollingTimer);
+            loggedInNis = null;
+            currentNis = null;
             document.getElementById('inputNisLogin').value = '';
             document.getElementById('modalBubbleLogin').classList.remove('hidden');
             document.getElementById('mainAppContainer').classList.add('hidden');
@@ -1285,12 +1318,6 @@
                 document.getElementById('lblNamaSiswa').innerText = dataSiswa[1];
                 document.getElementById('lblNisSiswa').innerText = `NIS: ${dataSiswa[0]}`;
                 document.getElementById('lblNoAbsen').innerText = `Absen: ${indexSiswa + 1}`;
-                
-                if (isAdminMode) {
-                    document.getElementById('lblNamaPostForm').innerText = "Guru / Admin Kelas";
-                } else {
-                    document.getElementById('lblNamaPostForm').innerText = dataSiswa[1];
-                }
             }
 
             if (!dbProfilDetail[nis]) {
@@ -1343,39 +1370,44 @@
                 if (mahkotaEl) mahkotaEl.classList.add('hidden');
                 if (frameBoxEl) frameBoxEl.classList.remove('top-rank-glow');
             }
-
-            if (currentNis) {
-                updateIndikatorFormPost(currentNis, highestNis);
-            }
         }
 
-        /* PERBAIKAN: KETERANGAN LEVEL & BADGE PINDAH KE SEBELAH KANAN NAMA */
-        function updateIndikatorFormPost(nis, highestNis) {
-            const pData = dbProfilDetail[nis] || {};
-            const isHighest = (highestNis && String(nis) === String(highestNis));
-
-            // 1. Mahkota Kuning Bersinar di foto profil jika Juara 1
+        // PENYEMPURNAAN 2: FORMATTING IDENTITAS FORM FEEDS UNTUK SISWA LOGGED IN
+        function renderFormPostUser() {
+            const avatarImg = document.getElementById('imgAvatarPostForm');
+            const nameLbl = document.getElementById('lblNamaPostForm');
+            const levelLbl = document.getElementById('lblLevelPostForm');
+            const badgeBox = document.getElementById('containerBadgePostForm');
             const indCrown = document.getElementById('indicatorTopCrown');
-            if (indCrown) {
-                if (isHighest) indCrown.classList.remove('hidden');
-                else indCrown.classList.add('hidden');
-            }
 
-            // 2. Keterangan Level Merah di sebelah kanan nama
-            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
-            const lvlPostEl = document.getElementById('lblLevelPostForm');
-            if (lvlPostEl) {
-                const lvlNum = kalkulasi.levelBadge.replace('Level ', 'L');
-                lvlPostEl.innerText = lvlNum;
-            }
+            if (isAdminMode) {
+                nameLbl.innerText = "Guru / Admin Kelas";
+                avatarImg.src = ADMIN_AVATAR;
+                levelLbl.innerText = "ADMIN";
+                badgeBox.innerHTML = "";
+                if (indCrown) indCrown.classList.add('hidden');
+            } else if (loggedInNis) {
+                const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(loggedInNis));
+                const pData = dbProfilDetail[loggedInNis] || {};
+                const avatarSrc = pData.fotoProfil ? pData.fotoProfil : DEFAULT_AVATAR;
+                
+                nameLbl.innerText = dataSiswa ? dataSiswa[1] : `NIS ${loggedInNis}`;
+                avatarImg.src = avatarSrc;
 
-            // 3. Badge Hijau Pameran di sebelah kanan level
-            const containerBadge = document.getElementById('containerBadgePostForm');
-            if (containerBadge) {
+                const highestNis = getHighestNis();
+                const isHighest = (highestNis && String(loggedInNis) === String(highestNis));
+                if (indCrown) {
+                    if (isHighest) indCrown.classList.remove('hidden');
+                    else indCrown.classList.add('hidden');
+                }
+
+                const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+                levelLbl.innerText = kalkulasi.levelBadge.replace('Level ', 'L');
+
                 let badgeIdx = pData.pamerBadgeIdx !== undefined ? pData.pamerBadgeIdx : 0;
                 let badgeObj = pData.badges && pData.badges[badgeIdx] ? pData.badges[badgeIdx] : null;
                 let activeBadgeImg = (badgeObj && typeof badgeObj === 'object' && badgeObj.img) ? badgeObj.img : "";
-                
+
                 if (!activeBadgeImg && pData.badges) {
                     for (let i = 0; i < pData.badges.length; i++) {
                         let b = pData.badges[i];
@@ -1387,9 +1419,9 @@
                 }
 
                 if (activeBadgeImg) {
-                    containerBadge.innerHTML = `<img src="${activeBadgeImg}" class="w-5 h-5 rounded-full object-cover border border-emerald-400 shadow-sm" title="Badge Pameran Profil">`;
+                    badgeBox.innerHTML = `<img src="${activeBadgeImg}" class="w-5 h-5 rounded-full object-cover border border-emerald-400 shadow-sm" title="Badge Pameran Profil">`;
                 } else {
-                    containerBadge.innerHTML = `<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[9px] shadow-sm" title="Badge Pameran Profil"><i class="fa-solid fa-medal"></i></span>`;
+                    badgeBox.innerHTML = `<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[9px] shadow-sm" title="Badge Pameran Profil"><i class="fa-solid fa-medal"></i></span>`;
                 }
             }
         }
@@ -1399,11 +1431,21 @@
             const avatarSrc = pData.fotoProfil ? pData.fotoProfil : DEFAULT_AVATAR;
 
             document.getElementById('imgFotoSiswa').src = avatarSrc;
-            
-            if (isAdminMode) {
-                document.getElementById('imgAvatarPostForm').src = ADMIN_AVATAR;
+
+            // PENYEMPURNAAN 1: KUNCI TOMBOL & AKSI JIKA SISWA LOGGED IN SEDANG MENGINTIP PROFIL TEMAN
+            const isOwnProfile = (loggedInNis === currentNis) || isAdminMode;
+            const bannerTeman = document.getElementById('bannerModeTemanProfil');
+            const overlayFoto = document.getElementById('overlayUploadFotoSiswa');
+            const btnPasangBadge = document.getElementById('btnContainerPasangBadge');
+
+            if (!isOwnProfile) {
+                if (bannerTeman) bannerTeman.classList.remove('hidden');
+                if (overlayFoto) overlayFoto.classList.add('hidden');
+                if (btnPasangBadge) btnPasangBadge.classList.add('hidden');
             } else {
-                document.getElementById('imgAvatarPostForm').src = avatarSrc;
+                if (bannerTeman) bannerTeman.classList.add('hidden');
+                if (overlayFoto) overlayFoto.classList.remove('hidden');
+                if (btnPasangBadge && !isAdminMode) btnPasangBadge.classList.remove('hidden');
             }
 
             const bnt = pData.bintang || 0;
@@ -1426,8 +1468,8 @@
 
         /* MODAL PILIH BADGE UNTUK DIPAMERKAN DI PROFIL */
         function bukaModalPilihBadge() {
-            if (!currentNis || isAdminMode) return;
-            const pData = dbProfilDetail[currentNis] || {};
+            if (!loggedInNis || isAdminMode) return;
+            const pData = dbProfilDetail[loggedInNis] || {};
             const badges = pData.badges || [];
             const container = document.getElementById('containerListBadgePilihan');
             container.innerHTML = '';
@@ -1464,24 +1506,30 @@
         }
 
         function pilihBadgePameran(idx) {
-            if (!currentNis) return;
-            const pData = dbProfilDetail[currentNis];
+            if (!loggedInNis) return;
+            const pData = dbProfilDetail[loggedInNis];
             pData.pamerBadgeIdx = idx;
             playBeepSound(1000, 'sine', 0.15);
             simpanSemuaData();
             tutupModalPilihBadge();
             renderProfilSiswa(currentNis);
+            renderFormPostUser();
             alert("Berhasil memperbarui Badge yang dipamerkan di profil!");
         }
 
         function picuUploadFotoProfilSiswa() {
             if (!currentNis) return;
+            if (!isAdminMode && loggedInNis !== currentNis) {
+                alert("Anda sedang melihat profil teman. Anda tidak bisa mengubah foto profil teman Anda!");
+                return;
+            }
             document.getElementById('inputUploadFotoProfil').click();
         }
 
         function prosesUploadFotoProfilSiswa(e) {
             const file = e.target.files[0];
-            if (!file || !currentNis) return;
+            const targetNis = isAdminMode ? currentNis : loggedInNis;
+            if (!file || !targetNis) return;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
@@ -1512,17 +1560,18 @@
 
                     const base64Data = canvas.toDataURL('image/jpeg', 0.8);
 
-                    if (!dbProfilDetail[currentNis]) dbProfilDetail[currentNis] = {};
-                    dbProfilDetail[currentNis].fotoProfil = base64Data;
+                    if (!dbProfilDetail[targetNis]) dbProfilDetail[targetNis] = {};
+                    dbProfilDetail[targetNis].fotoProfil = base64Data;
 
                     playBeepSound(1100, 'sine', 0.2);
                     simpanSemuaData();
-                    document.getElementById('imgFotoSiswa').src = base64Data;
-                    if (!isAdminMode) {
-                        document.getElementById('imgAvatarPostForm').src = base64Data;
+                    
+                    if (currentNis === targetNis) {
+                        document.getElementById('imgFotoSiswa').src = base64Data;
                     }
+                    renderFormPostUser();
 
-                    kirimFotoSiswaMandiriKeSheet(currentNis, base64Data);
+                    kirimFotoSiswaMandiriKeSheet(targetNis, base64Data);
                 };
                 img.src = evt.target.result;
             };
@@ -1964,6 +2013,7 @@
             document.getElementById('containerPreviewFotoPost').classList.add('hidden');
         }
 
+        // PENYEMPURNAAN 2: MEMUAT IDENTITAS USER LOGGED IN DALAM SETIAP PUBLIKASI STATUS
         function publikasikanStatusBaru() {
             const teksInput = document.getElementById('inputTeksStatus').value.trim();
             if (!teksInput && !tempFotoStatusBase64) {
@@ -1971,13 +2021,13 @@
                 return;
             }
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
-            const namaPenulis = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
-            const nisPenulis = isAdminMode ? "admin" : currentNis;
+            const activeAuthorNis = isAdminMode ? "admin" : (loggedInNis || currentNis);
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeAuthorNis));
+            const namaPenulis = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${activeAuthorNis}`);
 
             const newPost = {
                 id: "post_" + Date.now(),
-                nis: nisPenulis,
+                nis: activeAuthorNis,
                 nama: namaPenulis,
                 waktu: "Baru saja",
                 teks: teksInput,
@@ -2001,7 +2051,7 @@
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
 
-            const myNis = String(currentNis);
+            const myNis = String(loggedInNis || currentNis);
 
             post.likes = post.likes.filter(id => id !== myNis);
             post.loves = post.loves.filter(id => id !== myNis);
@@ -2026,12 +2076,12 @@
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
-            const namaPenulis = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
-            const nisPenulis = isAdminMode ? "admin" : currentNis;
+            const activeCommentNis = isAdminMode ? "admin" : (loggedInNis || currentNis);
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeCommentNis));
+            const namaPenulis = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${activeCommentNis}`);
 
             post.comments.push({
-                nis: nisPenulis,
+                nis: activeCommentNis,
                 nama: namaPenulis,
                 teks: teksKom
             });
@@ -2042,12 +2092,42 @@
             renderFeedsStatusUI();
         }
 
+        // PENYEMPURNAAN 3: KONTROL HAPUS STATUS DAN KOMENTAR UNTUK SISWA LOGGED IN
         function hapusPostStatus(postId) {
-            if (!isAdminMode) return;
+            const post = listFeedsPost.find(p => p.id === postId);
+            if (!post) return;
+
+            const canDelete = isAdminMode || (post.nis === String(loggedInNis));
+            if (!canDelete) {
+                alert("Anda hanya dapat menghapus postingan Anda sendiri!");
+                return;
+            }
+
             if (confirm("Hapus postingan ini secara permanen?")) {
                 listFeedsPost = listFeedsPost.filter(p => p.id !== postId);
                 simpanSemuaData();
                 renderFeedsStatusUI();
+                playBeepSound(600, 'sine', 0.1);
+            }
+        }
+
+        function hapusKomentarPost(postId, commentIndex) {
+            const post = listFeedsPost.find(p => p.id === postId);
+            if (!post || !post.comments[commentIndex]) return;
+
+            const comment = post.comments[commentIndex];
+            const canDelete = isAdminMode || (comment.nis === String(loggedInNis));
+
+            if (!canDelete) {
+                alert("Anda hanya dapat menghapus komentar Anda sendiri!");
+                return;
+            }
+
+            if (confirm("Hapus komentar ini?")) {
+                post.comments.splice(commentIndex, 1);
+                simpanSemuaData();
+                renderFeedsStatusUI();
+                playBeepSound(600, 'sine', 0.1);
             }
         }
 
@@ -2077,7 +2157,7 @@
             return highestNis;
         }
 
-        /* PERBAIKAN RENDER FEEDS STATUS DENGAN KETERANGAN LEVEL & BADGE DI SEBELAH KANAN NAMA */
+        /* RENDER FEEDS STATUS DENGAN IKON HAPUS UNTUK STATUS & KOMENTAR PENULIS/ADMIN */
         function renderFeedsStatusUI() {
             const container = document.getElementById('containerFeedsList');
             if (!container) return;
@@ -2138,13 +2218,14 @@
                     }
                 }
 
-                const myNis = String(currentNis);
+                const myNis = String(loggedInNis || currentNis);
                 const hasLiked = post.likes.includes(myNis);
                 const hasLoved = post.loves.includes(myNis);
                 const hasSaded = post.sads.includes(myNis);
+                const canDeletePost = isAdminMode || (post.nis === String(loggedInNis));
 
                 let commentsHTML = '';
-                post.comments.forEach(c => {
+                post.comments.forEach((c, cIdx) => {
                     const isKomAdmin = c.nis === 'admin' || c.nama.includes('Guru') || c.nama.includes('Admin');
                     let avatarKom = DEFAULT_AVATAR;
 
@@ -2190,8 +2271,10 @@
                         }
                     }
 
+                    const canDeleteComment = isAdminMode || (c.nis === String(loggedInNis));
+
                     commentsHTML += `
-                        <div class="flex items-start gap-2 mb-2">
+                        <div class="flex items-start gap-2 mb-2 group/kom">
                             <div class="relative shrink-0 w-8 h-8 flex items-center justify-center mt-0.5">
                                 <img src="${avatarKom}" class="w-7 h-7 rounded-full object-cover border border-purple-300 cursor-pointer hover:scale-105 transition-all" onclick="bukaProfilTeman('${c.nis}')" title="Klik untuk lihat profil">
                                 ${isHighestKom ? `
@@ -2203,12 +2286,20 @@
                                 ` : ''}
                             </div>
 
-                            <div class="feed-chat-bubble-reply p-2.5 flex-1 min-w-0">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-purple-600 transition-colors" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
-                                    ${!isKomAdmin ? `
-                                        <span class="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-rose-500 text-white shadow-xs">${lvlKom}</span>
-                                        ${greenBadgeKom ? `<img src="${greenBadgeKom}" class="w-4 h-4 rounded-full object-cover border border-emerald-400 shadow-xs" title="Badge Pameran">` : `<span class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px]"><i class="fa-solid fa-medal"></i></span>`}
+                            <div class="feed-chat-bubble-reply p-2.5 flex-1 min-w-0 relative">
+                                <div class="flex items-center justify-between gap-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-purple-600 transition-colors" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
+                                        ${!isKomAdmin ? `
+                                            <span class="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-rose-500 text-white shadow-xs">${lvlKom}</span>
+                                            ${greenBadgeKom ? `<img src="${greenBadgeKom}" class="w-4 h-4 rounded-full object-cover border border-emerald-400 shadow-xs" title="Badge Pameran">` : `<span class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[7px]"><i class="fa-solid fa-medal"></i></span>`}
+                                        ` : ''}
+                                    </div>
+
+                                    ${canDeleteComment ? `
+                                        <button onclick="hapusKomentarPost('${post.id}', ${cIdx})" class="text-rose-400 hover:text-rose-600 text-[10px] p-0.5 font-bold transition-all" title="Hapus Komentar">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     ` : ''}
                                 </div>
                                 <span class="text-slate-700 text-xs leading-relaxed break-words font-medium mt-0.5 block">${c.teks}</span>
@@ -2246,9 +2337,9 @@
                                     <p class="text-[10px] text-slate-400 font-medium w-full">${post.waktu}</p>
                                 </div>
 
-                                ${isAdminMode ? `
-                                    <button onclick="hapusPostStatus('${post.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1">
-                                        <i class="fa-solid fa-trash"></i>
+                                ${canDeletePost ? `
+                                    <button onclick="hapusPostStatus('${post.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1 flex items-center gap-1 hover:bg-rose-50 rounded-lg transition-all" title="Hapus Status">
+                                        <i class="fa-solid fa-trash"></i> <span class="text-[10px]">Hapus</span>
                                     </button>
                                 ` : ''}
                             </div>
@@ -2300,9 +2391,10 @@
         function saringGrupUntukUserAktif() {
             if (isAdminMode) return listGrupChat;
 
+            const activeNis = loggedInNis || currentNis;
             return listGrupChat.filter(grup => {
                 if (grup.id === "semua" || grup.nama === "Semua Kelas") return true;
-                return Array.isArray(grup.anggota) && grup.anggota.includes(String(currentNis));
+                return Array.isArray(grup.anggota) && grup.anggota.includes(String(activeNis));
             });
         }
 
@@ -2447,6 +2539,7 @@
         function bukaChatFullScreen() {
             playBeepSound(900, 'sine', 0.15);
             document.getElementById('modalChatFullScreen').classList.remove('hidden');
+            tandaiPesanSudahDibaca();
             renderGrupSelectorUI();
             tarikPesanObrolan();
         }
@@ -2536,7 +2629,8 @@
 
         function prosesUploadFotoChat(e) {
             const file = e.target.files[0];
-            if (!file || !currentNis) return;
+            const activeUserNis = loggedInNis || currentNis;
+            if (!file || !activeUserNis) return;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
@@ -2577,10 +2671,11 @@
         }
 
         async function kirimPesanObrolanLangsung(pesanText) {
-            if (!pesanText || !currentNis || !DEFAULT_SCRIPT_URL) return;
+            const activeUserNis = loggedInNis || currentNis;
+            if (!pesanText || !activeUserNis || !DEFAULT_SCRIPT_URL) return;
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
-            const namaPengirim = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeUserNis));
+            const namaPengirim = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${activeUserNis}`);
             const roleUser = isAdminMode ? "Admin" : "Siswa";
 
             playBeepSound(950, 'sine', 0.12);
@@ -2592,7 +2687,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: "sendChatMessage",
-                        nis: currentNis,
+                        nis: activeUserNis,
                         nama: namaPengirim,
                         grup: currentGrupChat,
                         pesan: pesanText,
@@ -2898,10 +2993,11 @@
 
             const inputPesan = document.getElementById(inputId);
             const pesanText = inputPesan ? inputPesan.value.trim() : '';
-            if (!pesanText || !currentNis || !DEFAULT_SCRIPT_URL) return;
+            const activeUserNis = loggedInNis || currentNis;
+            if (!pesanText || !activeUserNis || !DEFAULT_SCRIPT_URL) return;
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(currentNis));
-            const namaPengirim = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${currentNis}`);
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeUserNis));
+            const namaPengirim = isAdminMode ? "Guru / Admin" : (dataSiswa ? dataSiswa[1] : `NIS ${activeUserNis}`);
             const roleUser = isAdminMode ? "Admin" : "Siswa";
 
             if (inputPesan) inputPesan.value = '';
@@ -2914,7 +3010,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: "sendChatMessage",
-                        nis: currentNis,
+                        nis: activeUserNis,
                         nama: namaPengirim,
                         grup: currentGrupChat,
                         pesan: pesanText,
@@ -2927,6 +3023,7 @@
             }
         }
 
+        // PENYEMPURNAAN 5: PENINGKATAN NOTIFIKASI DENGAN HITUNGAN ANGKA PESAN BARU
         async function tarikPesanObrolan() {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -2938,9 +3035,16 @@
                     const currentMessages = result.data;
                     
                     if (lastMessageCount > 0 && currentMessages.length > lastMessageCount) {
+                        const newPesanCount = currentMessages.length - lastMessageCount;
                         const pesanTerbaru = currentMessages[currentMessages.length - 1];
+                        
+                        // Tambahkan angka notifikasi jika obrolan belum dibuka
+                        if (!isChatDrawerOpen) {
+                            unreadChatCount += newPesanCount;
+                            aktifkanAnimasiLonceng();
+                        }
+
                         playChatAudioNotification();
-                        aktifkanAnimasiLonceng();
                         tampilkanToastPesanBaru(pesanTerbaru);
                     }
                     
@@ -3003,16 +3107,24 @@
             } catch(e) {}
         }
 
+        // PENYEMPURNAAN 5: MENGELOLA ANGKA NOTIFIKASI PESAN BARU
         function aktifkanAnimasiLonceng() {
             const badgeDrawer = document.getElementById('badgeUnreadChatDrawer');
             if (badgeDrawer) {
-                badgeDrawer.classList.remove('hidden');
+                if (unreadChatCount > 0) {
+                    badgeDrawer.innerText = unreadChatCount > 99 ? '99+' : unreadChatCount;
+                    badgeDrawer.classList.remove('hidden');
+                } else {
+                    badgeDrawer.classList.add('hidden');
+                }
             }
         }
 
         function tandaiPesanSudahDibaca() {
+            unreadChatCount = 0;
             const badgeDrawer = document.getElementById('badgeUnreadChatDrawer');
             if (badgeDrawer) {
+                badgeDrawer.innerText = '0';
                 badgeDrawer.classList.add('hidden');
             }
         }
