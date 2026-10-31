@@ -240,6 +240,9 @@
             border-top-left-radius: 4px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.03);
             position: relative;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .feed-chat-bubble-reply {
@@ -247,6 +250,8 @@
             border: 1px solid #f1f5f9;
             border-radius: 14px;
             border-top-left-radius: 2px;
+            max-width: 100%;
+            min-width: 0;
         }
 
         @media print {
@@ -821,6 +826,7 @@
             ["3223", "Angelica Vikar Maharani"],
             ["3085", "Anggraeni Abbilah Dhety"],
             ["3087", "Azka Nailun Nabhan"],
+            ["3088", "Cinta Anugrah"],
             ["3089", "Dany Sabiq El-Fathin"],
             ["3090", "Dhea Fiky Mazaya"],
             ["3224", "Earlita Arsyifa Salsabila"],
@@ -911,7 +917,8 @@
             { id: 'jawa', name: 'Bahasa Jawa', icon: 'ꦗ' },
             { id: 'senirupa', name: 'Seni Rupa', icon: '🎨' },
             { id: 'senimusik', name: 'Seni Musik', icon: '🎵' },
-            { id: 'seniteater', name: 'Seni Tari / Teater', icon: '🎭' }
+            { id: 'paibp', name: 'PAIBP', icon: '🕌' },
+            { id: 'pjok', name: 'PJOK', icon: '⚽' }
         ];
 
         let BADGE_DESCS = [
@@ -2154,7 +2161,7 @@
             feedPollingTimer = setInterval(() => {
                 tarikFeedDariSheet(false);
                 tarikDataDariSheet(false);
-            }, 4000); // INTERVAL REAL-TIME 4 DETIK TERUS MENERUS
+            }, 4000);
         }
 
         function beriTanggapanPost(postId, jenisReaksi) {
@@ -2436,9 +2443,9 @@
                 });
 
                 html += `
-                    <div class="flex items-start gap-3">
-                        <div class="relative shrink-0 w-12 h-12 flex items-center justify-center mt-1">
-                            <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-pink-400 cursor-pointer hover:scale-105 transition-all shadow-sm" onclick="bukaProfilTeman('${post.nis}')" title="Klik untuk lihat profil">
+                    <div class="flex items-start gap-2.5 sm:gap-3 min-w-0">
+                        <div class="relative shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mt-1">
+                            <img src="${avatar}" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-pink-400 cursor-pointer hover:scale-105 transition-all shadow-sm" onclick="bukaProfilTeman('${post.nis}')" title="Klik untuk lihat profil">
                             
                             ${isHighestPost && !isPostAdmin ? `
                                 <div class="absolute -top-1.5 -right-1 z-10 crown-shining-glow" title="Juara 1 Nilai Rata-Rata Tertinggi!">
@@ -2449,10 +2456,10 @@
                             ` : ''}
                         </div>
                         
-                        <div class="feed-chat-bubble p-4 sm:p-5 flex-1 min-w-0 space-y-3">
+                        <div class="feed-chat-bubble p-3.5 sm:p-5 flex-1 min-w-0 space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="text-xs sm:text-sm font-black text-slate-800 cursor-pointer hover:text-pink-600 transition-colors" onclick="bukaProfilTeman('${post.nis}')">${post.nama}</h4>
+                                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
+                                    <h4 class="text-xs sm:text-sm font-black text-slate-800 cursor-pointer hover:text-pink-600 transition-colors truncate" onclick="bukaProfilTeman('${post.nis}')">${post.nama}</h4>
                                     
                                     ${isPostAdmin ? `
                                         <span class="inline-flex items-center gap-1 admin-glow-badge text-white font-black text-[9px] px-2 py-0.5 rounded-full border border-purple-300 tracking-wider uppercase"><i class="fa-solid fa-user-shield text-[8px]"></i> ADMIN</span>
@@ -2465,13 +2472,13 @@
                                 </div>
 
                                 ${canDeletePost ? `
-                                    <button onclick="hapusPostStatus('${post.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1 flex items-center gap-1 hover:bg-rose-50 rounded-lg transition-all" title="Hapus Status">
-                                        <i class="fa-solid fa-trash"></i> <span class="text-[10px]">Hapus</span>
+                                    <button onclick="hapusPostStatus('${post.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold p-1 flex items-center gap-1 hover:bg-rose-50 rounded-lg transition-all shrink-0" title="Hapus Status">
+                                        <i class="fa-solid fa-trash"></i> <span class="text-[10px] hidden sm:inline">Hapus</span>
                                     </button>
                                 ` : ''}
                             </div>
 
-                            ${post.teks ? `<p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">${post.teks}</p>` : ''}
+                            ${post.teks ? `<p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed break-words">${post.teks}</p>` : ''}
 
                             ${post.foto ? `
                                 <div class="rounded-2xl overflow-hidden border border-slate-200 max-h-80 bg-slate-50 flex items-center justify-center">
@@ -2481,14 +2488,14 @@
 
                             <!-- REACTION BAR -->
                             <div class="flex items-center justify-between border-y border-slate-100 py-2 text-xs">
-                                <div class="flex items-center gap-1.5 sm:gap-2">
-                                    <button onclick="beriTanggapanPost('${post.id}', 'like')" class="px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasLiked ? 'bg-blue-100 text-blue-600' : 'hover:bg-slate-100 text-slate-600'}">
+                                <div class="flex items-center gap-1 sm:gap-2">
+                                    <button onclick="beriTanggapanPost('${post.id}', 'like')" class="px-2 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasLiked ? 'bg-blue-100 text-blue-600' : 'hover:bg-slate-100 text-slate-600'}">
                                         👍 ${post.likes.length}
                                     </button>
-                                    <button onclick="beriTanggapanPost('${post.id}', 'love')" class="px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasLoved ? 'bg-pink-100 text-pink-600' : 'hover:bg-slate-100 text-slate-600'}">
+                                    <button onclick="beriTanggapanPost('${post.id}', 'love')" class="px-2 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasLoved ? 'bg-pink-100 text-pink-600' : 'hover:bg-slate-100 text-slate-600'}">
                                         ❤️ ${post.loves.length}
                                     </button>
-                                    <button onclick="beriTanggapanPost('${post.id}', 'sad')" class="px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasSaded ? 'bg-amber-100 text-amber-700' : 'hover:bg-slate-100 text-slate-600'}">
+                                    <button onclick="beriTanggapanPost('${post.id}', 'sad')" class="px-2 py-1 rounded-xl transition-all flex items-center gap-1 font-bold text-[11px] ${hasSaded ? 'bg-amber-100 text-amber-700' : 'hover:bg-slate-100 text-slate-600'}">
                                         😢 ${post.sads.length}
                                     </button>
                                 </div>
@@ -2497,14 +2504,18 @@
                             </div>
 
                             <!-- KOMENTAR CONTAINER -->
-                            <div class="space-y-2 pt-1">
+                            <div class="space-y-2 pt-1 w-full min-w-0">
                                 <div class="max-h-48 overflow-y-auto pr-1">
                                     ${commentsHTML}
                                 </div>
 
-                                <form onsubmit="tambahKomentarPost(event, '${post.id}')" class="flex items-center gap-2 pt-1">
-                                    <input type="text" id="inputKom_${post.id}" placeholder="Balas obrolan ini..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-pink-500 shadow-inner">
-                                    <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all active:scale-95 shadow-sm">Kirim</button>
+                                <!-- FORM BALAS KOMENTAR PRESISI MOBILE PORTRAIT -->
+                                <form onsubmit="tambahKomentarPost(event, '${post.id}')" class="flex items-center gap-2 pt-1 w-full">
+                                    <input type="text" id="inputKom_${post.id}" placeholder="Balas obrolan ini..." class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-pink-500 shadow-inner">
+                                    <button type="submit" class="shrink-0 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                        <span>Kirim</span>
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -2514,14 +2525,14 @@
 
             /* KONTROL PAGINASI TERHUBUNG KE HALAMAN LEBIH BARU / LEBIH LAMA */
             let paginationHTML = `
-                <div class="flex items-center justify-between border-t border-slate-200 pt-4 mt-6 no-print">
-                    <button onclick="gantiHalamanFeed(${currentPageFeed - 1})" ${currentPageFeed === 1 ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-pink-50 hover:text-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-1.5">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200 pt-4 mt-6 no-print">
+                    <button onclick="gantiHalamanFeed(${currentPageFeed - 1})" ${currentPageFeed === 1 ? 'disabled' : ''} class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-pink-50 hover:text-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-chevron-left"></i> Sebelumnya
                     </button>
-                    <div class="text-xs font-bold text-slate-600">
+                    <div class="text-xs font-bold text-slate-600 text-center">
                         Halaman <span class="text-pink-600 font-black">${currentPageFeed}</span> dari <span class="font-black">${totalPages}</span> (${listFeedsPost.length} Feed)
                     </div>
-                    <button onclick="gantiHalamanFeed(${currentPageFeed + 1})" ${currentPageFeed >= totalPages ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-pink-50 hover:text-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm flex items-center gap-1.5">
+                    <button onclick="gantiHalamanFeed(${currentPageFeed + 1})" ${currentPageFeed >= totalPages ? 'disabled' : ''} class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-pink-50 hover:text-pink-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm flex items-center justify-center gap-1.5">
                         Selanjutnya <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
