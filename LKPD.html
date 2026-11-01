@@ -850,7 +850,7 @@
     </div>
 
     <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz68HoKIt00n9bFbZ8NSTkhwIb9R3ehBWoaqTCD1mifFUQ0R8nssl7lpJUnmlbv4Bj4/exec";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydb0ZMW-52ufiZUIjKVCyusjXSNeLdT0uKTrZ8qffNhHHFYHKgunl7a8HvV5LE7nYm/exec";
 
         const listMasterSiswa = [
             ["3052", "Amelia Alita Zahra"],
@@ -940,7 +940,6 @@
         const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23f59e0b'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
         const ADMIN_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23c084fc'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
-        // KUMPULAN MAPEL UTAMA (LENGKAP TERMASUK SENI TARI, SENI TEATER, PAI, DAN PJOK)
         const MAPEL_LIST = [
             { id: 'pancasila', name: 'Pendidikan Pancasila', icon: '⭐' },
             { id: 'indonesia', name: 'Bahasa Indonesia', icon: '📖' },
@@ -2222,6 +2221,10 @@
             kirimSingleFeedPostKeSheet(newPost);
         }
 
+        // =======================================================
+        // INTEGRASI DENGAN TAB SHEET: "SIXBOOK"
+        // Setiap postingan dikirim ke backend dengan grup = SIXBOOK
+        // =======================================================
         async function kirimSingleFeedPostKeSheet(post) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -2234,7 +2237,7 @@
                         action: "sendChatMessage",
                         nis: post.nis,
                         nama: post.nama,
-                        grup: "SIXBOOK Feed",
+                        grup: "SIXBOOK", // Mengarahkan data ke tab 'SIXBOOK' di Google Sheet
                         pesan: JSON.stringify(post),
                         role: (post.nis === 'admin' || post.nis === ADMIN_NIS) ? "Admin" : "Siswa"
                     })
@@ -2253,7 +2256,7 @@
                     action: "sendChatMessage",
                     nis: loggedInNis || currentNis || "admin",
                     nama: isAdminMode ? (dbProfilDetail['admin']?.nama || "Admin") : "Siswa",
-                    grup: "SIXBOOK Feed Bulk",
+                    grup: "SIXBOOK", // Mengarahkan data ke tab 'SIXBOOK'
                     pesan: JSON.stringify(listFeedsPost),
                     role: isAdminMode ? "Admin" : "Siswa"
                 };
@@ -2264,7 +2267,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert("Berhasil mengunggah dan menyinkronkan seluruh Feed ke Cloud Google Sheet!");
+                alert("Berhasil mengunggah dan menyinkronkan seluruh Feed ke Cloud Google Sheet (Tab SIXBOOK)!");
             } catch (err) {
                 console.error("Gagal kirim Feed ke Sheet:", err);
                 alert("Gagal terhubung ke Google Sheet saat mengirim Feed.");
@@ -2288,7 +2291,8 @@
                     const dataArray = Array.isArray(result.data) ? result.data : (Array.isArray(result) ? result : []);
 
                     dataArray.forEach(msg => {
-                        const isFeedGroup = msg.grup === "SIXBOOK Feed" || msg.grup === "SIXBOOK Feed Bulk" || !msg.grup;
+                        // Memeriksa pesan dari grup 'SIXBOOK', 'SIXBOOK Feed', 'SIXBOOK Feed Bulk', atau default
+                        const isFeedGroup = msg.grup === "SIXBOOK" || msg.grup === "SIXBOOK Feed" || msg.grup === "SIXBOOK Feed Bulk" || !msg.grup;
                         if (isFeedGroup && msg.pesan) {
                             try {
                                 const parsed = typeof msg.pesan === 'string' ? JSON.parse(msg.pesan) : msg.pesan;
@@ -2326,7 +2330,7 @@
 
                     if (isManual) {
                         playBeepSound(1000, 'sine', 0.2);
-                        alert(`Berhasil menarik ${listFeedsPost.length} postingan Feed terbaru!`);
+                        alert(`Berhasil menarik ${listFeedsPost.length} postingan Feed terbaru dari Sheet SIXBOOK!`);
                     }
                 }
             } catch (err) {
@@ -2335,13 +2339,30 @@
             }
         }
 
+        // =======================================================
+        // FITUR: REAL-TIME & PAUSE SAAT KURSOR BERKEDIP (FOKUS)
+        // =======================================================
+        function isUserTypingActive() {
+            const activeEl = document.activeElement;
+            if (!activeEl) return false;
+            const tag = activeEl.tagName;
+            return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || activeEl.isContentEditable;
+        }
+
         function mulaiPollingFeed() {
             tarikFeedDariSheet(false);
             if (feedPollingTimer) clearInterval(feedPollingTimer);
+            
+            // Polling interval real-time (setiap 3,5 detik)
             feedPollingTimer = setInterval(() => {
+                // Berhenti/pause sejenak saat kursor sedang berada di elemen input/textarea/select
+                if (isUserTypingActive()) {
+                    return; 
+                }
+
                 tarikFeedDariSheet(false);
                 tarikDataDariSheet(false);
-            }, 4000);
+            }, 3500);
         }
 
         function tambahKomentarPost(e, postId) {
@@ -2845,6 +2866,8 @@
 
             document.getElementById('inputNamaPelanggaran').value = '';
             document.getElementById('inputPoinPengurangan').value = '';
+
+            kirimDataProfilLengkapKeSheet(currentNis);
         }
 
         function hapusPelanggaran(idx) {
@@ -2855,6 +2878,71 @@
 
             simpanSemuaData();
             renderPelanggaran(pData.pelanggaran);
+
+            kirimDataProfilLengkapKeSheet(currentNis);
+        }
+
+        async function kirimDataProfilLengkapKeSheet(nis) {
+            if (!DEFAULT_SCRIPT_URL) return;
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
+            const pData = dbProfilDetail[nis] || {};
+            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+
+            let totalPoinMinus = 0;
+            let pelanggaranArr = pData.pelanggaran || [];
+            let pelanggaranTeks = pelanggaranArr.map(p => {
+                totalPoinMinus += parseInt(p.poin) || 0;
+                return `[${p.tgl}] ${p.nama} (-${p.poin})`;
+            }).join(" | ");
+
+            let singleBadgeObject = {};
+            let badgesArr = pData.badges || [];
+            for (let j = 0; j < 25; j++) {
+                let b = badgesArr[j] || { active: false, img: "", title: BADGE_DESCS[j] };
+                singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
+            }
+
+            const payload = {
+                action: "saveProfilSiswa",
+                nis: nis,
+                nama: dataSiswa ? dataSiswa[1] : "",
+                fotoProfil: pData.fotoProfil || "",
+                bintang: pData.bintang || 0,
+                tabungan: pData.tabungan || (dbTabunganSiswa[nis] || 0),
+                pamerBadgeIdx: pData.pamerBadgeIdx || 0,
+                rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
+                skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
+                nilaiDetail: pData.nilai || {},
+                pancasila: pData.nilai['pancasila'] !== undefined ? pData.nilai['pancasila'] : "",
+                indonesia: pData.nilai['indonesia'] !== undefined ? pData.nilai['indonesia'] : "",
+                matematika: pData.nilai['matematika'] !== undefined ? pData.nilai['matematika'] : "",
+                ipas: pData.nilai['ipas'] !== undefined ? pData.nilai['ipas'] : "",
+                inggris: pData.nilai['inggris'] !== undefined ? pData.nilai['inggris'] : "",
+                jawa: pData.nilai['jawa'] !== undefined ? pData.nilai['jawa'] : "",
+                senirupa: pData.nilai['senirupa'] !== undefined ? pData.nilai['senirupa'] : "",
+                senimusik: pData.nilai['senimusik'] !== undefined ? pData.nilai['senimusik'] : "",
+                senitari: pData.nilai['senitari'] !== undefined ? pData.nilai['senitari'] : "",
+                seniteater: pData.nilai['seniteater'] !== undefined ? pData.nilai['seniteater'] : "",
+                agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
+                paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
+                pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
+                ...singleBadgeObject,
+                pelanggaranJSON: JSON.stringify(pelanggaranArr),
+                pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
+                jumlahPelanggaran: pelanggaranArr.length,
+                totalPoinMinus: totalPoinMinus
+            };
+
+            try {
+                await fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.warn("Gagal sinkronisasi data ke Sheet:", err);
+            }
         }
 
         function renderMapelInputs(nilaiObj) {
@@ -2904,7 +2992,6 @@
             hitungKalkulasiLevel(pData.nilai);
             updateTampilanSiswaTertinggi();
 
-            // Otomatis sinkronkan perubahan nilai ke Google Sheets
             kirimSingleNilaiMapelKeSheet(currentNis, mapelId, pData.nilai[mapelId]);
         }
 
@@ -3286,7 +3373,6 @@
                         
                         let nilaiMapelSheet = dbProfilDetail[keyTarget].nilai || {};
                         
-                        // Ekstraksi nilai mapel fleksibel (penanganan koma & pembacaan header serbaguna)
                         MAPEL_LIST.forEach(m => {
                             const mapelKey = m.id;
                             let valFound = undefined;
@@ -3307,7 +3393,6 @@
                                 return false;
                             };
 
-                            // 1. Cek dari properti utama item
                             for (let key in item) {
                                 if (isMatchHeader(key)) {
                                     if (item[key] !== undefined && item[key] !== null && item[key] !== "") {
@@ -3317,7 +3402,6 @@
                                 }
                             }
 
-                            // 2. Cek jika tersimpan di dalam objek nilaiObj/nilaiDetail
                             if (valFound === undefined && item.nilaiObj) {
                                 for (let key in item.nilaiObj) {
                                     if (isMatchHeader(key)) {
