@@ -311,7 +311,7 @@
         </div>
     </div>
 
-    <!-- DROPDOWN PANEL HASIL CARI TEMAN MELAYANG FIXED (SUPAYA TIDAK TERTUTUP) -->
+    <!-- DROPDOWN PANEL HASIL CARI TEMAN MELAYANG FIXED -->
     <div id="dropdownHasilCariTeman" class="hidden fixed z-[99999] bg-white/95 backdrop-blur-md border-2 border-amber-300 rounded-2xl shadow-2xl p-2 w-72 max-w-[90vw] max-h-64 overflow-y-auto space-y-1 text-slate-800">
     </div>
 
@@ -833,7 +833,7 @@
                             </span>
                         </div>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="gridMapelInputs"></div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="gridMapelInputs"></div>
                     </div>
 
                 </div>
@@ -850,7 +850,7 @@
     </div>
 
     <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyr6V7JcID0hF7Y6NsV71ZKgOutE90AD3yCFevVW5LCaz2lLwfItKs6qMkWSgwxdCX8/exec";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz68HoKIt00n9bFbZ8NSTkhwIb9R3ehBWoaqTCD1mifFUQ0R8nssl7lpJUnmlbv4Bj4/exec";
 
         const listMasterSiswa = [
             ["3052", "Amelia Alita Zahra"],
@@ -935,11 +935,12 @@
         let deferredPWAEvent = null;
 
         const ADMIN_NIS = "082225575222";
-        const ADMIN_USERNAME = "admin";
+        const ADMIN_USERNAME = "ardys";
         
         const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23f59e0b'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
         const ADMIN_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23c084fc'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
 
+        // KUMPULAN MAPEL UTAMA (LENGKAP TERMASUK SENI TARI, SENI TEATER, PAI, DAN PJOK)
         const MAPEL_LIST = [
             { id: 'pancasila', name: 'Pendidikan Pancasila', icon: '⭐' },
             { id: 'indonesia', name: 'Bahasa Indonesia', icon: '📖' },
@@ -949,7 +950,9 @@
             { id: 'jawa', name: 'Bahasa Jawa', icon: 'ꦗ' },
             { id: 'senirupa', name: 'Seni Rupa', icon: '🎨' },
             { id: 'senimusik', name: 'Seni Musik', icon: '🎵' },
-            { id: 'paibp', name: 'PAIBP', icon: '🕌' },
+            { id: 'senitari', name: 'Seni Tari', icon: '💃' },
+            { id: 'seniteater', name: 'Seni Teater', icon: '🎭' },
+            { id: 'agama', name: 'Pendidikan Agama Islam', icon: '🕌' },
             { id: 'pjok', name: 'PJOK', icon: '⚽' }
         ];
 
@@ -977,7 +980,6 @@
             } catch (e) {}
         }
 
-        /* FITUR CARI TEMAN DENGAN POSISI FIXED TEPAT DI BAWAH INPUT */
         function filterCariTeman(keyword) {
             const dropdown = document.getElementById('dropdownHasilCariTeman');
             const inputCari = document.getElementById('inputCariTeman');
@@ -1008,7 +1010,6 @@
                 `).join('');
             }
 
-            // Posisikan dropdown fixed tepat di bawah input cari teman
             const rect = inputCari.getBoundingClientRect();
             dropdown.style.top = (rect.bottom + 6) + 'px';
             dropdown.style.left = rect.left + 'px';
@@ -1087,7 +1088,6 @@
             playBeepSound(800, 'sine', 0.08);
         }
 
-        /* TOGGLE DROPDOWN NOTIFIKASI DENGAN POSISI FIXED PERSIS DI BAWAH TOMBOL LONCENG */
         function toggleDropdownNotif(e) {
             if (e) e.stopPropagation();
             const panel = document.getElementById('dropdownPanelNotif');
@@ -2869,9 +2869,7 @@
             MAPEL_LIST.forEach(mapel => {
                 let rawVal = nilaiObj[mapel.id];
                 let val = (rawVal !== undefined && rawVal !== '' && !isNaN(rawVal)) ? parseFloat(rawVal).toFixed(2) : '';
-
-                const isSpecialSubject = (mapel.id === 'paibp' || mapel.id === 'pjok');
-                const isEditable = isAdminMode && (isSpecialSubject || !isDataFetchedFromSheet) && currentNis !== 'admin';
+                const isEditable = isAdminMode && currentNis !== 'admin';
 
                 container.innerHTML += `
                     <div class="bg-amber-50/60 p-2.5 sm:p-3 rounded-2xl border border-amber-200 flex flex-col justify-between shadow-sm">
@@ -2889,8 +2887,7 @@
         }
 
         function updateNilaiMapel(mapelId, val) {
-            const isSpecialSubject = (mapelId === 'paibp' || mapelId === 'pjok');
-            if (!currentNis || !isAdminMode || (!isSpecialSubject && isDataFetchedFromSheet) || currentNis === 'admin') return;
+            if (!currentNis || !isAdminMode || currentNis === 'admin') return;
             
             const pData = dbProfilDetail[currentNis];
             if (!pData.nilai) pData.nilai = {};
@@ -2906,6 +2903,73 @@
             simpanSemuaData();
             hitungKalkulasiLevel(pData.nilai);
             updateTampilanSiswaTertinggi();
+
+            // Otomatis sinkronkan perubahan nilai ke Google Sheets
+            kirimSingleNilaiMapelKeSheet(currentNis, mapelId, pData.nilai[mapelId]);
+        }
+
+        async function kirimSingleNilaiMapelKeSheet(nis, mapelId, nilaiVal) {
+            if (!DEFAULT_SCRIPT_URL) return;
+
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
+            const pData = dbProfilDetail[nis] || {};
+            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+
+            let totalPoinMinus = 0;
+            let pelanggaranArr = pData.pelanggaran || [];
+            let pelanggaranTeks = pelanggaranArr.map(p => {
+                totalPoinMinus += parseInt(p.poin) || 0;
+                return `[${p.tgl}] ${p.nama} (-${p.poin})`;
+            }).join(" | ");
+
+            let singleBadgeObject = {};
+            let badgesArr = pData.badges || [];
+            for (let j = 0; j < 25; j++) {
+                let b = badgesArr[j] || { active: false, img: "", title: BADGE_DESCS[j] };
+                singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
+            }
+
+            const payload = {
+                action: "saveProfilSiswa",
+                nis: nis,
+                nama: dataSiswa ? dataSiswa[1] : "",
+                fotoProfil: pData.fotoProfil || "",
+                bintang: pData.bintang || 0,
+                tabungan: pData.tabungan || (dbTabunganSiswa[nis] || 0),
+                pamerBadgeIdx: pData.pamerBadgeIdx || 0,
+                rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
+                skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
+                nilaiDetail: pData.nilai || {},
+                pancasila: pData.nilai['pancasila'] !== undefined ? pData.nilai['pancasila'] : "",
+                indonesia: pData.nilai['indonesia'] !== undefined ? pData.nilai['indonesia'] : "",
+                matematika: pData.nilai['matematika'] !== undefined ? pData.nilai['matematika'] : "",
+                ipas: pData.nilai['ipas'] !== undefined ? pData.nilai['ipas'] : "",
+                inggris: pData.nilai['inggris'] !== undefined ? pData.nilai['inggris'] : "",
+                jawa: pData.nilai['jawa'] !== undefined ? pData.nilai['jawa'] : "",
+                senirupa: pData.nilai['senirupa'] !== undefined ? pData.nilai['senirupa'] : "",
+                senimusik: pData.nilai['senimusik'] !== undefined ? pData.nilai['senimusik'] : "",
+                senitari: pData.nilai['senitari'] !== undefined ? pData.nilai['senitari'] : "",
+                seniteater: pData.nilai['seniteater'] !== undefined ? pData.nilai['seniteater'] : "",
+                agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
+                paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
+                pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
+                ...singleBadgeObject,
+                pelanggaranJSON: JSON.stringify(pelanggaranArr),
+                pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
+                jumlahPelanggaran: pelanggaranArr.length,
+                totalPoinMinus: totalPoinMinus
+            };
+
+            try {
+                await fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.warn("Gagal sinkronisasi nilai mapel ke Sheets:", err);
+            }
         }
 
         function hitungKalkulasiLevel(nilaiObj) {
@@ -3123,6 +3187,19 @@
                     rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
                     skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
                     nilaiDetail: pData.nilai || {},
+                    pancasila: pData.nilai['pancasila'] !== undefined ? pData.nilai['pancasila'] : "",
+                    indonesia: pData.nilai['indonesia'] !== undefined ? pData.nilai['indonesia'] : "",
+                    matematika: pData.nilai['matematika'] !== undefined ? pData.nilai['matematika'] : "",
+                    ipas: pData.nilai['ipas'] !== undefined ? pData.nilai['ipas'] : "",
+                    inggris: pData.nilai['inggris'] !== undefined ? pData.nilai['inggris'] : "",
+                    jawa: pData.nilai['jawa'] !== undefined ? pData.nilai['jawa'] : "",
+                    senirupa: pData.nilai['senirupa'] !== undefined ? pData.nilai['senirupa'] : "",
+                    senimusik: pData.nilai['senimusik'] !== undefined ? pData.nilai['senimusik'] : "",
+                    senitari: pData.nilai['senitari'] !== undefined ? pData.nilai['senitari'] : "",
+                    seniteater: pData.nilai['seniteater'] !== undefined ? pData.nilai['seniteater'] : "",
+                    agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
+                    paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
+                    pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
                     ...singleBadgeObject,
                     pelanggaranJSON: JSON.stringify(pelanggaranArr),
                     pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
@@ -3188,30 +3265,77 @@
                     isDataFetchedFromSheet = true;
 
                     result.data.forEach(item => {
-                        const nis = String(item.nis);
+                        const nis = String(item.nis || item.NIS || item.Nis || "").trim();
                         const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin' || (item.nama && String(item.nama).toLowerCase().includes('admin')));
                         const keyTarget = isAccAdmin ? 'admin' : nis;
+
+                        if (!keyTarget) return;
 
                         if (!dbProfilDetail[keyTarget]) {
                             dbProfilDetail[keyTarget] = {};
                         }
 
-                        if (item.fotoProfil) dbProfilDetail[keyTarget].fotoProfil = item.fotoProfil;
-                        dbProfilDetail[keyTarget].bintang = parseInt(item.bintang) || 0;
+                        if (item.fotoProfil || item.foto) dbProfilDetail[keyTarget].fotoProfil = item.fotoProfil || item.foto;
+                        dbProfilDetail[keyTarget].bintang = parseInt(item.bintang || item.Bintang) || 0;
                         if (item.pamerBadgeIdx !== undefined) dbProfilDetail[keyTarget].pamerBadgeIdx = parseInt(item.pamerBadgeIdx) || 0;
                         
                         if (item.tabungan !== undefined && item.tabungan !== null && item.tabungan !== "") {
-                            dbProfilDetail[keyTarget].tabungan = parseFloat(item.tabungan) || 0;
+                            let strTab = String(item.tabungan).replace(/,/g, '.');
+                            dbProfilDetail[keyTarget].tabungan = parseFloat(strTab) || 0;
                         }
                         
-                        let nilaiMapelSheet = {};
+                        let nilaiMapelSheet = dbProfilDetail[keyTarget].nilai || {};
+                        
+                        // Ekstraksi nilai mapel fleksibel (penanganan koma & pembacaan header serbaguna)
                         MAPEL_LIST.forEach(m => {
-                            if (item[m.id] !== undefined && item[m.id] !== null && item[m.id] !== "") {
-                                nilaiMapelSheet[m.id] = item[m.id];
-                            } else if (item.nilaiObj && item.nilaiObj[m.id] !== undefined && item.nilaiObj[m.id] !== "") {
-                                nilaiMapelSheet[m.id] = item.nilaiObj[m.id];
+                            const mapelKey = m.id;
+                            let valFound = undefined;
+
+                            const isMatchHeader = (keyStr) => {
+                                if (!keyStr) return false;
+                                let kClean = String(keyStr).toLowerCase().replace(/[^a-z0-9]/g, '');
+                                let mClean = mapelKey.toLowerCase();
+
+                                if (kClean === mClean) return true;
+
+                                if (mapelKey === 'agama') {
+                                    return kClean.includes('pai') || kClean.includes('agama') || kClean.includes('paibp');
+                                }
+                                if (mapelKey === 'pjok') {
+                                    return kClean.includes('pjok') || kClean.includes('penjas') || kClean.includes('jasmani');
+                                }
+                                return false;
+                            };
+
+                            // 1. Cek dari properti utama item
+                            for (let key in item) {
+                                if (isMatchHeader(key)) {
+                                    if (item[key] !== undefined && item[key] !== null && item[key] !== "") {
+                                        valFound = item[key];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // 2. Cek jika tersimpan di dalam objek nilaiObj/nilaiDetail
+                            if (valFound === undefined && item.nilaiObj) {
+                                for (let key in item.nilaiObj) {
+                                    if (isMatchHeader(key)) {
+                                        if (item.nilaiObj[key] !== undefined && item.nilaiObj[key] !== null && item.nilaiObj[key] !== "") {
+                                            valFound = item.nilaiObj[key];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (valFound !== undefined) {
+                                let strVal = String(valFound).replace(/,/g, '.');
+                                let parsed = parseFloat(strVal);
+                                nilaiMapelSheet[mapelKey] = isNaN(parsed) ? 0 : parsed;
                             }
                         });
+                        
                         dbProfilDetail[keyTarget].nilai = nilaiMapelSheet;
 
                         let badgesDitarik = Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] }));
