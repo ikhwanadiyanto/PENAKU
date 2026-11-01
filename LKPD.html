@@ -299,7 +299,7 @@
         </div>
     </div>
 
-    <!-- DROPDOWN PANEL NOTIFIKASI MELAYANG FIXED (SUPAYA TIDAK TERPOTONG) -->
+    <!-- DROPDOWN PANEL NOTIFIKASI MELAYANG FIXED -->
     <div id="dropdownPanelNotif" class="hidden fixed z-[99999] bg-white/95 backdrop-blur-md border-2 border-pink-300 rounded-2xl shadow-2xl p-3 w-80 max-w-[90vw] text-slate-800 space-y-2">
         <div class="flex items-center justify-between pb-2 border-b border-pink-100">
             <span class="text-xs font-cute font-black text-pink-600 flex items-center gap-1.5">
@@ -309,6 +309,10 @@
         </div>
         <div id="listNotifItems" class="space-y-1.5 max-h-64 overflow-y-auto">
         </div>
+    </div>
+
+    <!-- DROPDOWN PANEL HASIL CARI TEMAN MELAYANG FIXED (SUPAYA TIDAK TERTUTUP) -->
+    <div id="dropdownHasilCariTeman" class="hidden fixed z-[99999] bg-white/95 backdrop-blur-md border-2 border-amber-300 rounded-2xl shadow-2xl p-2 w-72 max-w-[90vw] max-h-64 overflow-y-auto space-y-1 text-slate-800">
     </div>
 
     <!-- FILE INPUTS -->
@@ -469,8 +473,6 @@
                     <div class="relative flex-1 sm:flex-none w-full sm:w-48">
                         <div class="relative flex items-center">
                             <input type="text" id="inputCariTeman" onkeyup="filterCariTeman(this.value)" placeholder="🔍 Cari Teman..." class="w-full bg-white/80 backdrop-blur-md text-slate-800 placeholder-slate-500 text-xs font-semibold rounded-xl px-3 py-2 border border-white/60 focus:outline-none focus:bg-white transition-all shadow-inner">
-                        </div>
-                        <div id="dropdownHasilCariTeman" class="hidden absolute top-11 left-0 right-0 bg-white/95 backdrop-blur-md border-2 border-amber-300 rounded-2xl shadow-2xl p-2 z-50 max-h-56 overflow-y-auto space-y-1 text-slate-800">
                         </div>
                     </div>
 
@@ -975,9 +977,11 @@
             } catch (e) {}
         }
 
+        /* FITUR CARI TEMAN DENGAN POSISI FIXED TEPAT DI BAWAH INPUT */
         function filterCariTeman(keyword) {
             const dropdown = document.getElementById('dropdownHasilCariTeman');
-            if (!dropdown) return;
+            const inputCari = document.getElementById('inputCariTeman');
+            if (!dropdown || !inputCari) return;
 
             const q = keyword.trim().toLowerCase();
             if (!q) {
@@ -1003,6 +1007,13 @@
                     </div>
                 `).join('');
             }
+
+            // Posisikan dropdown fixed tepat di bawah input cari teman
+            const rect = inputCari.getBoundingClientRect();
+            dropdown.style.top = (rect.bottom + 6) + 'px';
+            dropdown.style.left = rect.left + 'px';
+            dropdown.style.width = Math.max(rect.width, 240) + 'px';
+
             dropdown.classList.remove('hidden');
         }
 
@@ -1099,11 +1110,9 @@
 
             render5NotifTerbaruDropdown();
 
-            // Posisikan dropdown fixed tepat di bawah tombol lonceng
             const rect = btnBell.getBoundingClientRect();
             panel.style.top = (rect.bottom + 8) + 'px';
             
-            // Atur posisi horizontal agar tidak keluar dari layar
             let rightPos = window.innerWidth - rect.right;
             if (rightPos < 10) rightPos = 10;
             panel.style.right = rightPos + 'px';
@@ -3216,7 +3225,7 @@
                                     let bVal = typeof item[key] === 'string' ? JSON.parse(item[key]) : item[key];
                                     badgesDitarik[i] = bVal;
                                 } catch(e) {
-                                    badgesDitalin[i] = { active: !!item[key], img: "", title: BADGE_DESCS[i] };
+                                    badgesDitarik[i] = { active: !!item[key], img: "", title: BADGE_DESCS[i] };
                                 }
                             }
                         }
