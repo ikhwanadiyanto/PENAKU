@@ -39,7 +39,6 @@
         }
     </script>
     <style>
-        /* TEMA WARNA CERIA & MOOD BOOSTER FOR KIDS */
         body {
             background: linear-gradient(135deg, #fef9c3 0%, #e0f2fe 35%, #fce7f3 70%, #dcfce7 100%);
             min-height: 100vh;
@@ -83,14 +82,12 @@
             z-index: 10;
         }
 
-        /* HEADER CERIA MOOD BOOSTER */
         .cheerful-header {
             background: linear-gradient(135deg, #ff70a6 0%, #ff9770 30%, #ffd670 65%, #70d6ff 100%);
             box-shadow: 0 12px 35px rgba(255, 112, 166, 0.3);
             border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
-        /* LOGO ANIMASI EMOTIKON CERIA */
         .logo-emoji-anim {
             display: inline-block;
             animation: cheerfulBounce 2.5s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -241,7 +238,17 @@
             transition: all 0.4s ease;
         }
 
-        /* ANIMASI EMOTIKON DADAH SAAT HAPUS POSTINGAN / KOMENTAR */
+        .highlight-target-post {
+            animation: targetHighlightPulse 2s ease-in-out 2;
+            border-color: #f43f5e !important;
+            box-shadow: 0 0 25px rgba(244, 63, 94, 0.4) !important;
+        }
+
+        @keyframes targetHighlightPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
         .waving-goodbye-anim {
             animation: waveGoodbye 0.8s ease-in-out forwards !important;
             pointer-events: none;
@@ -281,6 +288,29 @@
 
     <div class="floating-emoji-container" id="floatingEmojiContainer"></div>
 
+    <!-- POPUP BUBBLE NOTIFIKASI MELAYANG BEBAS -->
+    <div id="bubbleNotifToast" onclick="bukaNotifFeed()" class="hidden fixed top-5 right-5 z-[99999] bg-slate-900/95 backdrop-blur-md text-white p-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 w-72 max-w-[90vw] cursor-pointer animate-bounce flex items-start gap-3">
+        <div class="w-9 h-9 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 text-base shadow-inner mt-0.5">
+            🔔
+        </div>
+        <div class="flex-1 min-w-0 pr-1">
+            <p class="text-xs font-black leading-tight text-amber-300 break-words" id="lblNotifBubbleTitle">Ada Posting Baru di Feed!</p>
+            <p class="text-[11px] text-slate-200 font-medium leading-tight mt-1 break-words line-clamp-2" id="lblNotifBubbleSub">Klik untuk melihat pesan terbaru!</p>
+        </div>
+    </div>
+
+    <!-- DROPDOWN PANEL NOTIFIKASI MELAYANG FIXED (SUPAYA TIDAK TERPOTONG) -->
+    <div id="dropdownPanelNotif" class="hidden fixed z-[99999] bg-white/95 backdrop-blur-md border-2 border-pink-300 rounded-2xl shadow-2xl p-3 w-80 max-w-[90vw] text-slate-800 space-y-2">
+        <div class="flex items-center justify-between pb-2 border-b border-pink-100">
+            <span class="text-xs font-cute font-black text-pink-600 flex items-center gap-1.5">
+                <i class="fa-solid fa-bell"></i> 5 Notifikasi Terbaru ✨
+            </span>
+            <span class="text-[9px] font-bold text-slate-400">Klik untuk menuju post</span>
+        </div>
+        <div id="listNotifItems" class="space-y-1.5 max-h-64 overflow-y-auto">
+        </div>
+    </div>
+
     <!-- FILE INPUTS -->
     <input type="file" id="inputUploadBadgeFoto" accept="image/*" class="hidden" onchange="prosesUploadBadgeFoto(event)">
     <input type="file" id="inputUploadFotoProfil" accept="image/*" class="hidden" onchange="prosesUploadFotoProfilSiswa(event)">
@@ -306,7 +336,6 @@
     <!-- LOGIN MODAL -->
     <div id="modalBubbleLogin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 no-print">
         <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full text-center border-4 border-amber-300 shadow-2xl relative overflow-hidden">
-            <!-- LOGO EMOTIKON CERIA ANIMATION -->
             <div class="w-20 h-20 bg-gradient-to-tr from-amber-300 via-pink-400 to-sky-400 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg shadow-pink-500/20 logo-emoji-anim">
                 🥳
             </div>
@@ -415,12 +444,11 @@
     <!-- MAIN APP CONTAINER -->
     <div id="mainAppContainer" class="max-w-7xl mx-auto hidden">
         
-        <!-- HEADER APPS: CERIA & BOOSTER GRADIENT WITH ANIMATED EMOJI LOGO -->
-        <header class="cheerful-header p-4 sm:p-6 rounded-3xl mb-6 sm:mb-8 text-slate-800 no-print relative overflow-hidden">
+        <!-- HEADER APPS -->
+        <header class="cheerful-header p-4 sm:p-6 rounded-3xl mb-6 sm:mb-8 text-slate-800 no-print relative">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 relative z-10">
                 
                 <div class="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
-                    <!-- LOGO ANIMASI EMOJI CERIA -->
                     <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/40 backdrop-blur-md flex items-center justify-center text-3xl sm:text-4xl shadow-lg border-2 border-white/60 shrink-0 logo-emoji-anim">
                         🥳
                     </div>
@@ -437,7 +465,7 @@
 
                 <div class="w-full md:w-auto flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 sm:gap-3 relative">
                     
-                    <!-- FITUR CARI TEMAN DESKTOP & MOBILE -->
+                    <!-- FITUR CARI TEMAN -->
                     <div class="relative flex-1 sm:flex-none w-full sm:w-48">
                         <div class="relative flex items-center">
                             <input type="text" id="inputCariTeman" onkeyup="filterCariTeman(this.value)" placeholder="🔍 Cari Teman..." class="w-full bg-white/80 backdrop-blur-md text-slate-800 placeholder-slate-500 text-xs font-semibold rounded-xl px-3 py-2 border border-white/60 focus:outline-none focus:bg-white transition-all shadow-inner">
@@ -448,20 +476,10 @@
 
                     <!-- LONCENG NOTIFIKASI -->
                     <div class="relative flex items-center">
-                        <button onclick="bukaNotifFeed()" class="relative p-2.5 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-white/60 text-slate-800 transition-all shadow-sm active:scale-95 group" title="Notifikasi Pembaruan Feed">
+                        <button id="btnNotifBell" onclick="toggleDropdownNotif(event)" class="relative p-2.5 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-white/60 text-slate-800 transition-all shadow-sm active:scale-95 group" title="Notifikasi Pembaruan Feed">
                             <i id="iconNotifBell" class="fa-solid fa-bell text-base sm:text-lg text-amber-600"></i>
                             <span id="badgeNotifCount" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-bounce shadow-md">0</span>
                         </button>
-
-                        <div id="bubbleNotifToast" onclick="bukaNotifFeed()" class="hidden absolute top-14 right-0 bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border-2 border-amber-400 w-64 max-w-[85vw] sm:max-w-xs z-50 cursor-pointer animate-bounce flex items-start gap-2.5">
-                            <div class="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 text-sm shadow-inner mt-0.5">
-                                🔔
-                            </div>
-                            <div class="flex-1 min-w-0 pr-1">
-                                <p class="text-[11px] font-black leading-tight text-amber-300 break-words" id="lblNotifBubbleTitle">Ada Posting Baru di Feed!</p>
-                                <p class="text-[10px] text-slate-200 font-medium leading-tight mt-1 break-words" id="lblNotifBubbleSub">Klik untuk melihat!</p>
-                            </div>
-                        </div>
                     </div>
 
                     <a href="Pena Mantap V6.html" class="bg-white/60 hover:bg-white/90 text-slate-800 border border-white/60 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm">
@@ -472,7 +490,6 @@
                         <i class="fa-solid fa-laptop-code text-sky-600"></i> e-PR
                     </a>
 
-                    <!-- DROPDOWN NAMA SISWA (ADMIN-ONLY) -->
                     <div class="relative w-full sm:w-52 admin-only">
                         <select id="selectSiswaProfil" onchange="gantiSiswaProfil(this.value)" class="w-full bg-white text-slate-800 border-2 border-amber-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-pink-500 transition-all cursor-pointer shadow-inner">
                             <option value="">-- Pilih Siswa (Admin) --</option>
@@ -621,7 +638,7 @@
                         
                         <div class="bg-emerald-50/70 p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-200 flex items-center justify-between gap-3 shadow-sm">
                             <div class="text-3xl text-emerald-500">
-                                💵
+                                🪙
                             </div>
                             <div class="text-right flex-1">
                                 <p id="lblSaldoTabungan" class="text-base sm:text-lg font-black text-emerald-600 leading-tight">Rp 0</p>
@@ -656,15 +673,14 @@
                 
                 <div id="frameSectionStatus" class="space-y-6">
                     
-                    <!-- TOOLBAR ADMIN & FILTER POSTINGAN -->
                     <div class="glass-panel p-3 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 no-print border-2 border-amber-200">
                         
                         <div class="flex items-center gap-2 w-full sm:w-auto">
                             <button onclick="setFilterFeedMode('all')" id="btnFilterAllPosts" class="flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md flex items-center justify-center gap-1.5 active:scale-95">
-                                <i class="fa-solid fa-globe"></i> Postingan Semua 👥
+                                <i class="fa-solid fa-globe"></i> Postingan Semua 🌍
                             </button>
                             <button onclick="setFilterFeedMode('mine')" id="btnFilterMyPosts" class="flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-300 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95">
-                                <i class="fa-solid fa-user-astronaut text-amber-500"></i> Postinganku ✍️
+                                <i class="fa-solid fa-user-astronaut text-amber-500"></i> Postinganku 🚀
                             </button>
                         </div>
 
@@ -999,8 +1015,14 @@
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('dropdownHasilCariTeman');
             const inputCari = document.getElementById('inputCariTeman');
+            const dropdownNotif = document.getElementById('dropdownPanelNotif');
+            const btnBell = document.getElementById('btnNotifBell');
+
             if (dropdown && inputCari && !dropdown.contains(e.target) && !inputCari.contains(e.target)) {
                 dropdown.classList.add('hidden');
+            }
+            if (dropdownNotif && btnBell && !dropdownNotif.contains(e.target) && !btnBell.contains(e.target)) {
+                dropdownNotif.classList.add('hidden');
             }
         });
 
@@ -1052,6 +1074,90 @@
             }
 
             playBeepSound(800, 'sine', 0.08);
+        }
+
+        /* TOGGLE DROPDOWN NOTIFIKASI DENGAN POSISI FIXED PERSIS DI BAWAH TOMBOL LONCENG */
+        function toggleDropdownNotif(e) {
+            if (e) e.stopPropagation();
+            const panel = document.getElementById('dropdownPanelNotif');
+            const btnBell = document.getElementById('btnNotifBell');
+            if (!panel || !btnBell) return;
+
+            unreadNotifCount = 0;
+            const iconBell = document.getElementById('iconNotifBell');
+            const badgeCount = document.getElementById('badgeNotifCount');
+            const toastBubble = document.getElementById('bubbleNotifToast');
+
+            if (iconBell) iconBell.classList.remove('bell-shake-active');
+            if (badgeCount) badgeCount.classList.add('hidden');
+            if (toastBubble) toastBubble.classList.add('hidden');
+
+            if (!panel.classList.contains('hidden')) {
+                panel.classList.add('hidden');
+                return;
+            }
+
+            render5NotifTerbaruDropdown();
+
+            // Posisikan dropdown fixed tepat di bawah tombol lonceng
+            const rect = btnBell.getBoundingClientRect();
+            panel.style.top = (rect.bottom + 8) + 'px';
+            
+            // Atur posisi horizontal agar tidak keluar dari layar
+            let rightPos = window.innerWidth - rect.right;
+            if (rightPos < 10) rightPos = 10;
+            panel.style.right = rightPos + 'px';
+            panel.style.left = 'auto';
+
+            panel.classList.remove('hidden');
+            playBeepSound(900, 'sine', 0.1);
+        }
+
+        function render5NotifTerbaruDropdown() {
+            const container = document.getElementById('listNotifItems');
+            if (!container) return;
+
+            let validFeeds = listFeedsPost.filter(p => !p.isDeleted);
+            let active5Notifs = validFeeds.slice(0, 5);
+
+            if (active5Notifs.length === 0) {
+                container.innerHTML = `<div class="p-3 text-center text-xs text-slate-400 italic">Belum ada notifikasi unggahan terbaru.</div>`;
+                return;
+            }
+
+            container.innerHTML = active5Notifs.map(post => {
+                let textSnippet = post.teks ? (post.teks.length > 35 ? post.teks.substring(0, 35) + '...' : post.teks) : '[Mengunggah Foto]';
+                return `
+                    <div onclick="navigasiLangsungKePost('${post.id}')" class="p-2 bg-pink-50/60 hover:bg-pink-100 rounded-xl cursor-pointer transition-all border border-pink-200 flex items-start gap-2 group">
+                        <div class="w-7 h-7 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            📌
+                        </div>
+                        <div class="flex-1 min-w-0 text-left">
+                            <p class="text-xs font-bold text-slate-800 truncate group-hover:text-pink-600 transition-colors">${post.nama}</p>
+                            <p class="text-[10px] text-slate-600 truncate font-medium">${textSnippet}</p>
+                            <span class="text-[9px] text-pink-500 font-semibold">${post.waktu}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function navigasiLangsungKePost(postId) {
+            document.getElementById('dropdownPanelNotif').classList.add('hidden');
+            gantiTabFrame('status');
+
+            setTimeout(() => {
+                const targetPostEl = document.getElementById(`post_card_${postId}`);
+                if (targetPostEl) {
+                    targetPostEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetPostEl.classList.add('highlight-target-post');
+                    playBeepSound(1100, 'sine', 0.2);
+
+                    setTimeout(() => {
+                        targetPostEl.classList.remove('highlight-target-post');
+                    }, 4000);
+                }
+            }, 300);
         }
 
         function bukaNotifFeed() {
@@ -2074,13 +2180,6 @@
             document.getElementById('popoverEmojiPicker').classList.add('hidden');
         }
 
-        document.addEventListener('click', (e) => {
-            const popover = document.getElementById('popoverEmojiPicker');
-            if (popover && !popover.contains(e.target)) {
-                popover.classList.add('hidden');
-            }
-        });
-
         function publikasikanStatusBaru() {
             const teksInput = document.getElementById('inputTeksStatus').value.trim();
             if (!teksInput && !tempFotoStatusBase64) {
@@ -2265,7 +2364,6 @@
             kirimSingleFeedPostKeSheet(post);
         }
 
-        /* 3. PERBAIKAN ANIMASI PROSES HAPUS POSTINGAN (EMOTIKON DADAH TANPA BERKEDIP) */
         function hapusPostStatus(postId) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
@@ -2282,7 +2380,6 @@
                 if (postElement) {
                     playBeepSound(400, 'sine', 0.2);
                     
-                    // UBAH TAMPILAN ELEMENT MENJADI ANIMASI EMOJI DADAH TANPA BERKEDIP
                     postElement.innerHTML = `
                         <div class="flex items-center justify-center gap-3 p-6 text-center text-amber-700 bg-amber-50/90 rounded-3xl border-2 border-amber-300 shadow-sm w-full">
                             <span class="text-3xl wave-hand-emoji">👋</span>
@@ -2310,7 +2407,6 @@
             }
         }
 
-        /* 3. PERBAIKAN ANIMASI PROSES HAPUS KOMENTAR (EMOTIKON DADAH TANPA BERKEDIP) */
         function hapusKomentarPost(postId, commentIndex) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post || !post.comments || !post.comments[commentIndex]) return;
@@ -2329,7 +2425,6 @@
                 if (commentElement) {
                     playBeepSound(400, 'sine', 0.2);
                     
-                    // UBAH TAMPILAN KOMENTAR MENJADI ANIMASI DADAH TANPA BERKEDIP
                     commentElement.innerHTML = `
                         <div class="flex items-center gap-2 px-3 py-2 text-rose-500 font-bold text-xs bg-rose-50 rounded-xl border border-rose-200">
                             <span class="text-lg wave-hand-emoji">👋</span>
@@ -2826,17 +2921,17 @@
 
             if (avgRaw >= 90) {
                 levelBadge = "Level 10";
-                levelTitle = "👑 Bintang Kelas";
+                levelTitle = "👑 Maharaja Bintang Utama";
                 levelDesc = "Luar Biasa! Kamu adalah Bintang Paling Bersinar di Kelas!";
                 expPercent = ((avgRaw - 90) / (100 - 90)) * 100;
             } else if (avgRaw >= 80) {
                 levelBadge = "Level 9";
-                levelTitle = "🦄 Pejuang Mimpi";
+                levelTitle = "🦄 Pahlawan Pelangi Ceria";
                 levelDesc = "Hebat banget! Pintar dan selalu mewarnai kelas dengan ceria!";
                 expPercent = ((avgRaw - 80) / (90 - 80)) * 100;
             } else if (avgRaw >= 70) {
                 levelBadge = "Level 8";
-                levelTitle = "🚀 Astronot Menuju Bintang";
+                levelTitle = "🚀 Astronot Roket Super";
                 levelDesc = "Keren! Nilaimu melesat tinggi menembus angkasa!";
                 expPercent = ((avgRaw - 70) / (80 - 70)) * 100;
             } else if (avgRaw >= 60) {
@@ -3121,7 +3216,7 @@
                                     let bVal = typeof item[key] === 'string' ? JSON.parse(item[key]) : item[key];
                                     badgesDitarik[i] = bVal;
                                 } catch(e) {
-                                    badgesDitarik[i] = { active: !!item[key], img: "", title: BADGE_DESCS[i] };
+                                    badgesDitalin[i] = { active: !!item[key], img: "", title: BADGE_DESCS[i] };
                                 }
                             }
                         }
