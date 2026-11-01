@@ -850,7 +850,7 @@
     </div>
 
     <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyr6V7JcID0hF7Y6NsV71ZKgOutE90AD3yCFevVW5LCaz2lLwfItKs6qMkWSgwxdCX8/exec";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz68HoKIt00n9bFbZ8NSTkhwIb9R3ehBWoaqTCD1mifFUQ0R8nssl7lpJUnmlbv4Bj4/exec";
 
         const listMasterSiswa = [
             ["3052", "Amelia Alita Zahra"],
@@ -3280,21 +3280,36 @@
                         if (item.pamerBadgeIdx !== undefined) dbProfilDetail[keyTarget].pamerBadgeIdx = parseInt(item.pamerBadgeIdx) || 0;
                         
                         if (item.tabungan !== undefined && item.tabungan !== null && item.tabungan !== "") {
-                            dbProfilDetail[keyTarget].tabungan = parseFloat(item.tabungan) || 0;
+                            let strTab = String(item.tabungan).replace(/,/g, '.');
+                            dbProfilDetail[keyTarget].tabungan = parseFloat(strTab) || 0;
                         }
                         
                         let nilaiMapelSheet = dbProfilDetail[keyTarget].nilai || {};
                         
-                        // Ekstraksi nilai mapel secara cerdas (termasuk agama & pjok)
+                        // Ekstraksi nilai mapel fleksibel (penanganan koma & pembacaan header serbaguna)
                         MAPEL_LIST.forEach(m => {
                             const mapelKey = m.id;
                             let valFound = undefined;
 
+                            const isMatchHeader = (keyStr) => {
+                                if (!keyStr) return false;
+                                let kClean = String(keyStr).toLowerCase().replace(/[^a-z0-9]/g, '');
+                                let mClean = mapelKey.toLowerCase();
+
+                                if (kClean === mClean) return true;
+
+                                if (mapelKey === 'agama') {
+                                    return kClean.includes('pai') || kClean.includes('agama') || kClean.includes('paibp');
+                                }
+                                if (mapelKey === 'pjok') {
+                                    return kClean.includes('pjok') || kClean.includes('penjas') || kClean.includes('jasmani');
+                                }
+                                return false;
+                            };
+
+                            // 1. Cek dari properti utama item
                             for (let key in item) {
-                                let kLower = key.toLowerCase();
-                                if (kLower === mapelKey.toLowerCase() || 
-                                   (mapelKey === 'agama' && (kLower === 'paibp' || kLower === 'pendidikan agama islam' || kLower === 'pai' || kLower === 'agama')) || 
-                                   (mapelKey === 'pjok' && (kLower === 'penjas' || kLower === 'penjaskes' || kLower === 'pjok'))) {
+                                if (isMatchHeader(key)) {
                                     if (item[key] !== undefined && item[key] !== null && item[key] !== "") {
                                         valFound = item[key];
                                         break;
@@ -3302,12 +3317,10 @@
                                 }
                             }
 
+                            // 2. Cek jika tersimpan di dalam objek nilaiObj/nilaiDetail
                             if (valFound === undefined && item.nilaiObj) {
                                 for (let key in item.nilaiObj) {
-                                    let kLower = key.toLowerCase();
-                                    if (kLower === mapelKey.toLowerCase() || 
-                                       (mapelKey === 'agama' && (kLower === 'paibp' || kLower === 'pendidikan agama islam' || kLower === 'pai' || kLower === 'agama')) || 
-                                       (mapelKey === 'pjok' && (kLower === 'penjas' || kLower === 'penjaskes' || kLower === 'pjok'))) {
+                                    if (isMatchHeader(key)) {
                                         if (item.nilaiObj[key] !== undefined && item.nilaiObj[key] !== null && item.nilaiObj[key] !== "") {
                                             valFound = item.nilaiObj[key];
                                             break;
@@ -3317,7 +3330,9 @@
                             }
 
                             if (valFound !== undefined) {
-                                nilaiMapelSheet[mapelKey] = parseFloat(valFound);
+                                let strVal = String(valFound).replace(/,/g, '.');
+                                let parsed = parseFloat(strVal);
+                                nilaiMapelSheet[mapelKey] = isNaN(parsed) ? 0 : parsed;
                             }
                         });
                         
