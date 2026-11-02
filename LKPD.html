@@ -353,6 +353,15 @@
                 <div class="relative">
                     <input type="password" id="inputNisLogin" placeholder="NIS (Nomor Induk Siswa)..." class="w-full bg-white text-slate-800 text-center font-bold text-xs sm:text-sm border-2 border-amber-300 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 transition-all shadow-inner" required>
                 </div>
+                
+                <!-- KOTAK CENTANG INGAT SAYA / SIMPAN AKUN -->
+                <div class="flex items-center justify-start px-2 my-1">
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 select-none">
+                        <input type="checkbox" id="checkIngatSaya" class="w-4 h-4 rounded border-amber-300 accent-pink-500 cursor-pointer">
+                        <span>Ingat Saya / Simpan Akun</span>
+                    </label>
+                </div>
+
                 <button type="submit" class="w-full bg-gradient-to-r from-pink-500 via-amber-500 to-sky-400 hover:opacity-95 text-white font-cute font-black py-4 rounded-2xl text-sm transition-all shadow-lg shadow-pink-500/30 active:scale-95 flex items-center justify-center gap-2 mt-1">
                     <i class="fa-solid fa-rocket"></i> Masuk Ruang Ceria 🚀
                 </button>
@@ -448,75 +457,82 @@
     <!-- MAIN APP CONTAINER -->
     <div id="mainAppContainer" class="max-w-7xl mx-auto hidden">
         
-        <!-- HEADER APPS -->
-        <header class="cheerful-header p-4 sm:p-6 rounded-3xl mb-6 sm:mb-8 text-slate-800 no-print relative">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 relative z-10">
+        <!-- HEADER APPS DENGAN TATA LETAK PROFESIONAL & RESPONSIF MOBILE -->
+        <header class="cheerful-header p-3.5 sm:p-5 rounded-3xl mb-5 sm:mb-8 text-slate-800 no-print relative">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4 relative z-10">
                 
-                <div class="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/40 backdrop-blur-md flex items-center justify-center text-3xl sm:text-4xl shadow-lg border-2 border-white/60 shrink-0 logo-emoji-anim">
-                        🥳
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h1 class="text-2xl sm:text-3xl font-cute font-black text-slate-900 tracking-wide">
-                                SIXBOOK ✨
-                            </h1>
-                            <span id="badgeModeAkses" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-white/80 text-pink-700 border border-pink-300 shadow-sm">Mode Siswa</span>
+                <!-- SISI KIRI: BRANDING & JUDUL -->
+                <div class="flex items-center justify-between lg:justify-start gap-3 w-full lg:w-auto border-b lg:border-none border-white/40 pb-2.5 lg:pb-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/40 backdrop-blur-md flex items-center justify-center text-2xl sm:text-3xl shadow-lg border-2 border-white/60 shrink-0 logo-emoji-anim">
+                            🥳
                         </div>
-                        <p class="text-xs text-slate-800 font-semibold">Social Media For Six Classmate • Ruang Ceria 🎈</p>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h1 class="text-xl sm:text-2xl font-cute font-black text-slate-900 tracking-wide">
+                                    SIXBOOK ✨
+                                </h1>
+                                <span id="badgeModeAkses" class="text-[9px] sm:text-[10px] font-black px-2.5 py-0.5 sm:py-1 rounded-full bg-white/80 text-pink-700 border border-pink-300 shadow-sm">Mode Siswa</span>
+                            </div>
+                            <p class="text-[10px] sm:text-xs text-slate-800 font-semibold leading-tight">Social Media Classmate • Ruang Ceria 🎈</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="w-full md:w-auto flex flex-wrap sm:flex-nowrap items-center justify-end gap-2 sm:gap-3 relative">
+                <!-- SISI KANAN: BAR NAVIGASI ALAT & MENU AKSI -->
+                <div class="w-full lg:w-auto flex flex-wrap lg:flex-nowrap items-center justify-between lg:justify-end gap-2">
                     
-                    <!-- FITUR CARI TEMAN -->
-                    <div class="relative flex-1 sm:flex-none w-full sm:w-48">
-                        <div class="relative flex items-center">
-                            <input type="text" id="inputCariTeman" onkeyup="filterCariTeman(this.value)" placeholder="🔍 Cari Teman..." class="w-full bg-white/80 backdrop-blur-md text-slate-800 placeholder-slate-500 text-xs font-semibold rounded-xl px-3 py-2 border border-white/60 focus:outline-none focus:bg-white transition-all shadow-inner">
-                        </div>
+                    <!-- KOTAK CARI TEMAN -->
+                    <div class="relative flex-1 sm:flex-initial sm:w-44 lg:w-48">
+                        <input type="text" id="inputCariTeman" onkeyup="filterCariTeman(this.value)" placeholder="🔍 Cari Teman..." class="w-full bg-white/90 backdrop-blur-md text-slate-800 placeholder-slate-500 text-xs font-semibold rounded-xl px-3 py-2 border border-white/70 focus:outline-none focus:bg-white transition-all shadow-inner">
                     </div>
 
-                    <!-- LONCENG NOTIFIKASI -->
+                    <!-- TOMBOL NOTIFIKASI LONCENG -->
                     <div class="relative flex items-center">
-                        <button id="btnNotifBell" onclick="toggleDropdownNotif(event)" class="relative p-2.5 sm:p-3 rounded-xl bg-white/60 hover:bg-white/90 border border-white/60 text-slate-800 transition-all shadow-sm active:scale-95 group" title="Notifikasi Pembaruan Feed">
-                            <i id="iconNotifBell" class="fa-solid fa-bell text-base sm:text-lg text-amber-600"></i>
-                            <span id="badgeNotifCount" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-bounce shadow-md">0</span>
+                        <button id="btnNotifBell" onclick="toggleDropdownNotif(event)" class="relative p-2 sm:p-2.5 rounded-xl bg-white/70 hover:bg-white border border-white/80 text-slate-800 transition-all shadow-sm active:scale-95" title="Notifikasi Feed">
+                            <i id="iconNotifBell" class="fa-solid fa-bell text-sm sm:text-base text-amber-600"></i>
+                            <span id="badgeNotifCount" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-black w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center animate-bounce shadow-md">0</span>
                         </button>
                     </div>
 
-                    <a href="Pena Mantap V6.html" class="bg-white/60 hover:bg-white/90 text-slate-800 border border-white/60 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm">
-                        <i class="fa-solid fa-house text-pink-600"></i> <span class="hidden sm:inline">Kembali</span>
-                    </a>
-                    
-                    <a href="e-PR.html" class="bg-white/60 hover:bg-white/90 text-slate-800 border border-white/60 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm">
-                        <i class="fa-solid fa-laptop-code text-sky-600"></i> e-PR
-                    </a>
-
-                    <div class="relative w-full sm:w-52 admin-only">
-                        <select id="selectSiswaProfil" onchange="gantiSiswaProfil(this.value)" class="w-full bg-white text-slate-800 border-2 border-amber-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-pink-500 transition-all cursor-pointer shadow-inner">
+                    <!-- DROPDOWN ADMIN (KHUSUS ADMIN) -->
+                    <div class="relative flex-1 sm:flex-initial sm:w-44 admin-only">
+                        <select id="selectSiswaProfil" onchange="gantiSiswaProfil(this.value)" class="w-full bg-white text-slate-800 border-2 border-amber-300 rounded-xl px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-pink-500 shadow-inner">
                             <option value="">-- Pilih Siswa (Admin) --</option>
                         </select>
                     </div>
 
-                    <button id="btnInstallApp" onclick="installAplikasiPWA()" class="hidden bg-amber-400 hover:bg-amber-500 text-slate-900 px-3 py-2 rounded-xl text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all active:scale-95">
-                        <i class="fa-solid fa-download"></i> Install
-                    </button>
+                    <!-- GRUP TOMBOL AKSI UTAMA -->
+                    <div class="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+                        <a href="Pena Mantap V6.html" class="bg-white/70 hover:bg-white text-slate-800 border border-white/80 px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all active:scale-95 shadow-sm">
+                            <i class="fa-solid fa-house text-pink-600"></i> <span class="hidden sm:inline">Kembali</span>
+                        </a>
+                        
+                        <a href="e-PR.html" class="bg-white/70 hover:bg-white text-slate-800 border border-white/80 px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all active:scale-95 shadow-sm">
+                            <i class="fa-solid fa-laptop-code text-sky-600"></i> e-PR
+                        </a>
 
-                    <button id="btnKirimSheet" onclick="kirimDataKeSheet()" class="admin-only flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1.5 transition-all active:scale-95">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Kirim
-                    </button>
+                        <button id="btnInstallApp" onclick="installAplikasiPWA()" class="hidden bg-amber-400 hover:bg-amber-500 text-slate-900 px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-black shadow-md flex items-center justify-center gap-1 transition-all active:scale-95">
+                            <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Install</span>
+                        </button>
 
-                    <button onclick="tarikDataDariSheet(true)" class="admin-only flex-1 sm:flex-none bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1.5 transition-all active:scale-95">
-                        <i class="fa-solid fa-cloud-arrow-down"></i> Tarik
-                    </button>
+                        <button id="btnKirimSheet" onclick="kirimDataKeSheet()" class="admin-only bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1 transition-all active:scale-95">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Kirim</span>
+                        </button>
 
-                    <button onclick="window.print()" class="admin-only bg-white/60 hover:bg-white text-slate-800 px-3 py-2 rounded-xl text-xs font-bold border border-white flex items-center justify-center transition-all">
-                        <i class="fa-solid fa-print"></i>
-                    </button>
+                        <button onclick="tarikDataDariSheet(true)" class="admin-only bg-sky-500 hover:bg-sky-600 text-white px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1 transition-all active:scale-95">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> <span class="hidden sm:inline">Tarik</span>
+                        </button>
 
-                    <button onclick="keluarSesiLogin()" class="bg-rose-500 hover:bg-rose-600 text-white p-2 sm:p-2.5 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center transition-all" title="Keluar">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
+                        <button onclick="window.print()" class="admin-only bg-white/70 hover:bg-white text-slate-800 px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold border border-white/80 transition-all">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+
+                        <button onclick="keluarSesiLogin()" class="bg-rose-500 hover:bg-rose-600 text-white p-1.5 sm:p-2 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center transition-all" title="Keluar">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </header>
@@ -833,7 +849,17 @@
                             </span>
                         </div>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="gridMapelInputs"></div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-6" id="gridMapelInputs"></div>
+
+                        <!-- FRAME TAMBAHAN: KEHADIRAN & PRAMUKA -->
+                        <div class="border-t border-slate-200 pt-6">
+                            <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-clipboard-user text-sky-500"></i> Rekapitulasi Kehadiran & Ekstrakurikuler
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="gridKehadiranContainer">
+                                <!-- Dirender otomatis oleh JavaScript -->
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -850,7 +876,7 @@
     </div>
 
     <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydb0ZMW-52ufiZUIjKVCyusjXSNeLdT0uKTrZ8qffNhHHFYHKgunl7a8HvV5LE7nYm/exec";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAPVEzoawUBEaEkt4M5d89sRrQh5NwVqMPSdso3Bxc_1tihR9FgMyiV1IrYzGTBmP7/exec";
 
         const listMasterSiswa = [
             ["3052", "Amelia Alita Zahra"],
@@ -901,6 +927,66 @@
         let unreadNotifCount = 0;
         let lastKnownFeedCount = 0;
         let activeFeedFilter = 'all';
+
+        // =======================================================
+        // INTEGRASI INDEXEDDB SISI CLIENT UNTUK CACHE FEEDS
+        // =======================================================
+        let idbInstance = null;
+
+        function bukaIndexedDB() {
+            return new Promise((resolve, reject) => {
+                if (idbInstance) return resolve(idbInstance);
+                const req = indexedDB.open("SixbookCacheDB", 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("feeds")) {
+                        db.createObjectStore("feeds", { keyPath: "id" });
+                    }
+                };
+                req.onsuccess = (e) => {
+                    idbInstance = e.target.result;
+                    resolve(idbInstance);
+                };
+                req.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function simpanFeedsKeIndexedDB(feedsArr) {
+            try {
+                const db = await bukaIndexedDB();
+                const tx = db.transaction(["feeds"], "readwrite");
+                const store = tx.objectStore("feeds");
+                feedsArr.forEach(post => {
+                    if (post && post.id) store.put(post);
+                });
+            } catch (e) {
+                console.warn("Gagal simpan ke IndexedDB:", e);
+            }
+        }
+
+        async function muatFeedsDariIndexedDB() {
+            try {
+                const db = await bukaIndexedDB();
+                const tx = db.transaction(["feeds"], "readonly");
+                const store = tx.objectStore("feeds");
+                const req = store.getAll();
+
+                return new Promise((resolve) => {
+                    req.onsuccess = () => {
+                        const res = req.result || [];
+                        res.sort((a, b) => {
+                            let timeA = parseInt(String(a.id).replace(/[^\d]/g, '')) || 0;
+                            let timeB = parseInt(String(b.id).replace(/[^\d]/g, '')) || 0;
+                            return timeB - timeA;
+                        });
+                        resolve(res);
+                    };
+                    req.onerror = () => resolve([]);
+                });
+            } catch (e) {
+                return [];
+            }
+        }
 
         function initFloatingEmojis() {
             const container = document.getElementById('floatingEmojiContainer');
@@ -1237,10 +1323,21 @@
             if (e) e.preventDefault();
             const namaInput = document.getElementById('inputNamaLogin').value.trim().toLowerCase();
             const nisInput = document.getElementById('inputNisLogin').value.trim().toLowerCase();
+            const rememberMe = document.getElementById('checkIngatSaya').checked;
 
             if (!namaInput || !nisInput) {
                 alert("Silakan masukkan Username dan NIS secara lengkap!");
                 return;
+            }
+
+            if (rememberMe) {
+                localStorage.setItem("saved_username", namaInput);
+                localStorage.setItem("saved_nis", nisInput);
+                localStorage.setItem("remember_me", "true");
+            } else {
+                localStorage.removeItem("saved_username");
+                localStorage.removeItem("saved_nis");
+                localStorage.removeItem("remember_me");
             }
 
             if (nisInput === ADMIN_NIS || namaInput === ADMIN_USERNAME) {
@@ -1297,8 +1394,13 @@
             if (feedPollingTimer) clearInterval(feedPollingTimer);
             loggedInNis = null;
             currentNis = null;
-            document.getElementById('inputNamaLogin').value = '';
-            document.getElementById('inputNisLogin').value = '';
+
+            if (localStorage.getItem("remember_me") !== "true") {
+                document.getElementById('inputNamaLogin').value = '';
+                document.getElementById('inputNisLogin').value = '';
+                document.getElementById('checkIngatSaya').checked = false;
+            }
+
             document.getElementById('modalBubbleLogin').classList.remove('hidden');
             document.getElementById('mainAppContainer').classList.add('hidden');
         }
@@ -1320,10 +1422,23 @@
                 };
             }
 
+            if (localStorage.getItem("remember_me") === "true") {
+                const u = localStorage.getItem("saved_username");
+                const n = localStorage.getItem("saved_nis");
+                if (u) document.getElementById('inputNamaLogin').value = u;
+                if (n) document.getElementById('inputNisLogin').value = n;
+                document.getElementById('checkIngatSaya').checked = true;
+            }
+
             populasiDropdownSiswa();
             initEmojiPickerList();
 
-            listFeedsPost = [];
+            const cachedFeeds = await muatFeedsDariIndexedDB();
+            if (cachedFeeds && cachedFeeds.length > 0) {
+                listFeedsPost = cachedFeeds;
+                lastKnownFeedCount = cachedFeeds.length;
+                renderFeedsStatusUI();
+            }
 
             tarikDataDariSheet(false);
             tarikFeedDariSheet(false);
@@ -1377,7 +1492,10 @@
                     badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
                     pamerBadgeIdx: 0,
                     pelanggaran: [],
-                    nilai: {}
+                    nilai: {},
+                    kehadiranS1: { sakit: 0, izin: 0, alpa: 0, hadir: 0 },
+                    kehadiranS2: { sakit: 0, izin: 0, alpa: 0, hadir: 0 },
+                    pramukaPersentase: 100
                 };
             }
 
@@ -1595,7 +1713,130 @@
 
             renderPelanggaran(pData.pelanggaran || []);
             renderMapelInputs(pData.nilai || {});
+            renderPanelKehadiranSiswa(pData);
             updateTampilanSiswaTertinggi();
+        }
+
+        function renderPanelKehadiranSiswa(pData) {
+            const container = document.getElementById('gridKehadiranContainer');
+            if (!container) return;
+
+            const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+            const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+            const pramuka = pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100;
+
+            const isEditable = isAdminMode && currentNis !== 'admin';
+
+            container.innerHTML = `
+                <!-- SEMESTER 1 -->
+                <div class="bg-sky-50/70 p-4 rounded-3xl border-2 border-sky-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                            📅
+                        </div>
+                        <div>
+                            <h4 class="text-xs sm:text-sm font-black text-slate-800">Kehadiran Semester 1</h4>
+                            <p class="text-[10px] text-slate-500">Rekap kehadiran siswa S1</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Hadir</span>
+                            <input type="number" min="0" value="${s1.hadir}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'hadir', this.value)" class="w-full text-center font-black text-emerald-600 bg-emerald-50 rounded-lg py-1 mt-1 border border-emerald-200 disabled:cursor-not-allowed">
+                        </div>
+                        <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Sakit</span>
+                            <input type="number" min="0" value="${s1.sakit}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'sakit', this.value)" class="w-full text-center font-black text-amber-600 bg-amber-50 rounded-lg py-1 mt-1 border border-amber-200 disabled:cursor-not-allowed">
+                        </div>
+                        <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Izin</span>
+                            <input type="number" min="0" value="${s1.izin}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'izin', this.value)" class="w-full text-center font-black text-sky-600 bg-sky-50 rounded-lg py-1 mt-1 border border-sky-200 disabled:cursor-not-allowed">
+                        </div>
+                        <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Alpa</span>
+                            <input type="number" min="0" value="${s1.alpa}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'alpa', this.value)" class="w-full text-center font-black text-rose-600 bg-rose-50 rounded-lg py-1 mt-1 border border-rose-200 disabled:cursor-not-allowed">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEMESTER 2 -->
+                <div class="bg-pink-50/70 p-4 rounded-3xl border-2 border-pink-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-xl bg-pink-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                            📊
+                        </div>
+                        <div>
+                            <h4 class="text-xs sm:text-sm font-black text-slate-800">Kehadiran Semester 2</h4>
+                            <p class="text-[10px] text-slate-500">Rekap kehadiran siswa S2</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Hadir</span>
+                            <input type="number" min="0" value="${s2.hadir}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'hadir', this.value)" class="w-full text-center font-black text-emerald-600 bg-emerald-50 rounded-lg py-1 mt-1 border border-emerald-200 disabled:cursor-not-allowed">
+                        </div>
+                        <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Sakit</span>
+                            <input type="number" min="0" value="${s2.sakit}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'sakit', this.value)" class="w-full text-center font-black text-amber-600 bg-amber-50 rounded-lg py-1 mt-1 border border-amber-200 disabled:cursor-not-allowed">
+                        </div>
+                        <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Izin</span>
+                            <input type="number" min="0" value="${s2.izin}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'izin', this.value)" class="w-full text-center font-black text-sky-600 bg-sky-50 rounded-lg py-1 mt-1 border border-sky-200 disabled:cursor-not-allowed">
+                        </div>
+                        <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
+                            <span class="text-[10px] font-bold text-slate-400">Alpa</span>
+                            <input type="number" min="0" value="${s2.alpa}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'alpa', this.value)" class="w-full text-center font-black text-rose-600 bg-rose-50 rounded-lg py-1 mt-1 border border-rose-200 disabled:cursor-not-allowed">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EKSTRAKURIKULER PRAMUKA -->
+                <div class="bg-amber-50/70 p-4 rounded-3xl border-2 border-amber-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                            ⚜️
+                        </div>
+                        <div>
+                            <h4 class="text-xs sm:text-sm font-black text-slate-800">Ekstrakurikuler Pramuka</h4>
+                            <p class="text-[10px] text-slate-500">Persentase keaktifan & kehadiran</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-amber-100 flex flex-col items-center justify-center my-auto">
+                        <div class="w-full flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-600">Tingkat Keaktifan:</span>
+                            <span class="text-sm font-black text-amber-600">${pramuka}%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="${pramuka}" ${!isEditable ? 'disabled' : ''} onchange="updatePramukaPersentase(this.value)" class="w-full accent-amber-500 cursor-pointer disabled:cursor-not-allowed">
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-2 border border-slate-200">
+                            <div class="h-full bg-gradient-to-r from-amber-400 to-emerald-500 rounded-full" style="width: ${pramuka}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateKehadiranData(sem, field, val) {
+            if (!currentNis || !isAdminMode || currentNis === 'admin') return;
+            const pData = dbProfilDetail[currentNis];
+            const key = sem === 'S1' ? 'kehadiranS1' : 'kehadiranS2';
+            
+            if (!pData[key]) pData[key] = { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+            pData[key][field] = Math.max(0, parseInt(val) || 0);
+
+            playBeepSound(800, 'sine', 0.08);
+            simpanSemuaData();
+            kirimDataProfilLengkapKeSheet(currentNis);
+        }
+
+        function updatePramukaPersentase(val) {
+            if (!currentNis || !isAdminMode || currentNis === 'admin') return;
+            const pData = dbProfilDetail[currentNis];
+            pData.pramukaPersentase = Math.min(100, Math.max(0, parseInt(val) || 0));
+
+            playBeepSound(900, 'sine', 0.08);
+            simpanSemuaData();
+            renderPanelKehadiranSiswa(pData);
+            kirimDataProfilLengkapKeSheet(currentNis);
         }
 
         function bukaModalPilihBadge() {
@@ -1737,6 +1978,9 @@
                 singleBadgeObject[`badge_${i + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[i] });
             }
 
+            const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+            const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+
             const payload = {
                 action: "saveProfilSiswa",
                 nis: isAccAdmin ? ADMIN_NIS : nis,
@@ -1747,6 +1991,9 @@
                 pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                 rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
                 skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
+                s1Hadir: s1.hadir, s1Sakit: s1.sakit, s1Izin: s1.izin, s1Alpa: s1.alpa,
+                s2Hadir: s2.hadir, s2Sakit: s2.sakit, s2Izin: s2.izin, s2Alpa: s2.alpa,
+                pramukaPersentase: pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100,
                 ...singleBadgeObject,
                 pelanggaranJSON: JSON.stringify(pelanggaranArr),
                 pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
@@ -2189,7 +2436,6 @@
             document.getElementById('popoverEmojiPicker').classList.add('hidden');
         }
 
-        // FUNGSI PEMBANTU UNTUK MENDAPATKAN WAKTU TAMPIL YANG VALID (MENGATASI "BARU SAJA")
         function dapatkanWaktuTampil(post) {
             if (post.waktu && post.waktu !== "Baru saja") {
                 return post.waktu;
@@ -2256,6 +2502,8 @@
             };
 
             listFeedsPost.unshift(newPost);
+            simpanFeedsKeIndexedDB(listFeedsPost);
+
             currentPageFeed = 1;
             document.getElementById('inputTeksStatus').value = '';
             batalPreviewFotoPost();
@@ -2266,10 +2514,6 @@
             kirimSingleFeedPostKeSheet(newPost);
         }
 
-        // =======================================================
-        // INTEGRASI DENGAN TAB SHEET: "SIXBOOK"
-        // Setiap postingan dikirim ke backend dengan grup = SIXBOOK
-        // =======================================================
         async function kirimSingleFeedPostKeSheet(post) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -2375,6 +2619,8 @@
                         
                         lastKnownFeedCount = feedFetched.length;
                         listFeedsPost = feedFetched;
+                        
+                        simpanFeedsKeIndexedDB(listFeedsPost);
                         renderFeedsStatusUI();
                     }
 
@@ -2389,9 +2635,6 @@
             }
         }
 
-        // =======================================================
-        // FITUR: REAL-TIME & PAUSE SAAT KURSOR BERKEDIP (FOKUS)
-        // =======================================================
         function isUserTypingActive() {
             const activeEl = document.activeElement;
             if (!activeEl) return false;
@@ -2436,6 +2679,8 @@
                 isDeleted: false
             });
 
+            simpanFeedsKeIndexedDB(listFeedsPost);
+
             inputEl.value = '';
             playBeepSound(900, 'sine', 0.1);
             renderFeedsStatusUI();
@@ -2474,11 +2719,13 @@
                         post.foto = "";
                         post.isDeleted = true;
                         post.comments = [];
+                        simpanFeedsKeIndexedDB(listFeedsPost);
                         renderFeedsStatusUI();
                         kirimSingleFeedPostKeSheet(post);
                     }, 750);
                 } else {
                     post.isDeleted = true;
+                    simpanFeedsKeIndexedDB(listFeedsPost);
                     renderFeedsStatusUI();
                     kirimSingleFeedPostKeSheet(post);
                 }
@@ -2514,11 +2761,13 @@
                     setTimeout(() => {
                         comment.teks = "";
                         comment.isDeleted = true;
+                        simpanFeedsKeIndexedDB(listFeedsPost);
                         renderFeedsStatusUI();
                         kirimSingleFeedPostKeSheet(post);
                     }, 750);
                 } else {
                     comment.isDeleted = true;
+                    simpanFeedsKeIndexedDB(listFeedsPost);
                     renderFeedsStatusUI();
                     kirimSingleFeedPostKeSheet(post);
                 }
@@ -2722,7 +2971,6 @@
                     `;
                 });
 
-                // PEMANGGILAN DENGAN FUNGSI PEMBANTU (MENGGANTIKAN BARU SAJA)
                 const waktuFormatted = dapatkanWaktuTampil(post);
 
                 html += `
@@ -2953,6 +3201,9 @@
                 singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
             }
 
+            const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+            const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+
             const payload = {
                 action: "saveProfilSiswa",
                 nis: nis,
@@ -2977,6 +3228,9 @@
                 agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
                 paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
                 pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
+                s1Hadir: s1.hadir, s1Sakit: s1.sakit, s1Izin: s1.izin, s1Alpa: s1.alpa,
+                s2Hadir: s2.hadir, s2Sakit: s2.sakit, s2Izin: s2.izin, s2Alpa: s2.alpa,
+                pramukaPersentase: pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100,
                 ...singleBadgeObject,
                 pelanggaranJSON: JSON.stringify(pelanggaranArr),
                 pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
@@ -3067,6 +3321,9 @@
                 singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
             }
 
+            const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+            const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+
             const payload = {
                 action: "saveProfilSiswa",
                 nis: nis,
@@ -3091,6 +3348,9 @@
                 agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
                 paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
                 pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
+                s1Hadir: s1.hadir, s1Sakit: s1.sakit, s1Izin: s1.izin, s1Alpa: s1.alpa,
+                s2Hadir: s2.hadir, s2Sakit: s2.sakit, s2Izin: s2.izin, s2Alpa: s2.alpa,
+                pramukaPersentase: pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100,
                 ...singleBadgeObject,
                 pelanggaranJSON: JSON.stringify(pelanggaranArr),
                 pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
@@ -3293,7 +3553,10 @@
                         badges: Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] })),
                         pamerBadgeIdx: 0,
                         pelanggaran: [],
-                        nilai: {}
+                        nilai: {},
+                        kehadiranS1: { sakit: 0, izin: 0, alpa: 0, hadir: 0 },
+                        kehadiranS2: { sakit: 0, izin: 0, alpa: 0, hadir: 0 },
+                        pramukaPersentase: 100
                     };
                 }
 
@@ -3313,6 +3576,9 @@
                     let b = badgesArr[j] || { active: false, img: "", title: BADGE_DESCS[j] };
                     singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
                 }
+
+                const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
+                const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
 
                 const payload = {
                     action: "saveProfilSiswa",
@@ -3338,6 +3604,9 @@
                     agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
                     paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
                     pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
+                    s1Hadir: s1.hadir, s1Sakit: s1.sakit, s1Izin: s1.izin, s1Alpa: s1.alpa,
+                    s2Hadir: s2.hadir, s2Sakit: s2.sakit, s2Izin: s2.izin, s2Alpa: s2.alpa,
+                    pramukaPersentase: pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100,
                     ...singleBadgeObject,
                     pelanggaranJSON: JSON.stringify(pelanggaranArr),
                     pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
@@ -3424,6 +3693,35 @@
                         if (item.tabungan !== undefined && item.tabungan !== null && item.tabungan !== "") {
                             let strTab = String(item.tabungan).replace(/,/g, '.');
                             dbProfilDetail[keyTarget].tabungan = parseFloat(strTab) || 0;
+                        }
+
+                        // Tarik Kehadiran & Pramuka
+                        if (item.kehadiranS1) {
+                            dbProfilDetail[keyTarget].kehadiranS1 = item.kehadiranS1;
+                        } else {
+                            dbProfilDetail[keyTarget].kehadiranS1 = {
+                                hadir: parseInt(item["S1 Hadir"] || item.s1Hadir) || 0,
+                                sakit: parseInt(item["S1 Sakit"] || item.s1Sakit) || 0,
+                                izin: parseInt(item["S1 Izin"] || item.s1Izin) || 0,
+                                alpa: parseInt(item["S1 Alpa"] || item.s1Alpa) || 0
+                            };
+                        }
+
+                        if (item.kehadiranS2) {
+                            dbProfilDetail[keyTarget].kehadiranS2 = item.kehadiranS2;
+                        } else {
+                            dbProfilDetail[keyTarget].kehadiranS2 = {
+                                hadir: parseInt(item["S2 Hadir"] || item.s2Hadir) || 0,
+                                sakit: parseInt(item["S2 Sakit"] || item.s2Sakit) || 0,
+                                izin: parseInt(item["S2 Izin"] || item.s2Izin) || 0,
+                                alpa: parseInt(item["S2 Alpa"] || item.s2Alpa) || 0
+                            };
+                        }
+
+                        if (item.pramukaPersentase !== undefined) {
+                            dbProfilDetail[keyTarget].pramukaPersentase = parseInt(item.pramukaPersentase) || 0;
+                        } else if (item["Pramuka (%)"] !== undefined) {
+                            dbProfilDetail[keyTarget].pramukaPersentase = parseInt(item["Pramuka (%)"]) || 0;
                         }
                         
                         let nilaiMapelSheet = dbProfilDetail[keyTarget].nilai || {};
