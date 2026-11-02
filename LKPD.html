@@ -1135,6 +1135,7 @@
 
             container.innerHTML = active5Notifs.map(post => {
                 let textSnippet = post.teks ? (post.teks.length > 35 ? post.teks.substring(0, 35) + '...' : post.teks) : '[Mengunggah Foto]';
+                let waktuTampil = dapatkanWaktuTampil(post);
                 return `
                     <div onclick="navigasiLangsungKePost('${post.id}')" class="p-2 bg-pink-50/60 hover:bg-pink-100 rounded-xl cursor-pointer transition-all border border-pink-200 flex items-start gap-2 group">
                         <div class="w-7 h-7 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
@@ -1143,7 +1144,7 @@
                         <div class="flex-1 min-w-0 text-left">
                             <p class="text-xs font-bold text-slate-800 truncate group-hover:text-pink-600 transition-colors">${post.nama}</p>
                             <p class="text-[10px] text-slate-600 truncate font-medium">${textSnippet}</p>
-                            <span class="text-[9px] text-pink-500 font-semibold">${post.waktu}</span>
+                            <span class="text-[9px] text-pink-500 font-semibold">${waktuTampil}</span>
                         </div>
                     </div>
                 `;
@@ -2188,6 +2189,41 @@
             document.getElementById('popoverEmojiPicker').classList.add('hidden');
         }
 
+        // FUNGSI PEMBANTU UNTUK MENDAPATKAN WAKTU TAMPIL YANG VALID (MENGATASI "BARU SAJA")
+        function dapatkanWaktuTampil(post) {
+            if (post.waktu && post.waktu !== "Baru saja") {
+                return post.waktu;
+            }
+            
+            const pData = dbProfilDetail[post.nis];
+            if (pData && pData.updatedAt) {
+                return pData.updatedAt;
+            }
+
+            if (post.id && String(post.id).startsWith("post_")) {
+                const timeNum = parseInt(String(post.id).replace("post_", ""));
+                if (!isNaN(timeNum) && timeNum > 100000000000) {
+                    const d = new Date(timeNum);
+                    return d.toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            }
+
+            const now = new Date();
+            return now.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
         function publikasikanStatusBaru() {
             const teksInput = document.getElementById('inputTeksStatus').value.trim();
             if (!teksInput && !tempFotoStatusBase64) {
@@ -2199,11 +2235,20 @@
             const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeAuthorNis));
             const namaPenulis = isAdminMode ? (dbProfilDetail['admin']?.nama || "Admin") : (dataSiswa ? dataSiswa[1] : `NIS ${activeAuthorNis}`);
 
+            const now = new Date();
+            const waktuPosting = now.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
             const newPost = {
                 id: "post_" + Date.now(),
                 nis: activeAuthorNis,
                 nama: namaPenulis,
-                waktu: "Baru saja",
+                waktu: waktuPosting,
                 teks: teksInput,
                 foto: tempFotoStatusBase64,
                 isDeleted: false,
@@ -2237,7 +2282,7 @@
                         action: "sendChatMessage",
                         nis: post.nis,
                         nama: post.nama,
-                        grup: "SIXBOOK", // Mengarahkan data ke tab 'SIXBOOK' di Google Sheet
+                        grup: "SIXBOOK",
                         pesan: JSON.stringify(post),
                         role: (post.nis === 'admin' || post.nis === ADMIN_NIS) ? "Admin" : "Siswa"
                     })
@@ -2256,7 +2301,7 @@
                     action: "sendChatMessage",
                     nis: loggedInNis || currentNis || "admin",
                     nama: isAdminMode ? (dbProfilDetail['admin']?.nama || "Admin") : "Siswa",
-                    grup: "SIXBOOK", // Mengarahkan data ke tab 'SIXBOOK'
+                    grup: "SIXBOOK",
                     pesan: JSON.stringify(listFeedsPost),
                     role: isAdminMode ? "Admin" : "Siswa"
                 };
@@ -2291,16 +2336,21 @@
                     const dataArray = Array.isArray(result.data) ? result.data : (Array.isArray(result) ? result : []);
 
                     dataArray.forEach(msg => {
-                        // Memeriksa pesan dari grup 'SIXBOOK', 'SIXBOOK Feed', 'SIXBOOK Feed Bulk', atau default
                         const isFeedGroup = msg.grup === "SIXBOOK" || msg.grup === "SIXBOOK Feed" || msg.grup === "SIXBOOK Feed Bulk" || !msg.grup;
                         if (isFeedGroup && msg.pesan) {
                             try {
                                 const parsed = typeof msg.pesan === 'string' ? JSON.parse(msg.pesan) : msg.pesan;
+                                const waktuSheet = msg.waktu || msg.timestamp || msg.tanggal || "";
+
                                 if (Array.isArray(parsed)) {
                                     parsed.forEach(p => { 
-                                        if (p && p.id) mapFeed.set(String(p.id), p); 
+                                        if (p && p.id) {
+                                            if (waktuSheet && (!p.waktu || p.waktu === "Baru saja")) p.waktu = waktuSheet;
+                                            mapFeed.set(String(p.id), p); 
+                                        }
                                     });
                                 } else if (parsed && parsed.id) {
+                                    if (waktuSheet && (!parsed.waktu || parsed.waktu === "Baru saja")) parsed.waktu = waktuSheet;
                                     mapFeed.set(String(parsed.id), parsed);
                                 }
                             } catch (e) {}
@@ -2353,9 +2403,7 @@
             tarikFeedDariSheet(false);
             if (feedPollingTimer) clearInterval(feedPollingTimer);
             
-            // Polling interval real-time (setiap 3,5 detik)
             feedPollingTimer = setInterval(() => {
-                // Berhenti/pause sejenak saat kursor sedang berada di elemen input/textarea/select
                 if (isUserTypingActive()) {
                     return; 
                 }
@@ -2674,6 +2722,9 @@
                     `;
                 });
 
+                // PEMANGGILAN DENGAN FUNGSI PEMBANTU (MENGGANTIKAN BARU SAJA)
+                const waktuFormatted = dapatkanWaktuTampil(post);
+
                 html += `
                     <div class="flex items-start gap-2.5 sm:gap-3 min-w-0" id="post_card_${post.id}">
                         <div class="relative shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mt-1">
@@ -2698,7 +2749,7 @@
                                         ${greenBadgeImg ? `<img src="${greenBadgeImg}" class="w-5 h-5 rounded-full object-cover border border-amber-400 shadow-sm" title="Badge Pameran Profil">` : `<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center text-[9px] shadow-sm" title="Badge Pameran Profil"><i class="fa-solid fa-medal"></i></span>`}
                                     `}
 
-                                    <p class="text-[10px] text-slate-400 font-medium w-full">${post.waktu}</p>
+                                    <p class="text-[10px] text-slate-400 font-medium w-full">${waktuFormatted}</p>
                                 </div>
 
                                 ${canDeletePost ? `
@@ -3360,6 +3411,10 @@
 
                         if (!dbProfilDetail[keyTarget]) {
                             dbProfilDetail[keyTarget] = {};
+                        }
+
+                        if (item.updatedAt || item.tanggal || item.waktu) {
+                            dbProfilDetail[keyTarget].updatedAt = item.updatedAt || item.tanggal || item.waktu;
                         }
 
                         if (item.fotoProfil || item.foto) dbProfilDetail[keyTarget].fotoProfil = item.fotoProfil || item.foto;
