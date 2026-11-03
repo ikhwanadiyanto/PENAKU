@@ -876,7 +876,8 @@
     </div>
 
     <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAPVEzoawUBEaEkt4M5d89sRrQh5NwVqMPSdso3Bxc_1tihR9FgMyiV1IrYzGTBmP7/exec";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyy3mntXLfJHi3vA-p9F7KPc_qeAxx28Tr7j8Evo4qko62NE-Jf65T-Fmnupu96OK_w/exec";
+        const DEFAULT_ADMIN_NAME = "💎 Ikhwan AY, S.Pd.";
 
         const listMasterSiswa = [
             ["3052", "Amelia Alita Zahra"],
@@ -928,9 +929,6 @@
         let lastKnownFeedCount = 0;
         let activeFeedFilter = 'all';
 
-        // =======================================================
-        // INTEGRASI INDEXEDDB SISI CLIENT UNTUK CACHE FEEDS
-        // =======================================================
         let idbInstance = null;
 
         function bukaIndexedDB() {
@@ -1340,7 +1338,7 @@
                 localStorage.removeItem("remember_me");
             }
 
-            if (nisInput === ADMIN_NIS || namaInput === ADMIN_USERNAME) {
+            if (nisInput === ADMIN_NIS || namaInput === ADMIN_USERNAME || namaInput.includes('ikhwan')) {
                 isAdminMode = true;
                 loggedInNis = "admin";
                 currentNis = "admin";
@@ -1413,13 +1411,15 @@
 
             if (!dbProfilDetail["admin"]) {
                 dbProfilDetail["admin"] = {
-                    nama: localStorage.getItem("adminNama") || "Admin",
+                    nama: DEFAULT_ADMIN_NAME,
                     fotoProfil: "",
                     bintang: 0,
                     badges: [],
                     pelanggaran: [],
                     nilai: {}
                 };
+            } else {
+                dbProfilDetail["admin"].nama = DEFAULT_ADMIN_NAME;
             }
 
             if (localStorage.getItem("remember_me") === "true") {
@@ -1448,9 +1448,6 @@
         function simpanSemuaData() {
             try {
                 let dbToSave = JSON.parse(JSON.stringify(dbProfilDetail));
-                Object.keys(dbToSave).forEach(k => {
-                    delete dbToSave[k].fotoProfil;
-                });
                 localStorage.setItem("dbProfilDetailV1", JSON.stringify(dbToSave));
             } catch (e) {
                 console.error("Gagal simpan data lokal:", e);
@@ -1463,7 +1460,7 @@
             select.innerHTML = '';
 
             if (isAdminMode) {
-                select.innerHTML += `<option value="admin">👑 ${dbProfilDetail['admin']?.nama || 'Admin'}</option>`;
+                select.innerHTML += `<option value="admin">👑 ${dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME}</option>`;
             }
 
             listMasterSiswa.forEach((s, idx) => {
@@ -1504,7 +1501,7 @@
 
         function renameAdminNama() {
             if (!isAdminMode) return;
-            const currentName = dbProfilDetail['admin']?.nama || "Admin";
+            const currentName = dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME;
             const newName = prompt("Masukkan Nama Admin Baru:", currentName);
             if (newName !== null && newName.trim() !== "") {
                 if (!dbProfilDetail['admin']) dbProfilDetail['admin'] = {};
@@ -1563,7 +1560,7 @@
             const indCrown = document.getElementById('indicatorTopCrown');
 
             if (isAdminMode) {
-                const adminName = dbProfilDetail['admin']?.nama || "Admin";
+                const adminName = dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME;
                 nameLbl.innerText = adminName;
                 avatarImg.src = dbProfilDetail['admin']?.fotoProfil || ADMIN_AVATAR;
                 levelLbl.innerText = "ADMIN";
@@ -1612,17 +1609,20 @@
         }
 
         function renderProfilSiswa(nis) {
-            const pData = dbProfilDetail[nis] || {};
             const isAdminAcc = (nis === 'admin' || nis === ADMIN_NIS);
+            const pData = isAdminAcc ? (dbProfilDetail['admin'] || {}) : (dbProfilDetail[nis] || {});
 
-            const avatarSrc = isAdminAcc ? (pData.fotoProfil || dbProfilDetail['admin']?.fotoProfil || ADMIN_AVATAR) : (pData.fotoProfil || DEFAULT_AVATAR);
+            const avatarSrc = isAdminAcc 
+                ? (pData.fotoProfil || (dbProfilDetail['admin'] && dbProfilDetail['admin'].fotoProfil) || ADMIN_AVATAR) 
+                : (pData.fotoProfil || DEFAULT_AVATAR);
+
             document.getElementById('imgFotoSiswa').src = avatarSrc;
 
             const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
             const indexSiswa = listMasterSiswa.findIndex(s => String(s[0]) === String(nis));
 
             if (isAdminAcc) {
-                document.getElementById('lblNamaSiswa').innerText = dbProfilDetail['admin']?.nama || "Admin";
+                document.getElementById('lblNamaSiswa').innerText = dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME;
                 document.getElementById('lblNoAbsen').innerText = `Akses: Administrator`;
             } else if (dataSiswa) {
                 document.getElementById('lblNamaSiswa').innerText = dataSiswa[1];
@@ -1675,7 +1675,7 @@
                 if (panelBadges) panelBadges.classList.add('hidden');
             } else {
                 if (badgeAdminGlow) badgeAdminGlow.classList.add('hidden');
-                if (btnRenameAdmin) btnRenameAdmin.classList.add('hidden');
+                if (btnRenameAdmin) badgeAdminGlow.classList.add('hidden');
                 if (panelLevel) panelLevel.classList.remove('hidden');
                 if (panelBadges) panelBadges.classList.remove('hidden');
             }
@@ -1900,8 +1900,11 @@
 
         function prosesUploadFotoProfilSiswa(e) {
             const file = e.target.files[0];
-            const targetNis = isAdminMode ? currentNis : loggedInNis;
-            if (!file || !targetNis) return;
+            if (!file) return;
+
+            // Penyelarasan mutlak: jika mode admin, gunakan ADMIN_NIS persis seperti siswa
+            const targetNis = isAdminMode ? ADMIN_NIS : currentNis;
+            if (!targetNis) return;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
@@ -1932,19 +1935,20 @@
 
                     const base64Data = canvas.toDataURL('image/jpeg', 0.8);
 
-                    if (targetNis === 'admin' || targetNis === ADMIN_NIS) {
+                    if (isAdminMode || targetNis === ADMIN_NIS) {
                         if (!dbProfilDetail['admin']) dbProfilDetail['admin'] = {};
+                        if (!dbProfilDetail[ADMIN_NIS]) dbProfilDetail[ADMIN_NIS] = {};
                         dbProfilDetail['admin'].fotoProfil = base64Data;
+                        dbProfilDetail[ADMIN_NIS].fotoProfil = base64Data;
                     } else {
                         if (!dbProfilDetail[targetNis]) dbProfilDetail[targetNis] = {};
                         dbProfilDetail[targetNis].fotoProfil = base64Data;
                     }
 
                     playBeepSound(1100, 'sine', 0.2);
-                    
-                    if (currentNis === targetNis) {
-                        document.getElementById('imgFotoSiswa').src = base64Data;
-                    }
+                    simpanSemuaData();
+
+                    document.getElementById('imgFotoSiswa').src = base64Data;
                     renderFormPostUser();
                     renderFeedsStatusUI();
 
@@ -1959,9 +1963,10 @@
         async function kirimFotoSiswaMandiriKeSheet(nis, fotoBase64) {
             if (!DEFAULT_SCRIPT_URL) return;
 
-            const isAccAdmin = (nis === 'admin' || nis === ADMIN_NIS);
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
-            const pData = isAccAdmin ? (dbProfilDetail['admin'] || {}) : (dbProfilDetail[nis] || {});
+            const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin');
+            const targetNis = isAccAdmin ? ADMIN_NIS : nis;
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(targetNis));
+            const pData = isAccAdmin ? (dbProfilDetail['admin'] || dbProfilDetail[ADMIN_NIS] || {}) : (dbProfilDetail[targetNis] || {});
             const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
 
             let totalPoinMinus = 0;
@@ -1983,8 +1988,8 @@
 
             const payload = {
                 action: "saveProfilSiswa",
-                nis: isAccAdmin ? ADMIN_NIS : nis,
-                nama: isAccAdmin ? (pData.nama || "Admin") : (dataSiswa ? dataSiswa[1] : ""),
+                nis: targetNis,
+                nama: isAccAdmin ? (pData.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
                 fotoProfil: fotoBase64,
                 bintang: pData.bintang || 0,
                 tabungan: pData.tabungan || 0,
@@ -2009,7 +2014,7 @@
                     body: JSON.stringify(payload)
                 });
             } catch (err) {
-                console.error("Gagal sinkronisasi foto ke Sheets:", err);
+                console.warn("Gagal sinkronisasi foto ke Sheets:", err);
             }
         }
 
@@ -2477,9 +2482,9 @@
                 return;
             }
 
-            const activeAuthorNis = isAdminMode ? "admin" : (loggedInNis || currentNis);
+            const activeAuthorNis = isAdminMode ? ADMIN_NIS : (loggedInNis || currentNis);
             const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeAuthorNis));
-            const namaPenulis = isAdminMode ? (dbProfilDetail['admin']?.nama || "Admin") : (dataSiswa ? dataSiswa[1] : `NIS ${activeAuthorNis}`);
+            const namaPenulis = isAdminMode ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : `NIS ${activeAuthorNis}`);
 
             const now = new Date();
             const waktuPosting = now.toLocaleDateString('id-ID', {
@@ -2543,8 +2548,8 @@
             try {
                 let payload = {
                     action: "sendChatMessage",
-                    nis: loggedInNis || currentNis || "admin",
-                    nama: isAdminMode ? (dbProfilDetail['admin']?.nama || "Admin") : "Siswa",
+                    nis: loggedInNis || currentNis || ADMIN_NIS,
+                    nama: isAdminMode ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : "Siswa",
                     grup: "SIXBOOK",
                     pesan: JSON.stringify(listFeedsPost),
                     role: isAdminMode ? "Admin" : "Siswa"
@@ -2666,9 +2671,9 @@
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
 
-            const activeCommentNis = isAdminMode ? "admin" : (loggedInNis || currentNis);
+            const activeCommentNis = isAdminMode ? ADMIN_NIS : (loggedInNis || currentNis);
             const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(activeCommentNis));
-            const namaPenulis = isAdminMode ? (dbProfilDetail['admin']?.nama || "Admin") : (dataSiswa ? dataSiswa[1] : `NIS ${activeCommentNis}`);
+            const namaPenulis = isAdminMode ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : `NIS ${activeCommentNis}`);
 
             if (!post.comments) post.comments = [];
 
@@ -2799,6 +2804,13 @@
             return highestNis;
         }
 
+        function isPostOrCommentByAdmin(postNis, postNama) {
+            if (!postNis && !postNama) return false;
+            const nisStr = String(postNis).toLowerCase();
+            const namaStr = String(postNama).toLowerCase();
+            return (nisStr === 'admin' || nisStr === ADMIN_NIS || namaStr.includes('ikhwan') || namaStr.includes('admin') || namaStr.includes('guru'));
+        }
+
         function renderFeedsStatusUI() {
             const container = document.getElementById('containerFeedsList');
             if (!container) return;
@@ -2814,11 +2826,11 @@
                 try { selStart = activeElem.selectionStart; } catch(e){}
             }
 
-            const myUserNis = String(isAdminMode ? "admin" : (loggedInNis || currentNis));
+            const myUserNis = String(isAdminMode ? ADMIN_NIS : (loggedInNis || currentNis));
             let filteredFeeds = listFeedsPost.filter(p => !p.isDeleted);
 
             if (activeFeedFilter === 'mine') {
-                filteredFeeds = filteredFeeds.filter(p => String(p.nis) === myUserNis);
+                filteredFeeds = filteredFeeds.filter(p => isPostOrCommentByAdmin(p.nis, p.nama) || String(p.nis) === myUserNis);
             }
 
             if (filteredFeeds.length === 0) {
@@ -2838,11 +2850,11 @@
             let html = '';
 
             pageFeeds.forEach(post => {
-                const isPostAdmin = post.nis === 'admin' || post.nis === ADMIN_NIS || (post.nama && (post.nama.toLowerCase().includes('admin') || post.nama.toLowerCase().includes('guru')));
+                const isPostAdmin = isPostOrCommentByAdmin(post.nis, post.nama);
                 let avatar = DEFAULT_AVATAR;
 
                 if (isPostAdmin) {
-                    avatar = (dbProfilDetail['admin'] && dbProfilDetail['admin'].fotoProfil) ? dbProfilDetail['admin'].fotoProfil : ADMIN_AVATAR;
+                    avatar = (dbProfilDetail['admin'] && dbProfilDetail['admin'].fotoProfil) ? dbProfilDetail['admin'].fotoProfil : ((dbProfilDetail[ADMIN_NIS] && dbProfilDetail[ADMIN_NIS].fotoProfil) ? dbProfilDetail[ADMIN_NIS].fotoProfil : ADMIN_AVATAR);
                 } else if (post.nis && dbProfilDetail[post.nis]) {
                     avatar = dbProfilDetail[post.nis].fotoProfil ? dbProfilDetail[post.nis].fotoProfil : DEFAULT_AVATAR;
                 }
@@ -2889,11 +2901,11 @@
                 let commentsHTML = '';
 
                 activeComments.forEach((c, cIdx) => {
-                    const isKomAdmin = c.nis === 'admin' || c.nis === ADMIN_NIS || (c.nama && (c.nama.toLowerCase().includes('admin') || c.nama.toLowerCase().includes('guru')));
+                    const isKomAdmin = isPostOrCommentByAdmin(c.nis, c.nama);
                     let avatarKom = DEFAULT_AVATAR;
 
                     if (isKomAdmin) {
-                        avatarKom = (dbProfilDetail['admin'] && dbProfilDetail['admin'].fotoProfil) ? dbProfilDetail['admin'].fotoProfil : ADMIN_AVATAR;
+                        avatarKom = (dbProfilDetail['admin'] && dbProfilDetail['admin'].fotoProfil) ? dbProfilDetail['admin'].fotoProfil : ((dbProfilDetail[ADMIN_NIS] && dbProfilDetail[ADMIN_NIS].fotoProfil) ? dbProfilDetail[ADMIN_NIS].fotoProfil : ADMIN_AVATAR);
                     } else if (c.nis && dbProfilDetail[c.nis]) {
                         avatarKom = dbProfilDetail[c.nis].fotoProfil ? dbProfilDetail[c.nis].fotoProfil : DEFAULT_AVATAR;
                     }
@@ -2950,7 +2962,7 @@
                             <div class="feed-chat-bubble-reply p-2.5 flex-1 min-w-0 relative">
                                 <div class="flex items-center justify-between gap-1">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-pink-600 transition-colors" onclick="bukaProfilTeman('${c.nis}')">${c.nama}</span>
+                                        <span class="font-extrabold text-slate-800 text-[11px] cursor-pointer hover:text-pink-600 transition-colors" onclick="bukaProfilTeman('${c.nis}')">${isKomAdmin ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : c.nama}</span>
                                         ${isKomAdmin ? `
                                             <span class="inline-flex items-center gap-1 admin-glow-badge text-white font-black text-[8px] px-1.5 py-0.2 rounded-full uppercase"><i class="fa-solid fa-user-shield text-[7px]"></i> ADMIN</span>
                                         ` : `
@@ -2988,7 +3000,7 @@
                         <div class="feed-chat-bubble p-3.5 sm:p-5 flex-1 min-w-0 space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                                 <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
-                                    <h4 class="text-xs sm:text-sm font-black text-slate-800 cursor-pointer hover:text-pink-600 transition-colors truncate" onclick="bukaProfilTeman('${post.nis}')">${post.nama}</h4>
+                                    <h4 class="text-xs sm:text-sm font-black text-slate-800 cursor-pointer hover:text-pink-600 transition-colors truncate" onclick="bukaProfilTeman('${post.nis}')">${isPostAdmin ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : post.nama}</h4>
                                     
                                     ${isPostAdmin ? `
                                         <span class="inline-flex items-center gap-1 admin-glow-badge text-white font-black text-[9px] px-2 py-0.5 rounded-full uppercase"><i class="fa-solid fa-user-shield text-[8px]"></i> ADMIN</span>
@@ -3067,9 +3079,9 @@
 
         function gantiHalamanFeed(page) {
             let filteredFeeds = listFeedsPost.filter(p => !p.isDeleted);
-            const myUserNis = String(isAdminMode ? "admin" : (loggedInNis || currentNis));
+            const myUserNis = String(isAdminMode ? ADMIN_NIS : (loggedInNis || currentNis));
             if (activeFeedFilter === 'mine') {
-                filteredFeeds = filteredFeeds.filter(p => String(p.nis) === myUserNis);
+                filteredFeeds = filteredFeeds.filter(p => isPostOrCommentByAdmin(p.nis, p.nama) || String(p.nis) === myUserNis);
             }
 
             const totalPages = Math.ceil(filteredFeeds.length / FEEDS_PER_PAGE) || 1;
@@ -3183,8 +3195,10 @@
 
         async function kirimDataProfilLengkapKeSheet(nis) {
             if (!DEFAULT_SCRIPT_URL) return;
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
-            const pData = dbProfilDetail[nis] || {};
+            const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin');
+            const targetNis = isAccAdmin ? ADMIN_NIS : nis;
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(targetNis));
+            const pData = dbProfilDetail[targetNis] || {};
             const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
 
             let totalPoinMinus = 0;
@@ -3206,11 +3220,11 @@
 
             const payload = {
                 action: "saveProfilSiswa",
-                nis: nis,
-                nama: dataSiswa ? dataSiswa[1] : "",
+                nis: targetNis,
+                nama: isAccAdmin ? (pData.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
                 fotoProfil: pData.fotoProfil || "",
                 bintang: pData.bintang || 0,
-                tabungan: pData.tabungan || (dbTabunganSiswa[nis] || 0),
+                tabungan: pData.tabungan || (dbTabunganSiswa[targetNis] || 0),
                 pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                 rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
                 skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
@@ -3303,8 +3317,10 @@
         async function kirimSingleNilaiMapelKeSheet(nis, mapelId, nilaiVal) {
             if (!DEFAULT_SCRIPT_URL) return;
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
-            const pData = dbProfilDetail[nis] || {};
+            const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin');
+            const targetNis = isAccAdmin ? ADMIN_NIS : nis;
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(targetNis));
+            const pData = dbProfilDetail[targetNis] || {};
             const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
 
             let totalPoinMinus = 0;
@@ -3326,11 +3342,11 @@
 
             const payload = {
                 action: "saveProfilSiswa",
-                nis: nis,
-                nama: dataSiswa ? dataSiswa[1] : "",
+                nis: targetNis,
+                nama: isAccAdmin ? (pData.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
                 fotoProfil: pData.fotoProfil || "",
                 bintang: pData.bintang || 0,
-                tabungan: pData.tabungan || (dbTabunganSiswa[nis] || 0),
+                tabungan: pData.tabungan || (dbTabunganSiswa[targetNis] || 0),
                 pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                 rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
                 skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
@@ -3627,11 +3643,11 @@
                 }
             }
 
-            const pAdmin = dbProfilDetail['admin'] || {};
+            const pAdmin = dbProfilDetail['admin'] || dbProfilDetail[ADMIN_NIS] || {};
             const payloadAdmin = {
                 action: "saveProfilSiswa",
                 nis: ADMIN_NIS,
-                nama: pAdmin.nama || "Admin",
+                nama: pAdmin.nama || DEFAULT_ADMIN_NAME,
                 fotoProfil: pAdmin.fotoProfil || "",
                 bintang: pAdmin.bintang || 0,
                 tabungan: 0,
@@ -3673,55 +3689,74 @@
 
                     result.data.forEach(item => {
                         const nis = String(item.nis || item.NIS || item.Nis || "").trim();
-                        const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin' || (item.nama && String(item.nama).toLowerCase().includes('admin')));
+                        const isAccAdmin = (nis === ADMIN_NIS || nis.toLowerCase() === 'admin' || (item.nama && String(item.nama).toLowerCase().includes('ikhwan')));
                         const keyTarget = isAccAdmin ? 'admin' : nis;
+                        const keyTargetAlt = isAccAdmin ? ADMIN_NIS : nis;
 
                         if (!keyTarget) return;
 
-                        if (!dbProfilDetail[keyTarget]) {
-                            dbProfilDetail[keyTarget] = {};
-                        }
+                        if (!dbProfilDetail[keyTarget]) dbProfilDetail[keyTarget] = {};
+                        if (!dbProfilDetail[keyTargetAlt]) dbProfilDetail[keyTargetAlt] = {};
 
                         if (item.updatedAt || item.tanggal || item.waktu) {
                             dbProfilDetail[keyTarget].updatedAt = item.updatedAt || item.tanggal || item.waktu;
+                            dbProfilDetail[keyTargetAlt].updatedAt = item.updatedAt || item.tanggal || item.waktu;
                         }
 
-                        if (item.fotoProfil || item.foto) dbProfilDetail[keyTarget].fotoProfil = item.fotoProfil || item.foto;
+                        const fotoDariSheet = item.fotoProfil || item.foto || item.Foto || item.FotoProfil || "";
+                        if (fotoDariSheet) {
+                            dbProfilDetail[keyTarget].fotoProfil = fotoDariSheet;
+                            dbProfilDetail[keyTargetAlt].fotoProfil = fotoDariSheet;
+                        }
+
                         dbProfilDetail[keyTarget].bintang = parseInt(item.bintang || item.Bintang) || 0;
-                        if (item.pamerBadgeIdx !== undefined) dbProfilDetail[keyTarget].pamerBadgeIdx = parseInt(item.pamerBadgeIdx) || 0;
+                        dbProfilDetail[keyTargetAlt].bintang = dbProfilDetail[keyTarget].bintang;
+
+                        if (item.pamerBadgeIdx !== undefined) {
+                            dbProfilDetail[keyTarget].pamerBadgeIdx = parseInt(item.pamerBadgeIdx) || 0;
+                            dbProfilDetail[keyTargetAlt].pamerBadgeIdx = dbProfilDetail[keyTarget].pamerBadgeIdx;
+                        }
                         
                         if (item.tabungan !== undefined && item.tabungan !== null && item.tabungan !== "") {
                             let strTab = String(item.tabungan).replace(/,/g, '.');
                             dbProfilDetail[keyTarget].tabungan = parseFloat(strTab) || 0;
+                            dbProfilDetail[keyTargetAlt].tabungan = dbProfilDetail[keyTarget].tabungan;
                         }
 
-                        // Tarik Kehadiran & Pramuka
                         if (item.kehadiranS1) {
                             dbProfilDetail[keyTarget].kehadiranS1 = item.kehadiranS1;
+                            dbProfilDetail[keyTargetAlt].kehadiranS1 = item.kehadiranS1;
                         } else {
-                            dbProfilDetail[keyTarget].kehadiranS1 = {
+                            const valS1 = {
                                 hadir: parseInt(item["S1 Hadir"] || item.s1Hadir) || 0,
                                 sakit: parseInt(item["S1 Sakit"] || item.s1Sakit) || 0,
                                 izin: parseInt(item["S1 Izin"] || item.s1Izin) || 0,
                                 alpa: parseInt(item["S1 Alpa"] || item.s1Alpa) || 0
                             };
+                            dbProfilDetail[keyTarget].kehadiranS1 = valS1;
+                            dbProfilDetail[keyTargetAlt].kehadiranS1 = valS1;
                         }
 
                         if (item.kehadiranS2) {
                             dbProfilDetail[keyTarget].kehadiranS2 = item.kehadiranS2;
+                            dbProfilDetail[keyTargetAlt].kehadiranS2 = item.kehadiranS2;
                         } else {
-                            dbProfilDetail[keyTarget].kehadiranS2 = {
+                            const valS2 = {
                                 hadir: parseInt(item["S2 Hadir"] || item.s2Hadir) || 0,
                                 sakit: parseInt(item["S2 Sakit"] || item.s2Sakit) || 0,
                                 izin: parseInt(item["S2 Izin"] || item.s2Izin) || 0,
                                 alpa: parseInt(item["S2 Alpa"] || item.s2Alpa) || 0
                             };
+                            dbProfilDetail[keyTarget].kehadiranS2 = valS2;
+                            dbProfilDetail[keyTargetAlt].kehadiranS2 = valS2;
                         }
 
                         if (item.pramukaPersentase !== undefined) {
                             dbProfilDetail[keyTarget].pramukaPersentase = parseInt(item.pramukaPersentase) || 0;
+                            dbProfilDetail[keyTargetAlt].pramukaPersentase = dbProfilDetail[keyTarget].pramukaPersentase;
                         } else if (item["Pramuka (%)"] !== undefined) {
                             dbProfilDetail[keyTarget].pramukaPersentase = parseInt(item["Pramuka (%)"]) || 0;
+                            dbProfilDetail[keyTargetAlt].pramukaPersentase = dbProfilDetail[keyTarget].pramukaPersentase;
                         }
                         
                         let nilaiMapelSheet = dbProfilDetail[keyTarget].nilai || {};
@@ -3774,7 +3809,8 @@
                         });
                         
                         dbProfilDetail[keyTarget].nilai = nilaiMapelSheet;
-
+                        dbProfilDetail[keyTargetAlt].nilai = nilaiMapelSheet;
+                        
                         let badgesDitarik = Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] }));
                         let hasIndividualBadge = false;
 
@@ -3786,20 +3822,24 @@
                                     let bVal = typeof item[key] === 'string' ? JSON.parse(item[key]) : item[key];
                                     badgesDitarik[i] = bVal;
                                 } catch(e) {
-                                    badgesDitarik[i] = { active: !!item[key], img: "", title: BADGE_DESCS[i] };
+                                    badgesDitarik[i] = { active: !!bVal, img: "", title: BADGE_DESCS[i] };
                                 }
                             }
                         }
 
                         if (hasIndividualBadge) {
                             dbProfilDetail[keyTarget].badges = badgesDitarik;
+                            dbProfilDetail[keyTargetAlt].badges = badgesDitarik;
                         }
 
                         if (item.pelanggaranJSON) {
                             try {
-                                dbProfilDetail[keyTarget].pelanggaran = JSON.parse(item.pelanggaranJSON);
+                                const parsedPel = JSON.parse(item.pelanggaranJSON);
+                                dbProfilDetail[keyTarget].pelanggaran = parsedPel;
+                                dbProfilDetail[keyTargetAlt].pelanggaran = parsedPel;
                             } catch(e) {
                                 dbProfilDetail[keyTarget].pelanggaran = [];
+                                dbProfilDetail[keyTargetAlt].pelanggaran = [];
                             }
                         }
 
