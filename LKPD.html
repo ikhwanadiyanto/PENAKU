@@ -964,7 +964,6 @@
 
     <script>
         const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyy3mntXLfJHi3vA-p9F7KPc_qeAxx28Tr7j8Evo4qko62NE-Jf65T-Fmnupu96OK_w/exec";
-        const SIXBOOK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoe1yxavW62KMR_lpccZHwTWwFBu9srnMnJFXpd4kKP4PPFgwZr79DkA1BDxHCG69H/exec";
         const DEFAULT_ADMIN_NAME = "💎 Ikhwan AY, S.Pd.";
 
         const listMasterSiswa = [
@@ -2946,14 +2945,10 @@
         }
 
         async function kirimSingleFeedPostKeSheet(post) {
-            if (!SIXBOOK_SCRIPT_URL) return;
+            if (!DEFAULT_SCRIPT_URL) return;
 
             try {
-                // Pisahkan objek status (tanpa array komentar) dan array komentar secara independen
-                const statusObj = { ...post, comments: [] };
-                const komentarArr = post.comments || [];
-
-                await fetch(SIXBOOK_SCRIPT_URL, {
+                await fetch(DEFAULT_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -2962,8 +2957,7 @@
                         nis: post.nis,
                         nama: post.nama,
                         grup: "SIXBOOK",
-                        pesan: JSON.stringify(statusObj),
-                        komentar: JSON.stringify(komentarArr),
+                        pesan: JSON.stringify(post),
                         role: (post.nis === 'admin' || post.nis === ADMIN_NIS) ? "Admin" : "Siswa"
                     })
                 });
@@ -2973,31 +2967,26 @@
         }
 
         async function kirimFeedKeSheet() {
-            if (!SIXBOOK_SCRIPT_URL) return;
+            if (!DEFAULT_SCRIPT_URL) return;
             playBeepSound(1000, 'sine', 0.15);
 
             try {
-                // Pemisahan massal untuk mode pengiriman seluruh Feed
-                const listStatus = listFeedsPost.map(p => ({ ...p, comments: [] }));
-                const listKomentar = listFeedsPost.map(p => ({ id: p.id, comments: p.comments || [] }));
-
                 let payload = {
                     action: "sendChatMessage",
                     nis: loggedInNis || currentNis || ADMIN_NIS,
                     nama: isAdminMode ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : "Siswa",
                     grup: "SIXBOOK",
-                    pesan: JSON.stringify(listStatus),
-                    komentar: JSON.stringify(listKomentar),
+                    pesan: JSON.stringify(listFeedsPost),
                     role: isAdminMode ? "Admin" : "Siswa"
                 };
 
-                await fetch(SIXBOOK_SCRIPT_URL, {
+                await fetch(DEFAULT_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert("Berhasil mengunggah dan menyinkronkan seluruh Feed (Status & Komentar terpisah) ke Cloud Google Sheet!");
+                alert("Berhasil mengunggah dan menyinkronkan seluruh Feed ke Cloud Google Sheet (Tab SIXBOOK)!");
             } catch (err) {
                 console.error("Gagal kirim Feed ke Sheet:", err);
                 alert("Gagal terhubung ke Google Sheet saat mengirim Feed.");
@@ -3060,10 +3049,10 @@
 
         // PERUBAHAN POIN 2: TARIK FEED CERDAS (CEK TERLEBIH DAHULU PERUBAHAN DARI INDEXEDDB DENGAN TERBARU)
         async function tarikFeedDariSheet(isManual = false) {
-            if (!SIXBOOK_SCRIPT_URL) return;
+            if (!DEFAULT_SCRIPT_URL) return;
 
             try {
-                const response = await fetch(`${SIXBOOK_SCRIPT_URL}?action=getChatMessages`);
+                const response = await fetch(`${DEFAULT_SCRIPT_URL}?action=getChatMessages`);
                 const result = await response.json();
 
                 if (result && (result.status === 'success' || Array.isArray(result.data))) {
@@ -3077,56 +3066,25 @@
 
                     dataArray.forEach(msg => {
                         const isFeedGroup = msg.grup === "SIXBOOK" || msg.grup === "SIXBOOK Feed" || msg.grup === "SIXBOOK Feed Bulk" || !msg.grup;
-                        if (isFeedGroup && (msg.pesan || msg.komentar || msg.Komentar)) {
+                        if (isFeedGroup && msg.pesan) {
                             try {
-                                const parsedPesan = msg.pesan ? (typeof msg.pesan === 'string' ? JSON.parse(msg.pesan) : msg.pesan) : null;
-
-                                // Pembacaan data komentar dari kolom 'komentar' terpisah
-                                let parsedKomentar = null;
-                                const rawKomentar = msg.komentar || msg.Komentar || msg.komentarJSON || msg.comments;
-                                if (rawKomentar) {
-                                    try {
-                                        parsedKomentar = typeof rawKomentar === 'string' ? JSON.parse(rawKomentar) : rawKomentar;
-                                    } catch (eKom) {
-                                        parsedKomentar = null;
-                                    }
-                                }
-
+                                const parsed = typeof msg.pesan === 'string' ? JSON.parse(msg.pesan) : msg.pesan;
                                 const waktuSheet = msg.waktu || msg.timestamp || msg.tanggal || "";
 
-                                if (Array.isArray(parsedPesan)) {
-                                    parsedPesan.forEach(p => {
+                                if (Array.isArray(parsed)) {
+                                    parsed.forEach(p => {
                                         if (p && p.id) {
                                             if (waktuSheet && (!p.waktu || p.waktu === "Baru saja")) p.waktu = waktuSheet;
                                             if (ambilTanggalPostSIXBOOK(p, waktuSheet) !== tanggalLokalYYYYMMDD()) return;
                                             const idPost = String(p.id);
-
-                                            let itemComments = p.comments || [];
-                                            if (Array.isArray(parsedKomentar)) {
-                                                const matchKom = parsedKomentar.find(k => String(k.id) === String(p.id));
-                                                if (matchKom && Array.isArray(matchKom.comments)) {
-                                                    itemComments = matchKom.comments;
-                                                } else if (parsedKomentar.every(k => k.teks || k.nis)) {
-                                                    itemComments = parsedKomentar;
-                                                }
-                                            }
-
-                                            const postCombined = { ...p, comments: itemComments };
-                                            mapFeed.set(idPost, gabungkanPostSIXBOOK(mapFeed.get(idPost), postCombined));
+                                            mapFeed.set(idPost, gabungkanPostSIXBOOK(mapFeed.get(idPost), p));
                                         }
                                     });
-                                } else if (parsedPesan && parsedPesan.id) {
-                                    if (waktuSheet && (!parsedPesan.waktu || parsedPesan.waktu === "Baru saja")) parsedPesan.waktu = waktuSheet;
-                                    if (ambilTanggalPostSIXBOOK(parsedPesan, waktuSheet) === tanggalLokalYYYYMMDD()) {
-                                        const idPost = String(parsedPesan.id);
-
-                                        let itemComments = parsedPesan.comments || [];
-                                        if (Array.isArray(parsedKomentar)) {
-                                            itemComments = parsedKomentar;
-                                        }
-
-                                        const postCombined = { ...parsedPesan, comments: itemComments };
-                                        mapFeed.set(idPost, gabungkanPostSIXBOOK(mapFeed.get(idPost), postCombined));
+                                } else if (parsed && parsed.id) {
+                                    if (waktuSheet && (!parsed.waktu || parsed.waktu === "Baru saja")) parsed.waktu = waktuSheet;
+                                    if (ambilTanggalPostSIXBOOK(parsed, waktuSheet) === tanggalLokalYYYYMMDD()) {
+                                        const idPost = String(parsed.id);
+                                        mapFeed.set(idPost, gabungkanPostSIXBOOK(mapFeed.get(idPost), parsed));
                                     }
                                 }
                             } catch (e) {}
