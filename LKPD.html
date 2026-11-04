@@ -273,7 +273,6 @@
             100% { transform: rotate(25deg); }
         }
 
-        /* POIN 7: BADGE STATUS SISWA TRANSPARAN BLUR */
         .status-trans-aktif {
             background: rgba(16, 185, 129, 0.75);
             backdrop-filter: blur(8px);
@@ -288,6 +287,14 @@
             background: rgba(168, 85, 247, 0.75);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+        }
+
+        @keyframes spinBadgeLoading {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-fast {
+            animation: spinBadgeLoading 0.8s linear infinite;
         }
 
         @media print {
@@ -388,7 +395,6 @@
                     <input type="password" id="inputNisLogin" placeholder="NIS (Nomor Induk Siswa)..." class="w-full bg-white text-slate-800 text-center font-bold text-xs sm:text-sm border-2 border-amber-300 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 transition-all shadow-inner" required>
                 </div>
                 
-                <!-- KOTAK CENTANG INGAT SAYA / SIMPAN AKUN -->
                 <div class="flex items-center justify-start px-2 my-1">
                     <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 select-none">
                         <input type="checkbox" id="checkIngatSaya" class="w-4 h-4 rounded border-amber-300 accent-pink-500 cursor-pointer">
@@ -487,11 +493,10 @@
     <!-- MAIN APP CONTAINER -->
     <div id="mainAppContainer" class="max-w-7xl mx-auto hidden">
         
-        <!-- HEADER APPS DENGAN TATA LETAK PROFESIONAL & RESPONSIF MOBILE -->
+        <!-- HEADER APPS -->
         <header class="cheerful-header p-3.5 sm:p-5 rounded-3xl mb-5 sm:mb-8 text-slate-800 no-print relative">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4 relative z-10">
                 
-                <!-- SISI KIRI: BRANDING & JUDUL -->
                 <div class="flex items-center justify-between lg:justify-start gap-3 w-full lg:w-auto border-b lg:border-none border-white/40 pb-2.5 lg:pb-0">
                     <div class="flex items-center gap-3">
                         <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/40 backdrop-blur-md flex items-center justify-center text-2xl sm:text-3xl shadow-lg border-2 border-white/60 shrink-0 logo-emoji-anim">
@@ -509,15 +514,12 @@
                     </div>
                 </div>
 
-                <!-- SISI KANAN: BAR NAVIGASI ALAT & MENU AKSI -->
                 <div class="w-full lg:w-auto flex flex-wrap lg:flex-nowrap items-center justify-between lg:justify-end gap-2">
                     
-                    <!-- KOTAK CARI TEMAN -->
                     <div class="relative flex-1 sm:flex-initial sm:w-44 lg:w-48">
                         <input type="text" id="inputCariTeman" onkeyup="filterCariTeman(this.value)" placeholder="🔍 Cari Teman..." class="w-full bg-white/90 backdrop-blur-md text-slate-800 placeholder-slate-500 text-xs font-semibold rounded-xl px-3 py-2 border border-white/70 focus:outline-none focus:bg-white transition-all shadow-inner">
                     </div>
 
-                    <!-- TOMBOL NOTIFIKASI LONCENG -->
                     <div class="relative flex items-center">
                         <button id="btnNotifBell" onclick="toggleDropdownNotif(event)" class="relative p-2 sm:p-2.5 rounded-xl bg-white/70 hover:bg-white border border-white/80 text-slate-800 transition-all shadow-sm active:scale-95" title="Notifikasi Feed">
                             <i id="iconNotifBell" class="fa-solid fa-bell text-sm sm:text-base text-amber-600"></i>
@@ -525,14 +527,12 @@
                         </button>
                     </div>
 
-                    <!-- DROPDOWN ADMIN (KHUSUS ADMIN) -->
                     <div class="relative flex-1 sm:flex-initial sm:w-44 admin-only">
                         <select id="selectSiswaProfil" onchange="gantiSiswaProfil(this.value)" class="w-full bg-white text-slate-800 border-2 border-amber-300 rounded-xl px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-pink-500 shadow-inner">
                             <option value="">-- Pilih Siswa (Admin) --</option>
                         </select>
                     </div>
 
-                    <!-- GRUP TOMBOL AKSI UTAMA -->
                     <div class="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
                         <a href="Pena Mantap V6.html" class="bg-white/70 hover:bg-white text-slate-800 border border-white/80 px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all active:scale-95 shadow-sm">
                             <i class="fa-solid fa-house text-pink-600"></i> <span class="hidden sm:inline">Kembali</span>
@@ -616,7 +616,6 @@
                             <span class="text-[11px] font-black text-white uppercase tracking-wider">Ganti Foto</span>
                         </div>
 
-                        <!-- POIN 7: LENCANA STATUS SISWA TRANSPARAN (AKTIF: HIJAU, PINDAH: MERAH, ALUMNI: UNGU) -->
                         <div id="statusBadge" onclick="gantiStatusSiswaClick(event)" class="status-trans-aktif absolute bottom-2 right-2 text-white font-black text-[10px] uppercase px-3 py-1 rounded-full shadow-lg border border-white/60 flex items-center gap-1.5 z-10 transition-all cursor-pointer hover:scale-105" title="Klik untuk mengubah status (Admin)">
                             <i id="iconStatusCheck" class="fa-solid fa-circle-check"></i> <span id="lblStatusSiswaText">Aktif</span>
                         </div>
@@ -627,7 +626,6 @@
                         <span id="badgeAdminGlowProfile" class="hidden admin-glow-badge text-white font-black text-[10px] px-2.5 py-0.5 rounded-full border border-purple-300 tracking-wider uppercase flex items-center gap-1">
                             <i class="fa-solid fa-user-shield text-[9px]"></i> ADMIN
                         </span>
-                        <!-- POIN 1: TOMBOL RENAME ADMIN DIHAPUS TOTAL -->
                     </div>
 
                     <div class="flex items-center gap-2 mb-4 flex-wrap justify-center">
@@ -742,7 +740,6 @@
 
                     </div>
 
-                    <!-- BANNER FILTER HEADER KHUSUS POSTINGAN TEMAN (POIN 2) -->
                     <div id="bannerFilterPostTeman" class="hidden bg-gradient-to-r from-pink-500 via-amber-400 to-sky-400 p-0.5 rounded-2xl shadow-md">
                         <div class="bg-white/95 backdrop-blur-md p-3 rounded-[14px] flex items-center justify-between gap-3">
                             <div class="flex items-center gap-2.5 min-w-0">
@@ -782,7 +779,6 @@
 
                         <textarea id="inputTeksStatus" rows="3" placeholder="Apa cerita serumu hari ini? Tulislah di sini ya!" class="w-full bg-amber-50/50 text-slate-800 text-xs sm:text-sm font-medium border border-amber-200 rounded-2xl p-3.5 focus:outline-none focus:border-pink-500 shadow-inner resize-none mb-2"></textarea>
 
-                        <!-- KOTAK LINK YOUTUBE (POIN 5) -->
                         <div id="containerInputYoutube" class="hidden mb-3">
                             <div class="relative flex items-center">
                                 <span class="absolute left-3 text-red-500 text-sm"><i class="fa-brands fa-youtube"></i></span>
@@ -793,7 +789,6 @@
                             </div>
                         </div>
 
-                        <!-- BADGE SISWA YANG DI-TAG (POIN 4) -->
                         <div id="containerTaggedUserBadge" class="hidden mb-3 flex items-center gap-2 flex-wrap">
                         </div>
 
@@ -810,17 +805,13 @@
                                     <i class="fa-solid fa-image text-emerald-500 text-base"></i> Unggah Foto
                                 </button>
                                 
-                                <!-- POIN 5: TOMBOL YOUTUBE SIDE BY SIDE DENGAN FOTO -->
                                 <button type="button" onclick="toggleInputYoutubeLink()" class="text-xs font-bold text-slate-600 hover:text-rose-600 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl hover:bg-rose-50 transition-all border border-slate-200 sm:border-transparent">
                                     <i class="fa-brands fa-youtube text-rose-500 text-base"></i> Insert Link Youtube
                                 </button>
 
-                                <!-- POIN 4: TOMBOL @ TAG TEMAN -->
                                 <button type="button" onclick="bukaModalTagTeman()" class="text-xs font-bold text-slate-600 hover:text-sky-600 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl hover:bg-sky-50 transition-all border border-slate-200 sm:border-transparent">
                                     <i class="fa-solid fa-at text-sky-500 text-base"></i> Tag Teman
                                 </button>
-                                
-                                <!-- POIN 6: MENU STIKER EMOJI DIHAPUS TOTAL -->
                             </div>
 
                             <button type="button" onclick="publikasikanStatusBaru()" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 via-amber-500 to-sky-400 hover:opacity-95 text-white font-cute font-black text-xs px-6 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
@@ -921,13 +912,11 @@
 
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-6" id="gridMapelInputs"></div>
 
-                        <!-- FRAME TAMBAHAN: KEHADIRAN & PRAMUKA -->
                         <div class="border-t border-slate-200 pt-6">
                             <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2 mb-4">
                                 <i class="fa-solid fa-clipboard-user text-sky-500"></i> Rekapitulasi Kehadiran & Ekstrakurikuler
                             </h3>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="gridKehadiranContainer">
-                                <!-- Dirender otomatis oleh JavaScript -->
                             </div>
                         </div>
                     </div>
@@ -946,7 +935,7 @@
     </div>
 
     <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyy3mntXLfJHi3vA-p9F7KPc_qeAxx28Tr7j8Evo4qko62NE-Jf65T-Fmnupu96OK_w/exec";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxehQgHFT42C6_CkKyMzMFO3fYMQGTlXsYow-ISKxCD14ZmkzneQVWhSKZVr3--y_pM/exec";
         const DEFAULT_ADMIN_NAME = "💎 Ikhwan AY, S.Pd.";
 
         const listMasterSiswa = [
@@ -954,7 +943,6 @@
             ["3223", "Angelica Vikar Maharani"],
             ["3085", "Anggraeni Abbilah Dhety"],
             ["3087", "Azka Nailun Nabhan"],
-            ["3088", "Cinta Anugrah"],
             ["3089", "Dany Sabiq El-Fathin"],
             ["3090", "Dhea Fiky Mazaya"],
             ["3224", "Earlita Arsyifa Salsabila"],
@@ -981,7 +969,7 @@
 
         let tempFotoStatusBase64 = "";
         let listFeedsPost = [];
-        let selectedTaggedNis = null; // Menyimpan NIS siswa yang di-tag
+        let selectedTaggedNis = null;
 
         let loggedInNis = null;
         let currentNis = null;
@@ -991,7 +979,7 @@
         const FEEDS_PER_PAGE = 15;
         let unreadNotifCount = 0;
         let lastKnownFeedCount = 0;
-        let activeFeedFilter = 'all'; // 'all', 'mine', atau NIS khusus
+        let activeFeedFilter = 'all';
 
         let idbInstance = null;
 
@@ -1104,7 +1092,7 @@
         ];
 
         let BADGE_DESCS = [
-            "Hadir Tepat Waktu", "Pakaian Rapi", "Tugas Tuntas", "Bantu Teman", "Ketua Piket",
+            "Hadir Tepat Waktu", "Pakaian Rapi", "Tugas Tuntas", "Bantu Teman", "Pramuka Aktif",
             "Sopan Santun", "Jujur & Disiplin", "Pemberani", "Kreatif", "Bintang Kehadiran",
             "Aktif Berdiskusi", "Penataan Laci", "Rajin Membaca", "Peduli Lingkungan", "Disiplin Upacara",
             "Kerapian Catatan", "Kerjasama Tim", "Sportif", "Hemat Energi", "Karakter Pancasila",
@@ -1202,7 +1190,6 @@
                 btnMine.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95";
                 if (bannerTeman) bannerTeman.classList.add('hidden');
             } else {
-                // POIN 2: Mode View Postingan Teman Khusus
                 btnAll.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-pink-600 border border-pink-200 hover:bg-pink-50 flex items-center justify-center gap-1.5 active:scale-95";
                 btnMine.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95";
                 
@@ -1371,7 +1358,6 @@
             playBeepSound(1200, 'sine', 0.25);
         }
 
-        // POIN 2: BUKA PROFIL TEMAN & FILTER POSTINGAN KHUSUS TEMAN TERSEBUT
         function bukaProfilTeman(nis) {
             if (!nis) return;
             if (nis === 'admin' || nis === ADMIN_NIS) {
@@ -1383,8 +1369,6 @@
             currentNis = String(nis);
             gantiSiswaProfil(nis);
             gantiTabFrame('profil');
-            
-            // POIN 2: Otomatis set filter feed ke postingan teman ini
             setFilterFeedMode(String(nis));
 
             playBeepSound(900, 'sine', 0.12);
@@ -1567,7 +1551,7 @@
                 dbProfilDetail[nis] = {
                     fotoProfil: "",
                     bintang: 0,
-                    statusSiswa: "Aktif", // POIN 7: Default Status Siswa
+                    statusSiswa: "Aktif",
                     badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
                     pamerBadgeIdx: 0,
                     pelanggaran: [],
@@ -1580,8 +1564,6 @@
 
             renderProfilSiswa(nis);
         }
-
-        // POIN 1: FUNGSI RENAME ADMIN DIHAPUS TOTAL
 
         function updateTampilanSiswaTertinggi() {
             let maxAvg = -1;
@@ -1675,7 +1657,6 @@
             }
         }
 
-        // POIN 7: RENDER PROFIL SISWA BESERTA WAKTU STATUS TRANSPARAN
         function renderProfilSiswa(nis) {
             const isAdminAcc = (nis === 'admin' || nis === ADMIN_NIS);
             const pData = isAdminAcc ? (dbProfilDetail['admin'] || {}) : (dbProfilDetail[nis] || {});
@@ -1745,7 +1726,6 @@
                 if (panelBadges) panelBadges.classList.remove('hidden');
             }
 
-            // POIN 7: RENDER LENCANA STATUS TRANSPARAN (AKTIF, PINDAH, ALUMNI)
             const badgeStatusEl = document.getElementById('statusBadge');
             const lblStatusText = document.getElementById('lblStatusSiswaText');
             const iconStatusCheck = document.getElementById('iconStatusCheck');
@@ -1801,7 +1781,6 @@
             updateTampilanSiswaTertinggi();
         }
 
-        // POIN 7: UBAH STATUS SISWA SAAT DIKLIK & KIRIM KE GOOGLE SHEET
         function gantiStatusSiswaClick(e) {
             if (e) e.stopPropagation();
             if (!currentNis || currentNis === 'admin') return;
@@ -1827,7 +1806,6 @@
             kirimStatusSiswaKeSheet(currentNis, nextSt);
         }
 
-        // POIN 7: FUNGSI KHUSUS KIRIM KE TAB "Status Siswa" DENGAN KOLOM PALING KANAN
         async function kirimStatusSiswaKeSheet(nis, statusVal) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -1836,7 +1814,7 @@
 
             const payload = {
                 action: "updateStatusSiswa",
-                sheetTarget: "Status Siswa", // Menargetkan tab baru Status Siswa
+                sheetTarget: "Status Siswa",
                 nis: nis,
                 nama: namaSiswa,
                 statusSiswa: statusVal,
@@ -1867,7 +1845,6 @@
             const isEditable = isAdminMode && currentNis !== 'admin';
 
             container.innerHTML = `
-                <!-- SEMESTER 1 -->
                 <div class="bg-sky-50/70 p-4 rounded-3xl border-2 border-sky-200 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
@@ -1898,7 +1875,6 @@
                     </div>
                 </div>
 
-                <!-- SEMESTER 2 -->
                 <div class="bg-pink-50/70 p-4 rounded-3xl border-2 border-pink-200 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-8 h-8 rounded-xl bg-pink-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
@@ -1929,7 +1905,6 @@
                     </div>
                 </div>
 
-                <!-- EKSTRAKURIKULER PRAMUKA -->
                 <div class="bg-amber-50/70 p-4 rounded-3xl border-2 border-amber-200 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
@@ -2214,6 +2189,7 @@
                             <div class="no-print absolute top-1 right-1 flex gap-1">
                                 <button onclick="editNamaBadge(event, ${i})" class="w-5 h-5 bg-sky-500 text-white rounded text-[9px] flex items-center justify-center shadow"><i class="fa-solid fa-pen"></i></button>
                                 <button onclick="picuUploadFotoBadge(event, ${i})" class="w-5 h-5 bg-amber-400 text-slate-950 rounded text-[9px] flex items-center justify-center shadow"><i class="fa-solid fa-camera"></i></button>
+                                <button onclick="hapusFotoBadge(event, ${i})" class="w-5 h-5 bg-rose-500 text-white rounded text-[9px] flex items-center justify-center shadow" title="Kunci/Hapus Status Badge"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         ` : ''}
                     `;
@@ -2231,7 +2207,7 @@
             event.stopPropagation();
             if (!currentNis || !isAdminMode || currentNis === 'admin') return;
             const pData = dbProfilDetail[currentNis];
-            if (!pData.badges) pData.badges = Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[index] }));
+            if (!pData.badges) pData.badges = Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] }));
 
             const defaultTitle = pData.badges[index]?.title || BADGE_DESCS[index];
             const newTitle = prompt("Masukkan Nama Badge Baru:", defaultTitle);
@@ -2244,6 +2220,7 @@
                 }
                 simpanSemuaData();
                 render25Badges(pData.badges);
+                kirimKhususBadgeKeSheet(currentNis, index, pData.badges[index]);
             }
         }
 
@@ -2262,6 +2239,7 @@
 
             simpanSemuaData();
             render25Badges(pData.badges);
+            kirimKhususBadgeKeSheet(currentNis, index, pData.badges[index]);
         }
 
         function picuUploadFotoBadge(event, index) {
@@ -2271,9 +2249,22 @@
             document.getElementById('inputUploadBadgeFoto').click();
         }
 
+        /* UPLOAD BADGE FOTO DENGAN ANIMASI LOADING & SUKSES CENTANG SINKRON KE GOOGLE SHEET */
         function prosesUploadBadgeFoto(event) {
             const file = event.target.files[0];
             if (!file || selectedBadgeIdxForUpload === null || !currentNis || !isAdminMode) return;
+
+            const gridBoxes = document.querySelectorAll('.badge-item-box');
+            const targetBox = gridBoxes[selectedBadgeIdxForUpload];
+            
+            if (targetBox) {
+                targetBox.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full bg-amber-50 rounded-xl p-2">
+                        <i class="fa-solid fa-spinner text-amber-500 text-2xl animate-spin-fast mb-1"></i>
+                        <span class="text-[9px] font-bold text-amber-700">Menyimpan...</span>
+                    </div>
+                `;
+            }
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -2314,12 +2305,58 @@
 
                     playBeepSound(1100, 'sine', 0.2);
                     simpanSemuaData();
-                    render25Badges(pData.badges);
+
+                    kirimKhususBadgeKeSheet(currentNis, selectedBadgeIdxForUpload, pData.badges[selectedBadgeIdxForUpload]).then(() => {
+                        if (targetBox) {
+                            targetBox.innerHTML = `
+                                <div class="flex flex-col items-center justify-center h-full bg-emerald-50 rounded-xl p-2 animate-bounce">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 text-2xl mb-1"></i>
+                                    <span class="text-[9px] font-bold text-emerald-700">Berhasil!</span>
+                                </div>
+                            `;
+                        }
+
+                        setTimeout(() => {
+                            render25Badges(pData.badges);
+                            selectedBadgeIdxForUpload = null;
+                        }, 800);
+                    }).catch(() => {
+                        render25Badges(pData.badges);
+                        alert("Foto badge tersimpan lokal, namun gagal menyinkronkan ke Cloud Sheet.");
+                        selectedBadgeIdxForUpload = null;
+                    });
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
             event.target.value = '';
+        }
+
+        async function kirimKhususBadgeKeSheet(nis, badgeIndex, badgeObj) {
+            if (!DEFAULT_SCRIPT_URL) return;
+
+            const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin');
+            const targetNis = isAccAdmin ? ADMIN_NIS : nis;
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(targetNis));
+
+            const payload = {
+                action: "saveProfilSiswa",
+                nis: targetNis,
+                nama: isAccAdmin ? (dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
+                [`badge_${badgeIndex + 1}`]: JSON.stringify(badgeObj)
+            };
+
+            try {
+                await fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                console.log(`Foto Badge slot ${badgeIndex + 1} untuk NIS ${targetNis} terkirim langsung ke Sheet!`);
+            } catch (err) {
+                console.warn("Gagal mengirim foto badge ke Sheet:", err);
+            }
         }
 
         function hapusFotoBadge(event, index) {
@@ -2329,11 +2366,16 @@
             const pData = dbProfilDetail[currentNis];
             if (pData.badges[index] && typeof pData.badges[index] === 'object') {
                 pData.badges[index].img = "";
+                pData.badges[index].active = false;
+            } else {
+                pData.badges[index] = { active: false, img: "", title: BADGE_DESCS[index] };
             }
 
             playBeepSound(500, 'sawtooth', 0.1);
             simpanSemuaData();
             render25Badges(pData.badges);
+
+            kirimKhususBadgeKeSheet(currentNis, index, pData.badges[index]);
         }
 
         function bukaModalBadgeMassal() {
@@ -2478,10 +2520,12 @@
 
                 if (newTitle) currentBadgeObj.title = newTitle;
                 if (tempMassalBase64) currentBadgeObj.img = tempMassalBase64;
-                if (setAktif || tempMassalBase64) currentBadgeObj.active = true;
+                currentBadgeObj.active = setAktif;
 
                 dbProfilDetail[nis].badges[badgeIdx] = currentBadgeObj;
                 countUpdated++;
+
+                kirimKhususBadgeKeSheet(nis, badgeIdx, currentBadgeObj);
             });
 
             playBeepSound(1100, 'sine', 0.25);
@@ -2492,7 +2536,7 @@
             }
 
             tutupModalBadgeMassal();
-            alert(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
+            alert(`Berhasil memperbarui & menyinkronkan Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
         }
 
         function previewFotoStatusPost(e) {
@@ -2541,7 +2585,6 @@
             document.getElementById('containerPreviewFotoPost').classList.add('hidden');
         }
 
-        // POIN 5: KOTAK INPUT EMBED YOUTUBE
         function toggleInputYoutubeLink() {
             const container = document.getElementById('containerInputYoutube');
             const input = document.getElementById('inputYoutubeLink');
@@ -2569,7 +2612,6 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        // POIN 4: MODAL POPUP & FITUR TAG TEMAN (@TEMAN)
         function bukaModalTagTeman() {
             const container = document.getElementById('listPilihanTagTeman');
             if (!container) return;
@@ -2622,8 +2664,6 @@
                 badgeBox.classList.add('hidden');
             }
         }
-
-        // POIN 6: MENU STIKER EMOJI DIHAPUS TOTAL
 
         function dapatkanWaktuTampil(post) {
             if (post.waktu && post.waktu !== "Baru saja") {
@@ -2689,8 +2729,8 @@
                 waktu: waktuPosting,
                 teks: teksInput,
                 foto: tempFotoStatusBase64,
-                youtubeId: ytId, // POIN 5: Menyimpan Youtube Video ID
-                taggedNis: selectedTaggedNis, // POIN 4: Menyimpan NIS Teman yang Di-tag
+                youtubeId: ytId,
+                taggedNis: selectedTaggedNis,
                 isDeleted: false,
                 isEdited: false,
                 comments: []
@@ -2711,7 +2751,6 @@
             kirimSingleFeedPostKeSheet(newPost);
         }
 
-        // POIN 3: FITUR EDIT POSTINGAN DENGAN ICON PENSIL
         function editPostStatus(postId) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
@@ -2733,7 +2772,6 @@
             }
         }
 
-        // POIN 3: FITUR EDIT KOMENTAR DENGAN ICON PENSIL
         function editKomentarPost(postId, commentIndex) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post || !post.comments || !post.comments[commentIndex]) return;
@@ -3072,7 +3110,6 @@
             if (activeFeedFilter === 'mine') {
                 filteredFeeds = filteredFeeds.filter(p => isPostOrCommentByAdmin(p.nis, p.nama) || String(p.nis) === myUserNis);
             } else if (activeFeedFilter !== 'all') {
-                // POIN 2: Filter khusus postingan teman yang sedang di-view profilnya
                 filteredFeeds = filteredFeeds.filter(p => String(p.nis) === String(activeFeedFilter));
             }
 
@@ -3140,7 +3177,6 @@
 
                 const canModifyPost = isAdminMode || (post.nis === String(loggedInNis));
 
-                // POIN 4: RENDER TAUTAN SISWA YANG DI-TAG BERSERTA FOTONYA
                 let tagCardHTML = '';
                 if (post.taggedNis) {
                     const tagNisStr = String(post.taggedNis);
@@ -3231,7 +3267,6 @@
                                     </div>
 
                                     ${canModifyComment ? `
-                                        <!-- POIN 3: ICON PENSIL EDIT KOMENTAR -->
                                         <div class="flex items-center gap-1">
                                             <button onclick="editKomentarPost('${post.id}', ${cIdx})" class="text-amber-500 hover:text-amber-700 text-[11px] p-0.5 font-bold transition-all" title="Edit Komentar">
                                                 <i class="fa-solid fa-pen-to-square"></i>
@@ -3281,7 +3316,6 @@
                                 </div>
 
                                 ${canModifyPost ? `
-                                    <!-- POIN 3: ICON PENSIL EDIT POSTINGAN -->
                                     <div class="flex items-center gap-1.5 shrink-0">
                                         <button onclick="editPostStatus('${post.id}')" class="text-amber-600 hover:text-amber-800 text-xs font-bold p-1 flex items-center gap-1 hover:bg-amber-50 rounded-lg transition-all" title="Edit Postingan">
                                             <i class="fa-solid fa-pen-to-square"></i> <span class="text-[10px] hidden sm:inline">Edit</span>
@@ -3308,7 +3342,6 @@
                                 </div>
                             ` : ''}
 
-                            <!-- POIN 5: RENDER YOUTUBE PLAYER INTERAKTIF -->
                             ${post.youtubeId ? `
                                 <div class="rounded-2xl overflow-hidden border-2 border-red-200 shadow-md aspect-video bg-black">
                                     <iframe class="w-full h-full" src="https://www.youtube.com/embed/${post.youtubeId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -3971,6 +4004,7 @@
             if (currentNis) renderProfilSiswa(currentNis);
         }
 
+        /* LOGIKA PARSING PENARIKAN DATA TERMASUK SCANNING PARSING SLOTS BADGE SECARA PRESISI */
         async function tarikDataDariSheet(isManual = false) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -4117,13 +4151,26 @@
 
                         for (let i = 0; i < 25; i++) {
                             let key = `badge_${i + 1}`;
-                            if (item[key] !== undefined && item[key] !== null) {
+                            if (item[key] !== undefined && item[key] !== null && item[key] !== "") {
                                 hasIndividualBadge = true;
                                 try {
-                                    let bVal = typeof item[key] === 'string' ? JSON.parse(item[key]) : item[key];
-                                    badgesDitarik[i] = bVal;
+                                    let rawVal = item[key];
+                                    if (typeof rawVal === 'string' && rawVal.startsWith('{')) {
+                                        let bVal = JSON.parse(rawVal);
+                                        badgesDitarik[i] = {
+                                            active: !!bVal.active,
+                                            img: bVal.img || "",
+                                            title: bVal.title || BADGE_DESCS[i]
+                                        };
+                                    } else {
+                                        badgesDitarik[i] = {
+                                            active: true,
+                                            img: "",
+                                            title: String(rawVal) === "true" ? BADGE_DESCS[i] : String(rawVal)
+                                        };
+                                    }
                                 } catch(e) {
-                                    badgesDitarik[i] = { active: !!bVal, img: "", title: BADGE_DESCS[i] };
+                                    badgesDitarik[i] = { active: true, img: "", title: BADGE_DESCS[i] };
                                 }
                             }
                         }
