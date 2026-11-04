@@ -273,7 +273,7 @@
             100% { transform: rotate(25deg); }
         }
 
-        /* BADGE STATUS SISWA TRANSPARAN BLUR */
+        /* POIN 7: BADGE STATUS SISWA TRANSPARAN BLUR */
         .status-trans-aktif {
             background: rgba(16, 185, 129, 0.75);
             backdrop-filter: blur(8px);
@@ -573,12 +573,9 @@
                 <i class="fa-solid fa-newspaper text-pink-500"></i> SIXBOOK Feed 🎈
                 <span id="badgeFeedUnread" class="bg-pink-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">Feeds</span>
             </button>
-
-            <!-- PERUBAHAN POIN 3: MENU GURU/ADMIN BERUBAH MENJADI "Daftar Siswa", UNTUK SISWA TETAP "Profil & Prestasi" -->
             <button onclick="gantiTabFrame('profil')" id="tabBtnProfil" class="tab-btn px-4 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-2">
-                <i id="iconTabProfil" class="fa-solid fa-id-card text-sky-500"></i> <span id="lblTabProfilText">Profil & Prestasi 🏆</span>
+                <i class="fa-solid fa-id-card text-sky-500"></i> Profil & Prestasi 🏆
             </button>
-
             <button onclick="gantiTabFrame('nilai')" id="tabBtnNilai" class="tab-btn px-4 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-2">
                 <i class="fa-solid fa-graduation-cap text-amber-500"></i> Transkrip Nilai ⭐
             </button>
@@ -619,7 +616,7 @@
                             <span class="text-[11px] font-black text-white uppercase tracking-wider">Ganti Foto</span>
                         </div>
 
-                        <!-- BADGE STATUS SISWA TRANSPARAN (AKTIF: HIJAU, PINDAH: MERAH, ALUMNI: UNGU) -->
+                        <!-- POIN 7: LENCANA STATUS SISWA TRANSPARAN (AKTIF: HIJAU, PINDAH: MERAH, ALUMNI: UNGU) -->
                         <div id="statusBadge" onclick="gantiStatusSiswaClick(event)" class="status-trans-aktif absolute bottom-2 right-2 text-white font-black text-[10px] uppercase px-3 py-1 rounded-full shadow-lg border border-white/60 flex items-center gap-1.5 z-10 transition-all cursor-pointer hover:scale-105" title="Klik untuk mengubah status (Admin)">
                             <i id="iconStatusCheck" class="fa-solid fa-circle-check"></i> <span id="lblStatusSiswaText">Aktif</span>
                         </div>
@@ -630,6 +627,7 @@
                         <span id="badgeAdminGlowProfile" class="hidden admin-glow-badge text-white font-black text-[10px] px-2.5 py-0.5 rounded-full border border-purple-300 tracking-wider uppercase flex items-center gap-1">
                             <i class="fa-solid fa-user-shield text-[9px]"></i> ADMIN
                         </span>
+                        <!-- POIN 1: TOMBOL RENAME ADMIN DIHAPUS TOTAL -->
                     </div>
 
                     <div class="flex items-center gap-2 mb-4 flex-wrap justify-center">
@@ -744,7 +742,7 @@
 
                     </div>
 
-                    <!-- BANNER FILTER HEADER KHUSUS POSTINGAN TEMAN -->
+                    <!-- BANNER FILTER HEADER KHUSUS POSTINGAN TEMAN (POIN 2) -->
                     <div id="bannerFilterPostTeman" class="hidden bg-gradient-to-r from-pink-500 via-amber-400 to-sky-400 p-0.5 rounded-2xl shadow-md">
                         <div class="bg-white/95 backdrop-blur-md p-3 rounded-[14px] flex items-center justify-between gap-3">
                             <div class="flex items-center gap-2.5 min-w-0">
@@ -784,7 +782,7 @@
 
                         <textarea id="inputTeksStatus" rows="3" placeholder="Apa cerita serumu hari ini? Tulislah di sini ya!" class="w-full bg-amber-50/50 text-slate-800 text-xs sm:text-sm font-medium border border-amber-200 rounded-2xl p-3.5 focus:outline-none focus:border-pink-500 shadow-inner resize-none mb-2"></textarea>
 
-                        <!-- KOTAK LINK YOUTUBE -->
+                        <!-- KOTAK LINK YOUTUBE (POIN 5) -->
                         <div id="containerInputYoutube" class="hidden mb-3">
                             <div class="relative flex items-center">
                                 <span class="absolute left-3 text-red-500 text-sm"><i class="fa-brands fa-youtube"></i></span>
@@ -795,7 +793,7 @@
                             </div>
                         </div>
 
-                        <!-- BADGE SISWA YANG DI-TAG -->
+                        <!-- BADGE SISWA YANG DI-TAG (POIN 4) -->
                         <div id="containerTaggedUserBadge" class="hidden mb-3 flex items-center gap-2 flex-wrap">
                         </div>
 
@@ -812,13 +810,17 @@
                                     <i class="fa-solid fa-image text-emerald-500 text-base"></i> Unggah Foto
                                 </button>
                                 
+                                <!-- POIN 5: TOMBOL YOUTUBE SIDE BY SIDE DENGAN FOTO -->
                                 <button type="button" onclick="toggleInputYoutubeLink()" class="text-xs font-bold text-slate-600 hover:text-rose-600 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl hover:bg-rose-50 transition-all border border-slate-200 sm:border-transparent">
                                     <i class="fa-brands fa-youtube text-rose-500 text-base"></i> Insert Link Youtube
                                 </button>
 
+                                <!-- POIN 4: TOMBOL @ TAG TEMAN -->
                                 <button type="button" onclick="bukaModalTagTeman()" class="text-xs font-bold text-slate-600 hover:text-sky-600 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl hover:bg-sky-50 transition-all border border-slate-200 sm:border-transparent">
                                     <i class="fa-solid fa-at text-sky-500 text-base"></i> Tag Teman
                                 </button>
+                                
+                                <!-- POIN 6: MENU STIKER EMOJI DIHAPUS TOTAL -->
                             </div>
 
                             <button type="button" onclick="publikasikanStatusBaru()" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 via-amber-500 to-sky-400 hover:opacity-95 text-white font-cute font-black text-xs px-6 py-2.5 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
@@ -835,25 +837,6 @@
 
                 <div id="frameSectionProfil" class="space-y-6 hidden">
                     
-                    <!-- PERUBAHAN POIN 3: WIDGET DAFTAR SISWA KETIKA AKSES MODE GURU/ADMIN -->
-                    <div id="panelDaftarSiswaAdmin" class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-amber-200 hidden">
-                        <div class="flex items-center justify-between mb-4 border-b border-amber-200 pb-3">
-                            <div>
-                                <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-users-rectangle text-sky-500"></i> Daftar Siswa Kelas 6 🎓
-                                </h3>
-                                <p class="text-xs text-slate-600 font-medium">Klik pada siswa untuk membuka dan mengelola profil yang dituju</p>
-                            </div>
-                            <span class="text-xs font-black bg-sky-100 text-sky-700 px-3 py-1 rounded-full border border-sky-200">
-                                Total 27 Siswa
-                            </span>
-                        </div>
-                        
-                        <div id="gridDaftarSiswaGuru" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                            <!-- Cards Siswa akan digenerate otomatis -->
-                        </div>
-                    </div>
-
                     <div id="panelBadgesSiswa" class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-amber-200">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
                             <div>
@@ -998,7 +981,7 @@
 
         let tempFotoStatusBase64 = "";
         let listFeedsPost = [];
-        let selectedTaggedNis = null;
+        let selectedTaggedNis = null; // Menyimpan NIS siswa yang di-tag
 
         let loggedInNis = null;
         let currentNis = null;
@@ -1008,84 +991,18 @@
         const FEEDS_PER_PAGE = 15;
         let unreadNotifCount = 0;
         let lastKnownFeedCount = 0;
-        let activeFeedFilter = 'all';
+        let activeFeedFilter = 'all'; // 'all', 'mine', atau NIS khusus
 
         let idbInstance = null;
 
-        // VERSI CACHE FEED BARU: hanya menyimpan postingan bertanggal hari ini.
-        // Penanda ini membuat pembersihan cache lama cukup dilakukan sekali saat versi diterapkan.
-        const SIXBOOK_FEED_CACHE_VERSION = "SIXBOOK_FEED_HARI_INI_V1";
-
-        function tanggalLokalYYYYMMDD(date = new Date()) {
-            const tahun = date.getFullYear();
-            const bulan = String(date.getMonth() + 1).padStart(2, '0');
-            const hari = String(date.getDate()).padStart(2, '0');
-            return `${tahun}-${bulan}-${hari}`;
-        }
-
-        function ambilTanggalPostSIXBOOK(post, waktuBarisSheet = "") {
-            const idPost = String(post?.id || "");
-            const cocokTimestamp = idPost.match(/post_(\d{13})/);
-            if (cocokTimestamp) {
-                const d = new Date(Number(cocokTimestamp[1]));
-                if (!Number.isNaN(d.getTime())) return tanggalLokalYYYYMMDD(d);
-            }
-
-            const kandidat = post?.timestamp || post?.createdAt || post?.tanggal || post?.waktu || waktuBarisSheet || "";
-            if (typeof kandidat === "number" || /^\d{10,13}$/.test(String(kandidat).trim())) {
-                let angka = Number(kandidat);
-                if (String(angka).length === 10) angka *= 1000;
-                const d = new Date(angka);
-                if (!Number.isNaN(d.getTime())) return tanggalLokalYYYYMMDD(d);
-            }
-
-            const teks = String(kandidat || "").trim();
-            if (!teks) return "";
-            const iso = teks.match(/(20\d{2})[-/](\d{1,2})[-/](\d{1,2})/);
-            if (iso) return `${iso[1]}-${String(iso[2]).padStart(2, '0')}-${String(iso[3]).padStart(2, '0')}`;
-
-            const bulanMap = {
-                jan: "01", januari: "01", feb: "02", februari: "02", mar: "03", maret: "03",
-                apr: "04", april: "04", mei: "05", jun: "06", juni: "06", jul: "07", juli: "07",
-                agu: "08", agustus: "08", sep: "09", september: "09", okt: "10", oktober: "10",
-                nov: "11", november: "11", des: "12", desember: "12"
-            };
-            const lokal = teks.toLowerCase().match(/(\d{1,2})\s+([a-z]+)\s+(20\d{2})/i);
-            if (lokal && bulanMap[lokal[2]]) return `${lokal[3]}-${bulanMap[lokal[2]]}-${String(lokal[1]).padStart(2, '0')}`;
-            const angkaTanggal = teks.match(/(\d{1,2})[/-](\d{1,2})[/-](20\d{2})/);
-            if (angkaTanggal) return `${angkaTanggal[3]}-${String(angkaTanggal[2]).padStart(2, '0')}-${String(angkaTanggal[1]).padStart(2, '0')}`;
-            return "";
-        }
-
-        function hanyaFeedHariIniSIXBOOK(daftar, waktuBarisSheet = "") {
-            const hariIni = tanggalLokalYYYYMMDD();
-            return (Array.isArray(daftar) ? daftar : []).filter(post => post && ambilTanggalPostSIXBOOK(post, waktuBarisSheet) === hariIni);
-        }
-
-        async function bersihkanCacheFeedLamaSIXBOOK() {
-            const db = await bukaIndexedDB();
-            await new Promise((resolve, reject) => {
-                const tx = db.transaction(["feeds"], "readwrite");
-                tx.objectStore("feeds").clear();
-                tx.oncomplete = resolve;
-                tx.onerror = () => reject(tx.error);
-                tx.onabort = () => reject(tx.error);
-            });
-            // Data profil, login tersimpan, dan pengaturan lain sengaja tidak disentuh.
-        }
-
-        // INDEXEDDB ENGINE UNTUK FEEDS DAN PROFIL DATA
         function bukaIndexedDB() {
             return new Promise((resolve, reject) => {
                 if (idbInstance) return resolve(idbInstance);
-                const req = indexedDB.open("SixbookCacheDB", 2);
+                const req = indexedDB.open("SixbookCacheDB", 1);
                 req.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains("feeds")) {
                         db.createObjectStore("feeds", { keyPath: "id" });
-                    }
-                    if (!db.objectStoreNames.contains("profil_siswa")) {
-                        db.createObjectStore("profil_siswa", { keyPath: "nis" });
                     }
                 };
                 req.onsuccess = (e) => {
@@ -1099,15 +1016,10 @@
         async function simpanFeedsKeIndexedDB(feedsArr) {
             try {
                 const db = await bukaIndexedDB();
-                const daftarHariIni = hanyaFeedHariIniSIXBOOK(feedsArr);
-                await new Promise((resolve, reject) => {
-                    const tx = db.transaction(["feeds"], "readwrite");
-                    const store = tx.objectStore("feeds");
-                    store.clear();
-                    daftarHariIni.forEach(post => { if (post && post.id) store.put(post); });
-                    tx.oncomplete = resolve;
-                    tx.onerror = () => reject(tx.error);
-                    tx.onabort = () => reject(tx.error);
+                const tx = db.transaction(["feeds"], "readwrite");
+                const store = tx.objectStore("feeds");
+                feedsArr.forEach(post => {
+                    if (post && post.id) store.put(post);
                 });
             } catch (e) {
                 console.warn("Gagal simpan ke IndexedDB:", e);
@@ -1123,7 +1035,7 @@
 
                 return new Promise((resolve) => {
                     req.onsuccess = () => {
-                        const res = hanyaFeedHariIniSIXBOOK(req.result || []);
+                        const res = req.result || [];
                         res.sort((a, b) => {
                             let timeA = parseInt(String(a.id).replace(/[^\d]/g, '')) || 0;
                             let timeB = parseInt(String(b.id).replace(/[^\d]/g, '')) || 0;
@@ -1135,44 +1047,6 @@
                 });
             } catch (e) {
                 return [];
-            }
-        }
-
-        // FUNGSI PENYIMPANAN DAN BACA PROFIL SISWA DARI INDEXEDDB
-        async function simpanProfilDetailKeIndexedDB(dbProfilObj) {
-            try {
-                const db = await bukaIndexedDB();
-                const tx = db.transaction(["profil_siswa"], "readwrite");
-                const store = tx.objectStore("profil_siswa");
-                Object.keys(dbProfilObj).forEach(keyNis => {
-                    store.put({ nis: keyNis, data: dbProfilObj[keyNis] });
-                });
-            } catch (e) {
-                console.warn("Gagal simpan profil ke IndexedDB:", e);
-            }
-        }
-
-        async function muatProfilDetailDariIndexedDB() {
-            try {
-                const db = await bukaIndexedDB();
-                const tx = db.transaction(["profil_siswa"], "readonly");
-                const store = tx.objectStore("profil_siswa");
-                const req = store.getAll();
-                return new Promise((resolve) => {
-                    req.onsuccess = () => {
-                        const res = req.result || [];
-                        let objHasil = {};
-                        res.forEach(item => {
-                            if (item.nis && item.data) {
-                                objHasil[item.nis] = item.data;
-                            }
-                        });
-                        resolve(objHasil);
-                    };
-                    req.onerror = () => resolve({});
-                });
-            } catch (e) {
-                return {};
             }
         }
 
@@ -1328,6 +1202,7 @@
                 btnMine.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95";
                 if (bannerTeman) bannerTeman.classList.add('hidden');
             } else {
+                // POIN 2: Mode View Postingan Teman Khusus
                 btnAll.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-pink-600 border border-pink-200 hover:bg-pink-50 flex items-center justify-center gap-1.5 active:scale-95";
                 btnMine.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95";
                 
@@ -1354,9 +1229,6 @@
             if (tabName === 'profil') {
                 document.getElementById('frameSectionProfil').classList.remove('hidden');
                 document.getElementById('tabBtnProfil').classList.add('active');
-                if (isAdminMode) {
-                    renderDaftarSiswaGuruView();
-                }
             } else if (tabName === 'status') {
                 document.getElementById('frameSectionStatus').classList.remove('hidden');
                 document.getElementById('tabBtnStatus').classList.add('active');
@@ -1374,51 +1246,6 @@
             }
 
             playBeepSound(800, 'sine', 0.08);
-        }
-
-        // PERUBAHAN POIN 3: RENDER FITUR DAFTAR SISWA KETIKA GURU MEMBUKA MENU "Daftar Siswa"
-        function renderDaftarSiswaGuruView() {
-            const panel = document.getElementById('panelDaftarSiswaAdmin');
-            const grid = document.getElementById('gridDaftarSiswaGuru');
-            if (!panel || !grid) return;
-
-            if (!isAdminMode) {
-                panel.classList.add('hidden');
-                return;
-            }
-
-            panel.classList.remove('hidden');
-            const highestNis = getHighestNis();
-
-            grid.innerHTML = listMasterSiswa.map((s, idx) => {
-                const nisKey = String(s[0]);
-                const pData = dbProfilDetail[nisKey] || {};
-                const foto = pData.fotoProfil || DEFAULT_AVATAR;
-                const statusSiswa = pData.statusSiswa || "Aktif";
-                const isHighest = (highestNis && nisKey === String(highestNis));
-
-                let statusColor = "bg-emerald-500 text-white";
-                if (statusSiswa === "Pindah") statusColor = "bg-rose-500 text-white";
-                else if (statusSiswa === "Alumni") statusColor = "bg-purple-500 text-white";
-
-                return `
-                    <div onclick="bukaProfilTeman('${nisKey}')" class="glass-panel p-3 rounded-2xl flex flex-col items-center text-center cursor-pointer hover:scale-105 transition-all border border-amber-200 hover:border-pink-400 group relative">
-                        <div class="w-16 h-16 rounded-2xl photo-frame-box mb-2 relative flex items-center justify-center ${isHighest ? 'top-rank-glow' : ''}">
-                            ${isHighest ? `
-                                <div class="absolute -top-3 -right-2 z-20 logo-emoji-anim" title="Juara 1 Rata-Rata Nilai Tertinggi!">
-                                    <i class="fa-solid fa-crown text-xl text-amber-400"></i>
-                                </div>
-                            ` : ''}
-                            <div class="w-full h-full rounded-[18px] overflow-hidden">
-                                <img src="${foto}" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <span class="text-[9px] font-black px-2 py-0.5 rounded-full ${statusColor} mb-1 shadow-xs">${statusSiswa}</span>
-                        <h4 class="text-xs font-bold text-slate-800 line-clamp-1 group-hover:text-pink-600 transition-colors">${s[1]}</h4>
-                        <span class="text-[10px] font-semibold text-slate-400">NIS: ${s[0]}</span>
-                    </div>
-                `;
-            }).join('');
         }
 
         function toggleDropdownNotif(e) {
@@ -1544,6 +1371,7 @@
             playBeepSound(1200, 'sine', 0.25);
         }
 
+        // POIN 2: BUKA PROFIL TEMAN & FILTER POSTINGAN KHUSUS TEMAN TERSEBUT
         function bukaProfilTeman(nis) {
             if (!nis) return;
             if (nis === 'admin' || nis === ADMIN_NIS) {
@@ -1556,6 +1384,7 @@
             gantiSiswaProfil(nis);
             gantiTabFrame('profil');
             
+            // POIN 2: Otomatis set filter feed ke postingan teman ini
             setFilterFeedMode(String(nis));
 
             playBeepSound(900, 'sine', 0.12);
@@ -1600,10 +1429,6 @@
                 document.getElementById('badgeModeAkses').innerText = "MODE ADMIN ACTIVE";
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-slate-900 shadow-sm";
                 
-                // PERUBAHAN POIN 3: PERUBAHAN NAMA TAB & ICON UNTUK GURU
-                document.getElementById('lblTabProfilText').innerText = "Daftar Siswa 🎓";
-                document.getElementById('iconTabProfil').className = "fa-solid fa-users-rectangle text-sky-500";
-
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
                 document.querySelectorAll('.student-only').forEach(el => el.style.display = 'none');
             } else {
@@ -1625,10 +1450,6 @@
                 
                 document.getElementById('badgeModeAkses').innerText = `Mode Siswa (${foundSiswa[1]})`;
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-white/80 text-pink-700 border border-pink-300 shadow-sm";
-
-                // REVERT MENU KE NAMA ASLI BAGI SISWA
-                document.getElementById('lblTabProfilText').innerText = "Profil & Prestasi 🏆";
-                document.getElementById('iconTabProfil').className = "fa-solid fa-id-card text-sky-500";
 
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
                 document.querySelectorAll('.student-only').forEach(el => el.style.display = '');
@@ -1664,16 +1485,10 @@
             document.getElementById('mainAppContainer').classList.add('hidden');
         }
 
-        // PERUBAHAN POIN 1 & 2: MEMUAT LOKAL CACHE CERDAS DARI INDEXEDDB UNTUK PROFIL & FEEDS
         async function muatDataLokal() {
-            const idbProfil = await muatProfilDetailDariIndexedDB();
-            if (Object.keys(idbProfil).length > 0) {
-                dbProfilDetail = idbProfil;
-            } else {
-                const lsProfil = localStorage.getItem("dbProfilDetailV1");
-                if (lsProfil) {
-                    try { dbProfilDetail = JSON.parse(lsProfil); } catch(e){}
-                }
+            const lsProfil = localStorage.getItem("dbProfilDetailV1");
+            if (lsProfil) {
+                try { dbProfilDetail = JSON.parse(lsProfil); } catch(e){}
             }
 
             if (!dbProfilDetail["admin"]) {
@@ -1699,19 +1514,6 @@
 
             populasiDropdownSiswa();
 
-            // HANYA PADA PEMASANGAN VERSI INI: kosongkan seluruh cache Feed lama.
-            // Cache profil siswa dan data login tidak ikut dihapus.
-            try {
-                const penandaCacheHarian = `${SIXBOOK_FEED_CACHE_VERSION}_${tanggalLokalYYYYMMDD()}`;
-                if (localStorage.getItem("sixbook_feed_cache_version") !== penandaCacheHarian) {
-                    await bersihkanCacheFeedLamaSIXBOOK();
-                    localStorage.setItem("sixbook_feed_cache_version", penandaCacheHarian);
-                }
-            } catch (e) {
-                console.warn("Pemeriksaan versi cache Feed gagal:", e);
-            }
-
-            // BACA CACHE FEED HARI INI SAJA DARI INDEXEDDB
             const cachedFeeds = await muatFeedsDariIndexedDB();
             if (cachedFeeds && cachedFeeds.length > 0) {
                 listFeedsPost = cachedFeeds;
@@ -1728,7 +1530,6 @@
             try {
                 let dbToSave = JSON.parse(JSON.stringify(dbProfilDetail));
                 localStorage.setItem("dbProfilDetailV1", JSON.stringify(dbToSave));
-                simpanProfilDetailKeIndexedDB(dbToSave); // Tersimpan ke IndexedDB
             } catch (e) {
                 console.error("Gagal simpan data lokal:", e);
             }
@@ -1766,7 +1567,7 @@
                 dbProfilDetail[nis] = {
                     fotoProfil: "",
                     bintang: 0,
-                    statusSiswa: "Aktif",
+                    statusSiswa: "Aktif", // POIN 7: Default Status Siswa
                     badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
                     pamerBadgeIdx: 0,
                     pelanggaran: [],
@@ -1779,6 +1580,8 @@
 
             renderProfilSiswa(nis);
         }
+
+        // POIN 1: FUNGSI RENAME ADMIN DIHAPUS TOTAL
 
         function updateTampilanSiswaTertinggi() {
             let maxAvg = -1;
@@ -1872,6 +1675,7 @@
             }
         }
 
+        // POIN 7: RENDER PROFIL SISWA BESERTA WAKTU STATUS TRANSPARAN
         function renderProfilSiswa(nis) {
             const isAdminAcc = (nis === 'admin' || nis === ADMIN_NIS);
             const pData = isAdminAcc ? (dbProfilDetail['admin'] || {}) : (dbProfilDetail[nis] || {});
@@ -1941,6 +1745,7 @@
                 if (panelBadges) panelBadges.classList.remove('hidden');
             }
 
+            // POIN 7: RENDER LENCANA STATUS TRANSPARAN (AKTIF, PINDAH, ALUMNI)
             const badgeStatusEl = document.getElementById('statusBadge');
             const lblStatusText = document.getElementById('lblStatusSiswaText');
             const iconStatusCheck = document.getElementById('iconStatusCheck');
@@ -1996,6 +1801,7 @@
             updateTampilanSiswaTertinggi();
         }
 
+        // POIN 7: UBAH STATUS SISWA SAAT DIKLIK & KIRIM KE GOOGLE SHEET
         function gantiStatusSiswaClick(e) {
             if (e) e.stopPropagation();
             if (!currentNis || currentNis === 'admin') return;
@@ -2021,6 +1827,7 @@
             kirimStatusSiswaKeSheet(currentNis, nextSt);
         }
 
+        // POIN 7: FUNGSI KHUSUS KIRIM KE TAB "Status Siswa" DENGAN KOLOM PALING KANAN
         async function kirimStatusSiswaKeSheet(nis, statusVal) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -2029,7 +1836,7 @@
 
             const payload = {
                 action: "updateStatusSiswa",
-                sheetTarget: "Status Siswa",
+                sheetTarget: "Status Siswa", // Menargetkan tab baru Status Siswa
                 nis: nis,
                 nama: namaSiswa,
                 statusSiswa: statusVal,
@@ -2734,6 +2541,7 @@
             document.getElementById('containerPreviewFotoPost').classList.add('hidden');
         }
 
+        // POIN 5: KOTAK INPUT EMBED YOUTUBE
         function toggleInputYoutubeLink() {
             const container = document.getElementById('containerInputYoutube');
             const input = document.getElementById('inputYoutubeLink');
@@ -2761,6 +2569,7 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
+        // POIN 4: MODAL POPUP & FITUR TAG TEMAN (@TEMAN)
         function bukaModalTagTeman() {
             const container = document.getElementById('listPilihanTagTeman');
             if (!container) return;
@@ -2813,6 +2622,8 @@
                 badgeBox.classList.add('hidden');
             }
         }
+
+        // POIN 6: MENU STIKER EMOJI DIHAPUS TOTAL
 
         function dapatkanWaktuTampil(post) {
             if (post.waktu && post.waktu !== "Baru saja") {
@@ -2878,8 +2689,8 @@
                 waktu: waktuPosting,
                 teks: teksInput,
                 foto: tempFotoStatusBase64,
-                youtubeId: ytId,
-                taggedNis: selectedTaggedNis,
+                youtubeId: ytId, // POIN 5: Menyimpan Youtube Video ID
+                taggedNis: selectedTaggedNis, // POIN 4: Menyimpan NIS Teman yang Di-tag
                 isDeleted: false,
                 isEdited: false,
                 comments: []
@@ -2900,6 +2711,7 @@
             kirimSingleFeedPostKeSheet(newPost);
         }
 
+        // POIN 3: FITUR EDIT POSTINGAN DENGAN ICON PENSIL
         function editPostStatus(postId) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
@@ -2921,6 +2733,7 @@
             }
         }
 
+        // POIN 3: FITUR EDIT KOMENTAR DENGAN ICON PENSIL
         function editKomentarPost(postId, commentIndex) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post || !post.comments || !post.comments[commentIndex]) return;
@@ -2993,61 +2806,6 @@
             }
         }
 
-        // PENGAMAN SINKRONISASI KOMENTAR:
-        // Gabungkan komentar lokal dan Sheet agar polling tidak menghapus komentar
-        // yang baru ditulis ketika Google Sheet belum selesai menerima pembaruan.
-        function buatKunciKomentarSIXBOOK(comment, index = 0) {
-            if (comment && comment.id) return String(comment.id);
-            return [
-                String(comment?.nis || ''),
-                String(comment?.nama || ''),
-                String(comment?.teks || ''),
-                String(index)
-            ].join('|');
-        }
-
-        function gabungkanKomentarSIXBOOK(komentarLokal, komentarSheet) {
-            const hasil = [];
-            const posisi = new Map();
-
-            const masukkan = (daftar, utamakanDataBaru) => {
-                (Array.isArray(daftar) ? daftar : []).forEach((komentar, index) => {
-                    if (!komentar || typeof komentar !== 'object') return;
-                    const kunci = buatKunciKomentarSIXBOOK(komentar, index);
-                    if (posisi.has(kunci)) {
-                        const idx = posisi.get(kunci);
-                        const sebelumnya = hasil[idx];
-                        // Data lokal dipertahankan saat data Sheet masih tertinggal.
-                        const gabungan = utamakanDataBaru
-                            ? { ...sebelumnya, ...komentar }
-                            : { ...komentar, ...sebelumnya };
-                        // Status hapus tidak boleh dibatalkan oleh salinan lama.
-                        gabungan.isDeleted = !!(sebelumnya.isDeleted || komentar.isDeleted);
-                        hasil[idx] = gabungan;
-                    } else {
-                        posisi.set(kunci, hasil.length);
-                        hasil.push({ ...komentar });
-                    }
-                });
-            };
-
-            masukkan(komentarSheet, false);
-            masukkan(komentarLokal, true);
-            return hasil;
-        }
-
-        function gabungkanPostSIXBOOK(postLokal, postSheet) {
-            if (!postLokal) return postSheet;
-            if (!postSheet) return postLokal;
-            return {
-                ...postSheet,
-                ...postLokal,
-                // Pertahankan komentar dari kedua sumber, bukan mengganti seluruh array.
-                comments: gabungkanKomentarSIXBOOK(postLokal.comments, postSheet.comments)
-            };
-        }
-
-        // PERUBAHAN POIN 2: TARIK FEED CERDAS (CEK TERLEBIH DAHULU PERUBAHAN DARI INDEXEDDB DENGAN TERBARU)
         async function tarikFeedDariSheet(isManual = false) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -3072,20 +2830,15 @@
                                 const waktuSheet = msg.waktu || msg.timestamp || msg.tanggal || "";
 
                                 if (Array.isArray(parsed)) {
-                                    parsed.forEach(p => {
+                                    parsed.forEach(p => { 
                                         if (p && p.id) {
                                             if (waktuSheet && (!p.waktu || p.waktu === "Baru saja")) p.waktu = waktuSheet;
-                                            if (ambilTanggalPostSIXBOOK(p, waktuSheet) !== tanggalLokalYYYYMMDD()) return;
-                                            const idPost = String(p.id);
-                                            mapFeed.set(idPost, gabungkanPostSIXBOOK(mapFeed.get(idPost), p));
+                                            mapFeed.set(String(p.id), p); 
                                         }
                                     });
                                 } else if (parsed && parsed.id) {
                                     if (waktuSheet && (!parsed.waktu || parsed.waktu === "Baru saja")) parsed.waktu = waktuSheet;
-                                    if (ambilTanggalPostSIXBOOK(parsed, waktuSheet) === tanggalLokalYYYYMMDD()) {
-                                        const idPost = String(parsed.id);
-                                        mapFeed.set(idPost, gabungkanPostSIXBOOK(mapFeed.get(idPost), parsed));
-                                    }
+                                    mapFeed.set(String(parsed.id), parsed);
                                 }
                             } catch (e) {}
                         }
@@ -3099,19 +2852,18 @@
                         return timeB - timeA;
                     });
 
-                    // Hasil Sheet menjadi sumber data utama, dibatasi pada tanggal hari ini.
-                    // Tetap perbarui saat kosong agar cache lama tidak muncul kembali.
-                    const isDifferent = JSON.stringify(feedFetched) !== JSON.stringify(listFeedsPost);
-                    if (isDifferent) {
+                    if (feedFetched.length > 0) {
                         const selisihPostBaru = feedFetched.length - lastKnownFeedCount;
                         if (lastKnownFeedCount > 0 && selisihPostBaru > 0) {
                             const postTerbaru = feedFetched[0];
                             const namaPengirim = postTerbaru ? postTerbaru.nama : "Teman";
                             triggerNotifikasiFeedBaru(selisihPostBaru, `Pesan Baru dari ${namaPengirim}!`);
                         }
+                        
                         lastKnownFeedCount = feedFetched.length;
                         listFeedsPost = feedFetched;
-                        await simpanFeedsKeIndexedDB(listFeedsPost);
+                        
+                        simpanFeedsKeIndexedDB(listFeedsPost);
                         renderFeedsStatusUI();
                     }
 
@@ -3164,7 +2916,6 @@
             if (!post.comments) post.comments = [];
 
             post.comments.push({
-                id: `kom-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
                 nis: activeCommentNis,
                 nama: namaPenulis,
                 teks: teksKom,
@@ -3321,6 +3072,7 @@
             if (activeFeedFilter === 'mine') {
                 filteredFeeds = filteredFeeds.filter(p => isPostOrCommentByAdmin(p.nis, p.nama) || String(p.nis) === myUserNis);
             } else if (activeFeedFilter !== 'all') {
+                // POIN 2: Filter khusus postingan teman yang sedang di-view profilnya
                 filteredFeeds = filteredFeeds.filter(p => String(p.nis) === String(activeFeedFilter));
             }
 
@@ -3388,6 +3140,7 @@
 
                 const canModifyPost = isAdminMode || (post.nis === String(loggedInNis));
 
+                // POIN 4: RENDER TAUTAN SISWA YANG DI-TAG BERSERTA FOTONYA
                 let tagCardHTML = '';
                 if (post.taggedNis) {
                     const tagNisStr = String(post.taggedNis);
@@ -3403,12 +3156,10 @@
                     `;
                 }
 
-                let activeComments = (post.comments || [])
-                    .map((comment, originalIndex) => ({ comment, originalIndex }))
-                    .filter(item => item.comment && !item.comment.isDeleted);
+                let activeComments = (post.comments || []).filter(c => !c.isDeleted);
                 let commentsHTML = '';
 
-                activeComments.forEach(({ comment: c, originalIndex: cIdx }) => {
+                activeComments.forEach((c, cIdx) => {
                     const isKomAdmin = isPostOrCommentByAdmin(c.nis, c.nama);
                     let avatarKom = DEFAULT_AVATAR;
 
@@ -3480,6 +3231,7 @@
                                     </div>
 
                                     ${canModifyComment ? `
+                                        <!-- POIN 3: ICON PENSIL EDIT KOMENTAR -->
                                         <div class="flex items-center gap-1">
                                             <button onclick="editKomentarPost('${post.id}', ${cIdx})" class="text-amber-500 hover:text-amber-700 text-[11px] p-0.5 font-bold transition-all" title="Edit Komentar">
                                                 <i class="fa-solid fa-pen-to-square"></i>
@@ -3529,6 +3281,7 @@
                                 </div>
 
                                 ${canModifyPost ? `
+                                    <!-- POIN 3: ICON PENSIL EDIT POSTINGAN -->
                                     <div class="flex items-center gap-1.5 shrink-0">
                                         <button onclick="editPostStatus('${post.id}')" class="text-amber-600 hover:text-amber-800 text-xs font-bold p-1 flex items-center gap-1 hover:bg-amber-50 rounded-lg transition-all" title="Edit Postingan">
                                             <i class="fa-solid fa-pen-to-square"></i> <span class="text-[10px] hidden sm:inline">Edit</span>
@@ -3555,7 +3308,7 @@
                                 </div>
                             ` : ''}
 
-                            <!-- YOUTUBE PLAYER DENGAN IFRAME INTERAKTIF TAMPA STREAM REPETITIF -->
+                            <!-- POIN 5: RENDER YOUTUBE PLAYER INTERAKTIF -->
                             ${post.youtubeId ? `
                                 <div class="rounded-2xl overflow-hidden border-2 border-red-200 shadow-md aspect-video bg-black">
                                     <iframe class="w-full h-full" src="https://www.youtube.com/embed/${post.youtubeId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -4218,7 +3971,6 @@
             if (currentNis) renderProfilSiswa(currentNis);
         }
 
-        // PERUBAHAN POIN 1: PENARIKAN DATA CERDAS (CEK INDEXEDDB TERLEBIH DAHULU & CEK APAPUN PERUBAHAN DATA)
         async function tarikDataDariSheet(isManual = false) {
             if (!DEFAULT_SCRIPT_URL) return;
 
