@@ -1886,6 +1886,7 @@
             tutupModalPilihBadge();
             renderProfilSiswa(currentNis);
             renderFormPostUser();
+            kirimDataProfilLengkapKeSheet(loggedInNis);
             alert("Berhasil memperbarui Badge yang dipamerkan di profil!");
         }
 
@@ -1902,7 +1903,6 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            // Penyelarasan mutlak: jika mode admin, gunakan ADMIN_NIS persis seperti siswa
             const targetNis = isAdminMode ? ADMIN_NIS : currentNis;
             if (!targetNis) return;
 
@@ -2027,6 +2027,7 @@
 
         function render25Badges(badgesArray) {
             const grid = document.getElementById('grid10Badges');
+            if (!grid) return;
             grid.innerHTML = '';
 
             let countActive = 0;
@@ -2034,7 +2035,7 @@
 
             for (let i = 0; i < 25; i++) {
                 const badgeObj = badgesArray[i] || { active: false, img: "", title: BADGE_DESCS[i] };
-                const isActive = badgeObj.active === true || badgeObj === true;
+                const isActive = (badgeObj && typeof badgeObj === 'object') ? badgeObj.active === true : badgeObj === true;
                 if (isActive) countActive++;
             }
 
@@ -2043,8 +2044,8 @@
 
             for (let i = 0; i < totalBadgesToRender; i++) {
                 const badgeObj = badgesArray[i] || { active: false, img: "", title: BADGE_DESCS[i] };
-                const isActive = badgeObj.active === true || badgeObj === true;
-                const badgeImg = typeof badgeObj === 'object' && badgeObj.img ? badgeObj.img : "";
+                const isActive = (badgeObj && typeof badgeObj === 'object') ? badgeObj.active === true : badgeObj === true;
+                const badgeImg = (typeof badgeObj === 'object' && badgeObj.img) ? badgeObj.img : "";
                 const badgeTitle = (typeof badgeObj === 'object' && badgeObj.title) ? badgeObj.title : BADGE_DESCS[i];
 
                 let innerContent = "";
@@ -2105,6 +2106,7 @@
                 }
                 simpanSemuaData();
                 render25Badges(pData.badges);
+                kirimDataProfilLengkapKeSheet(currentNis);
             }
         }
 
@@ -2123,6 +2125,7 @@
 
             simpanSemuaData();
             render25Badges(pData.badges);
+            kirimDataProfilLengkapKeSheet(currentNis);
         }
 
         function picuUploadFotoBadge(event, index) {
@@ -2176,6 +2179,7 @@
                     playBeepSound(1100, 'sine', 0.2);
                     simpanSemuaData();
                     render25Badges(pData.badges);
+                    kirimDataProfilLengkapKeSheet(currentNis);
                 };
                 img.src = e.target.result;
             };
@@ -2195,6 +2199,7 @@
             playBeepSound(500, 'sawtooth', 0.1);
             simpanSemuaData();
             render25Badges(pData.badges);
+            kirimDataProfilLengkapKeSheet(currentNis);
         }
 
         function bukaModalBadgeMassal() {
@@ -2343,6 +2348,7 @@
 
                 dbProfilDetail[nis].badges[badgeIdx] = currentBadgeObj;
                 countUpdated++;
+                kirimDataProfilLengkapKeSheet(nis);
             });
 
             playBeepSound(1100, 'sine', 0.25);
@@ -3116,6 +3122,7 @@
             if (elInside) {
                 elInside.innerHTML = `${pData.bintang} ⭐`;
             }
+            kirimDataProfilLengkapKeSheet(currentNis);
         }
 
         function renderPelanggaran(listPelanggaran) {
@@ -3816,13 +3823,36 @@
 
                         for (let i = 0; i < 25; i++) {
                             let key = `badge_${i + 1}`;
-                            if (item[key] !== undefined && item[key] !== null) {
+                            let valFound = item[key];
+                            if (valFound === undefined) {
+                                for (let k in item) {
+                                    let kClean = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+                                    if (kClean === `badge${i + 1}`) {
+                                        valFound = item[k];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (valFound !== undefined && valFound !== null && valFound !== "") {
                                 hasIndividualBadge = true;
-                                try {
-                                    let bVal = typeof item[key] === 'string' ? JSON.parse(item[key]) : item[key];
-                                    badgesDitarik[i] = bVal;
-                                } catch(e) {
-                                    badgesDitarik[i] = { active: !!bVal, img: "", title: BADGE_DESCS[i] };
+                                let bVal = valFound;
+                                if (typeof bVal === 'string') {
+                                    try { bVal = JSON.parse(bVal); } catch(e) {}
+                                }
+                                if (typeof bVal === 'object' && bVal !== null) {
+                                    badgesDitarik[i] = {
+                                        active: !!bVal.active,
+                                        img: bVal.img || "",
+                                        title: bVal.title || BADGE_DESCS[i]
+                                    };
+                                } else {
+                                    let act = (bVal === true || bVal === "true" || bVal === 1 || bVal === "1" || bVal === "TRUE");
+                                    badgesDitarik[i] = {
+                                        active: act,
+                                        img: "",
+                                        title: BADGE_DESCS[i]
+                                    };
                                 }
                             }
                         }
