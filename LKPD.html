@@ -101,6 +101,33 @@
             70% { transform: translateY(-5px) scale(1.05) rotate(-3deg); }
         }
 
+        /* ANIMASI HEART METER & DETAK JANTUNG */
+        .heart-pulse {
+            animation: heartBeatPulse 1.2s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        @keyframes heartBeatPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(244, 63, 94, 0.4)); }
+            14% { transform: scale(1.25); filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.8)); }
+            28% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(244, 63, 94, 0.4)); }
+            42% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.6)); }
+            70% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(244, 63, 94, 0.4)); }
+        }
+
+        .heart-bar-fill {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+        }
+
+        .xp-shine {
+            animation: xpPulse 2s infinite alternate;
+        }
+
+        @keyframes xpPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.4)); }
+            100% { transform: scale(1.18); filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.8)); }
+        }
+
         .photo-frame-box {
             aspect-ratio: 1/1;
             position: relative;
@@ -197,6 +224,7 @@
         .tab-btn {
             position: relative;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         .tab-btn.active {
@@ -271,6 +299,38 @@
         @keyframes handWave {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(25deg); }
+        }
+
+        .embed-youtube-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .embed-youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* EFEK CARD MENAHAN KICK ADMIN BUTTONS */
+        .admin-app-btn {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-app-btn:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .admin-app-btn:active {
+            transform: translateY(-2px) scale(0.98);
         }
 
         @media print {
@@ -442,8 +502,8 @@
         </div>
     </div>
 
-    <!-- POPOVER EMOTIKON LUCU UNTUK INPUT FEED -->
-    <div id="popoverEmojiPicker" class="fixed z-50 hidden bg-white/95 backdrop-blur-md border-2 border-pink-200 shadow-2xl rounded-2xl p-3 w-64 grid grid-cols-6 gap-2 text-xl max-h-48 overflow-y-auto no-print">
+    <!-- POPOVER MENTION TAG LINE TEMAN (@) UNTUK INPUT FEED -->
+    <div id="popoverMentionPicker" class="fixed z-50 hidden bg-white/95 backdrop-blur-md border-2 border-sky-300 shadow-2xl rounded-2xl p-2 w-64 max-h-52 overflow-y-auto space-y-1 text-xs no-print">
     </div>
 
     <!-- MODAL ZOOM FOTO STATUS / FEEDS -->
@@ -537,18 +597,156 @@
             </div>
         </header>
 
-        <!-- FRAME NAVIGATION TABS -->
-        <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-center gap-4 sm:gap-8 no-print border-2 border-amber-200 shadow-sm">
-            <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-4 py-2 text-xs sm:text-sm font-cute font-bold flex items-center gap-2">
+        <!-- FRAME NAVIGATION TABS DENGAN URUTAN DI-REVISI SESUAI INSTRUKSI -->
+        <!-- Urutan: SIXBOOK Feed - Profil & Prestasi - Transkrip Nilai - Daftar Siswa - Menu Admin -->
+        <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-start sm:justify-center gap-2 sm:gap-6 overflow-x-auto no-print border-2 border-amber-200 shadow-sm">
+            <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-3.5 py-2 text-xs sm:text-sm font-cute font-bold flex items-center gap-1.5">
                 <i class="fa-solid fa-newspaper text-pink-500"></i> SIXBOOK Feed 🎈
-                <span id="badgeFeedUnread" class="bg-pink-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">Feeds</span>
             </button>
-            <button onclick="gantiTabFrame('profil')" id="tabBtnProfil" class="tab-btn px-4 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-2">
+            <button onclick="gantiTabFrame('profil')" id="tabBtnProfil" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
                 <i class="fa-solid fa-id-card text-sky-500"></i> Profil & Prestasi 🏆
             </button>
-            <button onclick="gantiTabFrame('nilai')" id="tabBtnNilai" class="tab-btn px-4 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-2">
+            <button onclick="gantiTabFrame('nilai')" id="tabBtnNilai" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
                 <i class="fa-solid fa-graduation-cap text-amber-500"></i> Transkrip Nilai ⭐
             </button>
+            <button onclick="gantiTabFrame('daftar-siswa')" id="tabBtnDaftarSiswa" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-emerald-500"></i> Daftar Siswa 👥
+            </button>
+            <button onclick="gantiTabFrame('menu-admin')" id="tabBtnMenuAdmin" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-purple-600"></i> Menu Admin 🛠️
+            </button>
+        </div>
+
+        <!-- TAB SECTION: DAFTAR SISWA (BARU) -->
+        <div id="frameSectionDaftarSiswa" class="space-y-6 hidden">
+            <div class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-emerald-200">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-cute font-black text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-users-viewfinder text-emerald-500"></i> Daftar Siswa Kelas 6 Ceria ✨
+                        </h3>
+                        <p class="text-xs text-slate-600">Informasi lengkap data siswa, foto profil, NIS/NISN, serta level akademiknya.</p>
+                    </div>
+                    <span class="text-xs font-black px-3 py-1.5 bg-emerald-100 text-emerald-800 rounded-full border border-emerald-300">
+                        Total 27 Siswa Active 🎓
+                    </span>
+                </div>
+
+                <div id="containerGridDaftarSiswa" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB SECTION: MENU ADMIN (BARU & INDAH LENGKAP DENGAN 7 TOMBOL NAVIGASI) -->
+        <div id="frameSectionMenuAdmin" class="space-y-6 hidden">
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border-2 border-purple-300 bg-gradient-to-br from-white/90 via-purple-50/40 to-pink-50/40">
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-purple-500 via-pink-500 to-amber-400 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-purple-500/20 logo-emoji-anim">
+                        🛠️
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-cute font-black text-slate-800">Pusat Kendali Menu Admin 🎈</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+                        Akses cepat & terintegrasi ke seluruh fitur manajemen sekolah ceria. Pilih menu aplikasi di bawah ini:
+                    </p>
+                </div>
+
+                <!-- GRID 7 TOMBOL MENU ADMIN CERIA TERINTEGRASI -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    
+                    <!-- 1. PENAKU -->
+                    <a href="PENA MANTAP V6.html" class="admin-app-btn p-5 rounded-3xl bg-gradient-to-br from-pink-400 via-rose-400 to-red-400 text-white shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            🖊️
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black font-cute tracking-wide uppercase">1. PENAKU</h4>
+                            <p class="text-[11px] font-medium text-white/90 line-clamp-1">PENA MANTAP V6.html</p>
+                            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full mt-1 inline-block">Aplikasi Utama ✨</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-lg opacity-80 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- 2. TABUNGAN -->
+                    <a href="tabungan V6.html" class="admin-app-btn p-5 rounded-3xl bg-gradient-to-br from-emerald-400 via-teal-400 to-green-500 text-white shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            💰
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black font-cute tracking-wide uppercase">2. TABUNGAN</h4>
+                            <p class="text-[11px] font-medium text-white/90 line-clamp-1">tabungan V6.html</p>
+                            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full mt-1 inline-block">Kelola Keuangan 🪙</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-lg opacity-80 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- 3. PEMBAYARAN -->
+                    <a href="Pembayaran V6.html" class="admin-app-btn p-5 rounded-3xl bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-500 text-white shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            💳
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black font-cute tracking-wide uppercase">3. PEMBAYARAN</h4>
+                            <p class="text-[11px] font-medium text-white/90 line-clamp-1">Pembayaran V6.html</p>
+                            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full mt-1 inline-block">Tagihan & Syahriah 📑</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-lg opacity-80 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- 4. UJIAN CARD -->
+                    <a href="Rumah Kartu Ujian V6.html" class="admin-app-btn p-5 rounded-3xl bg-gradient-to-br from-amber-400 via-orange-400 to-amber-500 text-slate-900 shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/30 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            🪪
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black font-cute tracking-wide uppercase">4. UJIAN CARD</h4>
+                            <p class="text-[11px] font-semibold text-slate-800 line-clamp-1">Rumah Kartu Ujian V6.html</p>
+                            <span class="text-[10px] font-extrabold bg-slate-900/10 px-2 py-0.5 rounded-full mt-1 inline-block">Kartu Peserta Ujian 🎟️</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-lg opacity-80 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- 5. DENAH UJIAN -->
+                    <a href="Denah Tempat Duduk Ujian V6.html" class="admin-app-btn p-5 rounded-3xl bg-gradient-to-br from-purple-400 via-violet-500 to-indigo-600 text-white shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            🗺️
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black font-cute tracking-wide uppercase">5. DENAH UJIAN</h4>
+                            <p class="text-[11px] font-medium text-white/90 line-clamp-1">Denah Tempat Duduk Ujian V6.html</p>
+                            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full mt-1 inline-block">Denah Ruangan Ujian 📍</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-lg opacity-80 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- 6. NILAI UJIAN -->
+                    <a href="Nilai Ujian V6.html" class="admin-app-btn p-5 rounded-3xl bg-gradient-to-br from-fuchsia-500 via-pink-500 to-rose-500 text-white shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            📊
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black font-cute tracking-wide uppercase">6. NILAI UJIAN</h4>
+                            <p class="text-[11px] font-medium text-white/90 line-clamp-1">Nilai Ujian V6.html</p>
+                            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full mt-1 inline-block">Rekap Hasil Evaluasi 🏅</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-lg opacity-80 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- 7. BK (BIMBINGAN KONSELING) -->
+                    <a href="Bimbingan Konseling V6.html" class="admin-app-btn sm:col-span-2 lg:col-span-3 p-5 rounded-3xl bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-500 text-white shadow-lg border-2 border-white/60 flex items-center gap-4 group">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                            🤝
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base sm:text-lg font-black font-cute tracking-wide uppercase">7. BK (BIMBINGAN KONSELING)</h4>
+                            <p class="text-[11px] font-medium text-white/90">Bimbingan Konseling V6.html • Pendampingan Karakter & Sikap Siswa</p>
+                            <span class="text-[10px] font-bold bg-white/20 px-3 py-0.5 rounded-full mt-1 inline-block">Konseling & Catatan Khusus 💬</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-xl opacity-80 group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+
+                </div>
+            </div>
         </div>
 
         <!-- PRINT AREA CARD -->
@@ -619,12 +817,12 @@
 
                     <hr class="w-full border-slate-200 my-2">
 
+                    <!-- SECTION BINTANG (REVISI: ANGKABINTANG DI LUAR DIHAPUS, ANGKA BINTANG LANGSUNG DI DALAM FRAME) -->
                     <div id="sectionBintangKebaikan" class="w-full mt-2">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fa-solid fa-award text-amber-500"></i> Bintang Prestasi
                             </span>
-                            <span id="lblTotalBintang" class="admin-only text-lg sm:text-xl font-black text-amber-500">0 ⭐</span>
                         </div>
                         
                         <div class="bg-amber-50/70 p-3.5 sm:p-4 rounded-2xl border-2 border-amber-200 flex items-center justify-between gap-3 shadow-sm">
@@ -633,13 +831,9 @@
                             </div>
                             <div class="text-left flex-1 min-w-0">
                                 <p class="text-xs font-bold text-slate-800 truncate">Poin Bintang Kebaikan</p>
-                                <p class="text-[10px] text-slate-500 truncate">Apresiasi khusus dari guru</p>
+                                <p class="text-[10px] text-slate-500 truncate">Status Bintang Siswa</p>
                             </div>
-                            <div class="admin-only flex items-center gap-1 no-print shrink-0">
-                                <button onclick="ubahBintang(-1)" class="w-8 h-8 rounded-xl bg-white hover:bg-rose-500 text-rose-500 hover:text-white font-bold text-base transition-all flex items-center justify-center border border-slate-200 active:scale-90 shadow-sm">-</button>
-                                <button onclick="ubahBintang(1)" class="w-8 h-8 rounded-xl bg-white hover:bg-emerald-500 text-emerald-600 hover:text-white font-bold text-base transition-all flex items-center justify-center border border-slate-200 active:scale-90 shadow-sm">+</button>
-                            </div>
-                            <div class="student-only flex items-center gap-1 shrink-0">
+                            <div class="flex items-center gap-1 shrink-0">
                                 <span id="lblTotalBintangInside" class="text-2xl sm:text-3xl font-black text-amber-500 flex items-center gap-1 drop-shadow-sm">
                                     0 ⭐
                                 </span>
@@ -647,6 +841,28 @@
                         </div>
                     </div>
 
+                    <!-- SECTION FRAME XP BARU (REVISI: TEKS 0XP KECIL DI LUAR DIHAPUS) -->
+                    <div id="sectionXP" class="w-full mt-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-bolt text-purple-500"></i> Experience Points (XP)
+                            </span>
+                        </div>
+                        <div class="bg-purple-50/70 p-3.5 sm:p-4 rounded-2xl border-2 border-purple-200 flex items-center justify-between gap-3 shadow-sm">
+                            <div class="text-3xl sm:text-4xl text-purple-500 xp-shine shrink-0">
+                                ⚡
+                            </div>
+                            <div class="text-left flex-1 min-w-0">
+                                <p class="text-xs font-bold text-slate-800 truncate">Perolehan Pengalaman</p>
+                                <p class="text-[10px] text-slate-500 truncate">Status XP Kelas Ceria</p>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <span id="lblTotalXPVal" class="text-2xl sm:text-3xl font-black text-purple-600 flex items-center gap-1 drop-shadow-sm">0 XP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION TABUNGAN SISWA (READ ONLY) -->
                     <div id="sectionTabunganSiswa" class="w-full mt-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
@@ -655,11 +871,15 @@
                         </div>
                         
                         <div class="bg-emerald-50/70 p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-200 flex items-center justify-between gap-3 shadow-sm">
-                            <div class="text-3xl text-emerald-500">
+                            <div class="text-3xl sm:text-4xl text-emerald-500 shrink-0">
                                 🪙
                             </div>
-                            <div class="text-right flex-1">
-                                <p id="lblSaldoTabungan" class="text-base sm:text-lg font-black text-emerald-600 leading-tight">Rp 0</p>
+                            <div class="text-left flex-1 min-w-0">
+                                <p class="text-xs font-bold text-slate-800 truncate">Simpanan Siswa</p>
+                                <p class="text-[10px] text-slate-500 truncate">Tersimpan Aman</p>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <p id="lblSaldoTabungan" class="text-xl sm:text-2xl font-black text-emerald-600 drop-shadow-sm">Rp 0</p>
                             </div>
                         </div>
                     </div>
@@ -734,7 +954,16 @@
                             </div>
                         </div>
 
-                        <textarea id="inputTeksStatus" rows="3" placeholder="Apa cerita serumu hari ini? Tulislah di sini ya!" class="w-full bg-amber-50/50 text-slate-800 text-xs sm:text-sm font-medium border border-amber-200 rounded-2xl p-3.5 focus:outline-none focus:border-pink-500 shadow-inner resize-none mb-3"></textarea>
+                        <textarea id="inputTeksStatus" rows="3" placeholder="Apa cerita serumu hari ini? Tulislah di sini ya!" class="w-full bg-amber-50/50 text-slate-800 text-xs sm:text-sm font-medium border border-amber-200 rounded-2xl p-3.5 focus:outline-none focus:border-pink-500 shadow-inner resize-none mb-2"></textarea>
+
+                        <!-- INPUT TAUTAN YOUTUBE EMBED -->
+                        <div id="containerInputYoutube" class="hidden mb-3 bg-red-50 p-2.5 rounded-2xl border border-red-200 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube text-red-600 text-lg shrink-0"></i>
+                            <input type="text" id="inputYoutubeUrl" placeholder="Tempel URL / Link YouTube di sini (misal: https://youtu.be/...)" class="flex-1 bg-white border border-red-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-red-500 shadow-inner">
+                            <button type="button" onclick="batalYoutubeLink()" class="w-7 h-7 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 flex items-center justify-center text-xs shrink-0">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
 
                         <div id="containerPreviewFotoPost" class="hidden relative mb-3 rounded-2xl overflow-hidden border border-slate-200 max-h-60 bg-slate-100 flex items-center justify-center">
                             <img id="imgPreviewFotoPost" src="" class="max-h-60 object-contain">
@@ -744,12 +973,15 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 border-t border-slate-100 pt-3">
-                            <div class="flex items-center gap-2">
-                                <button type="button" onclick="document.getElementById('inputFotoStatus').click()" class="text-xs font-bold text-slate-600 hover:text-sky-600 flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl hover:bg-sky-50 transition-all border border-slate-200 sm:border-transparent">
-                                    <i class="fa-solid fa-image text-emerald-500 text-base"></i> Unggah Foto
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <button type="button" onclick="document.getElementById('inputFotoStatus').click()" class="text-xs font-bold text-slate-600 hover:text-sky-600 flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-sky-50 transition-all border border-slate-200 sm:border-transparent">
+                                    <i class="fa-solid fa-image text-emerald-500 text-sm"></i> Foto
                                 </button>
-                                <button type="button" onclick="toggleEmojiPickerFeed(event)" class="text-xs font-bold text-slate-600 hover:text-amber-600 flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl hover:bg-amber-50 transition-all border border-slate-200 sm:border-transparent">
-                                    <i class="fa-solid fa-face-smile text-amber-500 text-base"></i> Stiker Emoji
+                                <button type="button" onclick="toggleInputYoutubeField()" class="text-xs font-bold text-slate-600 hover:text-red-600 flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-red-50 transition-all border border-slate-200 sm:border-transparent">
+                                    <i class="fa-brands fa-youtube text-red-500 text-sm"></i> Insert Link YouTube
+                                </button>
+                                <button type="button" onclick="toggleMentionPicker(event)" class="text-xs font-bold text-slate-600 hover:text-sky-600 flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-sky-50 transition-all border border-slate-200 sm:border-transparent">
+                                    <i class="fa-solid fa-at text-sky-500 text-sm"></i> Tag Line @
                                 </button>
                             </div>
 
@@ -803,9 +1035,25 @@
                                 </h3>
                                 <p class="text-xs text-slate-600">Catatan sikap dan kedisiplinan harian siswa</p>
                             </div>
-                            <span id="lblSkorSikap" class="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                                Skor Kedisiplinan: 100
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <span id="lblHeartMeterIcon" class="text-xl heart-pulse">❤️</span>
+                                <span id="lblSkorSikap" class="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl shadow-xs">
+                                    Skor Kedisiplinan: 100 HP
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- VISUAL HEART METER (HEALTH BAR / DETAK JANTUNG KEDISIPLINAN) -->
+                        <div class="w-full bg-slate-100 p-2 rounded-2xl border border-slate-200 mb-5 flex flex-col gap-1.5 shadow-inner">
+                            <div class="flex items-center justify-between text-[11px] font-bold px-1">
+                                <span class="text-rose-600 flex items-center gap-1">
+                                    <span class="heart-pulse text-xs">❤️</span> Heart Meter (Kedisiplinan)
+                                </span>
+                                <span id="lblHeartMeterText" class="text-emerald-600 font-extrabold">100 / 100 HP</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-3.5 rounded-full overflow-hidden border border-slate-300 p-0.5">
+                                <div id="barHeartMeterFill" class="heart-bar-fill h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 rounded-full" style="width: 100%"></div>
+                            </div>
                         </div>
 
                         <form onsubmit="tambahPelanggaran(event)" class="admin-only grid grid-cols-1 sm:grid-cols-12 gap-3 mb-5 no-print">
@@ -842,10 +1090,10 @@
                                 <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
                                     <i class="fa-solid fa-graduation-cap text-amber-500"></i> Nilai Mata Pelajaran & Penentu Level
                                 </h3>
-                                <p class="text-xs text-slate-600" id="lblMapelInfoText">Nilai Mata Pelajaran Akademik Kelas VI</p>
+                                <p class="text-xs text-slate-600" id="lblMapelInfoText">Nilai Akademik (Terkunci - Read Only dari Sheet)</p>
                             </div>
-                            <span id="lblBadgeStatusMapel" class="hidden text-[10px] font-bold text-pink-700 bg-pink-50 border border-pink-200 px-2.5 py-1 rounded-full items-center gap-1">
-                                <i class="fa-solid fa-edit"></i> Setup Mode Admin
+                            <span id="lblBadgeStatusMapel" class="hidden text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full items-center gap-1">
+                                <i class="fa-solid fa-lock"></i> Mode Baca Sahaja
                             </span>
                         </div>
 
@@ -907,13 +1155,6 @@
             ["3106", "Zhidan Dwi Aprilio Nurosy"],
             ["3107", "Zulfan Azhar Ramadhan"],
             ["3289", "Tauladani Elang"]
-        ];
-
-        const CUTE_EMOJIS = [
-            "🥳", "🐱", "💖", "🚀", "🍦", "🧸", "🦄", "🌟", "🌈", "🐣", 
-            "🎁", "🍉", "🐼", "🦊", "🍓", "🍭", "🎀", "🍕", "🎨", "⚽", 
-            "👑", "🍩", "🍔", "🍿", "🍪", "🎉", "🎈", "🤖", "🐶", "🌸", 
-            "⚡", "🤩", "😎", "🥰", "🔥", "💯", "👍", "👏", "🙌", "✨"
         ];
 
         let tempFotoStatusBase64 = "";
@@ -1010,6 +1251,7 @@
 
         let dbProfilDetail = {};
         let dbTabunganSiswa = {};
+        let dbXpSiswa = {};
         let selectedBadgeIdxForUpload = null;
         let tempMassalBase64 = "";
         let isAdminMode = false;
@@ -1119,6 +1361,10 @@
             if (dropdownNotif && btnBell && !dropdownNotif.contains(e.target) && !btnBell.contains(e.target)) {
                 dropdownNotif.classList.add('hidden');
             }
+            const mentionPicker = document.getElementById('popoverMentionPicker');
+            if (mentionPicker && !mentionPicker.contains(e.target) && e.target.id !== 'btnMentionTag') {
+                mentionPicker.classList.add('hidden');
+            }
         });
 
         function setFilterFeedMode(mode) {
@@ -1144,10 +1390,14 @@
             document.getElementById('frameSectionProfil').classList.add('hidden');
             document.getElementById('frameSectionStatus').classList.add('hidden');
             document.getElementById('frameSectionNilai').classList.add('hidden');
+            document.getElementById('frameSectionDaftarSiswa').classList.add('hidden');
+            document.getElementById('frameSectionMenuAdmin').classList.add('hidden');
 
             document.getElementById('tabBtnProfil').classList.remove('active');
             document.getElementById('tabBtnStatus').classList.remove('active');
             document.getElementById('tabBtnNilai').classList.remove('active');
+            document.getElementById('tabBtnDaftarSiswa').classList.remove('active');
+            document.getElementById('tabBtnMenuAdmin').classList.remove('active');
 
             if (tabName === 'profil') {
                 document.getElementById('frameSectionProfil').classList.remove('hidden');
@@ -1166,9 +1416,62 @@
             } else if (tabName === 'nilai') {
                 document.getElementById('frameSectionNilai').classList.remove('hidden');
                 document.getElementById('tabBtnNilai').classList.add('active');
+            } else if (tabName === 'daftar-siswa') {
+                document.getElementById('frameSectionDaftarSiswa').classList.remove('hidden');
+                document.getElementById('tabBtnDaftarSiswa').classList.add('active');
+                renderGridDaftarSiswa();
+            } else if (tabName === 'menu-admin') {
+                document.getElementById('frameSectionMenuAdmin').classList.remove('hidden');
+                document.getElementById('tabBtnMenuAdmin').classList.add('active');
             }
 
             playBeepSound(800, 'sine', 0.08);
+        }
+
+        /* RENDER TAB DAFTAR SISWA BARU */
+        function renderGridDaftarSiswa() {
+            const container = document.getElementById('containerGridDaftarSiswa');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const highestNis = getHighestNis();
+
+            listMasterSiswa.forEach((s, idx) => {
+                const nisKey = String(s[0]);
+                const pData = dbProfilDetail[nisKey] || {};
+                const foto = pData.fotoProfil || DEFAULT_AVATAR;
+                const isHighest = (highestNis && nisKey === String(highestNis));
+                const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
+
+                container.innerHTML += `
+                    <div onclick="bukaProfilTeman('${nisKey}')" class="bg-white/90 p-4 rounded-3xl border-2 border-emerald-200 hover:border-pink-400 hover:shadow-xl transition-all cursor-pointer flex items-center gap-3.5 relative overflow-hidden group">
+                        ${isHighest ? `
+                            <div class="absolute -top-2 -right-2 w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center text-lg shadow-md z-10 logo-emoji-anim" title="Juara 1 Rata-Rata Tertinggi">
+                                👑
+                            </div>
+                        ` : ''}
+
+                        <div class="relative shrink-0 w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-300 shadow-sm">
+                            <img src="${foto}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <h4 class="text-xs sm:text-sm font-black text-slate-800 truncate group-hover:text-pink-600 transition-colors">${s[1]}</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Absen: ${idx + 1} • NIS: ${s[0]}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-pink-100 text-pink-700 border border-pink-300">
+                                    ${kalkulasi.levelBadge}
+                                </span>
+                                <span class="text-[9px] font-bold text-slate-500">
+                                    Rata: <b class="text-slate-800">${kalkulasi.avg}</b>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function toggleDropdownNotif(e) {
@@ -1218,7 +1521,7 @@
             }
 
             container.innerHTML = active5Notifs.map(post => {
-                let textSnippet = post.teks ? (post.teks.length > 35 ? post.teks.substring(0, 35) + '...' : post.teks) : '[Mengunggah Foto]';
+                let textSnippet = post.teks ? (post.teks.length > 35 ? post.teks.substring(0, 35) + '...' : post.teks) : '[Mengunggah Media]';
                 let waktuTampil = dapatkanWaktuTampil(post);
                 return `
                     <div onclick="navigasiLangsungKePost('${post.id}')" class="p-2 bg-pink-50/60 hover:bg-pink-100 rounded-xl cursor-pointer transition-all border border-pink-200 flex items-start gap-2 group">
@@ -1414,6 +1717,7 @@
                     nama: DEFAULT_ADMIN_NAME,
                     fotoProfil: "",
                     bintang: 0,
+                    xp: 0,
                     badges: [],
                     pelanggaran: [],
                     nilai: {}
@@ -1431,7 +1735,7 @@
             }
 
             populasiDropdownSiswa();
-            initEmojiPickerList();
+            initMentionPickerList();
 
             const cachedFeeds = await muatFeedsDariIndexedDB();
             if (cachedFeeds && cachedFeeds.length > 0) {
@@ -1486,6 +1790,7 @@
                 dbProfilDetail[nis] = {
                     fotoProfil: "",
                     bintang: 0,
+                    xp: 0,
                     badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
                     pamerBadgeIdx: 0,
                     pelanggaran: [],
@@ -1527,8 +1832,9 @@
                     let total = 0;
                     let count = 0;
                     MAPEL_LIST.forEach(m => {
-                        if (pData.nilai[m.id] !== undefined && pData.nilai[m.id] !== '' && !isNaN(pData.nilai[m.id])) {
-                            total += parseFloat(pData.nilai[m.id]);
+                        let valNum = parseFloat(pData.nilai[m.id]);
+                        if (pData.nilai[m.id] !== undefined && pData.nilai[m.id] !== '' && !isNaN(valNum) && valNum > 0) {
+                            total += valNum;
                             count++;
                         }
                     });
@@ -1696,13 +2002,17 @@
             }
 
             const bnt = pData.bintang || 0;
-            document.getElementById('lblTotalBintang').innerText = `${bnt} ⭐`;
             
             const elInside = document.getElementById('lblTotalBintangInside');
             if (elInside) {
                 elInside.innerHTML = `${bnt} ⭐`;
             }
 
+            // XP SISWA (DIBACA LANGSUNG DARI ProfilSiswa PAYLOAD - PRESISI & RAPAT SEPERTI FRAME BINTANG)
+            const xpVal = pData.xp !== undefined ? pData.xp : (dbXpSiswa[nis] !== undefined ? dbXpSiswa[nis] : 0);
+            document.getElementById('lblTotalXPVal').innerText = `${xpVal} XP`;
+
+            // SALDO TABUNGAN
             const saldoTabungan = pData.tabungan !== undefined ? pData.tabungan : (dbTabunganSiswa[nis] !== undefined ? dbTabunganSiswa[nis] : 0);
             document.getElementById('lblSaldoTabungan').innerText = formatRupiah(saldoTabungan);
 
@@ -1725,8 +2035,6 @@
             const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
             const pramuka = pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100;
 
-            const isEditable = isAdminMode && currentNis !== 'admin';
-
             container.innerHTML = `
                 <!-- SEMESTER 1 -->
                 <div class="bg-sky-50/70 p-4 rounded-3xl border-2 border-sky-200 shadow-sm flex flex-col justify-between">
@@ -1742,19 +2050,19 @@
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Hadir</span>
-                            <input type="number" min="0" value="${s1.hadir}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'hadir', this.value)" class="w-full text-center font-black text-emerald-600 bg-emerald-50 rounded-lg py-1 mt-1 border border-emerald-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s1.hadir}" disabled class="w-full text-center font-black text-emerald-600 bg-emerald-50 rounded-lg py-1 mt-1 border border-emerald-200 cursor-not-allowed">
                         </div>
                         <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Sakit</span>
-                            <input type="number" min="0" value="${s1.sakit}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'sakit', this.value)" class="w-full text-center font-black text-amber-600 bg-amber-50 rounded-lg py-1 mt-1 border border-amber-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s1.sakit}" disabled class="w-full text-center font-black text-amber-600 bg-amber-50 rounded-lg py-1 mt-1 border border-amber-200 cursor-not-allowed">
                         </div>
                         <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Izin</span>
-                            <input type="number" min="0" value="${s1.izin}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'izin', this.value)" class="w-full text-center font-black text-sky-600 bg-sky-50 rounded-lg py-1 mt-1 border border-sky-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s1.izin}" disabled class="w-full text-center font-black text-sky-600 bg-sky-50 rounded-lg py-1 mt-1 border border-sky-200 cursor-not-allowed">
                         </div>
                         <div class="bg-white p-2 rounded-xl border border-sky-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Alpa</span>
-                            <input type="number" min="0" value="${s1.alpa}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S1', 'alpa', this.value)" class="w-full text-center font-black text-rose-600 bg-rose-50 rounded-lg py-1 mt-1 border border-rose-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s1.alpa}" disabled class="w-full text-center font-black text-rose-600 bg-rose-50 rounded-lg py-1 mt-1 border border-rose-200 cursor-not-allowed">
                         </div>
                     </div>
                 </div>
@@ -1773,24 +2081,24 @@
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Hadir</span>
-                            <input type="number" min="0" value="${s2.hadir}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'hadir', this.value)" class="w-full text-center font-black text-emerald-600 bg-emerald-50 rounded-lg py-1 mt-1 border border-emerald-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s2.hadir}" disabled class="w-full text-center font-black text-emerald-600 bg-emerald-50 rounded-lg py-1 mt-1 border border-emerald-200 cursor-not-allowed">
                         </div>
                         <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Sakit</span>
-                            <input type="number" min="0" value="${s2.sakit}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'sakit', this.value)" class="w-full text-center font-black text-amber-600 bg-amber-50 rounded-lg py-1 mt-1 border border-amber-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s2.sakit}" disabled class="w-full text-center font-black text-amber-600 bg-amber-50 rounded-lg py-1 mt-1 border border-amber-200 cursor-not-allowed">
                         </div>
                         <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Izin</span>
-                            <input type="number" min="0" value="${s2.izin}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'izin', this.value)" class="w-full text-center font-black text-sky-600 bg-sky-50 rounded-lg py-1 mt-1 border border-sky-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s2.izin}" disabled class="w-full text-center font-black text-sky-600 bg-sky-50 rounded-lg py-1 mt-1 border border-sky-200 cursor-not-allowed">
                         </div>
                         <div class="bg-white p-2 rounded-xl border border-pink-100 flex flex-col items-center">
                             <span class="text-[10px] font-bold text-slate-400">Alpa</span>
-                            <input type="number" min="0" value="${s2.alpa}" ${!isEditable ? 'disabled' : ''} onchange="updateKehadiranData('S2', 'alpa', this.value)" class="w-full text-center font-black text-rose-600 bg-rose-50 rounded-lg py-1 mt-1 border border-rose-200 disabled:cursor-not-allowed">
+                            <input type="number" min="0" value="${s2.alpa}" disabled class="w-full text-center font-black text-rose-600 bg-rose-50 rounded-lg py-1 mt-1 border border-rose-200 cursor-not-allowed">
                         </div>
                     </div>
                 </div>
 
-                <!-- EKSTRAKURIKULER PRAMUKA -->
+                <!-- EKSTRAKURIKULER PRAMUKA (READ ONLY PERMANEN) -->
                 <div class="bg-amber-50/70 p-4 rounded-3xl border-2 border-amber-200 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
@@ -1798,7 +2106,7 @@
                         </div>
                         <div>
                             <h4 class="text-xs sm:text-sm font-black text-slate-800">Ekstrakurikuler Pramuka</h4>
-                            <p class="text-[10px] text-slate-500">Persentase keaktifan & kehadiran</p>
+                            <p class="text-[10px] text-slate-500">Keaktifan (Terkunci - Read Only)</p>
                         </div>
                     </div>
                     <div class="bg-white p-4 rounded-2xl border border-amber-100 flex flex-col items-center justify-center my-auto">
@@ -1806,37 +2114,13 @@
                             <span class="text-xs font-bold text-slate-600">Tingkat Keaktifan:</span>
                             <span class="text-sm font-black text-amber-600">${pramuka}%</span>
                         </div>
-                        <input type="range" min="0" max="100" value="${pramuka}" ${!isEditable ? 'disabled' : ''} onchange="updatePramukaPersentase(this.value)" class="w-full accent-amber-500 cursor-pointer disabled:cursor-not-allowed">
+                        <input type="range" min="0" max="100" value="${pramuka}" disabled class="w-full accent-amber-500 cursor-not-allowed opacity-75">
                         <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-2 border border-slate-200">
                             <div class="h-full bg-gradient-to-r from-amber-400 to-emerald-500 rounded-full" style="width: ${pramuka}%"></div>
                         </div>
                     </div>
                 </div>
             `;
-        }
-
-        function updateKehadiranData(sem, field, val) {
-            if (!currentNis || !isAdminMode || currentNis === 'admin') return;
-            const pData = dbProfilDetail[currentNis];
-            const key = sem === 'S1' ? 'kehadiranS1' : 'kehadiranS2';
-            
-            if (!pData[key]) pData[key] = { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
-            pData[key][field] = Math.max(0, parseInt(val) || 0);
-
-            playBeepSound(800, 'sine', 0.08);
-            simpanSemuaData();
-            kirimDataProfilLengkapKeSheet(currentNis);
-        }
-
-        function updatePramukaPersentase(val) {
-            if (!currentNis || !isAdminMode || currentNis === 'admin') return;
-            const pData = dbProfilDetail[currentNis];
-            pData.pramukaPersentase = Math.min(100, Math.max(0, parseInt(val) || 0));
-
-            playBeepSound(900, 'sine', 0.08);
-            simpanSemuaData();
-            renderPanelKehadiranSiswa(pData);
-            kirimDataProfilLengkapKeSheet(currentNis);
         }
 
         function bukaModalPilihBadge() {
@@ -1886,7 +2170,7 @@
             tutupModalPilihBadge();
             renderProfilSiswa(currentNis);
             renderFormPostUser();
-            kirimDataProfilLengkapKeSheet(loggedInNis);
+            kirimBadgeMandiriKeSheet(loggedInNis, idx);
             alert("Berhasil memperbarui Badge yang dipamerkan di profil!");
         }
 
@@ -1967,43 +2251,12 @@
             const targetNis = isAccAdmin ? ADMIN_NIS : nis;
             const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(targetNis));
             const pData = isAccAdmin ? (dbProfilDetail['admin'] || dbProfilDetail[ADMIN_NIS] || {}) : (dbProfilDetail[targetNis] || {});
-            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
-
-            let totalPoinMinus = 0;
-            let pelanggaranArr = pData.pelanggaran || [];
-            let pelanggaranTeks = pelanggaranArr.map(p => {
-                totalPoinMinus += parseInt(p.poin) || 0;
-                return `[${p.tgl}] ${p.nama} (-${p.poin})`;
-            }).join(" | ");
-
-            let singleBadgeObject = {};
-            let badgesArr = pData.badges || [];
-            for (let i = 0; i < 25; i++) {
-                let b = badgesArr[i] || { active: false, img: "", title: BADGE_DESCS[i] };
-                singleBadgeObject[`badge_${i + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[i] });
-            }
-
-            const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
-            const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
 
             const payload = {
-                action: "saveProfilSiswa",
+                action: "saveFotoProfilMandiri",
                 nis: targetNis,
                 nama: isAccAdmin ? (pData.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
-                fotoProfil: fotoBase64,
-                bintang: pData.bintang || 0,
-                tabungan: pData.tabungan || 0,
-                pamerBadgeIdx: pData.pamerBadgeIdx || 0,
-                rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
-                skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
-                s1Hadir: s1.hadir, s1Sakit: s1.sakit, s1Izin: s1.izin, s1Alpa: s1.alpa,
-                s2Hadir: s2.hadir, s2Sakit: s2.sakit, s2Izin: s2.izin, s2Alpa: s2.alpa,
-                pramukaPersentase: pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100,
-                ...singleBadgeObject,
-                pelanggaranJSON: JSON.stringify(pelanggaranArr),
-                pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
-                jumlahPelanggaran: pelanggaranArr.length,
-                totalPoinMinus: totalPoinMinus
+                fotoProfil: fotoBase64
             };
 
             try {
@@ -2015,6 +2268,33 @@
                 });
             } catch (err) {
                 console.warn("Gagal sinkronisasi foto ke Sheets:", err);
+            }
+        }
+
+        async function kirimBadgeMandiriKeSheet(nis, badgeIdx) {
+            if (!DEFAULT_SCRIPT_URL || !nis) return;
+            const targetNis = (nis === 'admin') ? ADMIN_NIS : nis;
+            const pData = dbProfilDetail[targetNis] || dbProfilDetail[nis] || {};
+            const badgeObj = (pData.badges && pData.badges[badgeIdx]) ? pData.badges[badgeIdx] : { active: false, img: "", title: BADGE_DESCS[badgeIdx] };
+
+            const payload = {
+                action: "updateBadgeMandiri",
+                nis: targetNis,
+                badgeIndex: badgeIdx + 1,
+                badgeKey: `badge_${badgeIdx + 1}`,
+                badgeData: JSON.stringify(badgeObj),
+                pamerBadgeIdx: pData.pamerBadgeIdx !== undefined ? pData.pamerBadgeIdx : 0
+            };
+
+            try {
+                await fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.warn("Gagal update badge mandiri ke Sheet:", err);
             }
         }
 
@@ -2106,7 +2386,7 @@
                 }
                 simpanSemuaData();
                 render25Badges(pData.badges);
-                kirimDataProfilLengkapKeSheet(currentNis);
+                kirimBadgeMandiriKeSheet(currentNis, index);
             }
         }
 
@@ -2125,7 +2405,7 @@
 
             simpanSemuaData();
             render25Badges(pData.badges);
-            kirimDataProfilLengkapKeSheet(currentNis);
+            kirimBadgeMandiriKeSheet(currentNis, index);
         }
 
         function picuUploadFotoBadge(event, index) {
@@ -2179,7 +2459,7 @@
                     playBeepSound(1100, 'sine', 0.2);
                     simpanSemuaData();
                     render25Badges(pData.badges);
-                    kirimDataProfilLengkapKeSheet(currentNis);
+                    kirimBadgeMandiriKeSheet(currentNis, selectedBadgeIdxForUpload);
                 };
                 img.src = e.target.result;
             };
@@ -2199,7 +2479,7 @@
             playBeepSound(500, 'sawtooth', 0.1);
             simpanSemuaData();
             render25Badges(pData.badges);
-            kirimDataProfilLengkapKeSheet(currentNis);
+            kirimBadgeMandiriKeSheet(currentNis, index);
         }
 
         function bukaModalBadgeMassal() {
@@ -2348,7 +2628,7 @@
 
                 dbProfilDetail[nis].badges[badgeIdx] = currentBadgeObj;
                 countUpdated++;
-                kirimDataProfilLengkapKeSheet(nis);
+                kirimBadgeMandiriKeSheet(nis, badgeIdx);
             });
 
             playBeepSound(1100, 'sine', 0.25);
@@ -2408,23 +2688,48 @@
             document.getElementById('containerPreviewFotoPost').classList.add('hidden');
         }
 
-        function initEmojiPickerList() {
-            const popover = document.getElementById('popoverEmojiPicker');
-            popover.innerHTML = '';
+        function toggleInputYoutubeField() {
+            const c = document.getElementById('containerInputYoutube');
+            if (c.classList.contains('hidden')) {
+                c.classList.remove('hidden');
+                document.getElementById('inputYoutubeUrl').focus();
+            } else {
+                c.classList.add('hidden');
+            }
+        }
 
-            CUTE_EMOJIS.forEach(emoji => {
+        function batalYoutubeLink() {
+            document.getElementById('inputYoutubeUrl').value = '';
+            document.getElementById('containerInputYoutube').classList.add('hidden');
+        }
+
+        function ekstraksYoutubeId(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function initMentionPickerList() {
+            const popover = document.getElementById('popoverMentionPicker');
+            if (!popover) return;
+            popover.innerHTML = `<div class="px-2 py-1 text-[10px] font-bold text-sky-600 border-b border-sky-100 flex items-center gap-1"><i class="fa-solid fa-at"></i> Tag Nama Teman:</div>`;
+
+            listMasterSiswa.forEach(s => {
                 popover.innerHTML += `
-                    <button type="button" onclick="sisipEmojiKeInputFeed('${emoji}')" class="hover:scale-125 transition-all text-center flex items-center justify-center p-1 rounded hover:bg-amber-100">
-                        ${emoji}
-                    </button>
+                    <div onclick="sisipMentionKeInputFeed('${s[1]}')" class="flex items-center gap-2 p-1.5 hover:bg-sky-100 rounded-xl cursor-pointer transition-colors text-slate-800">
+                        <img src="${dbProfilDetail[s[0]]?.fotoProfil || DEFAULT_AVATAR}" class="w-5 h-5 rounded-full object-cover border border-sky-300">
+                        <span class="font-semibold text-xs truncate">${s[1]}</span>
+                    </div>
                 `;
             });
         }
 
-        function toggleEmojiPickerFeed(e) {
+        function toggleMentionPicker(e) {
             e.stopPropagation();
-            const popover = document.getElementById('popoverEmojiPicker');
+            const popover = document.getElementById('popoverMentionPicker');
             const btn = e.currentTarget;
+            btn.id = 'btnMentionTag';
             const rect = btn.getBoundingClientRect();
 
             if (!popover.classList.contains('hidden')) {
@@ -2432,19 +2737,19 @@
                 return;
             }
 
-            popover.style.top = (rect.top - 205) + 'px';
+            popover.style.top = (rect.bottom + 6) + 'px';
             popover.style.left = Math.min(rect.left, window.innerWidth - 270) + 'px';
             popover.classList.remove('hidden');
         }
 
-        function sisipEmojiKeInputFeed(emoji) {
+        function sisipMentionKeInputFeed(namaSiswa) {
             const input = document.getElementById('inputTeksStatus');
             if (input) {
-                input.value += emoji;
+                input.value += ` @${namaSiswa} `;
                 input.focus();
                 playBeepSound(850, 'sine', 0.08);
             }
-            document.getElementById('popoverEmojiPicker').classList.add('hidden');
+            document.getElementById('popoverMentionPicker').classList.add('hidden');
         }
 
         function dapatkanWaktuTampil(post) {
@@ -2483,8 +2788,10 @@
 
         function publikasikanStatusBaru() {
             const teksInput = document.getElementById('inputTeksStatus').value.trim();
-            if (!teksInput && !tempFotoStatusBase64) {
-                alert("Tuliskan status atau unggah foto terlebih dahulu!");
+            const youtubeUrlInput = document.getElementById('inputYoutubeUrl') ? document.getElementById('inputYoutubeUrl').value.trim() : '';
+
+            if (!teksInput && !tempFotoStatusBase64 && !youtubeUrlInput) {
+                alert("Tuliskan status, masukkan link YouTube, atau unggah foto terlebih dahulu!");
                 return;
             }
 
@@ -2508,6 +2815,7 @@
                 waktu: waktuPosting,
                 teks: teksInput,
                 foto: tempFotoStatusBase64,
+                youtubeUrl: youtubeUrlInput,
                 isDeleted: false,
                 comments: []
             };
@@ -2517,6 +2825,7 @@
 
             currentPageFeed = 1;
             document.getElementById('inputTeksStatus').value = '';
+            batalYoutubeLink();
             batalPreviewFotoPost();
 
             playBeepSound(1000, 'sine', 0.15);
@@ -2592,6 +2901,8 @@
 
                     dataArray.forEach(msg => {
                         const isFeedGroup = msg.grup === "SIXBOOK" || msg.grup === "SIXBOOK Feed" || msg.grup === "SIXBOOK Feed Bulk" || !msg.grup;
+                        const isCommentGroup = msg.grup === "ComentBook";
+
                         if (isFeedGroup && msg.pesan) {
                             try {
                                 const parsed = typeof msg.pesan === 'string' ? JSON.parse(msg.pesan) : msg.pesan;
@@ -2601,14 +2912,52 @@
                                     parsed.forEach(p => { 
                                         if (p && p.id) {
                                             if (waktuSheet && (!p.waktu || p.waktu === "Baru saja")) p.waktu = waktuSheet;
+                                            
+                                            if (!p.comments || !Array.isArray(p.comments)) p.comments = [];
+                                            const existing = mapFeed.get(String(p.id));
+                                            if (existing && existing.comments && Array.isArray(existing.comments)) {
+                                                existing.comments.forEach(c => {
+                                                    if (!p.comments.some(x => x.id === c.id)) p.comments.push(c);
+                                                });
+                                            }
                                             mapFeed.set(String(p.id), p); 
                                         }
                                     });
                                 } else if (parsed && parsed.id) {
                                     if (waktuSheet && (!parsed.waktu || parsed.waktu === "Baru saja")) parsed.waktu = waktuSheet;
+                                    
+                                    if (!parsed.comments || !Array.isArray(parsed.comments)) parsed.comments = [];
+                                    const existing = mapFeed.get(String(parsed.id));
+                                    if (existing && existing.comments && Array.isArray(existing.comments)) {
+                                        existing.comments.forEach(c => {
+                                            if (!parsed.comments.some(x => x.id === c.id)) parsed.comments.push(c);
+                                        });
+                                    }
                                     mapFeed.set(String(parsed.id), parsed);
                                 }
                             } catch (e) {}
+                        } else if (isCommentGroup && msg.pesan) {
+                            try {
+                                const parsedCom = typeof msg.pesan === 'string' ? JSON.parse(msg.pesan) : msg.pesan;
+                                const targetPostId = msg.postId || (parsedCom ? parsedCom.postId : null);
+
+                                if (targetPostId && parsedCom) {
+                                    const postTarget = mapFeed.get(String(targetPostId));
+                                    if (postTarget) {
+                                        if (!postTarget.comments) postTarget.comments = [];
+                                        
+                                        const cObj = parsedCom.comment ? parsedCom.comment : parsedCom;
+                                        if (cObj && cObj.id) {
+                                            const idxExist = postTarget.comments.findIndex(c => c.id === cObj.id);
+                                            if (idxExist !== -1) {
+                                                postTarget.comments[idxExist] = cObj;
+                                            } else {
+                                                postTarget.comments.push(cObj);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch(e) {}
                         }
                     });
 
@@ -2683,19 +3032,56 @@
 
             if (!post.comments) post.comments = [];
 
-            post.comments.push({
+            const now = new Date();
+            const waktuKomentar = now.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const newComment = {
+                id: "comment_" + Date.now(),
+                postId: postId,
                 nis: activeCommentNis,
                 nama: namaPenulis,
                 teks: teksKom,
+                waktu: waktuKomentar,
                 isDeleted: false
-            });
+            };
+
+            post.comments.push(newComment);
 
             simpanFeedsKeIndexedDB(listFeedsPost);
 
             inputEl.value = '';
             playBeepSound(900, 'sine', 0.1);
             renderFeedsStatusUI();
-            kirimSingleFeedPostKeSheet(post);
+            
+            kirimKomentarKeTabComentBook(postId, newComment);
+        }
+
+        async function kirimKomentarKeTabComentBook(postId, commentObj) {
+            if (!DEFAULT_SCRIPT_URL) return;
+
+            try {
+                await fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: "sendChatMessage",
+                        nis: commentObj.nis,
+                        nama: commentObj.nama,
+                        grup: "ComentBook",
+                        postId: postId,
+                        pesan: JSON.stringify({ postId: postId, comment: commentObj }),
+                        role: (commentObj.nis === 'admin' || commentObj.nis === ADMIN_NIS) ? "Admin" : "Siswa"
+                    })
+                });
+            } catch (err) {
+                console.warn("Gagal sinkronisasi komentar ke Tab ComentBook:", err);
+            }
         }
 
         function hapusPostStatus(postId) {
@@ -2728,6 +3114,7 @@
                     setTimeout(() => {
                         post.teks = "";
                         post.foto = "";
+                        post.youtubeUrl = "";
                         post.isDeleted = true;
                         post.comments = [];
                         simpanFeedsKeIndexedDB(listFeedsPost);
@@ -2774,13 +3161,13 @@
                         comment.isDeleted = true;
                         simpanFeedsKeIndexedDB(listFeedsPost);
                         renderFeedsStatusUI();
-                        kirimSingleFeedPostKeSheet(post);
+                        kirimKomentarKeTabComentBook(postId, comment);
                     }, 750);
                 } else {
                     comment.isDeleted = true;
                     simpanFeedsKeIndexedDB(listFeedsPost);
                     renderFeedsStatusUI();
-                    kirimSingleFeedPostKeSheet(post);
+                    kirimKomentarKeTabComentBook(postId, comment);
                 }
             }
         }
@@ -2795,8 +3182,9 @@
                     let total = 0;
                     let count = 0;
                     MAPEL_LIST.forEach(m => {
-                        if (pData.nilai[m.id] !== undefined && pData.nilai[m.id] !== '' && !isNaN(pData.nilai[m.id])) {
-                            total += parseFloat(pData.nilai[m.id]);
+                        let valNum = parseFloat(pData.nilai[m.id]);
+                        if (pData.nilai[m.id] !== undefined && pData.nilai[m.id] !== '' && !isNaN(valNum) && valNum > 0) {
+                            total += valNum;
                             count++;
                         }
                     });
@@ -2872,8 +3260,11 @@
                 let totalMapel = 0, countMapel = 0;
                 MAPEL_LIST.forEach(m => {
                     if (pDataPost.nilai && pDataPost.nilai[m.id] !== undefined && pDataPost.nilai[m.id] !== '') {
-                        totalMapel += parseFloat(pDataPost.nilai[m.id]);
-                        countMapel++;
+                        let valNum = parseFloat(pDataPost.nilai[m.id]);
+                        if (!isNaN(valNum) && valNum > 0) {
+                            totalMapel += valNum;
+                            countMapel++;
+                        }
                     }
                 });
                 let avgPost = countMapel > 0 ? (totalMapel / countMapel) : 0;
@@ -2923,8 +3314,11 @@
                     let totalMK = 0, countMK = 0;
                     MAPEL_LIST.forEach(m => {
                         if (pDataKom.nilai && pDataKom.nilai[m.id] !== undefined && pDataKom.nilai[m.id] !== '') {
-                            totalMK += parseFloat(pDataKom.nilai[m.id]);
-                            countMK++;
+                            let valNum = parseFloat(pDataKom.nilai[m.id]);
+                            if (!isNaN(valNum) && valNum > 0) {
+                                totalMK += valNum;
+                                countMK++;
+                            }
                         }
                     });
                     let avgKom = countMK > 0 ? (totalMK / countMK) : 0;
@@ -2990,6 +3384,7 @@
                 });
 
                 const waktuFormatted = dapatkanWaktuTampil(post);
+                const ytVideoId = ekstraksYoutubeId(post.youtubeUrl);
 
                 html += `
                     <div class="flex items-start gap-2.5 sm:gap-3 min-w-0" id="post_card_${post.id}">
@@ -3026,6 +3421,12 @@
                             </div>
 
                             ${post.teks ? `<p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed break-words">${post.teks}</p>` : ''}
+
+                            ${ytVideoId ? `
+                                <div class="embed-youtube-container my-2">
+                                    <iframe src="https://www.youtube.com/embed/${ytVideoId}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                </div>
+                            ` : ''}
 
                             ${post.foto ? `
                                 <div class="rounded-2xl overflow-hidden border border-slate-200 max-h-80 bg-slate-50 flex items-center justify-center">
@@ -3108,23 +3509,7 @@
             document.getElementById('modalZoomFotoChat').classList.add('hidden');
         }
 
-        function ubahBintang(delta) {
-            if (!currentNis || !isAdminMode) return;
-            const pData = dbProfilDetail[currentNis];
-            pData.bintang = Math.max(0, (pData.bintang || 0) + delta);
-
-            if (delta > 0) playBeepSound(1000, 'sine', 0.2);
-            else playBeepSound(350, 'sawtooth', 0.1);
-
-            simpanSemuaData();
-            document.getElementById('lblTotalBintang').innerText = `${pData.bintang} ⭐`;
-            const elInside = document.getElementById('lblTotalBintangInside');
-            if (elInside) {
-                elInside.innerHTML = `${pData.bintang} ⭐`;
-            }
-            kirimDataProfilLengkapKeSheet(currentNis);
-        }
-
+        /* RENDER RECORD PELANGGARAN & ANIMASI HEART METER DINAMIS */
         function renderPelanggaran(listPelanggaran) {
             const tbody = document.getElementById('tbodyPelanggaran');
             tbody.innerHTML = '';
@@ -3155,11 +3540,42 @@
 
             const skorSikap = Math.max(0, 100 - totalPengurangan);
             const lblSkor = document.getElementById('lblSkorSikap');
-            lblSkor.innerText = `Skor Kedisiplinan: ${skorSikap}`;
+            const lblHeartText = document.getElementById('lblHeartMeterText');
+            const barHeartFill = document.getElementById('barHeartMeterFill');
+            const lblHeartIcon = document.getElementById('lblHeartMeterIcon');
+
+            lblSkor.innerText = `Skor Kedisiplinan: ${skorSikap} HP`;
+            if (lblHeartText) lblHeartText.innerText = `${skorSikap} / 100 HP`;
+
+            if (barHeartFill) {
+                barHeartFill.style.width = `${skorSikap}%`;
+                if (skorSikap >= 80) {
+                    barHeartFill.className = "heart-bar-fill h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 rounded-full";
+                } else if (skorSikap >= 50) {
+                    barHeartFill.className = "heart-bar-fill h-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 rounded-full";
+                } else {
+                    barHeartFill.className = "heart-bar-fill h-full bg-gradient-to-r from-rose-500 via-red-500 to-rose-600 rounded-full";
+                }
+            }
+
+            if (lblHeartIcon) {
+                if (skorSikap >= 80) {
+                    lblHeartIcon.innerText = "❤️";
+                } else if (skorSikap >= 50) {
+                    lblHeartIcon.innerText = "💛";
+                } else if (skorSikap > 0) {
+                    lblHeartIcon.innerText = "💔";
+                } else {
+                    lblHeartIcon.innerText = "🖤";
+                }
+            }
+
             if (skorSikap < 75) {
-                lblSkor.className = "text-xs font-black text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl";
+                lblSkor.className = "text-xs font-black text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl shadow-xs";
+                if (lblHeartText) lblHeartText.className = "text-rose-600 font-extrabold";
             } else {
-                lblSkor.className = "text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl";
+                lblSkor.className = "text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl shadow-xs";
+                if (lblHeartText) lblHeartText.className = "text-emerald-600 font-extrabold";
             }
         }
 
@@ -3200,6 +3616,7 @@
             kirimDataProfilLengkapKeSheet(currentNis);
         }
 
+        /* PENGIRIMAN DATA UTAMA KE SHEETS DENGAN PROPERTI XP DALAM PAYLOAD */
         async function kirimDataProfilLengkapKeSheet(nis) {
             if (!DEFAULT_SCRIPT_URL) return;
             const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin');
@@ -3231,6 +3648,7 @@
                 nama: isAccAdmin ? (pData.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
                 fotoProfil: pData.fotoProfil || "",
                 bintang: pData.bintang || 0,
+                xp: pData.xp || (dbXpSiswa[targetNis] || 0),
                 tabungan: pData.tabungan || (dbTabunganSiswa[targetNis] || 0),
                 pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                 rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
@@ -3276,14 +3694,13 @@
             container.innerHTML = '';
 
             if (currentNis === 'admin') {
-                container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-slate-400 italic">Akun Admin tidak memiliki nilai mapel. Pilih siswa dari dropdown untuk melihat/mengedit nilai.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-slate-400 italic">Akun Admin tidak memiliki nilai mapel. Pilih siswa dari dropdown untuk melihat nilai.</div>`;
                 return;
             }
 
             MAPEL_LIST.forEach(mapel => {
                 let rawVal = nilaiObj[mapel.id];
                 let val = (rawVal !== undefined && rawVal !== '' && !isNaN(rawVal)) ? parseFloat(rawVal).toFixed(2) : '';
-                const isEditable = isAdminMode && currentNis !== 'admin';
 
                 container.innerHTML += `
                     <div class="bg-amber-50/60 p-2.5 sm:p-3 rounded-2xl border border-amber-200 flex flex-col justify-between shadow-sm">
@@ -3291,106 +3708,12 @@
                             <span class="text-sm sm:text-base">${mapel.icon}</span>
                             <span class="text-[10px] sm:text-[11px] font-bold text-slate-700 line-clamp-1" title="${mapel.name}">${mapel.name}</span>
                         </div>
-                        <input type="number" step="0.01" min="0" max="100" placeholder="0-100" value="${val}"
-                            ${!isEditable ? 'disabled' : ''}
-                            onchange="updateNilaiMapel('${mapel.id}', this.value)"
-                            class="bg-white text-slate-800 font-black text-center text-xs sm:text-sm border border-amber-300 rounded-xl py-1.5 focus:outline-none focus:border-pink-500 disabled:bg-slate-100 disabled:opacity-90 disabled:cursor-not-allowed shadow-inner">
+                        <input type="number" step="0.01" min="0" max="100" placeholder="0" value="${val}"
+                            disabled
+                            class="bg-slate-100 text-slate-800 font-black text-center text-xs sm:text-sm border border-amber-300 rounded-xl py-1.5 focus:outline-none cursor-not-allowed opacity-90 shadow-inner">
                     </div>
                 `;
             });
-        }
-
-        function updateNilaiMapel(mapelId, val) {
-            if (!currentNis || !isAdminMode || currentNis === 'admin') return;
-            
-            const pData = dbProfilDetail[currentNis];
-            if (!pData.nilai) pData.nilai = {};
-
-            let numVal = parseFloat(val);
-            if (isNaN(numVal)) {
-                delete pData.nilai[mapelId];
-            } else {
-                pData.nilai[mapelId] = parseFloat(Math.min(100, Math.max(0, numVal)).toFixed(2));
-            }
-
-            playBeepSound(800, 'sine', 0.08);
-            simpanSemuaData();
-            hitungKalkulasiLevel(pData.nilai);
-            updateTampilanSiswaTertinggi();
-
-            kirimSingleNilaiMapelKeSheet(currentNis, mapelId, pData.nilai[mapelId]);
-        }
-
-        async function kirimSingleNilaiMapelKeSheet(nis, mapelId, nilaiVal) {
-            if (!DEFAULT_SCRIPT_URL) return;
-
-            const isAccAdmin = (nis === ADMIN_NIS || nis === 'admin');
-            const targetNis = isAccAdmin ? ADMIN_NIS : nis;
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(targetNis));
-            const pData = dbProfilDetail[targetNis] || {};
-            const kalkulasi = hitungKalkulasiLevel(pData.nilai || {});
-
-            let totalPoinMinus = 0;
-            let pelanggaranArr = pData.pelanggaran || [];
-            let pelanggaranTeks = pelanggaranArr.map(p => {
-                totalPoinMinus += parseInt(p.poin) || 0;
-                return `[${p.tgl}] ${p.nama} (-${p.poin})`;
-            }).join(" | ");
-
-            let singleBadgeObject = {};
-            let badgesArr = pData.badges || [];
-            for (let j = 0; j < 25; j++) {
-                let b = badgesArr[j] || { active: false, img: "", title: BADGE_DESCS[j] };
-                singleBadgeObject[`badge_${j + 1}`] = (typeof b === 'object') ? JSON.stringify(b) : JSON.stringify({ active: !!b, img: "", title: BADGE_DESCS[j] });
-            }
-
-            const s1 = pData.kehadiranS1 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
-            const s2 = pData.kehadiranS2 || { sakit: 0, izin: 0, alpa: 0, hadir: 0 };
-
-            const payload = {
-                action: "saveProfilSiswa",
-                nis: targetNis,
-                nama: isAccAdmin ? (pData.nama || DEFAULT_ADMIN_NAME) : (dataSiswa ? dataSiswa[1] : ""),
-                fotoProfil: pData.fotoProfil || "",
-                bintang: pData.bintang || 0,
-                tabungan: pData.tabungan || (dbTabunganSiswa[targetNis] || 0),
-                pamerBadgeIdx: pData.pamerBadgeIdx || 0,
-                rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
-                skorKedisiplinan: Math.max(0, 100 - totalPoinMinus),
-                nilaiDetail: pData.nilai || {},
-                pancasila: pData.nilai['pancasila'] !== undefined ? pData.nilai['pancasila'] : "",
-                indonesia: pData.nilai['indonesia'] !== undefined ? pData.nilai['indonesia'] : "",
-                matematika: pData.nilai['matematika'] !== undefined ? pData.nilai['matematika'] : "",
-                ipas: pData.nilai['ipas'] !== undefined ? pData.nilai['ipas'] : "",
-                inggris: pData.nilai['inggris'] !== undefined ? pData.nilai['inggris'] : "",
-                jawa: pData.nilai['jawa'] !== undefined ? pData.nilai['jawa'] : "",
-                senirupa: pData.nilai['senirupa'] !== undefined ? pData.nilai['senirupa'] : "",
-                senimusik: pData.nilai['senimusik'] !== undefined ? pData.nilai['senimusik'] : "",
-                senitari: pData.nilai['senitari'] !== undefined ? pData.nilai['senitari'] : "",
-                seniteater: pData.nilai['seniteater'] !== undefined ? pData.nilai['seniteater'] : "",
-                agama: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
-                paibp: pData.nilai['agama'] !== undefined ? pData.nilai['agama'] : (pData.nilai['paibp'] !== undefined ? pData.nilai['paibp'] : ""),
-                pjok: pData.nilai['pjok'] !== undefined ? pData.nilai['pjok'] : "",
-                s1Hadir: s1.hadir, s1Sakit: s1.sakit, s1Izin: s1.izin, s1Alpa: s1.alpa,
-                s2Hadir: s2.hadir, s2Sakit: s2.sakit, s2Izin: s2.izin, s2Alpa: s2.alpa,
-                pramukaPersentase: pData.pramukaPersentase !== undefined ? pData.pramukaPersentase : 100,
-                ...singleBadgeObject,
-                pelanggaranJSON: JSON.stringify(pelanggaranArr),
-                pelanggaranTeks: pelanggaranTeks || "Sikap Baik (Tidak ada catatan)",
-                jumlahPelanggaran: pelanggaranArr.length,
-                totalPoinMinus: totalPoinMinus
-            };
-
-            try {
-                await fetch(DEFAULT_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (err) {
-                console.warn("Gagal sinkronisasi nilai mapel ke Sheets:", err);
-            }
         }
 
         function hitungKalkulasiLevel(nilaiObj) {
@@ -3399,8 +3722,11 @@
 
             MAPEL_LIST.forEach(m => {
                 if (nilaiObj[m.id] !== undefined && nilaiObj[m.id] !== '' && !isNaN(nilaiObj[m.id])) {
-                    total += parseFloat(nilaiObj[m.id]);
-                    count++;
+                    let valNum = parseFloat(nilaiObj[m.id]);
+                    if (valNum > 0) {
+                        total += valNum;
+                        count++;
+                    }
                 }
             });
 
@@ -3464,7 +3790,7 @@
             document.getElementById('lblLevelTitle').innerText = levelTitle;
             document.getElementById('lblLevelDesc').innerText = levelDesc;
             document.getElementById('barExpFill').style.width = `${Math.min(100, Math.max(0, expPercent))}%`;
-            document.getElementById('lblExpTargetText').innerText = `Target: ${avgFormatted} / 100 Poin`;
+            document.getElementById('lblExpTargetText').innerText = `Target: ${avgFormatted} / 100 Poin (${count} Mapel Aktif)`;
 
             return { levelBadge, levelTitle, avg: avgFormatted };
         }
@@ -3573,6 +3899,7 @@
                     dbProfilDetail[nisSiswa] = {
                         fotoProfil: "",
                         bintang: 0,
+                        xp: 0,
                         badges: Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] })),
                         pamerBadgeIdx: 0,
                         pelanggaran: [],
@@ -3609,6 +3936,7 @@
                     nama: namaSiswa,
                     fotoProfil: pData.fotoProfil || "",
                     bintang: pData.bintang || 0,
+                    xp: pData.xp || (dbXpSiswa[nisSiswa] || 0),
                     tabungan: pData.tabungan || (dbTabunganSiswa[nisSiswa] || 0),
                     pamerBadgeIdx: pData.pamerBadgeIdx || 0,
                     rataRata: parseFloat(kalkulasi.avg || 0).toFixed(2),
@@ -3657,6 +3985,7 @@
                 nama: pAdmin.nama || DEFAULT_ADMIN_NAME,
                 fotoProfil: pAdmin.fotoProfil || "",
                 bintang: pAdmin.bintang || 0,
+                xp: 0,
                 tabungan: 0,
                 pamerBadgeIdx: 0,
                 rataRata: "0.00",
@@ -3683,6 +4012,7 @@
             if (currentNis) renderProfilSiswa(currentNis);
         }
 
+        /* PENARIKAN DATA PROFIL SISWA TERMASUK EMBEDDED XP DARI TAB ProfilSiswa */
         async function tarikDataDariSheet(isManual = false) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -3718,6 +4048,16 @@
 
                         dbProfilDetail[keyTarget].bintang = parseInt(item.bintang || item.Bintang) || 0;
                         dbProfilDetail[keyTargetAlt].bintang = dbProfilDetail[keyTarget].bintang;
+
+                        // BACA PROPERTI XP LANGSUNG DARI ProfilSiswa
+                        const xpDirectVal = item.xp !== undefined ? item.xp : (item.XP !== undefined ? item.XP : (item.Xp !== undefined ? item.Xp : undefined));
+                        if (xpDirectVal !== undefined) {
+                            const parsedXP = parseInt(xpDirectVal) || 0;
+                            dbProfilDetail[keyTarget].xp = parsedXP;
+                            dbProfilDetail[keyTargetAlt].xp = parsedXP;
+                            dbXpSiswa[keyTarget] = parsedXP;
+                            dbXpSiswa[keyTargetAlt] = parsedXP;
+                        }
 
                         if (item.pamerBadgeIdx !== undefined) {
                             dbProfilDetail[keyTarget].pamerBadgeIdx = parseInt(item.pamerBadgeIdx) || 0;
@@ -3882,7 +4222,7 @@
 
                     if (isManual) {
                         playBeepSound(1000, 'sine', 0.2);
-                        alert(`Berhasil menarik data profil & nilai dari Google Sheet! (${updatedCount} data diperbarui)`);
+                        alert(`Berhasil menarik data profil & XP dari Google Sheet! (${updatedCount} data diperbarui)`);
                     }
                 }
             } catch (err) {
