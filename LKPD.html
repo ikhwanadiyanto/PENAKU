@@ -598,7 +598,7 @@
         </header>
 
         <!-- FRAME NAVIGATION TABS DENGAN URUTAN DI-REVISI SESUAI INSTRUKSI -->
-        <!-- Urutan: SIXBOOK Feed - Profil & Prestasi - Transkrip Nilai - Daftar Siswa - Menu Admin -->
+        <!-- Urutan: SIXBOOK Feed - Profil & Prestasi - Transkrip Nilai - Daftar Siswa - Menu Admin (KHUSUS ADMIN) -->
         <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-start sm:justify-center gap-2 sm:gap-6 overflow-x-auto no-print border-2 border-amber-200 shadow-sm">
             <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-3.5 py-2 text-xs sm:text-sm font-cute font-bold flex items-center gap-1.5">
                 <i class="fa-solid fa-newspaper text-pink-500"></i> SIXBOOK Feed 🎈
@@ -612,12 +612,12 @@
             <button onclick="gantiTabFrame('daftar-siswa')" id="tabBtnDaftarSiswa" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
                 <i class="fa-solid fa-users text-emerald-500"></i> Daftar Siswa 👥
             </button>
-            <button onclick="gantiTabFrame('menu-admin')" id="tabBtnMenuAdmin" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
+            <button onclick="gantiTabFrame('menu-admin')" id="tabBtnMenuAdmin" class="admin-only tab-btn px-3.5 py-2 text-xs sm:text-sm font-cute font-bold text-slate-600 flex items-center gap-1.5">
                 <i class="fa-solid fa-sliders text-purple-600"></i> Menu Admin 🛠️
             </button>
         </div>
 
-        <!-- TAB SECTION: DAFTAR SISWA (BARU) -->
+        <!-- TAB SECTION: DAFTAR SISWA -->
         <div id="frameSectionDaftarSiswa" class="space-y-6 hidden">
             <div class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-emerald-200">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
@@ -638,8 +638,8 @@
             </div>
         </div>
 
-        <!-- TAB SECTION: MENU ADMIN (BARU & INDAH LENGKAP DENGAN 7 TOMBOL NAVIGASI) -->
-        <div id="frameSectionMenuAdmin" class="space-y-6 hidden">
+        <!-- TAB SECTION: MENU ADMIN (KHUSUS ADMIN) -->
+        <div id="frameSectionMenuAdmin" class="space-y-6 hidden admin-only">
             <div class="glass-panel p-6 sm:p-8 rounded-3xl border-2 border-purple-300 bg-gradient-to-br from-white/90 via-purple-50/40 to-pink-50/40">
                 <div class="text-center max-w-2xl mx-auto mb-8">
                     <div class="w-16 h-16 bg-gradient-to-tr from-purple-500 via-pink-500 to-amber-400 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg shadow-purple-500/20 logo-emoji-anim">
@@ -794,7 +794,7 @@
                         <span id="badgeAdminGlowProfile" class="hidden admin-glow-badge text-white font-black text-[10px] px-2.5 py-0.5 rounded-full border border-purple-300 tracking-wider uppercase flex items-center gap-1">
                             <i class="fa-solid fa-user-shield text-[9px]"></i> ADMIN
                         </span>
-                        <button id="btnRenameAdmin" onclick="renameAdminNama()" class="hidden text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 px-2 py-1 rounded-lg font-bold border border-purple-300 transition-all">
+                        <button id="btnRenameAdmin" onclick="renameAdminNama()" class="hidden admin-only text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 px-2 py-1 rounded-lg font-bold border border-purple-300 transition-all">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                     </div>
@@ -817,7 +817,7 @@
 
                     <hr class="w-full border-slate-200 my-2">
 
-                    <!-- SECTION BINTANG (REVISI: ANGKABINTANG DI LUAR DIHAPUS, ANGKA BINTANG LANGSUNG DI DALAM FRAME) -->
+                    <!-- SECTION BINTANG -->
                     <div id="sectionBintangKebaikan" class="w-full mt-2">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
@@ -841,7 +841,7 @@
                         </div>
                     </div>
 
-                    <!-- SECTION FRAME XP BARU (REVISI: TEKS 0XP KECIL DI LUAR DIHAPUS) -->
+                    <!-- SECTION FRAME XP BARU -->
                     <div id="sectionXP" class="w-full mt-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
@@ -862,7 +862,7 @@
                         </div>
                     </div>
 
-                    <!-- SECTION TABUNGAN SISWA (READ ONLY) -->
+                    <!-- SECTION TABUNGAN SISWA -->
                     <div id="sectionTabunganSiswa" class="w-full mt-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
@@ -1043,7 +1043,7 @@
                             </div>
                         </div>
 
-                        <!-- VISUAL HEART METER (HEALTH BAR / DETAK JANTUNG KEDISIPLINAN) -->
+                        <!-- VISUAL HEART METER -->
                         <div class="w-full bg-slate-100 p-2 rounded-2xl border border-slate-200 mb-5 flex flex-col gap-1.5 shadow-inner">
                             <div class="flex items-center justify-between text-[11px] font-bold px-1">
                                 <span class="text-rose-600 flex items-center gap-1">
@@ -1387,6 +1387,12 @@
         }
 
         function gantiTabFrame(tabName) {
+            // Proteksi Tab khusus Admin agar tidak bisa diakses Siswa
+            if (tabName === 'menu-admin' && !isAdminMode) {
+                alert("Akses Ditolak: Fitur Menu Admin khusus untuk pengajar/admin!");
+                tabName = 'status';
+            }
+
             document.getElementById('frameSectionProfil').classList.add('hidden');
             document.getElementById('frameSectionStatus').classList.add('hidden');
             document.getElementById('frameSectionNilai').classList.add('hidden');
@@ -1428,7 +1434,7 @@
             playBeepSound(800, 'sine', 0.08);
         }
 
-        /* RENDER TAB DAFTAR SISWA BARU */
+        /* RENDER TAB DAFTAR SISWA */
         function renderGridDaftarSiswa() {
             const container = document.getElementById('containerGridDaftarSiswa');
             if (!container) return;
@@ -1600,8 +1606,10 @@
         function bukaProfilTeman(nis) {
             if (!nis) return;
             if (nis === 'admin' || nis === ADMIN_NIS) {
-                gantiSiswaProfil('admin');
-                gantiTabFrame('profil');
+                if (isAdminMode) {
+                    gantiSiswaProfil('admin');
+                    gantiTabFrame('profil');
+                }
                 return;
             }
 
@@ -1641,6 +1649,7 @@
                 localStorage.removeItem("remember_me");
             }
 
+            // KONTROL KHUSUS HANYA UNTUK ADMIN
             if (nisInput === ADMIN_NIS || namaInput === ADMIN_USERNAME || namaInput.includes('ikhwan')) {
                 isAdminMode = true;
                 loggedInNis = "admin";
@@ -1650,9 +1659,11 @@
                 document.getElementById('badgeModeAkses').innerText = "MODE ADMIN ACTIVE";
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-slate-900 shadow-sm";
                 
-                document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
-                document.querySelectorAll('.student-only').forEach(el => el.style.display = 'none');
+                // Tampilkan menu khusus Admin
+                document.querySelectorAll('.admin-only').forEach(el => el.style.setProperty('display', '', 'important'));
+                document.querySelectorAll('.student-only').forEach(el => el.style.setProperty('display', 'none', 'important'));
             } else {
+                // UNTUK SISWA: SEMBUNYIKAN MENU ADMIN TOTAL
                 isAdminMode = false;
                 const foundSiswa = listMasterSiswa.find(s => 
                     String(s[0]).trim().toLowerCase() === nisInput &&
@@ -1672,8 +1683,9 @@
                 document.getElementById('badgeModeAkses').innerText = `Mode Siswa (${foundSiswa[1]})`;
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-white/80 text-pink-700 border border-pink-300 shadow-sm";
 
-                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('.student-only').forEach(el => el.style.display = '');
+                // Sembunyikan semua menu Admin
+                document.querySelectorAll('.admin-only').forEach(el => el.style.setProperty('display', 'none', 'important'));
+                document.querySelectorAll('.student-only').forEach(el => el.style.setProperty('display', '', 'important'));
             }
 
             populasiDropdownSiswa();
@@ -2008,7 +2020,7 @@
                 elInside.innerHTML = `${bnt} ⭐`;
             }
 
-            // XP SISWA (DIBACA LANGSUNG DARI ProfilSiswa PAYLOAD - PRESISI & RAPAT SEPERTI FRAME BINTANG)
+            // XP SISWA
             const xpVal = pData.xp !== undefined ? pData.xp : (dbXpSiswa[nis] !== undefined ? dbXpSiswa[nis] : 0);
             document.getElementById('lblTotalXPVal').innerText = `${xpVal} XP`;
 
@@ -2098,7 +2110,7 @@
                     </div>
                 </div>
 
-                <!-- EKSTRAKURIKULER PRAMUKA (READ ONLY PERMANEN) -->
+                <!-- EKSTRAKURIKULER PRAMUKA -->
                 <div class="bg-amber-50/70 p-4 rounded-3xl border-2 border-amber-200 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
@@ -4012,7 +4024,6 @@
             if (currentNis) renderProfilSiswa(currentNis);
         }
 
-        /* PENARIKAN DATA PROFIL SISWA TERMASUK EMBEDDED XP DARI TAB ProfilSiswa */
         async function tarikDataDariSheet(isManual = false) {
             if (!DEFAULT_SCRIPT_URL) return;
 
@@ -4049,7 +4060,6 @@
                         dbProfilDetail[keyTarget].bintang = parseInt(item.bintang || item.Bintang) || 0;
                         dbProfilDetail[keyTargetAlt].bintang = dbProfilDetail[keyTarget].bintang;
 
-                        // BACA PROPERTI XP LANGSUNG DARI ProfilSiswa
                         const xpDirectVal = item.xp !== undefined ? item.xp : (item.XP !== undefined ? item.XP : (item.Xp !== undefined ? item.Xp : undefined));
                         if (xpDirectVal !== undefined) {
                             const parsedXP = parseInt(xpDirectVal) || 0;
