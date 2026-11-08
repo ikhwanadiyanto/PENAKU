@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAJEMEN LENCANA SISWA - SIXBOOK</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        candy: {
+                            pink: '#ff85a2',
+                            yellow: '#fef08a',
+                            mint: '#6ee7b7',
+                            sky: '#7dd3fc',
+                            purple: '#c084fc',
+                            orange: '#fb923c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        cute: ['Fredoka', 'Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fef3c7 0%, #e0f2fe 35%, #fce7f3 70%, #dcfce7 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 14px 35px rgba(245, 158, 11, 0.12);
+        }
+
+        .cheerful-header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
+            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.85);
+        }
+
+        .photo-frame-box {
+            aspect-ratio: 1/1;
+            position: relative;
+            border-radius: 28px;
+            border: 5px solid #fde047;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .badge-box-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        @media (min-width: 640px) {
+            .badge-box-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 16px;
+            }
+        }
+
+        .badge-item-box {
+            aspect-ratio: 1/1;
+            border-radius: 22px;
+            background: #ffffff;
+            border: 3px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-item-box:hover {
+            transform: translateY(-4px);
+            border-color: #f59e0b;
+        }
+
+        .badge-item-box.active {
+            border-style: solid;
+            border-color: #fb923c;
+            background: linear-gradient(135deg, #fffbeb, #fef08a);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-actions-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .badge-item-box:hover .badge-actions-overlay {
+            opacity: 1;
+        }
+
+        .btn-action-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-action-circle:hover {
+            transform: scale(1.15);
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-6 md:p-8 relative pb-20">
+
+    <!-- TOAST STATUS SYNC -->
+    <div id="toastLoadingSync" class="hidden fixed bottom-6 right-6 z-[99999] bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 rounded-3xl shadow-2xl border-2 border-amber-300 flex items-center gap-4">
+        <div id="spinnerSync" class="w-7 h-7 border-4 border-amber-300 border-t-transparent rounded-full animate-spin shrink-0"></div>
+        <div id="iconCheckSync" class="hidden text-emerald-400 text-2xl font-bold"><i class="fa-solid fa-circle-check"></i></div>
+        <div id="iconErrorSync" class="hidden text-rose-400 text-2xl font-bold"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div>
+            <p id="lblSyncTitle" class="text-xs font-black text-amber-300">Menyimpan Ke Sheet...</p>
+            <p id="lblSyncSub" class="text-[10px] text-slate-200">Proses sinkronisasi data ✨</p>
+        </div>
+    </div>
+
+    <!-- FILE INPUTS -->
+    <input type="file" id="inputUploadBadgeFoto" accept="image/*" class="hidden" onchange="prosesUploadBadgeFoto(event)">
+    <input type="file" id="inputUploadFotoProfil" accept="image/*" class="hidden" onchange="prosesUploadFotoProfilSiswa(event)">
+
+    <!-- MODAL BROADCAST LENCANA MULTI-SISWA -->
+    <div id="modalBroadcastLencana" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="glass-panel p-6 sm:p-8 rounded-[36px] max-w-lg w-full border-4 border-amber-300 shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b-2 border-amber-200 mb-4">
+                <h3 class="text-lg font-black text-slate-800 font-cute flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-pink-500"></i> Kirim Lencana Ke Banyak Siswa
+                </h3>
+                <button onclick="tutupModalBroadcast()" class="text-slate-400 hover:text-rose-500 text-xl font-bold"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <p class="text-xs text-slate-600 mb-4 font-semibold">
+                Pilih siswa yang akan dikirim lencana. Sistem akan otomatis menempatkan lencana ini pada 
+                <span class="text-pink-600 font-black">slot kosong pertama</span> tanpa menimpa lencana siswa yang sudah aktif!
+            </p>
+
+            <div class="flex items-center justify-between gap-2 mb-3 bg-amber-50 p-3 rounded-2xl border border-amber-200">
+                <span class="text-xs font-bold text-slate-700">Pilih Lencana Yang Dikirim:</span>
+                <select id="selectMasterBadgeBroadcast" class="bg-white border-2 border-amber-300 rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none">
+                    <!-- Dynamic badges option -->
+                </select>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-xs font-bold text-slate-500">Daftar Siswa Kelas VI:</span>
+                <button onclick="togglePilihSemuaSiswa(this)" class="text-[11px] font-black text-pink-600 hover:underline">Pilih Semua</button>
+            </div>
+
+            <!-- LIST SISWA CHECKBOX -->
+            <div id="containerListBroadcastSiswa" class="overflow-y-auto space-y-2 pr-2 mb-6 max-h-56"></div>
+
+            <div class="flex items-center gap-3 pt-2 border-t-2 border-slate-100">
+                <button onclick="tutupModalBroadcast()" class="w-1/3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3.5 rounded-2xl text-xs">Batal</button>
+                <button onclick="eksekusiBroadcastLencana()" class="w-2/3 bg-gradient-to-r from-pink-500 via-amber-500 to-sky-400 text-white font-black py-3.5 rounded-2xl text-xs shadow-lg active:scale-95">Kirim Lencana Serentak 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="max-w-6xl mx-auto">
+        <header class="cheerful-header p-5 sm:p-7 rounded-[32px] mb-6 text-slate-800">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-white/60 backdrop-blur-md flex items-center justify-center text-4xl shadow-md border-2 border-white">🏅</div>
+                    <div>
+                        <h1 class="text-2xl font-black text-slate-900 font-cute tracking-wide">MANAJEMEN LENCANA ✨</h1>
+                        <p class="text-xs font-bold text-slate-700">Digital Classroom Ecosystem - SDN Kramat 01</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- TOMBOL KEMBALI KE LKPD.HTML -->
+                    <a href="LKPD.html" class="bg-white/90 hover:bg-white text-slate-800 px-4 py-2.5 rounded-2xl text-xs font-black shadow-md transition-all active:scale-95 flex items-center gap-2 border-2 border-amber-300">
+                        <i class="fa-solid fa-arrow-left text-pink-500"></i> Kembali Ke LKPD
+                    </a>
+                    
+                    <!-- TOMBOL BROADCAST MASAL -->
+                    <button onclick="bukaModalBroadcast()" class="bg-gradient-to-r from-pink-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl text-xs font-black shadow-md transition-all active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Broadcast Lencana
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- LEFT PROFIL CARD -->
+            <div class="lg:col-span-4 flex flex-col gap-6">
+                <div class="glass-panel p-6 rounded-[32px] flex flex-col items-center text-center">
+                    <label class="text-xs font-bold text-slate-500 mb-2 w-full text-left"><i class="fa-solid fa-user-graduate text-amber-500"></i> Pilih Profil Siswa:</label>
+                    <select id="selectSiswaProfil" onchange="gantiSiswaProfil(this.value)" class="w-full bg-white border-2 border-amber-300 rounded-2xl px-4 py-3 text-xs font-black shadow-sm focus:outline-none mb-6">
+                    </select>
+
+                    <div class="w-44 h-44 photo-frame-box mb-4 bg-amber-50 relative group cursor-pointer" onclick="picuUploadFotoProfilSiswa()">
+                        <img id="imgFotoSiswa" src="" class="w-full h-full object-cover rounded-[22px]">
+                        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white rounded-[22px] transition-all">
+                            <i class="fa-solid fa-camera text-3xl mb-1"></i>
+                            <span class="text-[10px] font-black tracking-wider">UBAH FOTO</span>
+                        </div>
+                    </div>
+                    <h2 id="lblNamaSiswa" class="text-xl font-black text-slate-800 font-cute">Nama Siswa</h2>
+                    <span id="lblNisSiswa" class="text-xs font-bold bg-amber-100 text-amber-700 px-3 py-1 rounded-full mt-1">NIS: -</span>
+                </div>
+            </div>
+
+            <!-- RIGHT BADGES GRID -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                <div class="glass-panel p-6 sm:p-7 rounded-[32px]">
+                    <div class="flex items-center justify-between mb-5">
+                        <h3 class="text-base font-black text-slate-800 font-cute flex items-center gap-2">
+                            <i class="fa-solid fa-medal text-amber-500 text-lg"></i> Lencana Prestasi (Slot 1 - 25)
+                        </h3>
+                        <span id="lblBadgeCounter" class="text-xs font-black bg-pink-100 text-pink-700 px-3.5 py-1.5 rounded-full border border-pink-200">0 / 25 Terbuka</span>
+                    </div>
+                    <div class="badge-box-grid" id="grid10Badges"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-8 text-center text-xs font-bold text-slate-500">
+            Aplikasi ini dibuat oleh : Ikhwan Adi Yanto,S.Pd. tahun 2026
+        </footer>
+    </div>
+
+    <script>
+        // MASUKKAN URL WEBLINK DEPLOYMENT APPS SCRIPT ANDA DI SINI
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjdrCRyVPLar2Z24ruKKmppEZiFynLBLGji5ybp2YNY0mUMRN_g-w-7ITN4O165vw_/exec";
+
+        const listMasterSiswa = [
+            ["3052", "Amelia Alita Zahra"], ["3223", "Angelica Vikar Maharani"], ["3085", "Anggraeni Abbilah Dhety"],
+            ["3087", "Azka Nailun Nabhan"], ["3088", "Cinta Anugrah"], ["3089", "Dany Sabiq El-Fathin"],
+            ["3090", "Dhea Fiky Mazaya"], ["3224", "Earlita Arsyifa Salsabila"], ["3091", "Fadilla Rizqi Khaerani"],
+            ["3092", "Fathan Almaizan Zhafar"], ["3093", "Gavin Harry Wiriawan"], ["3063", "Hafiz Ardiyansah"],
+            ["3095", "Intan Berliyan"], ["3096", "Luthfiya Nur Ramadhani"], ["3069", "M. Miftah Al Fattah"],
+            ["3097", "Mugi Aditia Ripki"], ["3098", "Muh Azzka Alpratama"], ["3099", "Muhamad Ramadhani"],
+            ["3102", "Nayla Dwi Syafriani"], ["3108", "Puteri Ayuning Kirana"], ["3103", "Raisa Rahmawati Septiani"],
+            ["3104", "Renita Nur Saefitri"], ["3084", "Shalwa Aisa Nazwa"], ["3105", "Wifha Alya An Adibah"],
+            ["3106", "Zhidan Dwi Aprilio Nurosy"], ["3107", "Zulfan Azhar Ramadhan"], ["3289", "Tauladani Elang"]
+        ];
+
+        let currentNis = listMasterSiswa[0][0];
+        let dbProfilDetail = {};
+        let selectedBadgeIdxForUpload = null;
+        let syncTimeoutTimer = null;
+
+        let BADGE_DESCS = [
+            "Hadir Tepat Waktu", "Pakaian Rapi", "Tugas Tuntas", "Bantu Teman", "Ketua Piket",
+            "Sopan Santun", "Jujur & Disiplin", "Pemberani", "Kreatif", "Bintang Kehadiran",
+            "Aktif Berdiskusi", "Penataan Laci", "Rajin Membaca", "Peduli Lingkungan", "Disiplin Upacara",
+            "Kerapian Catatan", "Kerjasama Tim", "Sportif", "Hemat Energi", "Karakter Pancasila",
+            "Percaya Diri", "Ketertiban Harian", "Toleransi Tinggi", "Inovatif", "Bintang Teladan"
+        ];
+
+        window.onload = function() {
+            populasiDropdownSiswa();
+            gantiSiswaProfil(currentNis);
+            tarikDataDariSheet();
+        };
+
+        function showLoadingSync(statusState) {
+            const toast = document.getElementById('toastLoadingSync');
+            const spinner = document.getElementById('spinnerSync');
+            const iconCheck = document.getElementById('iconCheckSync');
+            const iconError = document.getElementById('iconErrorSync');
+            const title = document.getElementById('lblSyncTitle');
+            const sub = document.getElementById('lblSyncSub');
+
+            if (syncTimeoutTimer) clearTimeout(syncTimeoutTimer);
+
+            if (statusState === 'loading') {
+                toast.classList.remove('hidden');
+                spinner.classList.remove('hidden');
+                iconCheck.classList.add('hidden');
+                iconError.classList.add('hidden');
+                title.innerText = "Menyimpan Ke Sheet...";
+                title.className = "text-xs font-black text-amber-300";
+                sub.innerText = "Proses sinkronisasi data ✨";
+
+                syncTimeoutTimer = setTimeout(() => { showLoadingSync('error'); }, 12000);
+            } 
+            else if (statusState === 'success') {
+                toast.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                iconCheck.classList.remove('hidden');
+                iconError.classList.add('hidden');
+                title.innerText = "Tersimpan ke Tab Badge!";
+                title.className = "text-xs font-black text-emerald-400";
+                sub.innerText = "Data lencana diperbarui 🎉";
+                syncTimeoutTimer = setTimeout(() => { toast.classList.add('hidden'); }, 1800);
+            } 
+            else if (statusState === 'error') {
+                toast.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                iconCheck.classList.add('hidden');
+                iconError.classList.remove('hidden');
+                title.innerText = "Gagal Menyimpan";
+                title.className = "text-xs font-black text-rose-400";
+                sub.innerText = "Cek koneksi Apps Script.";
+                syncTimeoutTimer = setTimeout(() => { toast.classList.add('hidden'); }, 2500);
+            }
+        }
+
+        function populasiDropdownSiswa() {
+            const select = document.getElementById('selectSiswaProfil');
+            select.innerHTML = '';
+            listMasterSiswa.forEach(s => {
+                select.innerHTML += `<option value="${s[0]}">${s[1]} (${s[0]})</option>`;
+            });
+        }
+
+        function gantiSiswaProfil(nis) {
+            currentNis = String(nis);
+            if (!dbProfilDetail[nis]) {
+                dbProfilDetail[nis] = { fotoProfil: "", badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })) };
+            }
+            renderProfil();
+        }
+
+        function renderProfil() {
+            const pData = dbProfilDetail[currentNis] || {};
+            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === currentNis);
+            document.getElementById('lblNamaSiswa').innerText = dataSiswa ? dataSiswa[1] : currentNis;
+            document.getElementById('lblNisSiswa').innerText = `NIS: ${currentNis}`;
+            document.getElementById('imgFotoSiswa').src = pData.fotoProfil || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23f59e0b'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+            renderBadges(pData.badges || []);
+        }
+
+        function renderBadges(badgesArr) {
+            const grid = document.getElementById('grid10Badges');
+            grid.innerHTML = '';
+            let activeCount = 0;
+
+            for (let i = 0; i < 25; i++) {
+                const b = badgesArr[i] || { active: false, img: "", title: BADGE_DESCS[i] };
+                const isActive = b.active === true;
+                if (isActive) activeCount++;
+
+                grid.innerHTML += `
+                    <div class="badge-item-box ${isActive ? 'active' : ''}">
+                        ${b.img ? `<img src="${b.img}" class="w-full h-full object-cover">` : `<div class="text-2xl mb-1">${isActive ? '🏅' : '🔒'}</div>`}
+                        <span class="text-[9px] font-bold text-center px-1.5 truncate w-full text-slate-700">${b.title || BADGE_DESCS[i]}</span>
+                        
+                        <!-- OVERLAY AKSI: GANTI, RENAME, HAPUS -->
+                        <div class="badge-actions-overlay">
+                            ${!isActive ? `
+                                <button onclick="aktifkanBadge(${i})" class="btn-action-circle bg-emerald-500 hover:bg-emerald-600" title="Aktifkan"><i class="fa-solid fa-plus"></i></button>
+                            ` : `
+                                <button onclick="picuUploadBadge(event, ${i})" class="btn-action-circle bg-sky-500 hover:bg-sky-600" title="Ganti Foto (No Compress)"><i class="fa-solid fa-camera"></i></button>
+                                <button onclick="renameBadgeTitle(${i})" class="btn-action-circle bg-amber-500 hover:bg-amber-600" title="Ubah Judul"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="hapusBadge(${i})" class="btn-action-circle bg-rose-500 hover:bg-rose-600" title="Hapus Lencana"><i class="fa-solid fa-trash"></i></button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('lblBadgeCounter').innerText = `${activeCount} / 25 Terbuka`;
+        }
+
+        function aktifkanBadge(idx) {
+            dbProfilDetail[currentNis].badges[idx].active = true;
+            renderProfil();
+            kirimOtomatisKeSheet(currentNis);
+        }
+
+        function renameBadgeTitle(idx) {
+            const oldTitle = dbProfilDetail[currentNis].badges[idx].title || BADGE_DESCS[idx];
+            const newTitle = prompt("Masukkan Judul Baru untuk Lencana ini:", oldTitle);
+            if (newTitle !== null && newTitle.trim() !== "") {
+                dbProfilDetail[currentNis].badges[idx].title = newTitle.trim();
+                renderProfil();
+                kirimOtomatisKeSheet(currentNis);
+            }
+        }
+
+        function hapusBadge(idx) {
+            if (confirm("Apakah Anda yakin ingin menghapus lencana pada frame ini?")) {
+                dbProfilDetail[currentNis].badges[idx] = { active: false, img: "", title: BADGE_DESCS[idx] };
+                renderProfil();
+                kirimOtomatisKeSheet(currentNis);
+            }
+        }
+
+        function picuUploadBadge(e, idx) {
+            e.stopPropagation();
+            selectedBadgeIdxForUpload = idx;
+            document.getElementById('inputUploadBadgeFoto').click();
+        }
+
+        // TANPA KOMPRESI (GAMBAR ASLI KUALITAS TINGGI)
+        function prosesUploadBadgeFoto(e) {
+            const file = e.target.files[0];
+            if (!file || selectedBadgeIdxForUpload === null) return;
+            
+            showLoadingSync('loading');
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                dbProfilDetail[currentNis].badges[selectedBadgeIdxForUpload].img = evt.target.result;
+                dbProfilDetail[currentNis].badges[selectedBadgeIdxForUpload].active = true;
+                renderProfil();
+                kirimOtomatisKeSheet(currentNis);
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        function picuUploadFotoProfilSiswa() {
+            document.getElementById('inputUploadFotoProfil').click();
+        }
+
+        function prosesUploadFotoProfilSiswa(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            showLoadingSync('loading');
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                dbProfilDetail[currentNis].fotoProfil = evt.target.result;
+                renderProfil();
+                kirimOtomatisKeSheet(currentNis);
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        // FEATURE MULTI-BROADCAST SISWA (AUTO-FILL TANPA MENIMPA)
+        function bukaModalBroadcast() {
+            const selectBadge = document.getElementById('selectMasterBadgeBroadcast');
+            selectBadge.innerHTML = '';
+            BADGE_DESCS.forEach((desc, idx) => {
+                selectBadge.innerHTML += `<option value="${idx}">Lencana ${idx+1}: ${desc}</option>`;
+            });
+
+            const container = document.getElementById('containerListBroadcastSiswa');
+            container.innerHTML = '';
+            listMasterSiswa.forEach(s => {
+                container.innerHTML += `
+                    <label class="flex items-center justify-between bg-white p-3 rounded-2xl border border-slate-200 cursor-pointer hover:bg-amber-50 transition-colors">
+                        <span class="text-xs font-bold text-slate-800">${s[1]} (${s[0]})</span>
+                        <input type="checkbox" value="${s[0]}" class="chk-siswa-broadcast w-4 h-4 accent-pink-500 rounded">
+                    </label>
+                `;
+            });
+
+            document.getElementById('modalBroadcastLencana').classList.remove('hidden');
+        }
+
+        function tutupModalBroadcast() {
+            document.getElementById('modalBroadcastLencana').classList.add('hidden');
+        }
+
+        function togglePilihSemuaSiswa(btn) {
+            const chks = document.querySelectorAll('.chk-siswa-broadcast');
+            const isAll = Array.from(chks).every(c => c.checked);
+            chks.forEach(c => c.checked = !isAll);
+            btn.innerText = isAll ? "Pilih Semua" : "Batal Semua";
+        }
+
+        async function eksekusiBroadcastLencana() {
+            const selectedNisArr = Array.from(document.querySelectorAll('.chk-siswa-broadcast:checked')).map(c => c.value);
+            if (selectedNisArr.length === 0) {
+                alert("Pilih minimal satu siswa untuk dikirim lencana!");
+                return;
+            }
+
+            const badgeIdx = parseInt(document.getElementById('selectMasterBadgeBroadcast').value);
+            const badgeTitle = BADGE_DESCS[badgeIdx];
+
+            showLoadingSync('loading');
+            tutupModalBroadcast();
+
+            for (let nis of selectedNisArr) {
+                if (!dbProfilDetail[nis]) {
+                    dbProfilDetail[nis] = { fotoProfil: "", badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })) };
+                }
+
+                let badges = dbProfilDetail[nis].badges;
+                // Cari slot kosong pertama agar tidak menimpa lencana yang sudah ada
+                let slotKosongIdx = badges.findIndex(b => !b.active);
+
+                if (slotKosongIdx !== -1) {
+                    badges[slotKosongIdx] = { active: true, img: "", title: badgeTitle };
+                    await kirimOtomatisKeSheetAsync(nis);
+                }
+            }
+
+            renderProfil();
+            showLoadingSync('success');
+        }
+
+        // PENGIRIMAN DATA FORM-POST KE GOOGLE APPS SCRIPT
+        function kirimOtomatisKeSheet(nis) {
+            kirimOtomatisKeSheetAsync(nis);
+        }
+
+        function kirimOtomatisKeSheetAsync(nis) {
+            return new Promise((resolve) => {
+                if (!DEFAULT_SCRIPT_URL) { resolve(); return; }
+                showLoadingSync('loading');
+
+                const pData = dbProfilDetail[nis] || {};
+                const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
+
+                let payload = {
+                    action: "saveBadgeSiswa",
+                    nis: nis,
+                    nama: dataSiswa ? dataSiswa[1] : nis,
+                    fotoProfil: pData.fotoProfil || "",
+                    pamerBadgeIdx: pData.pamerBadgeIdx || 0
+                };
+
+                let badgesArr = pData.badges || [];
+                for (let i = 0; i < 25; i++) {
+                    payload[`badge_${i + 1}`] = JSON.stringify(badgesArr[i] || { active: false, img: "", title: BADGE_DESCS[i] });
+                }
+
+                fetch(DEFAULT_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                })
+                .then(() => {
+                    showLoadingSync('success');
+                    resolve();
+                })
+                .catch(err => {
+                    console.error("Sinkronisasi gagal:", err);
+                    showLoadingSync('error');
+                    resolve();
+                });
+            });
+        }
+
+        async function tarikDataDariSheet() {
+            if (!DEFAULT_SCRIPT_URL) return;
+            try {
+                const response = await fetch(`${DEFAULT_SCRIPT_URL}?action=getProfilSiswa`);
+                const result = await response.json();
+                if (result && result.status === 'success' && result.data) {
+                    result.data.forEach(item => {
+                        const nis = String(item.nis || item.NIS || "").trim();
+                        if (!nis) return;
+                        if (!dbProfilDetail[nis]) dbProfilDetail[nis] = { fotoProfil: "", badges: [] };
+                        
+                        if (item.fotoProfil) dbProfilDetail[nis].fotoProfil = item.fotoProfil;
+                        
+                        let bArr = Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] }));
+                        for (let i = 0; i < 25; i++) {
+                            let k = `badge_${i + 1}`;
+                            if (item[k]) {
+                                try { bArr[i] = JSON.parse(item[k]); } catch(e) {}
+                            }
+                        }
+                        dbProfilDetail[nis].badges = bArr;
+                    });
+                    if (currentNis) renderProfil();
+                }
+            } catch (err) {
+                console.warn("Gagal narik data Sheet:", err);
+            }
+        }
+    </script>
+</body>
+</html>
