@@ -380,6 +380,31 @@
     <input type="file" id="inputUploadFotoProfil" accept="image/*" class="hidden" onchange="prosesUploadFotoProfilSiswa(event)">
     <input type="file" id="inputFotoStatus" accept="image/*" class="hidden" onchange="previewFotoStatusPost(event)">
 
+    <!-- MODAL POP-UP GELEMBUNG IFRAME BADGE.HTML -->
+    <div id="modalFrameBadgeHtml" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 z-[9999] hidden no-print" onclick="tutupModalBadgeHtml(event)">
+        <div class="glass-panel w-full max-w-4xl h-[85vh] rounded-3xl border-4 border-amber-300 shadow-2xl flex flex-col relative overflow-hidden animate-in fade-in zoom-in duration-200" onclick="event.stopPropagation()">
+            <!-- HEADER MODAL BADGE -->
+            <div class="p-3.5 sm:p-4 bg-gradient-to-r from-amber-400 via-pink-400 to-sky-400 flex items-center justify-between shrink-0 shadow-md">
+                <div class="flex items-center gap-2.5 text-slate-900">
+                    <div class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-amber-600 font-black shadow-inner">
+                        🏅
+                    </div>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-cute font-black leading-tight">Pusat Galeri Badge & Penghargaan</h3>
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-800 opacity-90">badge.html • Tampilan Tantangan & Pencapaian Siswa</p>
+                    </div>
+                </div>
+                <button onclick="tutupModalBadgeHtml()" class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-slate-800 hover:text-rose-600 font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-90">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- IFRAME CONTAINER -->
+            <div class="flex-1 w-full h-full bg-white relative">
+                <iframe id="iframeBadgeTarget" src="badge.html" class="w-full h-full border-0" title="Badge HTML Preview"></iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL PILIH BADGE UNTUK DIPAMERKAN -->
     <div id="modalPilihBadgeProfil" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden no-print">
         <div class="glass-panel p-5 sm:p-6 rounded-3xl max-w-lg w-full border-2 border-amber-300 shadow-2xl relative max-h-[90vh] flex flex-col">
@@ -1028,12 +1053,20 @@
                     </div>
 
                     <div class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-amber-200">
+                        <!-- TOMBOL BADGE DI ATAS POP-UP GELEMBUNG MODAL (TETAP TERLIHAT DI MANAPUN) -->
+                        <div class="mb-4 pb-3 border-b border-slate-200/80 flex items-center justify-between flex-wrap gap-2">
+                            <button onclick="bukaModalBadgeHtml()" class="bg-gradient-to-r from-amber-400 via-pink-500 to-sky-400 hover:opacity-95 text-white font-cute font-black text-xs sm:text-sm px-4 py-2.5 rounded-2xl shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer no-print">
+                                <i class="fa-solid fa-award text-amber-200 text-base"></i> BADGE 🏅
+                            </button>
+                            <span class="text-[11px] font-semibold text-slate-500 italic">Klik tombol BADGE untuk membuka badge.html dalam pop-up gelembung ✨</span>
+                        </div>
+
                         <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
                             <div>
                                 <h3 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
                                     <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Catatan Pelanggaran Kedisiplinan
                                 </h3>
-                                <p class="text-xs text-slate-600">Catatan sikap dan kedisiplinan harian siswa</p>
+                                <p class="text-xs text-slate-600" id="lblSubtitlePelanggaran">Catatan sikap dan kedisiplinan harian siswa</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span id="lblHeartMeterIcon" class="text-xl heart-pulse">❤️</span>
@@ -1068,8 +1101,8 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs">
                                 <thead>
-                                    <tr class="border-b border-slate-200 text-slate-500 font-semibold uppercase">
-                                        <th class="py-2 px-3">Tanggal</th>
+                                    <tr class="border-b border-slate-200 text-slate-500 font-semibold uppercase" id="theadPelanggaranRow">
+                                        <th class="py-2 px-3" id="thSiswaNamaHead">Tanggal</th>
                                         <th class="py-2 px-3">Bentuk Pelanggaran</th>
                                         <th class="py-2 px-3 text-center">Poin</th>
                                         <th class="py-2 px-3 text-right no-print admin-only">Aksi</th>
@@ -1171,6 +1204,28 @@
         let activeFeedFilter = 'all';
 
         let idbInstance = null;
+
+        /* FUNGSI MODAL GELEMBUNG BADGE.HTML */
+        function bukaModalBadgeHtml() {
+            const modal = document.getElementById('modalFrameBadgeHtml');
+            const iframe = document.getElementById('iframeBadgeTarget');
+            if (modal) {
+                if (iframe && iframe.src === 'about:blank') {
+                    iframe.src = 'badge.html';
+                }
+                modal.classList.remove('hidden');
+                playBeepSound(950, 'sine', 0.12);
+            }
+        }
+
+        function tutupModalBadgeHtml(e) {
+            if (e && e.target !== e.currentTarget) return;
+            const modal = document.getElementById('modalFrameBadgeHtml');
+            if (modal) {
+                modal.classList.add('hidden');
+                playBeepSound(650, 'sine', 0.08);
+            }
+        }
 
         function bukaIndexedDB() {
             return new Promise((resolve, reject) => {
@@ -1408,6 +1463,7 @@
             if (tabName === 'profil') {
                 document.getElementById('frameSectionProfil').classList.remove('hidden');
                 document.getElementById('tabBtnProfil').classList.add('active');
+                if (currentNis) renderProfilSiswa(currentNis);
             } else if (tabName === 'status') {
                 document.getElementById('frameSectionStatus').classList.remove('hidden');
                 document.getElementById('tabBtnStatus').classList.add('active');
@@ -3522,33 +3578,107 @@
         }
 
         /* RENDER RECORD PELANGGARAN & ANIMASI HEART METER DINAMIS */
-        function renderPelanggaran(listPelanggaran) {
+        /* PEMBARUAN PENYEMPURNAAN MODUS ADMIN: REKAP KATALOG DISIPLIN SEMUA SISWA AKTIF */
+        function renderPelanggaran(listPelanggaranTarget) {
             const tbody = document.getElementById('tbodyPelanggaran');
+            const theadRow = document.getElementById('theadPelanggaranRow');
+            const lblSub = document.getElementById('lblSubtitlePelanggaran');
+
+            if (!tbody || !theadRow) return;
+
             tbody.innerHTML = '';
 
-            let totalPengurangan = 0;
+            let listToRender = [];
+            let isGlobalAdminView = (isAdminMode && (currentNis === 'admin' || !currentNis));
 
-            if (!listPelanggaran || listPelanggaran.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500 italic">Tidak ada catatan pelanggaran (Sikap Baik 🎉)</td></tr>`;
-            } else {
-                listPelanggaran.forEach((item, idx) => {
-                    totalPengurangan += parseInt(item.poin) || 0;
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-200 hover:bg-slate-50">
-                            <td class="py-2.5 px-3 text-slate-700 font-medium">${item.tgl}</td>
-                            <td class="py-2.5 px-3 font-semibold text-slate-800">${item.nama}</td>
-                            <td class="py-2.5 px-3 text-center font-bold text-rose-600">-${item.poin}</td>
-                            ${isAdminMode ? `
+            if (isAdminMode) {
+                // Di Mode Admin, tampilkan rekapitulasi seluruh pelanggaran dari semua siswa aktif
+                if (lblSub) lblSub.innerText = "Monitoring Rekap Catatan Pelanggaran Kedisiplinan Seluruh Siswa Aktif";
+                
+                theadRow.innerHTML = `
+                    <th class="py-2 px-3">Siswa (Absen)</th>
+                    <th class="py-2 px-3">Tanggal</th>
+                    <th class="py-2 px-3">Bentuk Pelanggaran</th>
+                    <th class="py-2 px-3 text-center">Poin</th>
+                    <th class="py-2 px-3 text-right no-print admin-only">Aksi</th>
+                `;
+
+                listMasterSiswa.forEach((s, sIdx) => {
+                    const sNis = String(s[0]);
+                    const pData = dbProfilDetail[sNis];
+                    if (pData && pData.pelanggaran && Array.isArray(pData.pelanggaran)) {
+                        pData.pelanggaran.forEach((item, pIdx) => {
+                            listToRender.push({
+                                nis: sNis,
+                                namaSiswa: s[1],
+                                noAbsen: sIdx + 1,
+                                tgl: item.tgl,
+                                namaPelanggaran: item.nama,
+                                poin: item.poin,
+                                indexPelanggaranItem: pIdx
+                            });
+                        });
+                    }
+                });
+
+                if (listToRender.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500 italic">Belum ada catatan pelanggaran siswa aktif kelas (Kedisiplinan 100% Sempurna 🎉)</td></tr>`;
+                } else {
+                    listToRender.forEach(item => {
+                        tbody.innerHTML += `
+                            <tr class="border-b border-slate-200 hover:bg-slate-50">
+                                <td class="py-2.5 px-3 font-extrabold text-slate-800">
+                                    <div class="flex items-center gap-1.5 cursor-pointer hover:text-pink-600 transition-colors" onclick="bukaProfilTeman('${item.nis}')">
+                                        <span class="w-5 h-5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black flex items-center justify-center shrink-0 border border-amber-300">${item.noAbsen}</span>
+                                        <span class="truncate">${item.namaSiswa}</span>
+                                    </div>
+                                </td>
+                                <td class="py-2.5 px-3 text-slate-700 font-medium">${item.tgl}</td>
+                                <td class="py-2.5 px-3 font-semibold text-slate-800">${item.namaPelanggaran}</td>
+                                <td class="py-2.5 px-3 text-center font-bold text-rose-600">-${item.poin}</td>
                                 <td class="py-2.5 px-3 text-right no-print">
-                                    <button onclick="hapusPelanggaran(${idx})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1 rounded">
+                                    <button onclick="hapusPelanggaranSiswaMassal('${item.nis}', ${item.indexPelanggaranItem})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1 rounded" title="Hapus Catatan Pelanggaran">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </td>
-                            ` : '<td class="py-2.5 px-3 text-right"></td>'}
-                        </tr>
-                    `;
-                });
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                // Di Mode Siswa, tampilkan khusus milik siswa yang aktif
+                if (lblSub) lblSub.innerText = "Catatan sikap dan kedisiplinan harian siswa";
+                
+                theadRow.innerHTML = `
+                    <th class="py-2 px-3">Tanggal</th>
+                    <th class="py-2 px-3">Bentuk Pelanggaran</th>
+                    <th class="py-2 px-3 text-center">Poin</th>
+                    <th class="py-2 px-3 text-right no-print"></th>
+                `;
+
+                const currList = listPelanggaranTarget || [];
+                if (currList.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500 italic">Tidak ada catatan pelanggaran (Sikap Baik 🎉)</td></tr>`;
+                } else {
+                    currList.forEach((item, idx) => {
+                        tbody.innerHTML += `
+                            <tr class="border-b border-slate-200 hover:bg-slate-50">
+                                <td class="py-2.5 px-3 text-slate-700 font-medium">${item.tgl}</td>
+                                <td class="py-2.5 px-3 font-semibold text-slate-800">${item.nama}</td>
+                                <td class="py-2.5 px-3 text-center font-bold text-rose-600">-${item.poin}</td>
+                                <td class="py-2.5 px-3 text-right"></td>
+                            </tr>
+                        `;
+                    });
+                }
             }
+
+            // Hitung Skor Kedisiplinan Heart Meter khusus siswa terpilih
+            let totalPengurangan = 0;
+            const targetSiswaPelanggaran = (currentNis && currentNis !== 'admin') ? (dbProfilDetail[currentNis]?.pelanggaran || []) : [];
+            targetSiswaPelanggaran.forEach(item => {
+                totalPengurangan += parseInt(item.poin) || 0;
+            });
 
             const skorSikap = Math.max(0, 100 - totalPengurangan);
             const lblSkor = document.getElementById('lblSkorSikap');
@@ -3591,9 +3721,27 @@
             }
         }
 
+        function hapusPelanggaranSiswaMassal(targetNis, idxPelanggaran) {
+            if (!isAdminMode) return;
+            const pData = dbProfilDetail[targetNis];
+            if (pData && pData.pelanggaran && pData.pelanggaran[idxPelanggaran]) {
+                pData.pelanggaran.splice(idxPelanggaran, 1);
+                playBeepSound(600, 'sine', 0.1);
+                simpanSemuaData();
+                renderPelanggaran(currentNis ? (dbProfilDetail[currentNis]?.pelanggaran || []) : []);
+                kirimDataProfilLengkapKeSheet(targetNis);
+            }
+        }
+
         function tambahPelanggaran(e) {
             e.preventDefault();
             if (!currentNis || !isAdminMode) return;
+
+            const targetNis = (currentNis === 'admin') ? (document.getElementById('selectSiswaProfil')?.value || '') : currentNis;
+            if (!targetNis || targetNis === 'admin') {
+                alert("Silakan pilih siswa penerima catatan pelanggaran pada dropdown atas terlebih dahulu!");
+                return;
+            }
 
             const tgl = document.getElementById('inputTglMelanggar').value;
             const nama = document.getElementById('inputNamaPelanggaran').value.trim();
@@ -3601,7 +3749,7 @@
 
             if (!tgl || !nama || isNaN(poin)) return;
 
-            const pData = dbProfilDetail[currentNis];
+            const pData = dbProfilDetail[targetNis];
             if (!pData.pelanggaran) pData.pelanggaran = [];
 
             pData.pelanggaran.push({ tgl, nama, poin });
@@ -3613,7 +3761,7 @@
             document.getElementById('inputNamaPelanggaran').value = '';
             document.getElementById('inputPoinPengurangan').value = '';
 
-            kirimDataProfilLengkapKeSheet(currentNis);
+            kirimDataProfilLengkapKeSheet(targetNis);
         }
 
         function hapusPelanggaran(idx) {
