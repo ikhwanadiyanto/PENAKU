@@ -348,6 +348,26 @@
 
     <div class="floating-emoji-container" id="floatingEmojiContainer"></div>
 
+    <!-- CUSTOM DIALOG BOX (PENGGANTI ALERT / CONFIRM / PROMPT) -->
+    <div id="customDialogModal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-md flex items-center justify-center p-4 z-[999999] hidden no-print">
+        <div class="glass-panel p-6 rounded-3xl max-w-sm w-full border-4 border-amber-300 shadow-2xl text-center animate-in fade-in zoom-in duration-150">
+            <div id="customDialogIcon" class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl shadow-inner">
+                ✨
+            </div>
+            <h4 id="customDialogTitle" class="text-base font-cute font-black text-slate-800 mb-1">Informasi SIXBOOK</h4>
+            <p id="customDialogMessage" class="text-xs text-slate-600 font-medium leading-relaxed mb-4"></p>
+            <input type="text" id="customDialogInput" class="hidden w-full bg-white text-slate-800 font-bold text-xs border-2 border-amber-300 rounded-xl px-3.5 py-2.5 mb-4 focus:outline-none focus:border-pink-500 shadow-inner">
+            <div class="flex items-center justify-center gap-2">
+                <button id="customDialogBtnCancel" class="hidden flex-1 py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all">
+                    Batal
+                </button>
+                <button id="customDialogBtnOk" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-pink-500 via-amber-500 to-sky-400 hover:opacity-95 text-white font-black text-xs shadow-md transition-all active:scale-95">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- POPUP BUBBLE NOTIFIKASI MELAYANG BEBAS -->
     <div id="bubbleNotifToast" onclick="bukaNotifFeed()" class="hidden fixed top-5 right-5 z-[99999] bg-slate-900/95 backdrop-blur-md text-white p-3.5 rounded-2xl shadow-2xl border-2 border-amber-400 w-72 max-w-[90vw] cursor-pointer animate-bounce flex items-start gap-3">
         <div class="w-9 h-9 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 text-base shadow-inner mt-0.5">
@@ -488,7 +508,7 @@
                     <div class="flex-1 w-full">
                         <label class="block text-xs font-bold text-slate-700 mb-1">Unggah File Gambar Badge Baru (Opsional):</label>
                         <input type="file" id="inputMassalFileBadge" accept="image/*" onchange="previewFotoBadgeMassal(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer">
-                        <p class="text-[10px] text-slate-400 mt-1">Format PNG/JPG (Rasio 1:1).</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Format PNG/JPG (Rasio 1:1, otomatis dikompres 150x150).</p>
                     </div>
                 </div>
 
@@ -622,8 +642,7 @@
             </div>
         </header>
 
-        <!-- FRAME NAVIGATION TABS DENGAN URUTAN DI-REVISI SESUAI INSTRUKSI -->
-        <!-- Urutan: SIXBOOK Feed - Profil & Prestasi - Transkrip Nilai - Daftar Siswa - Menu Admin (KHUSUS ADMIN) -->
+        <!-- FRAME NAVIGATION TABS -->
         <div class="glass-panel p-2 rounded-2xl mb-6 flex items-center justify-start sm:justify-center gap-2 sm:gap-6 overflow-x-auto no-print border-2 border-amber-200 shadow-sm">
             <button onclick="gantiTabFrame('status')" id="tabBtnStatus" class="tab-btn active px-3.5 py-2 text-xs sm:text-sm font-cute font-bold flex items-center gap-1.5">
                 <i class="fa-solid fa-newspaper text-pink-500"></i> SIXBOOK Feed 🎈
@@ -658,7 +677,6 @@
                 </div>
 
                 <div id="containerGridDaftarSiswa" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Dynamic rendering via JavaScript -->
                 </div>
             </div>
         </div>
@@ -1053,7 +1071,7 @@
                     </div>
 
                     <div class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-amber-200">
-                        <!-- TOMBOL BADGE DI ATAS POP-UP GELEMBUNG MODAL (TETAP TERLIHAT DI MANAPUN) -->
+                        <!-- TOMBOL BADGE DI ATAS POP-UP GELEMBUNG MODAL -->
                         <div class="mb-4 pb-3 border-b border-slate-200/80 flex items-center justify-between flex-wrap gap-2">
                             <button onclick="bukaModalBadgeHtml()" class="bg-gradient-to-r from-amber-400 via-pink-500 to-sky-400 hover:opacity-95 text-white font-cute font-black text-xs sm:text-sm px-4 py-2.5 rounded-2xl shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer no-print">
                                 <i class="fa-solid fa-award text-amber-200 text-base"></i> BADGE 🏅
@@ -1138,7 +1156,6 @@
                                 <i class="fa-solid fa-clipboard-user text-sky-500"></i> Rekapitulasi Kehadiran & Ekstrakurikuler
                             </h3>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="gridKehadiranContainer">
-                                <!-- Dirender otomatis oleh JavaScript -->
                             </div>
                         </div>
                     </div>
@@ -1189,6 +1206,78 @@
             ["3107", "Zulfan Azhar Ramadhan"],
             ["3289", "Tauladani Elang"]
         ];
+
+        /* HELPER DIALOG KUSTOM NON-BLOCKING (MENGGANTIKAN ALERT / CONFIRM / PROMPT) */
+        function tampilPesanDialog(pesan, judul = "Informasi SIXBOOK", ikon = "✨") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customDialogModal');
+                document.getElementById('customDialogIcon').innerText = ikon;
+                document.getElementById('customDialogTitle').innerText = judul;
+                document.getElementById('customDialogMessage').innerText = pesan;
+                document.getElementById('customDialogInput').classList.add('hidden');
+                document.getElementById('customDialogBtnCancel').classList.add('hidden');
+                const btnOk = document.getElementById('customDialogBtnOk');
+                btnOk.innerText = "OK";
+                modal.classList.remove('hidden');
+
+                btnOk.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(true);
+                };
+            });
+        }
+
+        function tampilKonfirmasiDialog(pesan, judul = "Konfirmasi", ikon = "🤔") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customDialogModal');
+                document.getElementById('customDialogIcon').innerText = ikon;
+                document.getElementById('customDialogTitle').innerText = judul;
+                document.getElementById('customDialogMessage').innerText = pesan;
+                document.getElementById('customDialogInput').classList.add('hidden');
+                const btnCancel = document.getElementById('customDialogBtnCancel');
+                const btnOk = document.getElementById('customDialogBtnOk');
+                btnCancel.classList.remove('hidden');
+                btnOk.innerText = "Ya, Lanjutkan";
+                modal.classList.remove('hidden');
+
+                btnCancel.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(false);
+                };
+                btnOk.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(true);
+                };
+            });
+        }
+
+        function tampilInputDialog(pesan, nilaiDefault = "", judul = "Ubah Nama", ikon = "✏️") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customDialogModal');
+                document.getElementById('customDialogIcon').innerText = ikon;
+                document.getElementById('customDialogTitle').innerText = judul;
+                document.getElementById('customDialogMessage').innerText = pesan;
+                const inputEl = document.getElementById('customDialogInput');
+                inputEl.value = nilaiDefault;
+                inputEl.classList.remove('hidden');
+                const btnCancel = document.getElementById('customDialogBtnCancel');
+                const btnOk = document.getElementById('customDialogBtnOk');
+                btnCancel.classList.remove('hidden');
+                btnOk.innerText = "Simpan";
+                modal.classList.remove('hidden');
+                setTimeout(() => inputEl.focus(), 50);
+
+                btnCancel.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(null);
+                };
+                btnOk.onclick = () => {
+                    const val = inputEl.value;
+                    modal.classList.add('hidden');
+                    resolve(val);
+                };
+            });
+        }
 
         let tempFotoStatusBase64 = "";
         let listFeedsPost = [];
@@ -1312,6 +1401,8 @@
         let isAdminMode = false;
         let showAll25Badges = false;
         let isDataFetchedFromSheet = false;
+        let isEditingOrSavingBadge = false;
+        let lastBadgeLocalSaveTime = {};
         let feedPollingTimer = null;
         let deferredPWAEvent = null;
 
@@ -1434,7 +1525,7 @@
                 btnAll.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-pink-600 border border-pink-200 hover:bg-pink-50 flex items-center justify-center gap-1.5 active:scale-95";
             } else {
                 btnAll.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md flex items-center justify-center gap-1.5 active:scale-95";
-                btnMine.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95";
+                btnMine.className = "flex-1 sm:flex-none font-cute px-4 py-2 rounded-xl text-xs font-black transition-all bg-white text-amber-600 border border-amber-300 hover:bg-amber-50 flex items-center justify-center gap-1.5 active:scale-95";
             }
 
             playBeepSound(800, 'sine', 0.1);
@@ -1442,9 +1533,8 @@
         }
 
         function gantiTabFrame(tabName) {
-            // Proteksi Tab khusus Admin agar tidak bisa diakses Siswa
             if (tabName === 'menu-admin' && !isAdminMode) {
-                alert("Akses Ditolak: Fitur Menu Admin khusus untuk pengajar/admin!");
+                tampilPesanDialog("Akses Ditolak: Fitur Menu Admin khusus untuk pengajar/admin!", "Akses Terbatas", "🔒");
                 tabName = 'status';
             }
 
@@ -1691,7 +1781,7 @@
             const rememberMe = document.getElementById('checkIngatSaya').checked;
 
             if (!namaInput || !nisInput) {
-                alert("Silakan masukkan Username dan NIS secara lengkap!");
+                tampilPesanDialog("Silakan masukkan Username dan NIS secara lengkap!", "Form Belum Lengkap", "📝");
                 return;
             }
 
@@ -1705,7 +1795,6 @@
                 localStorage.removeItem("remember_me");
             }
 
-            // KONTROL KHUSUS HANYA UNTUK ADMIN
             if (nisInput === ADMIN_NIS || namaInput === ADMIN_USERNAME || namaInput.includes('ikhwan')) {
                 isAdminMode = true;
                 loggedInNis = "admin";
@@ -1715,11 +1804,9 @@
                 document.getElementById('badgeModeAkses').innerText = "MODE ADMIN ACTIVE";
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-slate-900 shadow-sm";
                 
-                // Tampilkan menu khusus Admin
                 document.querySelectorAll('.admin-only').forEach(el => el.style.setProperty('display', '', 'important'));
                 document.querySelectorAll('.student-only').forEach(el => el.style.setProperty('display', 'none', 'important'));
             } else {
-                // UNTUK SISWA: SEMBUNYIKAN MENU ADMIN TOTAL
                 isAdminMode = false;
                 const foundSiswa = listMasterSiswa.find(s => 
                     String(s[0]).trim().toLowerCase() === nisInput &&
@@ -1727,7 +1814,7 @@
                 );
 
                 if (!foundSiswa) {
-                    alert(`Login Gagal! Username "${namaInput}" dan NIS "${nisInput}" tidak cocok.`);
+                    tampilPesanDialog(`Login Gagal! Username "${namaInput}" dan NIS "${nisInput}" tidak cocok.`, "Login Gagal", "❌");
                     return;
                 }
 
@@ -1739,7 +1826,6 @@
                 document.getElementById('badgeModeAkses').innerText = `Mode Siswa (${foundSiswa[1]})`;
                 document.getElementById('badgeModeAkses').className = "text-[10px] font-black px-2.5 py-1 rounded-full bg-white/80 text-pink-700 border border-pink-300 shadow-sm";
 
-                // Sembunyikan semua menu Admin
                 document.querySelectorAll('.admin-only').forEach(el => el.style.setProperty('display', 'none', 'important'));
                 document.querySelectorAll('.student-only').forEach(el => el.style.setProperty('display', '', 'important'));
             }
@@ -1851,9 +1937,6 @@
             currentNis = String(nis);
             playBeepSound(700, 'sine', 0.08);
 
-            const dataSiswa = listMasterSiswa.find(s => String(s[0]) === String(nis));
-            const indexSiswa = listMasterSiswa.findIndex(s => String(s[0]) === String(nis));
-
             if (!dbProfilDetail[nis]) {
                 dbProfilDetail[nis] = {
                     fotoProfil: "",
@@ -1867,15 +1950,24 @@
                     kehadiranS2: { sakit: 0, izin: 0, alpa: 0, hadir: 0 },
                     pramukaPersentase: 100
                 };
+            } else if (!Array.isArray(dbProfilDetail[nis].badges) || dbProfilDetail[nis].badges.length < 25) {
+                let oldBadges = Array.isArray(dbProfilDetail[nis].badges) ? dbProfilDetail[nis].badges : [];
+                dbProfilDetail[nis].badges = Array(25).fill().map((_, i) => {
+                    let b = oldBadges[i];
+                    if (b && typeof b === 'object') {
+                        return { active: !!b.active, img: b.img || "", title: b.title || BADGE_DESCS[i] };
+                    }
+                    return { active: !!b, img: "", title: BADGE_DESCS[i] };
+                });
             }
 
             renderProfilSiswa(nis);
         }
 
-        function renameAdminNama() {
+        async function renameAdminNama() {
             if (!isAdminMode) return;
             const currentName = dbProfilDetail['admin']?.nama || DEFAULT_ADMIN_NAME;
-            const newName = prompt("Masukkan Nama Admin Baru:", currentName);
+            const newName = await tampilInputDialog("Masukkan Nama Admin Baru:", currentName, "Ubah Nama Admin", "👑");
             if (newName !== null && newName.trim() !== "") {
                 if (!dbProfilDetail['admin']) dbProfilDetail['admin'] = {};
                 dbProfilDetail['admin'].nama = newName.trim();
@@ -2049,7 +2141,7 @@
                 if (panelBadges) panelBadges.classList.add('hidden');
             } else {
                 if (badgeAdminGlow) badgeAdminGlow.classList.add('hidden');
-                if (btnRenameAdmin) badgeAdminGlow.classList.add('hidden');
+                if (btnRenameAdmin) btnRenameAdmin.classList.add('hidden');
                 if (panelLevel) panelLevel.classList.remove('hidden');
                 if (panelBadges) panelBadges.classList.remove('hidden');
             }
@@ -2070,17 +2162,14 @@
             }
 
             const bnt = pData.bintang || 0;
-            
             const elInside = document.getElementById('lblTotalBintangInside');
             if (elInside) {
                 elInside.innerHTML = `${bnt} ⭐`;
             }
 
-            // XP SISWA
             const xpVal = pData.xp !== undefined ? pData.xp : (dbXpSiswa[nis] !== undefined ? dbXpSiswa[nis] : 0);
             document.getElementById('lblTotalXPVal').innerText = `${xpVal} XP`;
 
-            // SALDO TABUNGAN
             const saldoTabungan = pData.tabungan !== undefined ? pData.tabungan : (dbTabunganSiswa[nis] !== undefined ? dbTabunganSiswa[nis] : 0);
             document.getElementById('lblSaldoTabungan').innerText = formatRupiah(saldoTabungan);
 
@@ -2239,13 +2328,13 @@
             renderProfilSiswa(currentNis);
             renderFormPostUser();
             kirimBadgeMandiriKeSheet(loggedInNis, idx);
-            alert("Berhasil memperbarui Badge yang dipamerkan di profil!");
+            tampilPesanDialog("Berhasil memperbarui Badge yang dipamerkan di profil!", "Badge Terpasang", "🏅");
         }
 
         function picuUploadFotoProfilSiswa() {
             if (!currentNis) return;
             if (!isAdminMode && loggedInNis !== currentNis) {
-                alert("Anda sedang melihat profil teman. Anda tidak bisa mengubah foto profil teman Anda!");
+                tampilPesanDialog("Anda sedang melihat profil teman. Anda tidak bisa mengubah foto profil teman Anda!", "Mode Intip Teman", "👀");
                 return;
             }
             document.getElementById('inputUploadFotoProfil').click();
@@ -2341,7 +2430,10 @@
 
         async function kirimBadgeMandiriKeSheet(nis, badgeIdx) {
             if (!DEFAULT_SCRIPT_URL || !nis) return;
-            const targetNis = (nis === 'admin') ? ADMIN_NIS : nis;
+            const targetNis = (nis === 'admin') ? ADMIN_NIS : String(nis);
+            lastBadgeLocalSaveTime[targetNis] = Date.now();
+            isEditingOrSavingBadge = true;
+
             const pData = dbProfilDetail[targetNis] || dbProfilDetail[nis] || {};
             const badgeObj = (pData.badges && pData.badges[badgeIdx]) ? pData.badges[badgeIdx] : { active: false, img: "", title: BADGE_DESCS[badgeIdx] };
 
@@ -2361,8 +2453,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                // Sinkronkan juga via saveProfilSiswa agar kolom badge_1..25 terjamin tersimpan di Apps Script
+                await kirimDataProfilLengkapKeSheet(targetNis);
             } catch (err) {
                 console.warn("Gagal update badge mandiri ke Sheet:", err);
+            } finally {
+                setTimeout(() => {
+                    isEditingOrSavingBadge = false;
+                }, 4000);
             }
         }
 
@@ -2437,14 +2535,15 @@
             }
         }
 
-        function editNamaBadge(event, index) {
+        async function editNamaBadge(event, index) {
             event.stopPropagation();
             if (!currentNis || !isAdminMode || currentNis === 'admin') return;
+            isEditingOrSavingBadge = true;
             const pData = dbProfilDetail[currentNis];
             if (!pData.badges) pData.badges = Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] }));
 
             const defaultTitle = pData.badges[index]?.title || BADGE_DESCS[index];
-            const newTitle = prompt("Masukkan Nama Badge Baru:", defaultTitle);
+            const newTitle = await tampilInputDialog("Masukkan Nama Badge Baru:", defaultTitle, "Edit Nama Badge", "🏅");
 
             if (newTitle !== null && newTitle.trim() !== "") {
                 if (typeof pData.badges[index] !== 'object') {
@@ -2452,9 +2551,12 @@
                 } else {
                     pData.badges[index].title = newTitle.trim();
                 }
+                lastBadgeLocalSaveTime[String(currentNis)] = Date.now();
                 simpanSemuaData();
                 render25Badges(pData.badges);
                 kirimBadgeMandiriKeSheet(currentNis, index);
+            } else {
+                isEditingOrSavingBadge = false;
             }
         }
 
@@ -2468,6 +2570,7 @@
             }
 
             pData.badges[index].active = !pData.badges[index].active;
+            lastBadgeLocalSaveTime[String(currentNis)] = Date.now();
             if (pData.badges[index].active) playBeepSound(900, 'triangle', 0.15);
             else playBeepSound(400, 'sine', 0.08);
 
@@ -2479,32 +2582,40 @@
         function picuUploadFotoBadge(event, index) {
             event.stopPropagation();
             if (!isAdminMode) return;
+            isEditingOrSavingBadge = true;
             selectedBadgeIdxForUpload = index;
             document.getElementById('inputUploadBadgeFoto').click();
         }
 
         function prosesUploadBadgeFoto(event) {
             const file = event.target.files[0];
-            if (!file || selectedBadgeIdxForUpload === null || !currentNis || !isAdminMode) return;
+            if (!file || selectedBadgeIdxForUpload === null || !currentNis || !isAdminMode) {
+                isEditingOrSavingBadge = false;
+                return;
+            }
+
+            isEditingOrSavingBadge = true;
+            const targetIdx = selectedBadgeIdxForUpload;
+            const targetSiswaNis = String(currentNis);
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 300;
-                    const MAX_HEIGHT = 300;
+                    const MAX_WIDTH = 150;
+                    const MAX_HEIGHT = 150;
                     let width = img.width;
                     let height = img.height;
 
                     if (width > height) {
                         if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
+                            height = Math.round(height * (MAX_WIDTH / width));
                             width = MAX_WIDTH;
                         }
                     } else {
                         if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
+                            width = Math.round(width * (MAX_HEIGHT / height));
                             height = MAX_HEIGHT;
                         }
                     }
@@ -2514,20 +2625,32 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    const base64Data = canvas.toDataURL('image/jpeg', 0.75);
+                    const base64Data = canvas.toDataURL('image/jpeg', 0.55);
 
-                    const pData = dbProfilDetail[currentNis];
-                    if (!pData.badges[selectedBadgeIdxForUpload] || typeof pData.badges[selectedBadgeIdxForUpload] !== 'object') {
-                        pData.badges[selectedBadgeIdxForUpload] = { active: true, img: "", title: BADGE_DESCS[selectedBadgeIdxForUpload] };
+                    if (!dbProfilDetail[targetSiswaNis]) {
+                        dbProfilDetail[targetSiswaNis] = {
+                            fotoProfil: "", bintang: 0, xp: 0,
+                            badges: Array(25).fill().map((_, i) => ({ active: false, img: "", title: BADGE_DESCS[i] })),
+                            pamerBadgeIdx: 0, pelanggaran: [], nilai: {}
+                        };
+                    }
+                    const pData = dbProfilDetail[targetSiswaNis];
+                    if (!Array.isArray(pData.badges) || pData.badges.length < 25) {
+                        let oldB = Array.isArray(pData.badges) ? pData.badges : [];
+                        pData.badges = Array(25).fill().map((_, i) => (oldB[i] && typeof oldB[i] === 'object') ? oldB[i] : { active: !!oldB[i], img: "", title: BADGE_DESCS[i] });
+                    }
+                    if (!pData.badges[targetIdx] || typeof pData.badges[targetIdx] !== 'object') {
+                        pData.badges[targetIdx] = { active: true, img: "", title: BADGE_DESCS[targetIdx] };
                     }
 
-                    pData.badges[selectedBadgeIdxForUpload].active = true;
-                    pData.badges[selectedBadgeIdxForUpload].img = base64Data;
+                    pData.badges[targetIdx].active = true;
+                    pData.badges[targetIdx].img = base64Data;
+                    lastBadgeLocalSaveTime[targetSiswaNis] = Date.now();
 
                     playBeepSound(1100, 'sine', 0.2);
                     simpanSemuaData();
                     render25Badges(pData.badges);
-                    kirimBadgeMandiriKeSheet(currentNis, selectedBadgeIdxForUpload);
+                    kirimBadgeMandiriKeSheet(targetSiswaNis, targetIdx);
                 };
                 img.src = e.target.result;
             };
@@ -2543,6 +2666,7 @@
             if (pData.badges[index] && typeof pData.badges[index] === 'object') {
                 pData.badges[index].img = "";
             }
+            lastBadgeLocalSaveTime[String(currentNis)] = Date.now();
 
             playBeepSound(500, 'sawtooth', 0.1);
             simpanSemuaData();
@@ -2552,6 +2676,7 @@
 
         function bukaModalBadgeMassal() {
             if (!isAdminMode) return;
+            isEditingOrSavingBadge = true;
 
             const selectBadge = document.getElementById('selectMassalBadgeIndex');
             selectBadge.innerHTML = '';
@@ -2589,6 +2714,7 @@
 
         function tutupModalBadgeMassal() {
             document.getElementById('modalBadgeMassal').classList.add('hidden');
+            setTimeout(() => { isEditingOrSavingBadge = false; }, 1500);
         }
 
         function updateFormBadgeMassalPreview() {
@@ -2612,19 +2738,19 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 300;
-                    const MAX_HEIGHT = 300;
+                    const MAX_WIDTH = 150;
+                    const MAX_HEIGHT = 150;
                     let width = img.width;
                     let height = img.height;
 
                     if (width > height) {
                         if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
+                            height = Math.round(height * (MAX_WIDTH / width));
                             width = MAX_WIDTH;
                         }
                     } else {
                         if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
+                            width = Math.round(width * (MAX_HEIGHT / height));
                             height = MAX_HEIGHT;
                         }
                     }
@@ -2634,7 +2760,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    tempMassalBase64 = canvas.toDataURL('image/jpeg', 0.75);
+                    tempMassalBase64 = canvas.toDataURL('image/jpeg', 0.55);
 
                     document.getElementById('imgMassalBadgePreview').src = tempMassalBase64;
                     document.getElementById('imgMassalBadgePreview').classList.remove('hidden');
@@ -2659,7 +2785,7 @@
 
             const checkedBoxes = document.querySelectorAll('.chk-siswa-badge-massal:checked');
             if (checkedBoxes.length === 0) {
-                alert("Pilih minimal satu siswa terlebih dahulu!");
+                tampilPesanDialog("Pilih minimal satu siswa terlebih dahulu!", "Belum Ada Siswa Terpilih", "👥");
                 return;
             }
 
@@ -2695,6 +2821,7 @@
                 if (setAktif || tempMassalBase64) currentBadgeObj.active = true;
 
                 dbProfilDetail[nis].badges[badgeIdx] = currentBadgeObj;
+                lastBadgeLocalSaveTime[nis] = Date.now();
                 countUpdated++;
                 kirimBadgeMandiriKeSheet(nis, badgeIdx);
             });
@@ -2707,7 +2834,7 @@
             }
 
             tutupModalBadgeMassal();
-            alert(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`);
+            tampilPesanDialog(`Berhasil memperbarui Badge Slot ${badgeIdx + 1} (${newTitle || BADGE_DESCS[badgeIdx]}) untuk ${countUpdated} siswa!`, "Update Massal Sukses", "🎉");
         }
 
         function previewFotoStatusPost(e) {
@@ -2859,7 +2986,7 @@
             const youtubeUrlInput = document.getElementById('inputYoutubeUrl') ? document.getElementById('inputYoutubeUrl').value.trim() : '';
 
             if (!teksInput && !tempFotoStatusBase64 && !youtubeUrlInput) {
-                alert("Tuliskan status, masukkan link YouTube, atau unggah foto terlebih dahulu!");
+                tampilPesanDialog("Tuliskan status, masukkan link YouTube, atau unggah foto terlebih dahulu!", "Konten Kosong", "✍️");
                 return;
             }
 
@@ -2944,10 +3071,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert("Berhasil mengunggah dan menyinkronkan seluruh Feed ke Cloud Google Sheet (Tab SIXBOOK)!");
+                tampilPesanDialog("Berhasil mengunggah dan menyinkronkan seluruh Feed ke Cloud Google Sheet (Tab SIXBOOK)!", "Sinkronisasi Feed", "☁️");
             } catch (err) {
                 console.error("Gagal kirim Feed ke Sheet:", err);
-                alert("Gagal terhubung ke Google Sheet saat mengirim Feed.");
+                tampilPesanDialog("Gagal terhubung ke Google Sheet saat mengirim Feed.", "Koneksi Gagal", "⚠️");
             }
         }
 
@@ -3054,12 +3181,12 @@
 
                     if (isManual) {
                         playBeepSound(1000, 'sine', 0.2);
-                        alert(`Berhasil menarik ${listFeedsPost.length} postingan Feed terbaru dari Sheet SIXBOOK!`);
+                        tampilPesanDialog(`Berhasil menarik ${listFeedsPost.length} postingan Feed terbaru dari Sheet SIXBOOK!`, "Tarik Feed Berhasil", "📥");
                     }
                 }
             } catch (err) {
                 console.warn("Gagal tarik Feed dari Sheet:", err);
-                if (isManual) alert("Gagal menarik Feed dari Cloud. Periksa koneksi internet Anda.");
+                if (isManual) tampilPesanDialog("Gagal menarik Feed dari Cloud. Periksa koneksi internet Anda.", "Koneksi Gagal", "⚠️");
             }
         }
 
@@ -3075,7 +3202,7 @@
             if (feedPollingTimer) clearInterval(feedPollingTimer);
             
             feedPollingTimer = setInterval(() => {
-                if (isUserTypingActive()) {
+                if (isUserTypingActive() || isEditingOrSavingBadge) {
                     return; 
                 }
 
@@ -3152,17 +3279,18 @@
             }
         }
 
-        function hapusPostStatus(postId) {
+        async function hapusPostStatus(postId) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post) return;
 
             const canDelete = isAdminMode || (post.nis === String(loggedInNis));
             if (!canDelete) {
-                alert("Anda hanya dapat menghapus postingan Anda sendiri!");
+                tampilPesanDialog("Anda hanya dapat menghapus postingan Anda sendiri!", "Akses Ditolak", "🔒");
                 return;
             }
 
-            if (confirm("Hapus postingan ini? 👋")) {
+            const setuju = await tampilKonfirmasiDialog("Hapus postingan ini?", "Hapus Postingan", "👋");
+            if (setuju) {
                 const postElement = document.getElementById(`post_card_${postId}`);
                 
                 if (postElement) {
@@ -3198,7 +3326,7 @@
             }
         }
 
-        function hapusKomentarPost(postId, commentIndex) {
+        async function hapusKomentarPost(postId, commentIndex) {
             const post = listFeedsPost.find(p => p.id === postId);
             if (!post || !post.comments || !post.comments[commentIndex]) return;
 
@@ -3206,11 +3334,12 @@
             const canDelete = isAdminMode || (comment.nis === String(loggedInNis));
 
             if (!canDelete) {
-                alert("Anda hanya dapat menghapus komentar Anda sendiri!");
+                tampilPesanDialog("Anda hanya dapat menghapus komentar Anda sendiri!", "Akses Ditolak", "🔒");
                 return;
             }
 
-            if (confirm("Hapus komentar ini? 👋")) {
+            const setuju = await tampilKonfirmasiDialog("Hapus komentar ini?", "Hapus Komentar", "👋");
+            if (setuju) {
                 const commentElement = document.getElementById(`comment_bubble_${postId}_${commentIndex}`);
                 
                 if (commentElement) {
@@ -3578,7 +3707,6 @@
         }
 
         /* RENDER RECORD PELANGGARAN & ANIMASI HEART METER DINAMIS */
-        /* PEMBARUAN PENYEMPURNAAN MODUS ADMIN: REKAP KATALOG DISIPLIN SEMUA SISWA AKTIF */
         function renderPelanggaran(listPelanggaranTarget) {
             const tbody = document.getElementById('tbodyPelanggaran');
             const theadRow = document.getElementById('theadPelanggaranRow');
@@ -3589,10 +3717,8 @@
             tbody.innerHTML = '';
 
             let listToRender = [];
-            let isGlobalAdminView = (isAdminMode && (currentNis === 'admin' || !currentNis));
 
             if (isAdminMode) {
-                // Di Mode Admin, tampilkan rekapitulasi seluruh pelanggaran dari semua siswa aktif
                 if (lblSub) lblSub.innerText = "Monitoring Rekap Catatan Pelanggaran Kedisiplinan Seluruh Siswa Aktif";
                 
                 theadRow.innerHTML = `
@@ -3646,7 +3772,6 @@
                     });
                 }
             } else {
-                // Di Mode Siswa, tampilkan khusus milik siswa yang aktif
                 if (lblSub) lblSub.innerText = "Catatan sikap dan kedisiplinan harian siswa";
                 
                 theadRow.innerHTML = `
@@ -3660,7 +3785,7 @@
                 if (currList.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500 italic">Tidak ada catatan pelanggaran (Sikap Baik 🎉)</td></tr>`;
                 } else {
-                    currList.forEach((item, idx) => {
+                    currList.forEach((item) => {
                         tbody.innerHTML += `
                             <tr class="border-b border-slate-200 hover:bg-slate-50">
                                 <td class="py-2.5 px-3 text-slate-700 font-medium">${item.tgl}</td>
@@ -3673,7 +3798,6 @@
                 }
             }
 
-            // Hitung Skor Kedisiplinan Heart Meter khusus siswa terpilih
             let totalPengurangan = 0;
             const targetSiswaPelanggaran = (currentNis && currentNis !== 'admin') ? (dbProfilDetail[currentNis]?.pelanggaran || []) : [];
             targetSiswaPelanggaran.forEach(item => {
@@ -3739,7 +3863,7 @@
 
             const targetNis = (currentNis === 'admin') ? (document.getElementById('selectSiswaProfil')?.value || '') : currentNis;
             if (!targetNis || targetNis === 'admin') {
-                alert("Silakan pilih siswa penerima catatan pelanggaran pada dropdown atas terlebih dahulu!");
+                tampilPesanDialog("Silakan pilih siswa penerima catatan pelanggaran pada dropdown atas terlebih dahulu!", "Pilih Siswa", "👤");
                 return;
             }
 
@@ -4031,19 +4155,20 @@
                     document.getElementById('btnInstallApp').classList.add('hidden');
                 });
             } else {
-                alert("Aplikasi sudah terpasang atau browser Anda tidak mendukung instalasi langsung.");
+                tampilPesanDialog("Aplikasi sudah terpasang atau browser Anda tidak mendukung instalasi langsung.", "Info Instalasi", "📲");
             }
         }
 
         async function kirimDataKeSheet() {
             if (!isAdminMode) {
-                alert("Akses Ditolak: Hanya Admin yang dapat mengirim data ke Google Sheet!");
+                tampilPesanDialog("Akses Ditolak: Hanya Admin yang dapat mengirim data ke Google Sheet!", "Akses Terbatas", "🔒");
                 return;
             }
 
             if (!DEFAULT_SCRIPT_URL) return;
 
-            if (!confirm("Apakah Anda ingin mengirim/menyimpan data SELURUH SISWA sekaligus ke Google Sheet?")) {
+            const setuju = await tampilKonfirmasiDialog("Apakah Anda ingin mengirim/menyimpan data SELURUH SISWA sekaligus ke Google Sheet?", "Kirim Data Massal", "☁️");
+            if (!setuju) {
                 return;
             }
 
@@ -4166,7 +4291,7 @@
             } catch (err) {}
 
             playBeepSound(1200, 'sine', 0.25);
-            alert(`Berhasil mengirim data untuk ${suksesCount} dari ${listMasterSiswa.length} siswa ke Google Sheet!`);
+            tampilPesanDialog(`Berhasil mengirim data untuk ${suksesCount} dari ${listMasterSiswa.length} siswa ke Google Sheet!`, "Kirim Selesai", "✅");
             
             isDataFetchedFromSheet = true;
             if (currentNis) renderProfilSiswa(currentNis);
@@ -4256,147 +4381,160 @@
                             dbProfilDetail[keyTargetAlt].kehadiranS2 = valS2;
                         }
 
-                        if (item.pramukaPersentase !== undefined) {
-                            dbProfilDetail[keyTarget].pramukaPersentase = parseInt(item.pramukaPersentase) || 0;
-                            dbProfilDetail[keyTargetAlt].pramukaPersentase = dbProfilDetail[keyTarget].pramukaPersentase;
-                        } else if (item["Pramuka (%)"] !== undefined) {
-                            dbProfilDetail[keyTarget].pramukaPersentase = parseInt(item["Pramuka (%)"]) || 0;
-                            dbProfilDetail[keyTargetAlt].pramukaPersentase = dbProfilDetail[keyTarget].pramukaPersentase;
+                        const rawPramuka = item["Pramuka (%)"] !== undefined ? item["Pramuka (%)"] : (item.pramukaPersentase !== undefined ? item.pramukaPersentase : (item.pramuka !== undefined ? item.pramuka : undefined));
+                        if (rawPramuka !== undefined && rawPramuka !== "") {
+                            const valPram = parseInt(rawPramuka) || 0;
+                            dbProfilDetail[keyTarget].pramukaPersentase = valPram;
+                            dbProfilDetail[keyTargetAlt].pramukaPersentase = valPram;
                         }
-                        
-                        let nilaiMapelSheet = dbProfilDetail[keyTarget].nilai || {};
-                        
-                        MAPEL_LIST.forEach(m => {
-                            const mapelKey = m.id;
-                            let valFound = undefined;
 
-                            const isMatchHeader = (keyStr) => {
-                                if (!keyStr) return false;
-                                let kClean = String(keyStr).toLowerCase().replace(/[^a-z0-9]/g, '');
-                                let mClean = mapelKey.toLowerCase();
+                        if (!isAccAdmin) {
+                            const waktuSimpanLokal = lastBadgeLocalSaveTime[keyTarget] || 0;
+                            const dalamMasaPerlindunganLokal = (Date.now() - waktuSimpanLokal) < 15000;
 
-                                if (kClean === mClean) return true;
+                            if (!dalamMasaPerlindunganLokal) {
+                                let badgesArray = [];
+                                let existingBadges = Array.isArray(dbProfilDetail[keyTarget].badges) ? dbProfilDetail[keyTarget].badges : [];
 
-                                if (mapelKey === 'agama') {
-                                    return kClean.includes('pai') || kClean.includes('agama') || kClean.includes('paibp');
-                                }
-                                if (mapelKey === 'pjok') {
-                                    return kClean.includes('pjok') || kClean.includes('penjas') || kClean.includes('jasmani');
-                                }
-                                return false;
-                            };
+                                for (let j = 0; j < 25; j++) {
+                                    let bRaw = item[`badge_${j + 1}`];
+                                    let existingItem = (existingBadges[j] && typeof existingBadges[j] === 'object') ? existingBadges[j] : null;
+                                    let parsedBadge = { active: false, img: "", title: BADGE_DESCS[j] };
 
-                            for (let key in item) {
-                                if (isMatchHeader(key)) {
-                                    if (item[key] !== undefined && item[key] !== null && item[key] !== "") {
-                                        valFound = item[key];
-                                        break;
+                                    if (bRaw !== undefined && bRaw !== null && String(bRaw).trim() !== "") {
+                                        if (typeof bRaw === 'string') {
+                                            try {
+                                                let obj = JSON.parse(bRaw);
+                                                if (obj && typeof obj === 'object') {
+                                                    parsedBadge = {
+                                                        active: !!obj.active,
+                                                        img: obj.img || (existingItem ? existingItem.img : ""),
+                                                        title: obj.title || (existingItem ? existingItem.title : BADGE_DESCS[j])
+                                                    };
+                                                } else {
+                                                    parsedBadge.active = (bRaw === "true" || bRaw === "1" || bRaw === "✅");
+                                                    if (existingItem) {
+                                                        parsedBadge.img = existingItem.img || "";
+                                                        parsedBadge.title = existingItem.title || BADGE_DESCS[j];
+                                                    }
+                                                }
+                                            } catch(e) {
+                                                parsedBadge.active = (bRaw === "true" || bRaw === "1" || bRaw === "✅");
+                                                if (existingItem) {
+                                                    parsedBadge.img = existingItem.img || "";
+                                                    parsedBadge.title = existingItem.title || BADGE_DESCS[j];
+                                                }
+                                            }
+                                        } else if (typeof bRaw === 'object') {
+                                            parsedBadge = {
+                                                active: !!bRaw.active,
+                                                img: bRaw.img || (existingItem ? existingItem.img : ""),
+                                                title: bRaw.title || (existingItem ? existingItem.title : BADGE_DESCS[j])
+                                            };
+                                        } else {
+                                            parsedBadge.active = !!bRaw;
+                                            if (existingItem) {
+                                                parsedBadge.img = existingItem.img || "";
+                                                parsedBadge.title = existingItem.title || BADGE_DESCS[j];
+                                            }
+                                        }
+                                    } else if (existingItem) {
+                                        parsedBadge = { ...existingItem };
                                     }
+                                    badgesArray.push(parsedBadge);
                                 }
+                                dbProfilDetail[keyTarget].badges = badgesArray;
                             }
 
-                            if (valFound === undefined && item.nilaiObj) {
-                                for (let key in item.nilaiObj) {
-                                    if (isMatchHeader(key)) {
-                                        if (item.nilaiObj[key] !== undefined && item.nilaiObj[key] !== null && item.nilaiObj[key] !== "") {
-                                            valFound = item.nilaiObj[key];
-                                            break;
+                            try {
+                                if (item.pelanggaran && Array.isArray(item.pelanggaran)) {
+                                    dbProfilDetail[keyTarget].pelanggaran = item.pelanggaran;
+                                } else if (item.pelanggaranJSON) {
+                                    dbProfilDetail[keyTarget].pelanggaran = typeof item.pelanggaranJSON === 'string' ? JSON.parse(item.pelanggaranJSON) : item.pelanggaranJSON;
+                                }
+                            } catch (e) {}
+
+                            if (!dbProfilDetail[keyTarget].nilai) dbProfilDetail[keyTarget].nilai = {};
+
+                            try {
+                                if (item.nilai && typeof item.nilai === 'object') {
+                                    Object.assign(dbProfilDetail[keyTarget].nilai, item.nilai);
+                                } else if (item.nilaiJSON) {
+                                    let parsedN = typeof item.nilaiJSON === 'string' ? JSON.parse(item.nilaiJSON) : item.nilaiJSON;
+                                    if (parsedN && typeof parsedN === 'object') {
+                                        Object.assign(dbProfilDetail[keyTarget].nilai, parsedN);
+                                    }
+                                }
+                            } catch (e) {}
+
+                            const parseVal = (raw) => {
+                                if (raw === undefined || raw === null || String(raw).trim() === "") return null;
+                                let s = String(raw).replace(/,/g, '.');
+                                let n = parseFloat(s);
+                                return isNaN(n) ? null : n;
+                            };
+
+                            const setMapelVal = (id, ...keys) => {
+                                for (let k of keys) {
+                                    if (item[k] !== undefined && item[k] !== null && String(item[k]).trim() !== "") {
+                                        let val = parseVal(item[k]);
+                                        if (val !== null) {
+                                            dbProfilDetail[keyTarget].nilai[id] = val;
+                                            return;
                                         }
                                     }
                                 }
-                            }
+                            };
 
-                            if (valFound !== undefined) {
-                                let strVal = String(valFound).replace(/,/g, '.');
-                                let parsed = parseFloat(strVal);
-                                nilaiMapelSheet[mapelKey] = isNaN(parsed) ? 0 : parsed;
-                            }
-                        });
-                        
-                        dbProfilDetail[keyTarget].nilai = nilaiMapelSheet;
-                        dbProfilDetail[keyTargetAlt].nilai = nilaiMapelSheet;
-                        
-                        let badgesDitarik = Array(25).fill().map((_, idx) => ({ active: false, img: "", title: BADGE_DESCS[idx] }));
-                        let hasIndividualBadge = false;
-
-                        for (let i = 0; i < 25; i++) {
-                            let key = `badge_${i + 1}`;
-                            let valFound = item[key];
-                            if (valFound === undefined) {
-                                for (let k in item) {
-                                    let kClean = k.toLowerCase().replace(/[^a-z0-9]/g, '');
-                                    if (kClean === `badge${i + 1}`) {
-                                        valFound = item[k];
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (valFound !== undefined && valFound !== null && valFound !== "") {
-                                hasIndividualBadge = true;
-                                let bVal = valFound;
-                                if (typeof bVal === 'string') {
-                                    try { bVal = JSON.parse(bVal); } catch(e) {}
-                                }
-                                if (typeof bVal === 'object' && bVal !== null) {
-                                    badgesDitarik[i] = {
-                                        active: !!bVal.active,
-                                        img: bVal.img || "",
-                                        title: bVal.title || BADGE_DESCS[i]
-                                    };
-                                } else {
-                                    let act = (bVal === true || bVal === "true" || bVal === 1 || bVal === "1" || bVal === "TRUE");
-                                    badgesDitarik[i] = {
-                                        active: act,
-                                        img: "",
-                                        title: BADGE_DESCS[i]
-                                    };
-                                }
-                            }
-                        }
-
-                        if (hasIndividualBadge) {
-                            dbProfilDetail[keyTarget].badges = badgesDitarik;
-                            dbProfilDetail[keyTargetAlt].badges = badgesDitarik;
-                        }
-
-                        if (item.pelanggaranJSON) {
-                            try {
-                                const parsedPel = JSON.parse(item.pelanggaranJSON);
-                                dbProfilDetail[keyTarget].pelanggaran = parsedPel;
-                                dbProfilDetail[keyTargetAlt].pelanggaran = parsedPel;
-                            } catch(e) {
-                                dbProfilDetail[keyTarget].pelanggaran = [];
-                                dbProfilDetail[keyTargetAlt].pelanggaran = [];
-                            }
+                            setMapelVal('pancasila', 'pancasila', 'Pancasila', 'Pendidikan Pancasila', 'pendidikan pancasila');
+                            setMapelVal('indonesia', 'indonesia', 'Indonesia', 'Bahasa Indonesia', 'bahasa indonesia');
+                            setMapelVal('matematika', 'matematika', 'Matematika', 'MTK', 'mtk');
+                            setMapelVal('ipas', 'ipas', 'IPAS', 'Ipas');
+                            setMapelVal('inggris', 'inggris', 'Inggris', 'Bahasa Inggris', 'bahasa inggris');
+                            setMapelVal('jawa', 'jawa', 'Jawa', 'Bahasa Jawa', 'bahasa jawa');
+                            setMapelVal('senirupa', 'senirupa', 'SeniRupa', 'Seni Rupa', 'seni rupa');
+                            setMapelVal('senimusik', 'senimusik', 'SeniMusik', 'Seni Musik', 'seni musik');
+                            setMapelVal('senitari', 'senitari', 'SeniTari', 'Seni Tari', 'seni tari');
+                            setMapelVal('seniteater', 'seniteater', 'SeniTeater', 'Seni Teater', 'seni teater');
+                            setMapelVal('agama', 'agama', 'paibp', 'PAIBP', 'Agama', 'Pendidikan Agama Islam', 'pendidikan agama islam');
+                            setMapelVal('pjok', 'pjok', 'PJOK', 'Pjok');
                         }
 
                         updatedCount++;
                     });
 
                     simpanSemuaData();
-                    tarikDataTabunganDariSheet();
-                    if (currentNis) renderProfilSiswa(currentNis);
+
+                    if (currentNis) {
+                        renderProfilSiswa(currentNis);
+                        renderFormPostUser();
+                    }
+
+                    renderFeedsStatusUI();
+
+                    if (!document.getElementById('frameSectionDaftarSiswa').classList.contains('hidden')) {
+                        renderGridDaftarSiswa();
+                    }
 
                     if (isManual) {
                         playBeepSound(1000, 'sine', 0.2);
-                        alert(`Berhasil menarik data profil & XP dari Google Sheet! (${updatedCount} data diperbarui)`);
+                        tampilPesanDialog(`Berhasil menarik dan memperbarui data profil & nilai untuk ${updatedCount} pengguna dari Google Sheet!`, "Tarik Data Selesai", "📥");
                     }
+                } else {
+                    if (isManual) tampilPesanDialog("Belum ada data tersimpan di Google Sheet.", "Info Cloud", "ℹ️");
                 }
             } catch (err) {
-                console.warn("Gagal / Belum ada data ditarik dari Google Sheet:", err);
-                if (isManual) {
-                    alert("Gagal menarik data dari Google Sheet. Periksa koneksi internet.");
-                }
+                console.warn("Gagal tarik data profil dari Sheet:", err);
+                if (isManual) tampilPesanDialog("Gagal menarik data dari Google Sheet. Periksa koneksi internet Anda.", "Koneksi Gagal", "⚠️");
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('inputTglMelanggar').value = today;
+        window.onload = function() {
+            const tglInput = document.getElementById('inputTglMelanggar');
+            if (tglInput) tglInput.valueAsDate = new Date();
             initFloatingEmojis();
             muatDataLokal();
-        });
+        };
     </script>
 </body>
 </html>
