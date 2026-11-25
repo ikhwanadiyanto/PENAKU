@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Gamelan Karawitan Virtual — Keraton Jawa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --jati-dark: #160b07;
+      --jati-mid: #2b160d;
+      --jati-light: #472516;
+      --crimson-royal: #6b141a;
+      --gold-bright: #fde047;
+      --gold-mid: #d4af37;
+      --gold-deep: #8c5c12;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #110805;
+      color: #f7eedc;
+      min-height: 100vh;
+      overflow-x: hidden;
+      /* Latar motif Batik Kawung Keraton & cahaya hangat Pendopo */
+      background-image:
+        radial-gradient(circle at 50% -5%, rgba(212, 175, 55, 0.18) 0%, transparent 58%),
+        radial-gradient(circle at 15% 40%, rgba(127, 29, 29, 0.14) 0%, transparent 45%),
+        url("data:image/svg+xml,%3Csvg width='84' height='84' viewBox='0 0 84 84' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-opacity='0.065' stroke-width='1.15'%3E%3Cellipse cx='42' cy='21' rx='10.5' ry='19'/%3E%3Cellipse cx='42' cy='63' rx='10.5' ry='19'/%3E%3Cellipse cx='21' cy='42' rx='19' ry='10.5'/%3E%3Cellipse cx='63' cy='42' rx='19' ry='10.5'/%3E%3Ccircle cx='42' cy='42' r='4'/%3E%3Ccircle cx='0' cy='0' r='13'/%3E%3Ccircle cx='84' cy='0' r='13'/%3E%3Ccircle cx='0' cy='84' r='13'/%3E%3Ccircle cx='84' cy='84' r='13'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .font-keraton {
+      font-family: 'Cinzel Decorative', serif;
+    }
+
+    .font-kepatihan {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Tekstur Kayu Jati Ukir Gelap (Rancakan Keraton) */
+    .rancakan-wood {
+      background:
+        repeating-linear-gradient(
+          91deg,
+          rgba(0, 0, 0, 0.2) 0px,
+          rgba(0, 0, 0, 0.2) 2px,
+          transparent 2px,
+          transparent 10px,
+          rgba(255, 196, 120, 0.03) 10px,
+          rgba(255, 196, 120, 0.03) 15px
+        ),
+        linear-gradient(180deg, #3c1e12 0%, #241109 55%, #160904 100%);
+      border: 2px solid #855e24;
+      box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.78),
+        inset 0 1px 0 rgba(253, 224, 71, 0.35),
+        inset 0 -4px 12px rgba(0, 0, 0, 0.85);
+    }
+
+    .ukiran-border {
+      position: relative;
+    }
+    .ukiran-border::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(212, 175, 55, 0.24);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    /* Bilah Perunggu Saron Tempaan */
+    .bilah-bronze {
+      background: linear-gradient(
+        180deg,
+        #fde69c 0%,
+        #e2ae45 18%,
+        #b87c1e 50%,
+        #e2ae45 82%,
+        #7a4d0b 100%
+      );
+      border: 1.5px solid #ffe7a3;
+      box-shadow:
+        0 8px 14px rgba(0, 0, 0, 0.68),
+        inset 0 2px 3px rgba(255, 255, 255, 0.65),
+        inset 0 -3px 5px rgba(74, 42, 4, 0.88);
+      transition: transform 0.06s ease, filter 0.12s ease, box-shadow 0.12s ease, opacity 0.25s ease;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .bilah-bronze:hover:not(:disabled) {
+      filter: brightness(1.08);
+    }
+
+    .bilah-bronze.struck {
+      transform: translateY(3px) scale(0.98);
+      filter: brightness(1.42) saturate(1.22);
+      box-shadow:
+        0 0 28px rgba(255, 215, 90, 0.9),
+        0 3px 6px rgba(0, 0, 0, 0.8),
+        inset 0 0 15px rgba(255, 250, 210, 0.95);
+    }
+
+    .bilah-bronze.guide-target {
+      animation: targetPulse 0.85s infinite alternate;
+      border-color: #ffffff;
+      z-index: 20;
+    }
+
+    /* Pencon Perunggu (Bonang & Kenong) */
+    .pencon-dish {
+      background: radial-gradient(
+        circle at 38% 34%,
+        #fde7a3 0%,
+        #d89d34 38%,
+        #8e5b10 74%,
+        #523104 100%
+      );
+      border: 2px solid #e7ba5e;
+      box-shadow:
+        0 8px 14px rgba(0, 0, 0, 0.72),
+        inset 0 2px 6px rgba(255, 248, 214, 0.6),
+        inset 0 -4px 8px rgba(45, 22, 2, 0.88);
+      transition: transform 0.06s ease, filter 0.12s ease, box-shadow 0.12s ease, opacity 0.25s ease;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .pencon-boss {
+      background: radial-gradient(
+        circle at 35% 30%,
+        #fff7d6 0%,
+        #f5c453 35%,
+        #a86e14 80%,
+        #684006 100%
+      );
+      box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.68),
+        inset 0 1px 3px rgba(255, 255, 255, 0.88);
+    }
+
+    .pencon-dish:hover:not(:disabled) {
+      filter: brightness(1.09);
+    }
+
+    .pencon-dish.struck {
+      transform: scale(0.93);
+      filter: brightness(1.42);
+      box-shadow:
+        0 0 28px rgba(255, 215, 90, 0.92),
+        inset 0 0 15px rgba(255, 248, 200, 0.9);
+    }
+
+    .pencon-dish.guide-target {
+      animation: targetPulse 0.85s infinite alternate;
+      border-color: #ffffff;
+    }
+
+    /* Gong Ageng & Kempul Gantung */
+    .gong-plate {
+      background: radial-gradient(
+        circle at 36% 32%,
+        #f8d878 0%,
+        #c78c26 34%,
+        #784b0a 68%,
+        #381f02 92%,
+        #5e3907 100%
+      );
+      border: 3px solid #d4af37;
+      box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.84),
+        inset 0 3px 10px rgba(255, 244, 196, 0.55),
+        inset 0 -8px 18px rgba(25, 12, 1, 0.92);
+      cursor: pointer;
+      touch-action: manipulation;
+      transform-origin: 50% -14px;
+      transition: filter 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .gong-plate:hover {
+      filter: brightness(1.07);
+    }
+
+    .gong-plate.struck {
+      filter: brightness(1.36);
+      box-shadow:
+        0 0 42px rgba(255, 204, 77, 0.9),
+        0 14px 28px rgba(0, 0, 0, 0.84),
+        inset 0 0 20px rgba(255, 244, 190, 0.85);
+    }
+
+    @keyframes gongSwing {
+      0%   { transform: rotate(0deg) scale(0.97); }
+      14%  { transform: rotate(4.4deg) scale(1.01); }
+      30%  { transform: rotate(-3.5deg) scale(1); }
+      48%  { transform: rotate(2.4deg); }
+      66%  { transform: rotate(-1.5deg); }
+      82%  { transform: rotate(0.7deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .swinging-gong {
+      animation: gongSwing 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes kempulSwing {
+      0%   { transform: rotate(0deg) scale(0.95); }
+      20%  { transform: rotate(5deg); }
+      45%  { transform: rotate(-3.5deg); }
+      70%  { transform: rotate(1.8deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .swinging-kempul {
+      animation: kempulSwing 1.8s ease-out;
+    }
+
+    @keyframes targetPulse {
+      0% {
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.65), 0 0 18px rgba(250, 204, 21, 0.65);
+        transform: scale(1);
+      }
+      100% {
+        box-shadow: 0 0 24px rgba(56, 189, 248, 1), 0 0 36px rgba(250, 204, 21, 1);
+        transform: scale(1.045);
+      }
+    }
+
+    @keyframes soundWave {
+      0% {
+        transform: translate(-50%, -50%) scale(0.4);
+        opacity: 0.92;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(2.4);
+        opacity: 0;
+      }
+    }
+
+    .sound-ripple {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 9999px;
+      border: 2px solid rgba(253, 224, 71, 0.88);
+      pointer-events: none;
+      animation: soundWave 1.05s ease-out forwards;
+    }
+
+    @keyframes floatNote {
+      0% {
+        transform: translate(-50%, 0) scale(0.85);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -44px) scale(1.22);
+        opacity: 0;
+      }
+    }
+
+    .floating-note {
+      position: absolute;
+      left: 50%;
+      top: 8%;
+      pointer-events: none;
+      font-weight: 800;
+      color: #fff6bd;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 12px #f59e0b;
+      animation: floatNote 0.75s ease-out forwards;
+      z-index: 30;
+      white-space: nowrap;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a0f0a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #855e24;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d4af37;
+    }
+
+    input[type="range"] {
+      accent-color: #eab308;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-amber-500/30 selection:text-amber-200">
+
+  <!-- Toast Notifikasi Non-Intrusif -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-3 sm:px-0"></div>
+
+  <!-- HEADER KERATON JAWA -->
+  <header class="sticky top-0 z-40 border-b border-amber-500/35 bg-[#160b07]/95 backdrop-blur-md shadow-2xl">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Identitas Keraton & Judul -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-red-900/50 via-amber-600/25 to-amber-950/60 border border-amber-400/60 flex items-center justify-center shadow-inner shrink-0">
+          <!-- Ikon Gunungan Wayang Keraton -->
+          <svg viewBox="0 0 64 64" class="w-7 h-7 text-amber-400 fill-current" aria-hidden="true">
+            <path d="M32 4 C24 16, 12 28, 12 46 L26 46 L26 56 L38 56 L38 46 L52 46 C52 28, 40 16, 32 4 Z M32 14 C36 22, 42 30, 43 40 L21 40 C22 30, 28 22, 32 14 Z"/>
+            <circle cx="32" cy="31" r="3.5"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-keraton text-sm sm:text-lg lg:text-xl font-black tracking-wide bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-300 bg-clip-text text-transparent leading-tight">
+            GAMELAN KARAWITAN VIRTUAL
+          </h1>
+          <p class="text-[11px] sm:text-xs text-amber-200/75">
+            Laras Slendro &amp; Pelog &bull; Notasi Kepatihan &amp; Gending Pakem
+          </p>
+        </div>
+      </div>
+
+      <!-- Kontrol Cepat Header: Laras Switcher, Pathet Badge, Volume, Reverb & Pitet -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 ml-auto">
+        <!-- Laras Switcher -->
+        <div class="flex items-center bg-[#28140c] border border-amber-500/45 rounded-xl p-1 shadow-inner" role="group" aria-label="Pilihan Laras">
+          <button id="btn-laras-pelog" type="button"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-950 shadow-md">
+            Laras Pelog (1 2 3 4 5 6 7 1')
+          </button>
+          <button id="btn-laras-slendro" type="button"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 text-amber-200/75 hover:text-amber-100">
+            Laras Slendro (1 2 3 5 6 1')
+          </button>
+        </div>
+
+        <!-- Indikator Pathet Aktif -->
+        <span id="pathet-badge"
+          class="px-2.5 py-1.5 rounded-xl bg-red-950/90 border border-amber-400/50 text-amber-300 text-[11px] sm:text-xs font-bold shadow">
+          Pathet Nem
+        </span>
+
+        <!-- Kontrol Volume & Gema Pendopo (Desktop) -->
+        <div class="hidden xl:flex items-center gap-3 bg-[#24120b] border border-amber-500/30 rounded-xl px-3 py-1.5">
+          <label class="flex items-center gap-1.5 text-xs text-amber-200/85" title="Master Volume">
+            <span>🔊</span>
+            <input id="slider-volume" type="range" min="0" max="100" value="84" class="w-16 h-1.5 rounded-lg bg-amber-950">
+          </label>
+          <div class="h-4 w-px bg-amber-500/25"></div>
+          <label class="flex items-center gap-1.5 text-xs text-amber-200/85" title="Resonansi Pendopo Keraton">
+            <span>🏛️ Gema</span>
+            <input id="slider-reverb" type="range" min="0" max="100" value="44" class="w-16 h-1.5 rounded-lg bg-amber-950">
+          </label>
+        </div>
+
+        <!-- Tombol Pitet (Redam Saron) -->
+        <button id="btn-pitet" type="button"
+          class="px-3 py-1.5 rounded-xl bg-gradient-to-b from-amber-200 via-amber-400 to-amber-600 hover:from-amber-100 hover:to-amber-500 text-stone-950 font-extrabold text-xs shadow-lg border border-amber-100 active:scale-95 transition flex items-center gap-1.5"
+          title="Teknik Pitet: Redam getaran bilah Saron (Pintasan: Shift atau M)">
+          <span>✋</span>
+          <span>Pitet (Redam Saron)</span>
+          <kbd class="hidden sm:inline px-1.5 py-0.5 text-[10px] rounded bg-stone-900/85 text-amber-200 font-kepatihan">Shift/M</kbd>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bar Akustik Mobile & Tablet -->
+    <div class="flex xl:hidden items-center justify-between gap-4 px-3 sm:px-6 py-1.5 bg-[#1f0f08] border-t border-amber-500/15 text-[11px] text-amber-200/85">
+      <label class="flex items-center gap-2 flex-1">
+        <span>🔊 Volume</span>
+        <input id="slider-volume-mobile" type="range" min="0" max="100" value="84" class="w-full h-1.5 rounded-lg bg-amber-950">
+      </label>
+      <label class="flex items-center gap-2 flex-1">
+        <span>🏛️ Gema Pendopo</span>
+        <input id="slider-reverb-mobile" type="range" min="0" max="100" value="44" class="w-full h-1.5 rounded-lg bg-amber-950">
+      </label>
+    </div>
+  </header>
+
+  <!-- KONTEN UTAMA -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-5">
+
+    <!-- PANEL 1: PEMUTAR GENDING PAKEM, MODE LATIHAN & PEREKAM POLA -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+      <!-- Pemutar Gending & Notasi Kepatihan (8 Kolom) -->
+      <div class="lg:col-span-8 rancakan-wood ukiran-border rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between gap-3">
+        <div class="flex flex-wrap items-start sm:items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-red-900/50 border border-amber-400/50 text-amber-300 text-base shrink-0">📜</span>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-sm sm:text-base font-bold text-amber-200 leading-tight">Gending Pakem &amp; Notasi Kepatihan</h2>
+                <span id="wedding-badge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-red-800 to-amber-700 text-amber-100 border border-amber-300/50 shadow">
+                  👑 Pengantin Khas Jawa Tengah
+                </span>
+              </div>
+              <p id="gending-subtitle" class="text-[11px] text-amber-200/70 mt-0.5">
+                Gending Pengantin Panggih • Laras Pelog Pathet Nem
+              </p>
+            </div>
+          </div>
+
+          <!-- Pemilih 5 Gending Pakem -->
+          <div class="w-full sm:w-auto">
+            <select id="select-gending" aria-label="Pilih Gending Pakem"
+              class="w-full sm:w-auto bg-[#160904] border border-amber-500/60 text-amber-100 text-xs sm:text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-amber-400 font-semibold shadow-inner">
+              <option value="kodokngorek">1. Gending Kodok Ngorek — "Ning Nong Ning Gung" (Pengantin)</option>
+              <option value="gundul">2. Gundul-Gundul Pacul (Pelog Pathet Nem)</option>
+              <option value="suwe">3. Suwe Ora Jamu (Pelog Pathet Nem)</option>
+              <option value="kebogiro">4. Lancaran Kebogiro (Pelog Pathet Barang)</option>
+              <option value="wilujeng">5. Ladrang Wilujeng (Slendro Pathet Manyura)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bar Kontrol Transport, Mode Latihan, Tabuhan Rojeh & Tempo -->
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-[#140804]/90 border border-amber-500/25 rounded-xl p-2.5">
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <!-- Mode Dengarkan (Auto-Play) -->
+            <button id="btn-play-gending" type="button"
+              class="px-3.5 py-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white font-bold text-xs sm:text-sm shadow-lg active:scale-95 transition flex items-center gap-1.5">
+              <span>▶</span> <span id="lbl-play-gending">Dengarkan</span>
+            </button>
+
+            <button id="btn-stop-gending" type="button"
+              class="px-2.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 border border-amber-500/30 text-amber-200 font-semibold text-xs sm:text-sm active:scale-95 transition">
+              ⏹ Henti
+            </button>
+
+            <!-- Toggle Loop -->
+            <button id="btn-loop-toggle" type="button"
+              class="px-2.5 py-2 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-200 font-semibold text-xs active:scale-95 transition flex items-center gap-1"
+              title="Ulangi Gending Secara Terus-Menerus">
+              <span>🔁</span> <span id="lbl-loop-state">Loop: On</span>
+            </button>
+
+            <!-- Mode Latihan Interaktif -->
+            <button id="btn-practice-mode" type="button"
+              class="px-3 py-2 rounded-xl bg-[#2c180f] hover:bg-[#3b2115] border border-amber-500/45 text-amber-200 font-semibold text-xs sm:text-sm active:scale-95 transition flex items-center gap-1.5">
+              <span>🎓</span> <span>Mode Latihan: <strong id="lbl-practice-state" class="text-amber-400">Mati</strong></span>
+            </button>
+          </div>
+
+          <!-- Pengatur Tempo BPM -->
+          <div class="flex items-center gap-2 bg-[#23120a] px-3 py-1.5 rounded-xl border border-amber-500/25 ml-auto">
+            <span class="text-[11px] sm:text-xs text-amber-200/80 font-medium">Tempo:</span>
+            <input id="slider-tempo" type="range" min="52" max="140" value="92" class="w-20 sm:w-24 h-1.5 rounded-lg bg-amber-950">
+            <span id="lbl-tempo" class="font-kepatihan text-xs font-bold text-amber-300 w-14 text-right">92 BPM</span>
+          </div>
+        </div>
+
+        <!-- Bar Tambahan: Tabuhan Rojeh / Imbal Pengantin & Statistik Mode Latihan -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <!-- Toggle Tabuhan Rojeh / Imbal Pengantin -->
+          <label id="rojeh-control-wrap" class="inline-flex items-center gap-2 bg-red-950/55 border border-amber-500/35 px-3 py-1.5 rounded-xl cursor-pointer hover:bg-red-950/75 transition">
+            <input id="chk-rojeh-imbal" type="checkbox" checked class="w-4 h-4 accent-amber-400 rounded cursor-pointer">
+            <span class="font-semibold text-amber-200">🎊 Tabuhan Rojeh / Imbal Pengantin</span>
+            <span class="text-[10px] text-amber-300/75 hidden sm:inline">(Iringan Meriah Temu Manten)</span>
+          </label>
+
+          <!-- Panel Statistik Streak & Akurasi Mode Latihan -->
+          <div id="practice-stats-bar" class="hidden items-center gap-3 bg-emerald-950/70 border border-emerald-400/40 px-3 py-1.5 rounded-xl text-emerald-200">
+            <span>🔥 Streak: <strong id="stat-streak" class="font-kepatihan text-amber-300">0</strong></span>
+            <span class="text-emerald-500/50">|</span>
+            <span>🎯 Akurasi: <strong id="stat-accuracy" class="font-kepatihan text-emerald-300">100%</strong></span>
+            <span class="text-emerald-500/50">|</span>
+            <span>Langkah: <strong id="stat-progress" class="font-kepatihan text-white">1/16</strong></span>
+          </div>
+        </div>
+
+        <!-- Papan Tampilan Notasi Kepatihan Interaktif -->
+        <div class="bg-[#110704] border border-amber-500/30 rounded-xl p-2.5 sm:p-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-amber-200/75 mb-2">
+            <span>Notasi Balungan (Kepatihan) &bull; Klik ketukan untuk melompat</span>
+            <span class="flex items-center gap-2.5 font-semibold">
+              <span class="text-emerald-300">P = Kempul</span>
+              <span class="text-sky-300">N = Kenong</span>
+              <span class="text-amber-400">G = Gong Ageng</span>
+            </span>
+          </div>
+          <div id="kepatihan-board" class="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Perekam Pola Permainan (4 Kolom) -->
+      <div class="lg:col-span-4 rancakan-wood ukiran-border rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between gap-3">
+        <div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-sm">🎙️</span>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-amber-200 leading-tight">Perekam Pola (Loop)</h2>
+                <p class="text-[11px] text-amber-200/65">Rekam gending/iringan kreasi Anda</p>
+              </div>
+            </div>
+            <span id="rec-status-pill" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-stone-800 text-amber-200/70 border border-amber-500/20">
+              Siap
+            </span>
+          </div>
+
+          <div class="mt-3 bg-[#110704] border border-amber-500/25 rounded-xl p-3 flex items-center justify-between">
+            <div>
+              <div class="text-[11px] text-amber-200/60">Catatan Pukulan</div>
+              <div id="rec-count" class="font-kepatihan text-lg font-bold text-amber-300">0 nada</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[11px] text-amber-200/60">Durasi Pola</div>
+              <div id="rec-duration" class="font-kepatihan text-lg font-bold text-amber-200">0.0 dtk</div>
+            </div>
+          </div>
+
+          <p class="mt-2.5 text-[11px] text-amber-200/65 leading-relaxed">
+            Tips: Coba rekam pola <em>Ning Nong Ning Gung</em> (<code class="text-amber-300">5 - 6+N - 5 - 3+G</code>) lalu putar ulang berulang kali!
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <button id="btn-rec-record" type="button"
+            class="py-2.5 px-2 rounded-xl bg-gradient-to-b from-rose-600 to-rose-800 hover:from-rose-500 hover:to-rose-700 text-white font-bold text-xs shadow-lg active:scale-95 transition flex items-center justify-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-white inline-block"></span>
+            <span id="lbl-rec-record">Rekam</span>
+          </button>
+          <button id="btn-rec-play" type="button" disabled
+            class="py-2.5 px-2 rounded-xl bg-gradient-to-b from-amber-500 to-amber-700 disabled:opacity-40 disabled:pointer-events-none hover:from-amber-400 hover:to-amber-600 text-stone-950 font-bold text-xs shadow-lg active:scale-95 transition flex items-center justify-center gap-1">
+            <span>🔁</span>
+            <span id="lbl-rec-play">Putar</span>
+          </button>
+          <button id="btn-rec-clear" type="button" disabled
+            class="py-2.5 px-2 rounded-xl bg-stone-800 disabled:opacity-40 disabled:pointer-events-none hover:bg-stone-700 border border-amber-500/30 text-amber-200 font-semibold text-xs active:scale-95 transition">
+            Hapus
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: PANGGUNG UTAMA RICIKAN GAMELAN -->
+    <section class="grid grid-cols-1 xl:grid-cols-12 gap-5 items-stretch">
+
+      <!-- KOLOM KIRI: BONANG BARUNG & SARON BARUNG / DEMUNG (8 Kolom) -->
+      <div class="xl:col-span-8 flex flex-col gap-5">
+
+        <!-- 1. BONANG BARUNG (2 Baris Pencon: 1'–7' & 1–7) -->
+        <div class="rancakan-wood ukiran-border rounded-2xl p-3.5 sm:p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-keraton text-base sm:text-lg font-bold text-amber-300">Bonang Barung</h2>
+                <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-red-900/60 text-amber-300 border border-amber-400/35">
+                  Pamurba Lagu
+                </span>
+              </div>
+              <p class="text-xs text-amber-200/70">
+                Baris Atas Oktaf Tinggi (<kbd class="px-1.5 py-0.5 bg-black/55 rounded border border-amber-500/40 text-amber-300 font-kepatihan">Q W E R T Y U</kbd>) &bull; Baris Bawah Oktaf Sedang (<kbd class="px-1.5 py-0.5 bg-black/55 rounded border border-amber-500/40 text-amber-300 font-kepatihan">A S D F G H J</kbd>)
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-[#130804]/90 border border-amber-600/35 rounded-xl p-3 sm:p-4 space-y-3 shadow-inner">
+            <!-- Baris Atas (1' 2' 3' 4' 5' 6' 7') -->
+            <div>
+              <div class="text-[10px] uppercase tracking-widest text-amber-300/65 mb-1.5 flex items-center justify-between">
+                <span>Baris Atas — Oktaf Tinggi (1' – 7')</span>
+                <span>Tombol: Q W E R T Y U</span>
+              </div>
+              <div id="bonang-row-high" class="grid grid-cols-7 gap-1.5 sm:gap-2.5">
+                <!-- Diisi dinamis oleh JS -->
+              </div>
+            </div>
+
+            <!-- Tali Pluntur Pemisah -->
+            <div class="h-1.5 rounded-full bg-gradient-to-r from-red-900 via-amber-500/70 to-red-900 opacity-75"></div>
+
+            <!-- Baris Bawah (1 2 3 4 5 6 7) -->
+            <div>
+              <div class="text-[10px] uppercase tracking-widest text-amber-300/65 mb-1.5 flex items-center justify-between">
+                <span>Baris Bawah — Oktaf Sedang (1 – 7)</span>
+                <span>Tombol: A S D F G H J</span>
+              </div>
+              <div id="bonang-row-low" class="grid grid-cols-7 gap-1.5 sm:gap-2.5">
+                <!-- Diisi dinamis oleh JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. SARON BARUNG / DEMUNG (8 Bilah: 1 2 3 4 5 6 7 1') -->
+        <div class="rancakan-wood ukiran-border rounded-2xl p-3.5 sm:p-5 flex-1 flex flex-col justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-keraton text-base sm:text-lg font-bold text-amber-300">Saron Barung / Demung</h2>
+                <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-red-900/60 text-amber-300 border border-amber-400/35">
+                  Balungan &amp; Ji Alit (1')
+                </span>
+              </div>
+              <p class="text-xs text-amber-200/70">
+                Bilah perunggu lengkap dengan nada tinggi <strong class="text-amber-300">1' (Ji Alit)</strong> &bull; Tombol: <kbd class="px-1.5 py-0.5 bg-black/55 rounded border border-amber-500/40 text-amber-300 font-kepatihan">1 2 3 4 5 6 7 8</kbd>
+              </p>
+            </div>
+          </div>
+
+          <!-- Rancakan Saron Jati & Bantalan Pluntur Merah Marun -->
+          <div class="bg-[#120703] border-2 border-amber-700/55 rounded-2xl p-3 sm:p-4 shadow-inner relative">
+            <div class="absolute inset-x-3 top-5 bottom-5 rounded-xl bg-gradient-to-b from-red-950/70 via-amber-950/40 to-red-950/70 border border-amber-500/20 pointer-events-none"></div>
+
+            <div id="saron-rack" class="relative z-10 grid grid-cols-8 gap-1.5 sm:gap-2.5 items-end min-h-[185px] sm:min-h-[215px]">
+              <!-- 8 Bilah Saron diisi dinamis oleh JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KOLOM KANAN: ANSAMBEL STRUKTURAL / KOLOTOMIK (KEMPUL, KENONG & GONG AGENG) (4 Kolom) -->
+      <div class="xl:col-span-4 rancakan-wood ukiran-border rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between gap-4">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="font-keraton text-base sm:text-lg font-bold text-amber-300">Ansambel Kolotomik</h2>
+            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-red-900/60 text-amber-300 border border-amber-400/35">
+              Pamengku Irama
+            </span>
+          </div>
+          <p class="text-xs text-amber-200/70">Penanda struktur gatra &amp; gongan (P = Kempul, N = Kenong, G = Gong)</p>
+        </div>
+
+        <!-- 1. KENONG (5 Pencon Besar: 2, 3, 5, 6, 1' — Tombol B N , . /) -->
+        <div class="bg-[#130804]/90 border border-sky-500/30 rounded-xl p-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+              <span>⌒</span> Kenong (N)
+            </span>
+            <span class="text-[10px] text-amber-200/65 font-kepatihan">Tombol: B N , . /</span>
+          </div>
+          <div id="kenong-rack" class="grid grid-cols-5 gap-1.5 sm:gap-2">
+            <!-- Diisi dinamis oleh JS -->
+          </div>
+        </div>
+
+        <!-- 2. KEMPUL (4 Gong Gantung Menengah: 3, 5, 6, 1' — Tombol Z X C V) -->
+        <div class="bg-[#130804]/90 border border-emerald-500/30 rounded-xl p-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+              <span>◯</span> Kempul (P)
+            </span>
+            <span class="text-[10px] text-amber-200/65 font-kepatihan">Tombol: Z X C V</span>
+          </div>
+          <div id="kempul-rack" class="grid grid-cols-4 gap-2">
+            <!-- Diisi dinamis oleh JS -->
+          </div>
+        </div>
+
+        <!-- 3. GAYOR KAYU UKIR & GONG AGENG (G — Tombol Spasi) -->
+        <div class="relative flex-1 min-h-[245px] bg-gradient-to-b from-[#170b06] to-[#0e0502] border border-amber-500/45 rounded-2xl p-3.5 flex flex-col items-center justify-between overflow-hidden">
+          <!-- Mahkota Ukiran Gayor Keraton SVG -->
+          <div class="w-full flex flex-col items-center z-10">
+            <svg viewBox="0 0 320 44" class="w-full max-w-[280px] h-9 text-amber-500 fill-current drop-shadow">
+              <path d="M160 2 C145 12, 120 14, 90 14 L20 14 C10 14, 4 22, 4 30 L16 30 C16 24, 22 22, 30 22 L290 22 C298 22, 304 24, 304 30 L316 30 C316 22, 310 14, 300 14 L230 14 C200 14, 175 12, 160 2 Z"/>
+              <circle cx="160" cy="14" r="5" fill="#fde047"/>
+              <circle cx="80" cy="18" r="3" fill="#fde047"/>
+              <circle cx="240" cy="18" r="3" fill="#fde047"/>
+            </svg>
+            <!-- Tiang Samping Gayor -->
+            <div class="w-[84%] flex justify-between -mt-2 pointer-events-none">
+              <div class="w-3 h-44 bg-gradient-to-r from-[#2e160c] via-[#5c3018] to-[#241008] border-x border-amber-600/40 rounded-b"></div>
+              <div class="w-3 h-44 bg-gradient-to-r from-[#2e160c] via-[#5c3018] to-[#241008] border-x border-amber-600/40 rounded-b"></div>
+            </div>
+          </div>
+
+          <!-- Tali Pluntur & Piringan Gong Ageng -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center pt-4">
+            <div class="w-24 flex justify-between px-3 -mb-2 z-10 pointer-events-none">
+              <div class="w-1 h-7 bg-gradient-to-b from-amber-300 to-amber-700 rounded"></div>
+              <div class="w-1 h-7 bg-gradient-to-b from-amber-300 to-amber-700 rounded"></div>
+            </div>
+
+            <button id="gong-ageng" type="button" data-instrument="gong"
+              class="gong-plate relative w-40 h-40 sm:w-44 sm:h-44 rounded-full flex items-center justify-center z-20 focus:outline-none"
+              aria-label="Gong Ageng (Tekan Spasi)">
+              <div class="absolute inset-3.5 rounded-full border border-amber-300/25 pointer-events-none"></div>
+              <div class="absolute inset-8 rounded-full border border-amber-200/20 pointer-events-none"></div>
+              <div class="pencon-boss w-13 h-13 p-2 rounded-full flex flex-col items-center justify-center border border-amber-200/75">
+                <span class="font-keraton text-[11px] font-black text-stone-950 tracking-tighter">GONG</span>
+                <span class="text-[8px] font-extrabold text-stone-900">AGENG (G)</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Label Pintasan Spasi -->
+          <div class="z-20 mt-auto pt-2 text-center">
+            <div class="inline-flex items-center gap-2 bg-black/80 border border-amber-500/45 px-3 py-1 rounded-full">
+              <span class="text-[11px] font-bold text-amber-300">Gong Ageng (Ombak ~1.48 Hz)</span>
+              <kbd class="px-2 py-0.5 text-[10px] rounded bg-amber-500/20 border border-amber-400/50 text-amber-200 font-kepatihan">Spasi</kbd>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- PANDUAN SINGKAT KARAWITAN & PINTASAN -->
+    <footer class="rancakan-wood rounded-2xl p-4 text-xs text-amber-200/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      <div class="space-y-1">
+        <div class="font-bold text-amber-300">Panduan Singkat &amp; Pintasan Keyboard Karawitan:</div>
+        <p class="leading-relaxed">
+          &bull; <strong>Saron (1–1')</strong>: <code class="text-amber-300">1 2 3 4 5 6 7 8</code> | <strong>Pitet (Redam)</strong>: <code class="text-amber-300">Shift</code> / <code class="text-amber-300">M</code><br>
+          &bull; <strong>Bonang Barung</strong>: Atas <code class="text-amber-300">Q W E R T Y U</code> &bull; Bawah <code class="text-amber-300">A S D F G H J</code><br>
+          &bull; <strong>Kolotomik</strong>: Kempul <code class="text-emerald-300">Z X C V</code> &bull; Kenong <code class="text-sky-300">B N , . /</code> &bull; Gong Ageng <code class="text-amber-300">Spasi</code>
+        </p>
+      </div>
+      <div class="text-[11px] text-amber-300/75 md:text-right shrink-0">
+        <div class="font-semibold">Karawitan Digital Keraton Jawa</div>
+        <div>Sintesis Perunggu Web Audio API</div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    /**
+     * ============================================================================
+     * GAMELAN KARAWITAN VIRTUAL — ENGINE AUDIO PERUNGGU & PAKEM KEPATIHAN
+     * ============================================================================
+     */
+
+    // 1. KONFIGURASI NADA & LARAS (PELOG 8 BILAH & SLENDRO 6 BILAH AKTIF)
+    // Catatan: Saron memiliki 8 posisi fisik (1, 2, 3, 4, 5, 6, 7, 1').
+    // Pada Laras Slendro, nada 4 (Pat) dan 7 (Pi) dinonaktifkan/diredupkan secara anggun
+    // sehingga tombol 1, 2, 3, 5, 6, 8 memetakan nada 1, 2, 3, 5, 6, 1' secara autentik.
+    const LARAS_CONFIG = {
+      pelog: {
+        name: 'Laras Pelog',
+        defaultPathet: 'Pathet Nem',
+        // 8 posisi bilah Saron (1..7 + 1' Ji Alit)
+        saronNotes: [
+          { num: '1',  name: 'Ji',   freq: 276.0, key: '1', active: true },
+          { num: '2',  name: 'Ro',   freq: 298.5, key: '2', active: true },
+          { num: '3',  name: 'Lu',   freq: 325.0, key: '3', active: true },
+          { num: '4',  name: 'Pat',  freq: 383.0, key: '4', active: true },
+          { num: '5',  name: 'Ma',   freq: 413.5, key: '5', active: true },
+          { num: '6',  name: 'Nem',  freq: 447.0, key: '6', active: true },
+          { num: '7',  name: 'Pi',   freq: 498.0, key: '7', active: true },
+          { num: "1'", name: "Ji'",  freq: 552.0, key: '8', active: true }
+        ],
+        // 7 posisi pencon Bonang (1..7 untuk baris bawah, 1'..7' untuk baris atas)
+        bonangNotes: [
+          { num: '1', name: 'Ji',  freq: 276.0, highKey: 'q', lowKey: 'a', active: true },
+          { num: '2', name: 'Ro',  freq: 298.5, highKey: 'w', lowKey: 's', active: true },
+          { num: '3', name: 'Lu',  freq: 325.0, highKey: 'e', lowKey: 'd', active: true },
+          { num: '4', name: 'Pat', freq: 383.0, highKey: 'r', lowKey: 'f', active: true },
+          { num: '5', name: 'Ma',  freq: 413.5, highKey: 't', lowKey: 'g', active: true },
+          { num: '6', name: 'Nem', freq: 447.0, highKey: 'y', lowKey: 'h', active: true },
+          { num: '7', name: 'Pi',  freq: 498.0, highKey: 'u', lowKey: 'j', active: true }
+        ],
+        // 4 Kempul (3, 5, 6, 1' — tombol Z X C V)
+        kempulNotes: [
+          { num: '3',  name: 'Lu',  freq: 162.5, key: 'z' },
+          { num: '5',  name: 'Ma',  freq: 206.75, key: 'x' },
+          { num: '6',  name: 'Nem', freq: 223.5, key: 'c' },
+          { num: "1'", name: "Ji'", freq: 276.0, key: 'v' }
+        ],
+        // 5 Kenong (2, 3, 5, 6, 1' — tombol B N , . /)
+        kenongNotes: [
+          { num: '2',  name: 'Ro',  freq: 298.5, key: 'b' },
+          { num: '3',  name: 'Lu',  freq: 325.0, key: 'n' },
+          { num: '5',  name: 'Ma',  freq: 413.5, key: ',' },
+          { num: '6',  name: 'Nem', freq: 447.0, key: '.' },
+          { num: "1'", name: "Ji'", freq: 552.0, key: '/' }
+        ],
+        gongFreq: 55.8
+      },
+      slendro: {
+        name: 'Laras Slendro',
+        defaultPathet: 'Pathet Manyura',
+        saronNotes: [
+          { num: '1',  name: 'Ji',   freq: 266.0, key: '1', active: true },
+          { num: '2',  name: 'Ro',   freq: 305.5, key: '2', active: true },
+          { num: '3',  name: 'Lu',   freq: 351.0, key: '3', active: true },
+          { num: '4',  name: '—',    freq: 383.0, key: '4', active: false },
+          { num: '5',  name: 'Ma',   freq: 403.5, key: '5', active: true },
+          { num: '6',  name: 'Nem',  freq: 464.0, key: '6', active: true },
+          { num: '7',  name: '—',    freq: 498.0, key: '7', active: false },
+          { num: "1'", name: "Ji'",  freq: 532.0, key: '8', active: true }
+        ],
+        bonangNotes: [
+          { num: '1', name: 'Ji',  freq: 266.0, highKey: 'q', lowKey: 'a', active: true },
+          { num: '2', name: 'Ro',  freq: 305.5, highKey: 'w', lowKey: 's', active: true },
+          { num: '3', name: 'Lu',  freq: 351.0, highKey: 'e', lowKey: 'd', active: true },
+          { num: '4', name: '—',   freq: 383.0, highKey: 'r', lowKey: 'f', active: false },
+          { num: '5', name: 'Ma',  freq: 403.5, highKey: 't', lowKey: 'g', active: true },
+          { num: '6', name: 'Nem', freq: 464.0, highKey: 'y', lowKey: 'h', active: true },
+          { num: '7', name: '—',   freq: 498.0, highKey: 'u', lowKey: 'j', active: false }
+        ],
+        kempulNotes: [
+          { num: '3',  name: 'Lu',  freq: 175.5, key: 'z' },
+          { num: '5',  name: 'Ma',  freq: 201.75, key: 'x' },
+          { num: '6',  name: 'Nem', freq: 232.0, key: 'c' },
+          { num: "1'", name: "Ji'", freq: 266.0, key: 'v' }
+        ],
+        kenongNotes: [
+          { num: '2',  name: 'Ro',  freq: 305.5, key: 'b' },
+          { num: '3',  name: 'Lu',  freq: 351.0, key: 'n' },
+          { num: '5',  name: 'Ma',  freq: 403.5, key: ',' },
+          { num: '6',  name: 'Nem', freq: 464.0, key: '.' },
+          { num: "1'", name: "Ji'", freq: 532.0, key: '/' }
+        ],
+        gongFreq: 58.0
+      }
+    };
+
+    // 2. KOLEKSI 5 GENDING PAKEM JAWA TENGAH
+    // Simbol Kolotomik:
+    // colotomy: 'P' (Kempul), 'N' (Kenong), 'G' (Gong Ageng)
+    // colotomyNote: nada spesifik yang dipukul pada Kenong / Kempul agar selaras!
+    const GENDING_LIBRARY = {
+      kodokngorek: {
+        title: 'Gending Kodok Ngorek — "Ning Nong Ning Gung"',
+        laras: 'pelog',
+        pathet: 'Pathet Nem',
+        defaultBpm: 92,
+        isWedding: true,
+        subtitle: 'Gending Pengantin Panggih Khas Jawa Tengah • Laras Pelog Pathet Nem',
+        steps: [
+          // Gatra 1: 5 (Ning) - 6 (Nong, N) - 5 (Ning) - 3 (Gung, G)
+          { note: '5', lyric: 'Ning' },
+          { note: '6', lyric: 'Nong', colotomy: 'N', colotomyNote: '6' },
+          { note: '5', lyric: 'Ning' },
+          { note: '3', lyric: 'Gung', colotomy: 'G', colotomyNote: '3' },
+          // Gatra 2: 5 (Ning) - 6 (Nong, N) - 5 (Ning) - 3 (Gung, G)
+          { note: '5', lyric: 'Ning' },
+          { note: '6', lyric: 'Nong', colotomy: 'N', colotomyNote: '6' },
+          { note: '5', lyric: 'Ning' },
+          { note: '3', lyric: 'Gung', colotomy: 'G', colotomyNote: '3' },
+          // Gatra 3: 3 (Ning) - 5 (Nong, P) - 3 (Ning) - 2 (Gung, N)
+          { note: '3', lyric: 'Ning' },
+          { note: '5', lyric: 'Nong', colotomy: 'P', colotomyNote: '5' },
+          { note: '3', lyric: 'Ning' },
+          { note: '2', lyric: 'Gung', colotomy: 'N', colotomyNote: '2' },
+          // Gatra 4: 5 (Ning) - 6 (Nong, P) - 5 (Ning) - 3 (Gung, G)
+          { note: '5', lyric: 'Ning' },
+          { note: '6', lyric: 'Nong', colotomy: 'P', colotomyNote: '6' },
+          { note: '5', lyric: 'Ning' },
+          { note: '3', lyric: 'Gung', colotomy: 'G', colotomyNote: '3' }
+        ]
+      },
+      gundul: {
+        title: 'Gundul-Gundul Pacul',
+        laras: 'pelog',
+        pathet: 'Pathet Nem',
+        defaultBpm: 94,
+        isWedding: false,
+        subtitle: 'Tembang Dolanan Jawa Tengah • Laras Pelog Pathet Nem (dengan Ji Alit 1\')',
+        steps: [
+          // Ulangan 1: Gundul-gundul pacul cul, gembelengan
+          { note: '1',  lyric: 'Gun-' },
+          { note: '3',  lyric: 'dul' },
+          { note: '1',  lyric: 'gun-' },
+          { note: '3',  lyric: 'dul' },
+          { note: '4',  lyric: 'pa-' },
+          { note: '5',  lyric: 'cul' },
+          { note: '5',  lyric: 'cul', colotomy: 'N', colotomyNote: '5' },
+          { note: '.',  lyric: '—' },
+          { note: '7',  lyric: 'gem-' },
+          { note: "1'", lyric: 'be-' },
+          { note: '7',  lyric: 'leng-' },
+          { note: "1'", lyric: 'an' },
+          { note: '7',  lyric: 'nyung-' },
+          { note: '5',  lyric: 'gi', colotomy: 'N', colotomyNote: '5' },
+          { note: '.',  lyric: '—' },
+          { note: '.',  lyric: '—' },
+          // Ulangan 2: Nyunggi-nyunggi wakul kul, gembelengan
+          { note: '1',  lyric: 'Nyung-' },
+          { note: '3',  lyric: 'gi' },
+          { note: '1',  lyric: 'nyung-' },
+          { note: '3',  lyric: 'gi' },
+          { note: '4',  lyric: 'wa-' },
+          { note: '5',  lyric: 'kul' },
+          { note: '5',  lyric: 'kul', colotomy: 'N', colotomyNote: '5' },
+          { note: '.',  lyric: '—' },
+          { note: '7',  lyric: 'gem-' },
+          { note: "1'", lyric: 'be-' },
+          { note: '7',  lyric: 'leng-' },
+          { note: "1'", lyric: 'an' },
+          { note: '7',  lyric: 'nyung-' },
+          { note: '5',  lyric: 'gi', colotomy: 'N', colotomyNote: '5' },
+          { note: '.',  lyric: '—' },
+          { note: '.',  lyric: '—' },
+          // Bagian 2 (1): Wakul nglimpang segane dadi sak latar
+          { note: '1',  lyric: 'Wa-' },
+          { note: '.',  lyric: 'kul' },
+          { note: '3',  lyric: 'nglim-' },
+          { note: '5',  lyric: 'pang' },
+          { note: '4',  lyric: 'se-' },
+          { note: '4',  lyric: 'ga-' },
+          { note: '5',  lyric: 'ne', colotomy: 'N', colotomyNote: '5' },
+          { note: '4',  lyric: 'da-' },
+          { note: '3',  lyric: 'di' },
+          { note: '1',  lyric: 'sak' },
+          { note: '2',  lyric: 'la-' },
+          { note: '1',  lyric: 'tar', colotomy: 'G', colotomyNote: "1'" },
+          // Bagian 2 (2): Wakul nglimpang segane dadi sak latar
+          { note: '1',  lyric: 'Wa-' },
+          { note: '.',  lyric: 'kul' },
+          { note: '3',  lyric: 'nglim-' },
+          { note: '5',  lyric: 'pang' },
+          { note: '4',  lyric: 'se-' },
+          { note: '4',  lyric: 'ga-' },
+          { note: '5',  lyric: 'ne', colotomy: 'N', colotomyNote: '5' },
+          { note: '4',  lyric: 'da-' },
+          { note: '3',  lyric: 'di' },
+          { note: '1',  lyric: 'sak' },
+          { note: '2',  lyric: 'la-' },
+          { note: '1',  lyric: 'tar', colotomy: 'G', colotomyNote: "1'" }
+        ]
+      },
+      suwe: {
+        title: 'Suwe Ora Jamu',
+        laras: 'pelog',
+        pathet: 'Pathet Nem',
+        defaultBpm: 86,
+        isWedding: false,
+        subtitle: 'Karya R.C. Hardjosubroto • Laras Pelog Pathet Nem',
+        steps: [
+          { note: '3', lyric: 'Su-' },
+          { note: '4', lyric: 'we' },
+          { note: '5', lyric: 'o-', colotomy: 'N', colotomyNote: '5' },
+          { note: '.', lyric: 'ra' },
+
+          { note: '3', lyric: 'ja-' },
+          { note: '4', lyric: 'mu' },
+          { note: '5', lyric: '—', colotomy: 'N', colotomyNote: '5' },
+          { note: '.', lyric: '—' },
+
+          { note: '5', lyric: 'ja-' },
+          { note: '6', lyric: 'mu' },
+          { note: '6', lyric: 'go-', colotomy: 'P', colotomyNote: '6' },
+          { note: '5', lyric: 'dhong' },
+
+          { note: '4', lyric: 'te-' },
+          { note: '3', lyric: 'lo', colotomy: 'N', colotomyNote: '3' },
+          { note: '.', lyric: '—' },
+          { note: '.', lyric: '—' },
+
+          { note: '3', lyric: 'Su-' },
+          { note: '4', lyric: 'we' },
+          { note: '5', lyric: 'o-', colotomy: 'N', colotomyNote: '5' },
+          { note: '.', lyric: 'ra' },
+
+          { note: '3', lyric: 'ja-' },
+          { note: '4', lyric: 'mu' },
+          { note: '5', lyric: 'ke-', colotomy: 'P', colotomyNote: '5' },
+          { note: '6', lyric: 'te-' },
+
+          { note: '5', lyric: 'mu' },
+          { note: '6', lyric: 'pi-' },
+          { note: '5', lyric: 'san' },
+          { note: '4', lyric: 'ga-' },
+
+          { note: '3', lyric: 'we' },
+          { note: '2', lyric: 'ge-' },
+          { note: '3', lyric: '—', colotomy: 'P', colotomyNote: '3' },
+          { note: '2', lyric: '—' },
+
+          { note: '1', lyric: 'la', colotomy: 'G', colotomyNote: "1'" },
+          { note: '.', lyric: '—' },
+          { note: '.', lyric: '—' },
+          { note: '.', lyric: '—' }
+        ]
+      },
+      kebogiro: {
+        title: 'Lancaran Kebogiro',
+        laras: 'pelog',
+        pathet: 'Pathet Barang',
+        defaultBpm: 112,
+        isWedding: false,
+        subtitle: 'Gending Pakurmatan / Upacara Adat • Laras Pelog Pathet Barang',
+        steps: [
+          { note: '.', lyric: '—' },
+          { note: '7', lyric: '—', colotomy: 'P', colotomyNote: '6' },
+          { note: '.', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'N', colotomyNote: '6' },
+
+          { note: '.', lyric: '—' },
+          { note: '7', lyric: '—', colotomy: 'P', colotomyNote: '6' },
+          { note: '.', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'N', colotomyNote: '6' },
+
+          { note: '.', lyric: '—' },
+          { note: '3', lyric: '—', colotomy: 'P', colotomyNote: '3' },
+          { note: '.', lyric: '—' },
+          { note: '2', lyric: '—', colotomy: 'N', colotomyNote: '2' },
+
+          { note: '.', lyric: '—' },
+          { note: '7', lyric: '—', colotomy: 'P', colotomyNote: '6' },
+          { note: '.', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'G', colotomyNote: '6' }
+        ]
+      },
+      wilujeng: {
+        title: 'Ladrang Wilujeng',
+        laras: 'slendro',
+        pathet: 'Pathet Manyura',
+        defaultBpm: 78,
+        isWedding: false,
+        subtitle: 'Gending Sugeng Rawuh Keraton • Laras Slendro Pathet Manyura',
+        steps: [
+          // Gatra 1 (Wela) & Gatra 2 (Kenong 6)
+          { note: '2', lyric: '—' },
+          { note: '1', lyric: '—' },
+          { note: '2', lyric: '—' },
+          { note: '3', lyric: '—' },
+          { note: '2', lyric: '—' },
+          { note: '1', lyric: '—' },
+          { note: '2', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'N', colotomyNote: '6' },
+          // Gatra 3 & Gatra 4 (Kempul 6, Kenong 2)
+          { note: '3', lyric: '—' },
+          { note: '3', lyric: '—' },
+          { note: '.', lyric: '—' },
+          { note: '.', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'P', colotomyNote: '6' },
+          { note: '5', lyric: '—' },
+          { note: '3', lyric: '—' },
+          { note: '2', lyric: '—', colotomy: 'N', colotomyNote: '2' },
+          // Gatra 5 & Gatra 6 (Kempul 3, Kenong 6)
+          { note: '5', lyric: '—' },
+          { note: '6', lyric: '—' },
+          { note: '5', lyric: '—' },
+          { note: '3', lyric: '—' },
+          { note: '2', lyric: '—', colotomy: 'P', colotomyNote: '3' },
+          { note: '1', lyric: '—' },
+          { note: '2', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'N', colotomyNote: '6' },
+          // Gatra 7 & Gatra 8 (Kempul 3, Gong 6)
+          { note: '2', lyric: '—' },
+          { note: '1', lyric: '—' },
+          { note: '2', lyric: '—' },
+          { note: '3', lyric: '—' },
+          { note: '2', lyric: '—', colotomy: 'P', colotomyNote: '3' },
+          { note: '1', lyric: '—' },
+          { note: '2', lyric: '—' },
+          { note: '6', lyric: '—', colotomy: 'G', colotomyNote: '6' }
+        ]
+      }
+    };
+
+    // 3. ENGINE SINTESIS PERUNGGU WEB AUDIO API (MURNI PROSEDURAL)
+    class GamelanAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.dryGain = null;
+        this.wetGain = null;
+        this.convolver = null;
+        this.compressor = null;
+        this.volume = 0.84;
+        this.reverbMix = 0.44;
+        this.activeSaronVoices = [];
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioCtx();
+
+          this.compressor = this.ctx.createDynamicsCompressor();
+          this.compressor.threshold.value = -13;
+          this.compressor.knee.value = 18;
+          this.compressor.ratio.value = 4;
+          this.compressor.attack.value = 0.004;
+          this.compressor.release.value = 0.25;
+
+          this.masterGain = this.ctx.createGain();
+          this.masterGain.gain.value = this.volume;
+
+          this.dryGain = this.ctx.createGain();
+          this.wetGain = this.ctx.createGain();
+          this.updateMix();
+
+          this.convolver = this.ctx.createConvolver();
+          this.convolver.buffer = this.createPendopoImpulse(2.7, 2.35);
+
+          this.dryGain.connect(this.compressor);
+          this.convolver.connect(this.wetGain);
+          this.wetGain.connect(this.compressor);
+          this.compressor.connect(this.masterGain);
+          this.masterGain.connect(this.ctx.destination);
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      createPendopoImpulse(duration, decay) {
+        const rate = this.ctx.sampleRate;
+        const length = Math.floor(rate * duration);
+        const impulse = this.ctx.createBuffer(2, length, rate);
+        for (let ch = 0; ch < 2; ch++) {
+          const data = impulse.getChannelData(ch);
+          for (let i = 0; i < length; i++) {
+            const t = i / rate;
+            const env = Math.pow(1 - i / length, decay);
+            const noise = (Math.random() * 2 - 1) * env;
+            data[i] = noise * (t < 0.045 ? 0.65 : 0.44);
+          }
+        }
+        return impulse;
+      }
+
+      setVolume(val) {
+        this.volume = val;
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setTargetAtTime(val, this.ctx.currentTime, 0.02);
+        }
+      }
+
+      setReverb(val) {
+        this.reverbMix = val;
+        this.updateMix();
+      }
+
+      updateMix() {
+        if (!this.dryGain || !this.wetGain || !this.ctx) return;
+        this.dryGain.gain.setTargetAtTime(1 - this.reverbMix * 0.35, this.ctx.currentTime, 0.02);
+        this.wetGain.gain.setTargetAtTime(this.reverbMix * 0.85, this.ctx.currentTime, 0.02);
+      }
+
+      connectVoice(node) {
+        node.connect(this.dryGain);
+        node.connect(this.convolver);
+      }
+
+      triggerMalletTransient(freq, brightness = 2400, level = 0.22, duration = 0.035) {
+        const now = this.ctx.currentTime;
+        const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.28));
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(Math.min(brightness, freq * 5.8), now);
+        filter.Q.value = 3.2;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(level, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        this.connectVoice(gain);
+        noise.start(now);
+      }
+
+      /**
+       * SARON BARUNG / DEMUNG (Parsial perunggu: 1.0, 2.01, 2.76, 3.98, 5.42 + dukungan Pitet)
+       */
+      playSaron(freq, velocity = 1.0) {
+        this.init();
+        const now = this.ctx.currentTime;
+
+        this.triggerMalletTransient(freq, 3200, 0.24 * velocity, 0.03);
+
+        const voiceGain = this.ctx.createGain();
+        voiceGain.gain.setValueAtTime(0.001, now);
+        voiceGain.gain.linearRampToValueAtTime(0.36 * velocity, now + 0.005);
+        voiceGain.gain.exponentialRampToValueAtTime(0.0008, now + 3.4);
+        this.connectVoice(voiceGain);
+
+        const partials = [
+          { ratio: 1.0,  amp: 0.65, decay: 3.3, type: 'sine' },
+          { ratio: 2.01, amp: 0.34, decay: 2.1, type: 'sine' },
+          { ratio: 2.76, amp: 0.22, decay: 1.1, type: 'triangle' },
+          { ratio: 3.98, amp: 0.11, decay: 0.55, type: 'sine' },
+          { ratio: 5.42, amp: 0.06, decay: 0.25, type: 'sine' }
+        ];
+
+        const oscs = [];
+        partials.forEach(p => {
+          const osc = this.ctx.createOscillator();
+          const pGain = this.ctx.createGain();
+          osc.type = p.type;
+          osc.frequency.setValueAtTime(freq * p.ratio, now);
+
+          pGain.gain.setValueAtTime(p.amp, now);
+          pGain.gain.exponentialRampToValueAtTime(0.0005, now + p.decay);
+
+          osc.connect(pGain);
+          pGain.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + p.decay + 0.05);
+          oscs.push(osc);
+        });
+
+        const voiceObj = { gain: voiceGain, oscs, damped: false };
+        this.activeSaronVoices.push(voiceObj);
+        setTimeout(() => {
+          this.activeSaronVoices = this.activeSaronVoices.filter(v => v !== voiceObj);
+        }, 3500);
+      }
+
+      /**
+       * TEKNIK PITET: Meredam getaran bilah Saron yang sedang berbunyi
+       */
+      dampSaron() {
+        if (!this.ctx) return 0;
+        const now = this.ctx.currentTime;
+        let dampedCount = 0;
+
+        this.activeSaronVoices.forEach(voice => {
+          if (!voice.damped) {
+            voice.damped = true;
+            dampedCount++;
+            voice.gain.gain.cancelScheduledValues(now);
+            voice.gain.gain.setValueAtTime(Math.max(voice.gain.gain.value, 0.001), now);
+            voice.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.048);
+          }
+        });
+
+        this.triggerMalletTransient(420, 900, dampedCount > 0 ? 0.12 : 0.05, 0.025);
+        return dampedCount;
+      }
+
+      /**
+       * BONANG BARUNG (Pencon perunggu oktaf tinggi & sedang)
+       */
+      playBonang(freq, isHighRow = true, velocity = 1.0) {
+        this.init();
+        const now = this.ctx.currentTime;
+        const actualFreq = isHighRow ? freq * 2 : freq;
+
+        this.triggerMalletTransient(actualFreq, 2000, 0.17 * velocity, 0.032);
+
+        const voiceGain = this.ctx.createGain();
+        voiceGain.gain.setValueAtTime(0.001, now);
+        voiceGain.gain.linearRampToValueAtTime(0.32 * velocity, now + 0.008);
+        voiceGain.gain.exponentialRampToValueAtTime(0.0007, now + 2.8);
+        this.connectVoice(voiceGain);
+
+        const partials = [
+          { ratio: 1.0,  amp: 0.72, decay: 2.7 },
+          { ratio: 2.01, amp: 0.42, decay: 1.8 },
+          { ratio: 2.76, amp: 0.16, decay: 0.85 },
+          { ratio: 3.98, amp: 0.07, decay: 0.4 }
+        ];
+
+        partials.forEach(p => {
+          const osc = this.ctx.createOscillator();
+          const pGain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(actualFreq * p.ratio * 0.996, now);
+          osc.frequency.exponentialRampToValueAtTime(actualFreq * p.ratio, now + 0.06);
+
+          pGain.gain.setValueAtTime(p.amp, now);
+          pGain.gain.exponentialRampToValueAtTime(0.0005, now + p.decay);
+
+          osc.connect(pGain);
+          pGain.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + p.decay + 0.05);
+        });
+      }
+
+      /**
+       * KENONG (Kettle-gong besar bernada 2, 3, 5, 6, 1')
+       */
+      playKenong(freq) {
+        this.init();
+        const now = this.ctx.currentTime;
+        this.triggerMalletTransient(freq, 1750, 0.22, 0.045);
+
+        const voiceGain = this.ctx.createGain();
+        voiceGain.gain.setValueAtTime(0.001, now);
+        voiceGain.gain.linearRampToValueAtTime(0.42, now + 0.015);
+        voiceGain.gain.exponentialRampToValueAtTime(0.0006, now + 4.8);
+        this.connectVoice(voiceGain);
+
+        [0, 0.92].forEach((detuneHz, idx) => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq + detuneHz, now);
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(idx === 0 ? 0.65 : 0.35, now);
+          g.gain.exponentialRampToValueAtTime(0.0005, now + 4.6);
+          osc.connect(g);
+          g.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + 4.7);
+        });
+
+        [2.01, 2.76].forEach((ratio, idx) => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq * ratio, now);
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(idx === 0 ? 0.28 : 0.12, now);
+          g.gain.exponentialRampToValueAtTime(0.0005, now + 2.4);
+          osc.connect(g);
+          g.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + 2.5);
+        });
+      }
+
+      /**
+       * KEMPUL (Gong gantung menengah bernada 3, 5, 6, 1')
+       */
+      playKempul(freq) {
+        this.init();
+        const now = this.ctx.currentTime;
+        const duration = 5.2;
+
+        this.triggerMalletTransient(freq * 2, 720, 0.25, 0.06);
+
+        const voiceGain = this.ctx.createGain();
+        voiceGain.gain.setValueAtTime(0.001, now);
+        voiceGain.gain.linearRampToValueAtTime(0.55, now + 0.035);
+        voiceGain.gain.exponentialRampToValueAtTime(0.0006, now + duration);
+        this.connectVoice(voiceGain);
+
+        [0, 1.15].forEach((detuneHz, idx) => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime((freq * 0.985) + detuneHz, now);
+          osc.frequency.exponentialRampToValueAtTime(freq + detuneHz, now + 0.18);
+
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(idx === 0 ? 0.72 : 0.48, now);
+          g.gain.exponentialRampToValueAtTime(0.0005, now + duration);
+
+          osc.connect(g);
+          g.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + duration + 0.1);
+        });
+
+        [2.01, 2.76].forEach((ratio, idx) => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq * ratio, now);
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(idx === 0 ? 0.24 : 0.12, now);
+          g.gain.exponentialRampToValueAtTime(0.0005, now + duration * 0.6);
+          osc.connect(g);
+          g.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + duration * 0.65);
+        });
+      }
+
+      /**
+       * GONG AGENG (Bass megah dengan efek OMBAK ~1.48 Hz)
+       */
+      playGongAgeng(baseFreq) {
+        this.init();
+        const now = this.ctx.currentTime;
+        const duration = 9.8;
+
+        this.triggerMalletTransient(baseFreq * 2.5, 420, 0.32, 0.09);
+
+        const voiceGain = this.ctx.createGain();
+        voiceGain.gain.setValueAtTime(0.001, now);
+        voiceGain.gain.linearRampToValueAtTime(0.68, now + 0.14);
+        voiceGain.gain.exponentialRampToValueAtTime(0.0005, now + duration);
+        this.connectVoice(voiceGain);
+
+        const ombakBeatHz = 1.48;
+        [baseFreq, baseFreq + ombakBeatHz].forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f * 1.015, now);
+          osc.frequency.exponentialRampToValueAtTime(f, now + 0.35);
+
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(idx === 0 ? 0.85 : 0.78, now);
+          g.gain.exponentialRampToValueAtTime(0.0004, now + duration);
+
+          osc.connect(g);
+          g.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + duration + 0.1);
+        });
+
+        [
+          { ratio: 2.01, detune: 1.48, amp: 0.36, decay: 6.8 },
+          { ratio: 2.76, detune: 0.8,  amp: 0.16, decay: 4.2 },
+          { ratio: 3.98, detune: 0.0,  amp: 0.07, decay: 2.1 }
+        ].forEach(p => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq * p.ratio + p.detune, now);
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(0.001, now);
+          g.gain.linearRampToValueAtTime(p.amp, now + 0.08);
+          g.gain.exponentialRampToValueAtTime(0.0004, now + p.decay);
+          osc.connect(g);
+          g.connect(voiceGain);
+          osc.start(now);
+          osc.stop(now + p.decay + 0.1);
+        });
+      }
+
+      /**
+       * TABUHAN ROJEH PENGANTIN (Simbal kecil / Kecrek khas upacara Panggih Kodok Ngorek)
+       */
+      playRojehCymbal(accent = false) {
+        this.init();
+        const now = this.ctx.currentTime;
+        const duration = accent ? 0.42 : 0.22;
+
+        const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * (accent ? 0.32 : 0.22)));
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const hp = this.ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.setValueAtTime(3400, now);
+
+        const bp = this.ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.setValueAtTime(5800, now);
+        bp.Q.value = 2.4;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(accent ? 0.15 : 0.085, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        noise.connect(hp);
+        hp.connect(bp);
+        bp.connect(gain);
+        this.connectVoice(gain);
+        noise.start(now);
+      }
+    }
+
+    // 4. STATE APLIKASI & REFERENSI DOM
+    const audioEngine = new GamelanAudioEngine();
+
+    const state = {
+      laras: 'pelog',
+      pathet: 'Pathet Nem',
+      selectedGending: 'kodokngorek',
+      isPlayingGending: false,
+      loopEnabled: true,
+      rojehImbalEnabled: true,
+      practiceMode: false,
+      currentStepIndex: 0,
+      bpm: 92,
+      timerId: null,
+      // Statistik Mode Latihan
+      practiceStreak: 0,
+      practiceHits: 0,
+      practiceAttempts: 0,
+      // Perekam pola
+      isRecording: false,
+      isLoopPlaying: false,
+      recStartTime: 0,
+      recordedEvents: [],
+      recDurationMs: 0,
+      loopTimers: [],
+      recInterval: null
+    };
+
+    const el = {
+      btnPelog: document.getElementById('btn-laras-pelog'),
+      btnSlendro: document.getElementById('btn-laras-slendro'),
+      pathetBadge: document.getElementById('pathet-badge'),
+      btnPitet: document.getElementById('btn-pitet'),
+      bonangRowHigh: document.getElementById('bonang-row-high'),
+      bonangRowLow: document.getElementById('bonang-row-low'),
+      saronRack: document.getElementById('saron-rack'),
+      kenongRack: document.getElementById('kenong-rack'),
+      kempulRack: document.getElementById('kempul-rack'),
+      gongAgeng: document.getElementById('gong-ageng'),
+      // Gending & Latihan
+      selectGending: document.getElementById('select-gending'),
+      weddingBadge: document.getElementById('wedding-badge'),
+      gendingSubtitle: document.getElementById('gending-subtitle'),
+      btnPlayGending: document.getElementById('btn-play-gending'),
+      lblPlayGending: document.getElementById('lbl-play-gending'),
+      btnStopGending: document.getElementById('btn-stop-gending'),
+      btnLoopToggle: document.getElementById('btn-loop-toggle'),
+      lblLoopState: document.getElementById('lbl-loop-state'),
+      btnPracticeMode: document.getElementById('btn-practice-mode'),
+      lblPracticeState: document.getElementById('lbl-practice-state'),
+      chkRojehImbal: document.getElementById('chk-rojeh-imbal'),
+      practiceStatsBar: document.getElementById('practice-stats-bar'),
+      statStreak: document.getElementById('stat-streak'),
+      statAccuracy: document.getElementById('stat-accuracy'),
+      statProgress: document.getElementById('stat-progress'),
+      sliderTempo: document.getElementById('slider-tempo'),
+      lblTempo: document.getElementById('lbl-tempo'),
+      kepatihanBoard: document.getElementById('kepatihan-board'),
+      // Perekam
+      btnRecRecord: document.getElementById('btn-rec-record'),
+      lblRecRecord: document.getElementById('lbl-rec-record'),
+      btnRecPlay: document.getElementById('btn-rec-play'),
+      lblRecPlay: document.getElementById('lbl-rec-play'),
+      btnRecClear: document.getElementById('btn-rec-clear'),
+      recStatusPill: document.getElementById('rec-status-pill'),
+      recCount: document.getElementById('rec-count'),
+      recDuration: document.getElementById('rec-duration'),
+      // Akustik
+      sliderVol: document.getElementById('slider-volume'),
+      sliderVolMob: document.getElementById('slider-volume-mobile'),
+      sliderRev: document.getElementById('slider-reverb'),
+      sliderRevMob: document.getElementById('slider-reverb-mobile'),
+      toastContainer: document.getElementById('toast-container')
+    };
+
+    function showToast(message, type = 'gold') {
+      const toast = document.createElement('div');
+      const colors = {
+        gold: 'bg-[#28140b]/95 border-amber-400/70 text-amber-100',
+        emerald: 'bg-emerald-950/95 border-emerald-400/70 text-emerald-100',
+        rose: 'bg-rose-950/95 border-rose-400/70 text-rose-100'
+      };
+      toast.className = `${colors[type] || colors.gold} border px-3.5 py-2.5 rounded-xl shadow-2xl text-xs font-semibold backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0`;
+      toast.textContent = message;
+      el.toastContainer.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    function animateStrike(targetEl, labelText = '') {
+      if (!targetEl) return;
+      targetEl.classList.remove('struck');
+      void targetEl.offsetWidth;
+      targetEl.classList.add('struck');
+
+      setTimeout(() => {
+        targetEl.classList.remove('struck');
+      }, 220);
+
+      const ripple = document.createElement('span');
+      ripple.className = 'sound-ripple';
+      targetEl.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 1050);
+
+      if (labelText) {
+        const particle = document.createElement('span');
+        particle.className = 'floating-note font-kepatihan text-xs sm:text-sm';
+        particle.textContent = labelText;
+        targetEl.appendChild(particle);
+        setTimeout(() => particle.remove(), 750);
+      }
+    }
+
+    function bindMultiTouchPlay(element, callback) {
+      element.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+        e.preventDefault();
+        callback();
+      });
+    }
+
+    // 5. RENDER SEMUA INSTRUMEN (BONANG, SARON 8 BILAH, KENONG 5 PENCON, KEMPUL 4 GONG)
+    function renderInstruments() {
+      const cfg = LARAS_CONFIG[state.laras];
+
+      // Toggle tampilan tombol Laras Pelog vs Laras Slendro
+      if (state.laras === 'pelog') {
+        el.btnPelog.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-950 shadow-md';
+        el.btnSlendro.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 text-amber-200/75 hover:text-amber-100';
+      } else {
+        el.btnSlendro.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 bg-gradient-to-r from-amber-500 to-yellow-600 text-stone-950 shadow-md';
+        el.btnPelog.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 text-amber-200/75 hover:text-amber-100';
+      }
+
+      el.pathetBadge.textContent = state.pathet;
+
+      // Render Bonang Barung (Baris Atas 1'–7' & Baris Bawah 1–7)
+      el.bonangRowHigh.innerHTML = '';
+      el.bonangRowLow.innerHTML = '';
+
+      cfg.bonangNotes.forEach((note, idx) => {
+        el.bonangRowHigh.appendChild(createBonangPencon(note, idx, true));
+        el.bonangRowLow.appendChild(createBonangPencon(note, idx, false));
+      });
+
+      // Render Saron Barung / Demung (8 Bilah: 1 2 3 4 5 6 7 1')
+      el.saronRack.innerHTML = '';
+      cfg.saronNotes.forEach((note, idx) => {
+        const heightPercent = 100 - idx * 3.2;
+        const bar = document.createElement('button');
+        bar.type = 'button';
+        bar.dataset.instrument = 'saron';
+        bar.dataset.noteNum = note.num;
+        bar.dataset.index = idx;
+        bar.style.height = `${heightPercent}%`;
+
+        if (!note.active) {
+          bar.disabled = true;
+          bar.className = 'bilah-bronze opacity-25 grayscale pointer-events-none relative rounded-xl p-1 sm:p-2 flex flex-col items-center justify-between text-stone-950';
+        } else {
+          bar.className = 'bilah-bronze relative rounded-xl p-1 sm:p-2 flex flex-col items-center justify-between text-stone-950 focus:outline-none';
+        }
+
+        const isJiAlit = note.num === "1'";
+        bar.innerHTML = `
+          <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-stone-900/80 border border-amber-200/70"></span>
+          <div class="flex flex-col items-center text-center my-auto">
+            <span class="font-kepatihan text-base sm:text-2xl font-black leading-none text-stone-950 drop-shadow-[0_1px_0_rgba(255,255,255,0.65)]">
+              ${note.num}
+            </span>
+            <span class="text-[10px] sm:text-xs font-extrabold uppercase tracking-tight ${isJiAlit ? 'text-red-900' : 'text-amber-950'} mt-0.5">
+              ${note.active ? note.name : 'Slendro'}
+            </span>
+          </div>
+          <div class="flex flex-col items-center gap-1 w-full">
+            <span class="px-1.5 py-0.5 rounded bg-stone-950/85 text-amber-300 font-kepatihan text-[10px] font-bold leading-none">
+              ${note.key}
+            </span>
+            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-stone-900/80 border border-amber-200/70"></span>
+          </div>
+        `;
+
+        if (note.active) {
+          bindMultiTouchPlay(bar, () => triggerInstrument('saron', idx));
+        }
+        el.saronRack.appendChild(bar);
+      });
+
+      // Render Kenong (5 Pencon: 2, 3, 5, 6, 1' — Tombol B N , . /)
+      el.kenongRack.innerHTML = '';
+      cfg.kenongNotes.forEach((note, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.instrument = 'kenong';
+        btn.dataset.noteNum = note.num;
+        btn.className = 'pencon-dish relative aspect-square w-full max-w-[64px] mx-auto rounded-full flex flex-col items-center justify-center p-1 focus:outline-none';
+        btn.innerHTML = `
+          <div class="pencon-boss w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-stone-950 font-kepatihan text-xs font-black">
+            ${note.num}
+          </div>
+          <span class="mt-0.5 px-1.5 rounded bg-black/75 text-sky-300 font-kepatihan text-[9px] font-bold">
+            ${note.key.toUpperCase()}
+          </span>
+        `;
+        bindMultiTouchPlay(btn, () => triggerInstrument('kenong', idx));
+        el.kenongRack.appendChild(btn);
+      });
+
+      // Render Kempul (4 Gong Gantung: 3, 5, 6, 1' — Tombol Z X C V)
+      el.kempulRack.innerHTML = '';
+      cfg.kempulNotes.forEach((note, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.instrument = 'kempul';
+        btn.dataset.noteNum = note.num;
+        btn.className = 'gong-plate relative aspect-square w-full max-w-[68px] mx-auto rounded-full flex flex-col items-center justify-center p-1 focus:outline-none';
+        btn.innerHTML = `
+          <div class="pencon-boss w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-stone-950 font-kepatihan text-xs font-black">
+            ${note.num}
+          </div>
+          <span class="mt-0.5 px-1.5 rounded bg-black/75 text-emerald-300 font-kepatihan text-[9px] font-bold">
+            ${note.key.toUpperCase()}
+          </span>
+        `;
+        bindMultiTouchPlay(btn, () => triggerInstrument('kempul', idx));
+        el.kempulRack.appendChild(btn);
+      });
+
+      updatePracticeHighlight();
+    }
+
+    function createBonangPencon(note, idx, isHighRow) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.instrument = isHighRow ? 'bonang-high' : 'bonang-low';
+      btn.dataset.noteNum = note.num;
+      btn.dataset.index = idx;
+
+      if (!note.active) {
+        btn.disabled = true;
+        btn.className = 'pencon-dish opacity-20 grayscale pointer-events-none relative aspect-square w-full max-w-[72px] mx-auto rounded-full flex flex-col items-center justify-center p-1';
+      } else {
+        btn.className = 'pencon-dish relative aspect-square w-full max-w-[72px] mx-auto rounded-full flex flex-col items-center justify-center p-1 focus:outline-none';
+      }
+
+      const keyChar = isHighRow ? note.highKey : note.lowKey;
+      const displayNum = isHighRow ? `${note.num}'` : note.num;
+
+      btn.innerHTML = `
+        <div class="pencon-boss w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-stone-950 font-kepatihan text-xs sm:text-sm font-black leading-none">
+          ${displayNum}
+        </div>
+        <span class="mt-0.5 px-1.5 rounded bg-black/70 text-amber-200 font-kepatihan text-[9px] font-bold leading-tight">
+          ${note.active ? keyChar.toUpperCase() : '—'}
+        </span>
+      `;
+
+      if (note.active) {
+        bindMultiTouchPlay(btn, () => triggerInstrument(isHighRow ? 'bonang-high' : 'bonang-low', idx));
+      }
+      return btn;
+    }
+
+    // 6. PEMICU SUARA INSTRUMEN, REKAMAN & MODE LATIHAN
+    function triggerInstrument(type, index = 0, fromAutoPlayer = false, customLabel = null) {
+      const cfg = LARAS_CONFIG[state.laras];
+      let targetEl = null;
+      let labelText = '';
+      let playedNoteNum = null;
+
+      if (type === 'saron') {
+        const note = cfg.saronNotes[index];
+        if (!note || !note.active) return;
+        audioEngine.playSaron(note.freq);
+        targetEl = el.saronRack.children[index];
+        labelText = customLabel || `${note.num} (${note.name})`;
+        playedNoteNum = note.num;
+      } else if (type === 'bonang-high') {
+        const note = cfg.bonangNotes[index];
+        if (!note || !note.active) return;
+        audioEngine.playBonang(note.freq, true);
+        targetEl = el.bonangRowHigh.children[index];
+        labelText = customLabel || `${note.num}'`;
+        playedNoteNum = note.num === '1' ? "1'" : note.num;
+      } else if (type === 'bonang-low') {
+        const note = cfg.bonangNotes[index];
+        if (!note || !note.active) return;
+        audioEngine.playBonang(note.freq, false);
+        targetEl = el.bonangRowLow.children[index];
+        labelText = customLabel || note.num;
+        playedNoteNum = note.num;
+      } else if (type === 'kenong') {
+        const kNote = cfg.kenongNotes[index] || cfg.kenongNotes[2];
+        audioEngine.playKenong(kNote.freq);
+        targetEl = el.kenongRack.children[index] || el.kenongRack.children[2];
+        labelText = `KENONG ${kNote.num}`;
+      } else if (type === 'kempul') {
+        const pNote = cfg.kempulNotes[index] || cfg.kempulNotes[1];
+        audioEngine.playKempul(pNote.freq);
+        targetEl = el.kempulRack.children[index] || el.kempulRack.children[1];
+        labelText = `KEMPUL ${pNote.num}`;
+        if (targetEl) {
+          targetEl.classList.remove('swinging-kempul');
+          void targetEl.offsetWidth;
+          targetEl.classList.add('swinging-kempul');
+        }
+      } else if (type === 'gong') {
+        audioEngine.playGongAgeng(cfg.gongFreq);
+        targetEl = el.gongAgeng;
+        labelText = 'GONG!';
+        el.gongAgeng.classList.remove('swinging-gong');
+        void el.gongAgeng.offsetWidth;
+        el.gongAgeng.classList.add('swinging-gong');
+      }
+
+      animateStrike(targetEl, labelText);
+
+      // Rekam jika sedang dalam mode Rekam
+      if (state.isRecording && !fromAutoPlayer) {
+        state.recordedEvents.push({
+          time: performance.now() - state.recStartTime,
+          type,
+          index,
+          laras: state.laras
+        });
+        el.recCount.textContent = `${state.recordedEvents.length} nada`;
+      }
+
+      // Evaluasi input Mode Latihan jika user memukul bilah/pencon melodi
+      if (!fromAutoPlayer && state.practiceMode && playedNoteNum) {
+        handlePracticeInput(playedNoteNum);
+      }
+    }
+
+    function triggerPitet() {
+      audioEngine.init();
+      const damped = audioEngine.dampSaron();
+      el.btnPitet.classList.add('scale-95', 'ring-2', 'ring-white');
+      setTimeout(() => el.btnPitet.classList.remove('scale-95', 'ring-2', 'ring-white'), 160);
+      if (damped > 0) {
+        showToast('✋ Pitet: Getaran bilah Saron diredam', 'gold');
+      }
+    }
+
+    // 7. RENDER PAPAN NOTASI KEPATIHAN & PEMUTAR GENDING PAKEM
+    function renderKepatihanBoard() {
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      el.gendingSubtitle.textContent = gending.subtitle;
+      el.weddingBadge.style.display = gending.isWedding ? 'inline-flex' : 'none';
+      el.kepatihanBoard.innerHTML = '';
+
+      // Kelompokkan per Gatra (4 ketukan per kotak gatra)
+      for (let i = 0; i < gending.steps.length; i += 4) {
+        const gatraEl = document.createElement('div');
+        gatraEl.className = 'inline-flex items-center gap-1.5 bg-[#1e0d07] border border-amber-500/30 rounded-xl px-2.5 py-1.5 shadow-inner';
+
+        for (let j = 0; j < 4 && (i + j) < gending.steps.length; j++) {
+          const stepIdx = i + j;
+          const step = gending.steps[stepIdx];
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.dataset.stepIdx = stepIdx;
+
+          const isCurrent = stepIdx === state.currentStepIndex && (state.isPlayingGending || state.practiceMode);
+          cell.className = `relative min-w-[40px] px-1.5 py-1.5 rounded-lg flex flex-col items-center justify-center transition ${
+            isCurrent
+              ? 'bg-gradient-to-b from-amber-300 to-amber-500 text-stone-950 scale-105 shadow-lg ring-2 ring-white font-black'
+              : 'bg-black/35 text-amber-100/90 hover:bg-amber-500/20'
+          }`;
+
+          // Lencana Penanda Kolotomik (P = Kempul, N = Kenong, G = Gong Ageng)
+          let badgeHtml = '';
+          if (step.colotomy === 'P') {
+            badgeHtml = `<span class="absolute -top-1.5 -right-1 px-1 rounded text-[9px] font-black bg-emerald-600 text-white shadow">P</span>`;
+          } else if (step.colotomy === 'N') {
+            badgeHtml = `<span class="absolute -top-1.5 -right-1 px-1 rounded text-[9px] font-black bg-sky-600 text-white shadow">N</span>`;
+          } else if (step.colotomy === 'G') {
+            badgeHtml = `<span class="absolute -top-1.5 -right-1 px-1 rounded text-[9px] font-black bg-amber-500 text-stone-950 border border-white shadow">G</span>`;
+          }
+
+          const lyricText = step.lyric && step.lyric !== '—' ? step.lyric : '&nbsp;';
+          cell.innerHTML = `
+            ${badgeHtml}
+            <span class="font-kepatihan text-sm sm:text-base font-extrabold leading-none">${step.note}</span>
+            <span class="text-[9px] sm:text-[10px] mt-0.5 leading-none ${isCurrent ? 'text-stone-900 font-extrabold' : 'text-amber-300/75 font-medium'}">
+              ${lyricText}
+            </span>
+          `;
+
+          cell.addEventListener('click', () => {
+            state.currentStepIndex = stepIdx;
+            renderKepatihanBoard();
+            updatePracticeHighlight();
+          });
+
+          gatraEl.appendChild(cell);
+        }
+
+        el.kepatihanBoard.appendChild(gatraEl);
+      }
+    }
+
+    function triggerColotomyForStep(step) {
+      if (!step.colotomy) return;
+      const cfg = LARAS_CONFIG[state.laras];
+
+      if (step.colotomy === 'P') {
+        const pIdx = cfg.kempulNotes.findIndex(k => k.num === (step.colotomyNote || '5'));
+        triggerInstrument('kempul', pIdx !== -1 ? pIdx : 1, true);
+      } else if (step.colotomy === 'N') {
+        const nIdx = cfg.kenongNotes.findIndex(k => k.num === (step.colotomyNote || '5'));
+        triggerInstrument('kenong', nIdx !== -1 ? nIdx : 2, true);
+      } else if (step.colotomy === 'G') {
+        const nIdx = cfg.kenongNotes.findIndex(k => k.num === (step.colotomyNote || '3'));
+        triggerInstrument('kenong', nIdx !== -1 ? nIdx : 1, true);
+        triggerInstrument('gong', 0, true);
+      }
+    }
+
+    function executeGendingStep(stepIdx) {
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      const step = gending.steps[stepIdx];
+      const cfg = LARAS_CONFIG[state.laras];
+      const beatMs = 60000 / state.bpm;
+
+      // 1. Mainkan melodi pokok di Saron + Bonang
+      if (step.note !== '.') {
+        const saronIdx = cfg.saronNotes.findIndex(n => n.num === step.note && n.active);
+        const displayLabel = step.lyric && step.lyric !== '—' ? `${step.note} • ${step.lyric}` : step.note;
+
+        if (saronIdx !== -1) {
+          triggerInstrument('saron', saronIdx, true, displayLabel);
+        }
+
+        // Hiasan Bonang Barung (Imbal Pengantin / Mipil)
+        const bonangNoteKey = step.note === "1'" ? '1' : step.note;
+        const bonangIdx = cfg.bonangNotes.findIndex(n => n.num === bonangNoteKey && n.active);
+
+        if (bonangIdx !== -1) {
+          if (state.rojehImbalEnabled && gending.isWedding) {
+            // Pola Imbal Pengantin Kodok Ngorek: Bonang menyahut di ketukan utama & sela setengah ketukan!
+            triggerInstrument('bonang-low', bonangIdx, true);
+            setTimeout(() => {
+              if (state.isPlayingGending) {
+                triggerInstrument('bonang-high', bonangIdx, true);
+                audioEngine.playRojehCymbal(stepIdx % 2 === 1);
+              }
+            }, beatMs * 0.5);
+          } else if (stepIdx % 2 === 1) {
+            // Mipil standar pada gending non-imbal
+            setTimeout(() => {
+              if (state.isPlayingGending) {
+                triggerInstrument('bonang-high', bonangIdx, true);
+              }
+            }, beatMs * 0.5);
+          }
+        }
+      } else if (state.rojehImbalEnabled && gending.isWedding) {
+        audioEngine.playRojehCymbal(false);
+      }
+
+      // 2. Mainkan Instrumen Kolotomik (P = Kempul, N = Kenong, G = Gong Ageng)
+      triggerColotomyForStep(step);
+
+      renderKepatihanBoard();
+      const activeCell = el.kepatihanBoard.querySelector(`[data-step-idx="${state.currentStepIndex}"]`);
+      if (activeCell) {
+        activeCell.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+
+    function startGendingPlayback() {
+      audioEngine.init();
+      const gending = GENDING_LIBRARY[state.selectedGending];
+
+      if (state.laras !== gending.laras || state.pathet !== gending.pathet) {
+        switchLaras(gending.laras, gending.pathet, false);
+      }
+
+      if (state.practiceMode) {
+        state.practiceMode = false;
+        el.lblPracticeState.textContent = 'Mati';
+        el.practiceStatsBar.classList.add('hidden');
+        el.practiceStatsBar.classList.remove('flex');
+        clearPracticeHighlights();
+      }
+
+      state.isPlayingGending = true;
+      el.lblPlayGending.textContent = 'Jeda';
+      el.btnPlayGending.classList.replace('from-emerald-500', 'from-amber-500');
+      el.btnPlayGending.classList.replace('to-emerald-700', 'to-amber-700');
+
+      const tick = () => {
+        if (!state.isPlayingGending) return;
+        const idx = state.currentStepIndex;
+        executeGendingStep(idx);
+
+        const nextIdx = idx + 1;
+        if (nextIdx >= gending.steps.length) {
+          if (state.loopEnabled) {
+            state.currentStepIndex = 0;
+            state.timerId = setTimeout(tick, 60000 / state.bpm);
+          } else {
+            setTimeout(() => {
+              stopGendingPlayback();
+              showToast(`Selesai memainkan ${gending.title}`, 'emerald');
+            }, 60000 / state.bpm);
+          }
+        } else {
+          state.currentStepIndex = nextIdx;
+          state.timerId = setTimeout(tick, 60000 / state.bpm);
+        }
+      };
+
+      tick();
+    }
+
+    function pauseGendingPlayback() {
+      state.isPlayingGending = false;
+      clearTimeout(state.timerId);
+      el.lblPlayGending.textContent = 'Dengarkan';
+      el.btnPlayGending.classList.replace('from-amber-500', 'from-emerald-500');
+      el.btnPlayGending.classList.replace('to-amber-700', 'to-emerald-700');
+    }
+
+    function stopGendingPlayback() {
+      pauseGendingPlayback();
+      state.currentStepIndex = 0;
+      renderKepatihanBoard();
+      updatePracticeHighlight();
+    }
+
+    // 8. MODE LATIHAN INTERAKTIF (STEP-BY-STEP DENGAN STREAK & AKURASI)
+    function togglePracticeMode() {
+      audioEngine.init();
+      if (state.isPlayingGending) {
+        pauseGendingPlayback();
+      }
+
+      state.practiceMode = !state.practiceMode;
+      el.lblPracticeState.textContent = state.practiceMode ? 'Aktif' : 'Mati';
+
+      if (state.practiceMode) {
+        const gending = GENDING_LIBRARY[state.selectedGending];
+        if (state.laras !== gending.laras || state.pathet !== gending.pathet) {
+          switchLaras(gending.laras, gending.pathet, false);
+        }
+        state.currentStepIndex = 0;
+        state.practiceStreak = 0;
+        state.practiceHits = 0;
+        state.practiceAttempts = 0;
+        el.practiceStatsBar.classList.remove('hidden');
+        el.practiceStatsBar.classList.add('flex');
+        advancePastRests();
+        updatePracticeStatsUI();
+        showToast('🎓 Mode Latihan Aktif: Pukul bilah perunggu yang menyala!', 'emerald');
+      } else {
+        el.practiceStatsBar.classList.add('hidden');
+        el.practiceStatsBar.classList.remove('flex');
+        clearPracticeHighlights();
+      }
+
+      renderKepatihanBoard();
+      updatePracticeHighlight();
+    }
+
+    function advancePastRests() {
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      let safety = 0;
+      while (gending.steps[state.currentStepIndex].note === '.' && safety < gending.steps.length) {
+        const step = gending.steps[state.currentStepIndex];
+        triggerColotomyForStep(step);
+        state.currentStepIndex = (state.currentStepIndex + 1) % gending.steps.length;
+        safety++;
+      }
+    }
+
+    function clearPracticeHighlights() {
+      document.querySelectorAll('.guide-target').forEach(node => node.classList.remove('guide-target'));
+    }
+
+    function updatePracticeHighlight() {
+      clearPracticeHighlights();
+      if (!state.practiceMode) return;
+
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      const step = gending.steps[state.currentStepIndex];
+      if (!step || step.note === '.') return;
+
+      const cfg = LARAS_CONFIG[state.laras];
+      const saronIdx = cfg.saronNotes.findIndex(n => n.num === step.note && n.active);
+      if (saronIdx !== -1 && el.saronRack.children[saronIdx]) {
+        el.saronRack.children[saronIdx].classList.add('guide-target');
+      }
+
+      // Juga tandai pencon Bonang yang sesuai sebagai panduan visual tambahan
+      const bonangKey = step.note === "1'" ? '1' : step.note;
+      const bonangIdx = cfg.bonangNotes.findIndex(n => n.num === bonangKey && n.active);
+      if (bonangIdx !== -1 && el.bonangRowLow.children[bonangIdx]) {
+        el.bonangRowLow.children[bonangIdx].classList.add('guide-target');
+      }
+    }
+
+    function updatePracticeStatsUI() {
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      const acc = state.practiceAttempts === 0
+        ? 100
+        : Math.round((state.practiceHits / state.practiceAttempts) * 100);
+      el.statStreak.textContent = state.practiceStreak;
+      el.statAccuracy.textContent = `${acc}%`;
+      el.statProgress.textContent = `${state.currentStepIndex + 1}/${gending.steps.length}`;
+    }
+
+    function handlePracticeInput(playedNoteNum) {
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      const step = gending.steps[state.currentStepIndex];
+      if (!step) return;
+
+      state.practiceAttempts++;
+
+      if (playedNoteNum === step.note) {
+        state.practiceHits++;
+        state.practiceStreak++;
+
+        // Bunyikan iringan Kempul (P), Kenong (N), atau Gong Ageng (G) secara otomatis!
+        triggerColotomyForStep(step);
+        if (state.rojehImbalEnabled && gending.isWedding) {
+          audioEngine.playRojehCymbal(step.colotomy === 'G');
+        }
+
+        const isLastStep = state.currentStepIndex === gending.steps.length - 1;
+        state.currentStepIndex = (state.currentStepIndex + 1) % gending.steps.length;
+        advancePastRests();
+
+        if (isLastStep) {
+          const acc = Math.round((state.practiceHits / state.practiceAttempts) * 100);
+          showToast(`🎉 Sugeng! "${gending.title}" selesai (Akurasi ${acc}%, Streak ${state.practiceStreak})!`, 'emerald');
+        }
+
+        updatePracticeStatsUI();
+        renderKepatihanBoard();
+        const activeCell = el.kepatihanBoard.querySelector(`[data-step-idx="${state.currentStepIndex}"]`);
+        if (activeCell) {
+          activeCell.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+        updatePracticeHighlight();
+      } else {
+        state.practiceStreak = 0;
+        updatePracticeStatsUI();
+        showToast(`Nada target: ${step.note}${step.lyric && step.lyric !== '—' ? ` ("${step.lyric}")` : ''}`, 'rose');
+      }
+    }
+
+    // 9. PEREKAM POLA (LOOP RECORDER)
+    function toggleRecord() {
+      audioEngine.init();
+      if (state.isLoopPlaying) stopLoopPlayback();
+
+      if (!state.isRecording) {
+        state.isRecording = true;
+        state.recordedEvents = [];
+        state.recStartTime = performance.now();
+        el.lblRecRecord.textContent = 'Selesai';
+        el.recStatusPill.textContent = '● Merekam...';
+        el.recStatusPill.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-600 text-white animate-pulse';
+        el.recCount.textContent = '0 nada';
+        el.btnRecPlay.disabled = true;
+        el.btnRecClear.disabled = true;
+
+        state.recInterval = setInterval(() => {
+          const sec = (performance.now() - state.recStartTime) / 1000;
+          el.recDuration.textContent = `${sec.toFixed(1)} dtk`;
+        }, 100);
+
+        showToast('🎙️ Merekam pola permainan Anda...', 'rose');
+      } else {
+        state.isRecording = false;
+        clearInterval(state.recInterval);
+        state.recDurationMs = Math.max(performance.now() - state.recStartTime, 600);
+        el.lblRecRecord.textContent = 'Rekam';
+
+        if (state.recordedEvents.length > 0) {
+          el.recStatusPill.textContent = 'Tersimpan';
+          el.recStatusPill.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-900/80 text-emerald-300 border border-emerald-500/40';
+          el.btnRecPlay.disabled = false;
+          el.btnRecClear.disabled = false;
+          showToast(`✅ Pola tersimpan (${state.recordedEvents.length} pukulan)`, 'emerald');
+        } else {
+          el.recStatusPill.textContent = 'Siap';
+          el.recStatusPill.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-stone-800 text-amber-200/70 border border-amber-500/20';
+          el.recDuration.textContent = '0.0 dtk';
+        }
+      }
+    }
+
+    function startLoopPlayback() {
+      if (state.recordedEvents.length === 0) return;
+      audioEngine.init();
+      state.isLoopPlaying = true;
+      el.lblRecPlay.textContent = 'Henti';
+      el.recStatusPill.textContent = '🔁 Loop Aktif';
+      el.recStatusPill.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500 text-stone-950';
+
+      const scheduleCycle = () => {
+        if (!state.isLoopPlaying) return;
+        state.recordedEvents.forEach(ev => {
+          const t = setTimeout(() => {
+            if (!state.isLoopPlaying) return;
+            triggerInstrument(ev.type, ev.index, true);
+          }, ev.time);
+          state.loopTimers.push(t);
+        });
+
+        const loopTimer = setTimeout(scheduleCycle, state.recDurationMs);
+        state.loopTimers.push(loopTimer);
+      };
+
+      scheduleCycle();
+    }
+
+    function stopLoopPlayback() {
+      state.isLoopPlaying = false;
+      state.loopTimers.forEach(id => clearTimeout(id));
+      state.loopTimers = [];
+      el.lblRecPlay.textContent = 'Putar';
+      if (state.recordedEvents.length > 0) {
+        el.recStatusPill.textContent = 'Tersimpan';
+        el.recStatusPill.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-900/80 text-emerald-300 border border-emerald-500/40';
+      }
+    }
+
+    function clearRecording() {
+      stopLoopPlayback();
+      state.recordedEvents = [];
+      state.recDurationMs = 0;
+      el.recCount.textContent = '0 nada';
+      el.recDuration.textContent = '0.0 dtk';
+      el.recStatusPill.textContent = 'Siap';
+      el.recStatusPill.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-stone-800 text-amber-200/70 border border-amber-500/20';
+      el.btnRecPlay.disabled = true;
+      el.btnRecClear.disabled = true;
+      showToast('Rekaman pola dihapus');
+    }
+
+    // 10. EVENT LISTENERS & SINKRONISASI LARAS
+    function switchLaras(newLaras, customPathet = null, notify = true) {
+      state.laras = newLaras;
+      state.pathet = customPathet || LARAS_CONFIG[newLaras].defaultPathet;
+      renderInstruments();
+      renderKepatihanBoard();
+      if (notify) {
+        showToast(`Beralih ke ${LARAS_CONFIG[newLaras].name} (${state.pathet})`, 'gold');
+      }
+    }
+
+    el.btnPelog.addEventListener('click', () => switchLaras('pelog'));
+    el.btnSlendro.addEventListener('click', () => switchLaras('slendro'));
+
+    function bindSyncedSlider(slider, mirrorSlider, callback) {
+      slider.addEventListener('input', (e) => {
+        const val = Number(e.target.value);
+        mirrorSlider.value = val;
+        callback(val / 100);
+      });
+    }
+    bindSyncedSlider(el.sliderVol, el.sliderVolMob, (v) => audioEngine.setVolume(v));
+    bindSyncedSlider(el.sliderVolMob, el.sliderVol, (v) => audioEngine.setVolume(v));
+    bindSyncedSlider(el.sliderRev, el.sliderRevMob, (v) => audioEngine.setReverb(v));
+    bindSyncedSlider(el.sliderRevMob, el.sliderRev, (v) => audioEngine.setReverb(v));
+
+    el.selectGending.addEventListener('change', (e) => {
+      state.selectedGending = e.target.value;
+      const gending = GENDING_LIBRARY[state.selectedGending];
+      state.bpm = gending.defaultBpm;
+      el.sliderTempo.value = state.bpm;
+      el.lblTempo.textContent = `${state.bpm} BPM`;
+
+      stopGendingPlayback();
+      switchLaras(gending.laras, gending.pathet, false);
+      renderKepatihanBoard();
+      showToast(`Gending: ${gending.title} (${LARAS_CONFIG[gending.laras].name} ${gending.pathet})`);
+    });
+
+    el.btnPlayGending.addEventListener('click', () => {
+      if (state.isPlayingGending) {
+        pauseGendingPlayback();
+      } else {
+        startGendingPlayback();
+      }
+    });
+
+    el.btnStopGending.addEventListener('click', stopGendingPlayback);
+
+    el.btnLoopToggle.addEventListener('click', () => {
+      state.loopEnabled = !state.loopEnabled;
+      el.lblLoopState.textContent = `Loop: ${state.loopEnabled ? 'On' : 'Off'}`;
+      el.btnLoopToggle.className = state.loopEnabled
+        ? 'px-2.5 py-2 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-200 font-semibold text-xs active:scale-95 transition flex items-center gap-1'
+        : 'px-2.5 py-2 rounded-xl bg-stone-800 border border-amber-500/25 text-amber-200/60 font-semibold text-xs active:scale-95 transition flex items-center gap-1';
+    });
+
+    el.btnPracticeMode.addEventListener('click', togglePracticeMode);
+
+    el.chkRojehImbal.addEventListener('change', (e) => {
+      state.rojehImbalEnabled = e.target.checked;
+      showToast(
+        state.rojehImbalEnabled
+          ? '🎊 Tabuhan Rojeh / Imbal Pengantin diaktifkan'
+          : 'Tabuhan Rojeh / Imbal dimatikan',
+        'gold'
+      );
+    });
+
+    el.sliderTempo.addEventListener('input', (e) => {
+      state.bpm = Number(e.target.value);
+      el.lblTempo.textContent = `${state.bpm} BPM`;
+    });
+
+    bindMultiTouchPlay(el.btnPitet, triggerPitet);
+    bindMultiTouchPlay(el.gongAgeng, () => triggerInstrument('gong'));
+
+    el.btnRecRecord.addEventListener('click', toggleRecord);
+    el.btnRecPlay.addEventListener('click', () => {
+      if (state.isLoopPlaying) stopLoopPlayback();
+      else startLoopPlayback();
+    });
+    el.btnRecClear.addEventListener('click', clearRecording);
+
+    // 11. KONTROL KEYBOARD LENGKAP (Anti-Repeat)
+    const pressedKeys = new Set();
+
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+      const key = e.key.toLowerCase();
+
+      if (pressedKeys.has(key)) return;
+      pressedKeys.add(key);
+
+      // Pitet (Shift atau M)
+      if (e.key === 'Shift' || key === 'm') {
+        e.preventDefault();
+        triggerPitet();
+        return;
+      }
+
+      // Gong Ageng (Spasi)
+      if (e.code === 'Space') {
+        e.preventDefault();
+        triggerInstrument('gong');
+        return;
+      }
+
+      const cfg = LARAS_CONFIG[state.laras];
+
+      // Saron (1 2 3 4 5 6 7 8)
+      const saronIdx = cfg.saronNotes.findIndex(n => n.key === key && n.active);
+      if (saronIdx !== -1) {
+        e.preventDefault();
+        triggerInstrument('saron', saronIdx);
+        return;
+      }
+
+      // Bonang Baris Atas (Q W E R T Y U)
+      const bonangHighIdx = cfg.bonangNotes.findIndex(n => n.highKey === key && n.active);
+      if (bonangHighIdx !== -1) {
+        e.preventDefault();
+        triggerInstrument('bonang-high', bonangHighIdx);
+        return;
+      }
+
+      // Bonang Baris Bawah (A S D F G H J)
+      const bonangLowIdx = cfg.bonangNotes.findIndex(n => n.lowKey === key && n.active);
+      if (bonangLowIdx !== -1) {
+        e.preventDefault();
+        triggerInstrument('bonang-low', bonangLowIdx);
+        return;
+      }
+
+      // Kempul (Z X C V)
+      const kempulIdx = cfg.kempulNotes.findIndex(n => n.key === key);
+      if (kempulIdx !== -1) {
+        e.preventDefault();
+        triggerInstrument('kempul', kempulIdx);
+        return;
+      }
+
+      // Kenong (B N , . /)
+      const kenongIdx = cfg.kenongNotes.findIndex(n => n.key === key);
+      if (kenongIdx !== -1) {
+        e.preventDefault();
+        triggerInstrument('kenong', kenongIdx);
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      pressedKeys.delete(e.key.toLowerCase());
+    });
+
+    // Inisialisasi Awal (Default: Gending Kodok Ngorek — Ning Nong Ning Gung)
+    window.addEventListener('DOMContentLoaded', () => {
+      renderInstruments();
+      renderKepatihanBoard();
+    });
+  </script>
+</body>
+</html>
