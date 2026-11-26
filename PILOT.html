@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kuis Pesawat 3D Interaktif - BEBI & Sahabat</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js 3D Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts: Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Fredoka', sans-serif;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            background: linear-gradient(180deg, #38bdf8 0%, #bae6fd 45%, #fde047 82%, #f59e0b 100%);
+        }
+        #canvas-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        .hud-shadow {
+            box-shadow: 0 6px 0 rgba(15, 23, 42, 0.2), 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .btn-3d {
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .btn-3d:active {
+            transform: translateY(3px);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="relative w-full h-full">
+
+    <!-- Kanvas 3D Three.js -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD ATAS (Soal & Kontrol Status) -->
+    <div id="game-hud" class="relative z-20 w-full max-w-4xl mx-auto pt-3 px-3 sm:pt-5 sm:px-6 pointer-events-none flex flex-col items-center">
+        <!-- Kartu Soal Utama -->
+        <div class="w-full bg-white/95 backdrop-blur-md rounded-3xl p-3 sm:p-4 border-4 border-sky-200 hud-shadow text-center pointer-events-auto">
+            <div class="flex items-center justify-between text-xs sm:text-sm font-semibold text-sky-700 mb-1 px-2">
+                <span id="question-counter" class="bg-sky-100 px-3 py-0.5 rounded-full">Soal 1 / 25</span>
+                <span class="text-slate-400">Perkalian Kelas VI</span>
+            </div>
+            <h1 id="question-text" class="text-xl sm:text-3xl font-bold text-slate-800 tracking-wide">
+                Memuat soal...
+            </h1>
+        </div>
+
+        <!-- Baris Pil Status (Skor, Nyawa, Timer, Jeda, Suara) -->
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-2.5 pointer-events-auto">
+            <div class="bg-white/95 px-3.5 py-1.5 rounded-full font-bold text-slate-700 text-sm sm:text-base flex items-center gap-1.5 shadow-md border-2 border-amber-200">
+                <span class="text-amber-500 text-lg">⭐</span>
+                <span id="score-display">0</span>
+            </div>
+
+            <div class="bg-white/95 px-3.5 py-1.5 rounded-full font-bold text-rose-600 text-sm sm:text-base flex items-center gap-1 shadow-md border-2 border-rose-200">
+                <span id="lives-display">❤️❤️❤️</span>
+            </div>
+
+            <div class="bg-white/95 px-3.5 py-1.5 rounded-full font-bold text-sky-700 text-sm sm:text-base flex items-center gap-1.5 shadow-md border-2 border-sky-200">
+                <span>⏱️</span>
+                <span id="timer-display">18d</span>
+            </div>
+
+            <button id="btn-pause" class="btn-3d bg-white/95 hover:bg-sky-50 px-4 py-1.5 rounded-full font-bold text-slate-700 text-sm sm:text-base flex items-center gap-1.5 shadow-md border-2 border-slate-200 cursor-pointer">
+                <span>⏸</span>
+                <span>Jeda</span>
+            </button>
+
+            <button id="btn-mute" class="btn-3d bg-white/95 hover:bg-sky-50 w-10 h-9 rounded-full font-bold text-slate-700 flex items-center justify-center shadow-md border-2 border-slate-200 cursor-pointer" title="Suara">
+                🔊
+            </button>
+        </div>
+
+        <!-- Progress Bar Waktu Soal -->
+        <div class="w-48 sm:w-72 h-2.5 bg-white/50 rounded-full mt-2 overflow-hidden p-0.5 shadow-inner">
+            <div id="time-bar" class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-100" style="width: 100%;"></div>
+        </div>
+    </div>
+
+    <!-- BANNER UMPAN BALIK (BENAR / SALAH) -->
+    <div id="feedback-banner" class="fixed inset-x-0 top-1/3 z-30 flex justify-center pointer-events-none opacity-0 transition-opacity duration-200">
+        <div id="feedback-badge" class="px-6 py-3 rounded-3xl font-bold text-2xl sm:text-3xl text-white shadow-2xl border-4 border-white transform scale-95 transition-transform">
+            Hebat! +10 ⭐
+        </div>
+    </div>
+
+    <!-- KONTROL VIRTUAL D-PAD (Untuk Layar Sentuh / PID) -->
+    <div id="touch-controls" class="fixed bottom-6 right-5 z-20 grid grid-cols-3 gap-1.5 w-36 h-36 sm:w-40 sm:h-40 opacity-85 hover:opacity-100">
+        <div></div>
+        <button data-dir="up" class="dpad-btn btn-3d bg-white/85 active:bg-amber-300 rounded-2xl shadow-lg border-2 border-slate-200 flex items-center justify-center text-xl font-bold text-slate-700">▲</button>
+        <div></div>
+        <button data-dir="left" class="dpad-btn btn-3d bg-white/85 active:bg-amber-300 rounded-2xl shadow-lg border-2 border-slate-200 flex items-center justify-center text-xl font-bold text-slate-700">◀</button>
+        <div class="bg-white/40 rounded-full flex items-center justify-center text-xs font-bold text-slate-700">✈️</div>
+        <button data-dir="right" class="dpad-btn btn-3d bg-white/85 active:bg-amber-300 rounded-2xl shadow-lg border-2 border-slate-200 flex items-center justify-center text-xl font-bold text-slate-700">▶</button>
+        <div></div>
+        <button data-dir="down" class="dpad-btn btn-3d bg-white/85 active:bg-amber-300 rounded-2xl shadow-lg border-2 border-slate-200 flex items-center justify-center text-xl font-bold text-slate-700">▼</button>
+        <div></div>
+    </div>
+
+    <!-- PETUNJUK SINGKAT DI POJOK KIRI BAWAH -->
+    <div class="fixed bottom-4 left-4 z-20 pointer-events-none hidden sm:block">
+        <div class="bg-slate-900/40 backdrop-blur-sm text-white/90 text-xs px-3.5 py-2 rounded-2xl">
+            🎮 Geser layar, klik tombol arah, atau gunakan panah keyboard untuk menabrak peti jawaban!
+        </div>
+    </div>
+
+    <!-- MODAL MULAI / JEDA / SELESAI -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-7 text-center shadow-2xl border-b-8 border-indigo-200 animate-float my-auto">
+            <div id="modal-icon" class="text-4xl sm:text-5xl mb-2">✈️</div>
+            <h2 id="modal-title" class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">
+                Misi Pesawat Perkalian
+            </h2>
+            <p id="modal-desc" class="text-slate-600 text-xs sm:text-sm mb-4 leading-relaxed">
+                Pilih pilot jagoanmu dan tabrak <b>peti jawaban perkalian</b> yang benar (25 Soal)!
+            </p>
+
+            <!-- Pemilih 4 Pilot & Warna Pesawat -->
+            <div id="pilot-selector-container" class="mb-5">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                    Pilih Pilot & Warna Pesawat:
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="pilot-grid">
+                    <!-- Kartu Pilot akan diisi via JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Ringkasan Skor (Muncul saat Game Over / Menang) -->
+            <div id="modal-stats" class="hidden bg-slate-100 rounded-2xl p-4 mb-5 flex justify-around">
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">Skor Akhir</div>
+                    <div id="final-score" class="text-2xl font-bold text-amber-500">0</div>
+                </div>
+                <div class="border-l border-slate-300"></div>
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">Benar</div>
+                    <div id="final-correct" class="text-2xl font-bold text-emerald-600">0/25</div>
+                </div>
+            </div>
+
+            <button id="btn-start" class="btn-3d w-full bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-bold text-lg sm:text-xl py-3.5 px-6 rounded-2xl shadow-lg border-b-4 border-indigo-800 cursor-pointer">
+                🚀 Mulai Terbang!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * DATA 4 PILOT & SKEMA WARNA PESAWAT
+         * Berdasarkan karakter: BEBI (Pink), BIMO (Biru), BUBU (Oranye), BELA (Ungu)
+         */
+        const PILOTS = [
+            {
+                id: 'bebi',
+                name: 'BEBI',
+                tagline: 'Belajar Bijaksana',
+                emoji: '🎀',
+                activeRing: 'ring-4 ring-pink-500 bg-pink-50',
+                dotColor: '#ec4899',
+                colors: {
+                    body: 0xec4899,
+                    nose: 0xfde047,
+                    cockpit: 0xfce7f3,
+                    wing: 0xffffff,
+                    stripe: 0xdb2777,
+                    fin: 0xf472b6
+                }
+            },
+            {
+                id: 'bimo',
+                name: 'BIMO',
+                tagline: 'Bintang Motivasi',
+                emoji: '🧢',
+                activeRing: 'ring-4 ring-sky-500 bg-sky-50',
+                dotColor: '#0284c7',
+                colors: {
+                    body: 0x0284c7,
+                    nose: 0xfacc15,
+                    cockpit: 0xbae6fd,
+                    wing: 0xf8fafc,
+                    stripe: 0x1d4ed8,
+                    fin: 0x38bdf8
+                }
+            },
+            {
+                id: 'bubu',
+                name: 'BUBU',
+                tagline: 'Buka Buku',
+                emoji: '🧶',
+                activeRing: 'ring-4 ring-orange-500 bg-orange-50',
+                dotColor: '#f97316',
+                colors: {
+                    body: 0xf97316,
+                    nose: 0x3b82f6,
+                    cockpit: 0xffedd5,
+                    wing: 0xffffff,
+                    stripe: 0x2563eb,
+                    fin: 0xfb923c
+                }
+            },
+            {
+                id: 'bela',
+                name: 'BELA',
+                tagline: 'Belajar Logika',
+                emoji: '🥽',
+                activeRing: 'ring-4 ring-purple-500 bg-purple-50',
+                dotColor: '#9333ea',
+                colors: {
+                    body: 0x9333ea,
+                    nose: 0xe879f9,
+                    cockpit: 0xf3e8ff,
+                    wing: 0xf8fafc,
+                    stripe: 0x6b21a8,
+                    fin: 0xc084fc
+                }
+            }
+        ];
+
+        /**
+         * BANK SOAL KUIS: 25 SOAL PERKALIAN
+         */
+        const QUIZ_DATA = [
+            { question: "6 × 7 = ...", options: ["42", "36", "48", "49"], answerIndex: 0 },
+            { question: "8 × 9 = ...", options: ["64", "72", "81", "63"], answerIndex: 1 },
+            { question: "7 × 8 = ...", options: ["54", "64", "56", "48"], answerIndex: 2 },
+            { question: "9 × 6 = ...", options: ["54", "45", "63", "56"], answerIndex: 0 },
+            { question: "12 × 4 = ...", options: ["44", "48", "52", "36"], answerIndex: 1 },
+            { question: "15 × 3 = ...", options: ["35", "55", "45", "60"], answerIndex: 2 },
+            { question: "11 × 9 = ...", options: ["99", "89", "91", "109"], answerIndex: 0 },
+            { question: "14 × 5 = ...", options: ["65", "75", "80", "70"], answerIndex: 3 },
+            { question: "16 × 4 = ...", options: ["54", "64", "74", "68"], answerIndex: 1 },
+            { question: "25 × 4 = ...", options: ["80", "90", "100", "125"], answerIndex: 2 },
+            { question: "13 × 6 = ...", options: ["78", "68", "88", "72"], answerIndex: 0 },
+            { question: "18 × 5 = ...", options: ["85", "90", "95", "80"], answerIndex: 1 },
+            { question: "24 × 3 = ...", options: ["62", "82", "72", "68"], answerIndex: 2 },
+            { question: "17 × 4 = ...", options: ["58", "78", "64", "68"], answerIndex: 3 },
+            { question: "19 × 5 = ...", options: ["95", "85", "105", "90"], answerIndex: 0 },
+            { question: "12 × 12 = ...", options: ["124", "144", "134", "148"], answerIndex: 1 },
+            { question: "15 × 11 = ...", options: ["155", "175", "165", "150"], answerIndex: 2 },
+            { question: "23 × 4 = ...", options: ["82", "96", "88", "92"], answerIndex: 3 },
+            { question: "35 × 3 = ...", options: ["105", "95", "115", "100"], answerIndex: 0 },
+            { question: "45 × 4 = ...", options: ["160", "180", "190", "200"], answerIndex: 1 },
+            { question: "(-6) × 8 = ...", options: ["48", "-42", "-48", "42"], answerIndex: 2 },
+            { question: "(-9) × (-7) = ...", options: ["-63", "-56", "56", "63"], answerIndex: 3 },
+            { question: "12 × (-5) = ...", options: ["-60", "60", "-50", "-65"], answerIndex: 0 },
+            { question: "(-15) × (-4) = ...", options: ["-60", "60", "45", "-45"], answerIndex: 1 },
+            { question: "25 × 12 = ...", options: ["250", "275", "300", "325"], answerIndex: 2 }
+        ];
+
+        // State Permainan
+        const state = {
+            status: 'MENU', // MENU, PLAYING, PAUSED, GAMEOVER
+            selectedPilotId: 'bebi',
+            currentQ: 0,
+            score: 0,
+            correctCount: 0,
+            lives: 3,
+            speed: 0.28,
+            targetX: 0,
+            targetY: 0,
+            muted: false,
+            questionTimer: 0,
+            maxQuestionTime: 18,
+            feedbackCooldown: 0
+        };
+
+        // --- AUDIO SYNTHESIZER (Tanpa File Eksternal) ---
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function playSound(type) {
+            if (state.muted) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.linearRampToValueAtTime(95, now + 0.35);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(620, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'win') {
+                    osc.type = 'triangle';
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                    });
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+                    osc.start(now);
+                    osc.stop(now + 0.65);
+                }
+            } catch (e) {
+                console.warn('Audio belum aktif:', e);
+            }
+        }
+
+        // Variabel Global Scene 3D
+        let scene, camera, renderer;
+        let airplane, propeller;
+        let planeMaterials = {};
+        const clouds = [];
+        const smokeParticles = [];
+        const answerBoxes = [];
+        const keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false, w: false, s: false, a: false, d: false };
+        let smokeTimer = 0;
+        let lastTime = performance.now();
+
+        function applyPilotTheme(pilotId) {
+            const pilot = PILOTS.find(p => p.id === pilotId) || PILOTS[0];
+            state.selectedPilotId = pilot.id;
+
+            if (planeMaterials.body) {
+                planeMaterials.body.color.setHex(pilot.colors.body);
+                planeMaterials.nose.color.setHex(pilot.colors.nose);
+                planeMaterials.cockpit.color.setHex(pilot.colors.cockpit);
+                planeMaterials.wing.color.setHex(pilot.colors.wing);
+                planeMaterials.stripe.color.setHex(pilot.colors.stripe);
+                planeMaterials.fin.color.setHex(pilot.colors.fin);
+            }
+
+            renderPilotCards();
+        }
+
+        function renderPilotCards() {
+            const grid = document.getElementById('pilot-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            PILOTS.forEach(pilot => {
+                const isSelected = state.selectedPilotId === pilot.id;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center cursor-pointer ${
+                    isSelected ? `${pilot.activeRing} border-transparent scale-105 shadow-md` : 'border-slate-200 bg-slate-50 hover:bg-white opacity-85 hover:opacity-100'
+                }`;
+
+                btn.innerHTML = `
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-lg mb-1 shadow-inner" style="background-color: ${pilot.dotColor}22; border: 2px solid ${pilot.dotColor};">
+                        ${pilot.emoji}
+                    </div>
+                    <div class="font-bold text-xs sm:text-sm text-slate-800 leading-tight">${pilot.name}</div>
+                    <div class="text-[10px] text-slate-500 leading-tight mt-0.5 line-clamp-1">${pilot.tagline}</div>
+                    <span class="mt-1.5 inline-block w-4 h-1.5 rounded-full" style="background-color: ${pilot.dotColor};"></span>
+                `;
+
+                btn.addEventListener('click', () => {
+                    playSound('click');
+                    applyPilotTheme(pilot.id);
+                });
+
+                grid.appendChild(btn);
+            });
+        }
+
+        function buildAirplane() {
+            airplane = new THREE.Group();
+            planeMaterials = {
+                body: new THREE.MeshStandardMaterial({ color: 0xec4899, roughness: 0.4 }),
+                nose: new THREE.MeshStandardMaterial({ color: 0xfde047, roughness: 0.3 }),
+                cockpit: new THREE.MeshStandardMaterial({ color: 0xfce7f3, roughness: 0.2, metalness: 0.1 }),
+                wing: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }),
+                stripe: new THREE.MeshStandardMaterial({ color: 0xdb2777 }),
+                fin: new THREE.MeshStandardMaterial({ color: 0xf472b6 })
+            };
+
+            const bodyGeo = new THREE.CylinderGeometry(0.45, 0.65, 3.2, 12);
+            bodyGeo.rotateX(Math.PI / 2);
+            const body = new THREE.Mesh(bodyGeo, planeMaterials.body);
+            body.castShadow = true;
+            airplane.add(body);
+
+            const noseGeo = new THREE.ConeGeometry(0.45, 0.8, 12);
+            noseGeo.rotateX(-Math.PI / 2);
+            const nose = new THREE.Mesh(noseGeo, planeMaterials.nose);
+            nose.position.z = -1.95;
+            airplane.add(nose);
+
+            const cockpitGeo = new THREE.SphereGeometry(0.48, 12, 12);
+            const cockpit = new THREE.Mesh(cockpitGeo, planeMaterials.cockpit);
+            cockpit.position.set(0, 0.45, -0.3);
+            cockpit.scale.set(0.85, 0.75, 1.3);
+            airplane.add(cockpit);
+
+            const wingGeo = new THREE.BoxGeometry(5.6, 0.14, 1.1);
+            const wing = new THREE.Mesh(wingGeo, planeMaterials.wing);
+            wing.position.set(0, 0.1, -0.3);
+            wing.castShadow = true;
+            airplane.add(wing);
+
+            const stripeGeo = new THREE.BoxGeometry(5.65, 0.16, 0.25);
+            const stripe = new THREE.Mesh(stripeGeo, planeMaterials.stripe);
+            stripe.position.set(0, 0.1, -0.55);
+            airplane.add(stripe);
+
+            const tailWingGeo = new THREE.BoxGeometry(2.0, 0.1, 0.6);
+            const tailWing = new THREE.Mesh(tailWingGeo, planeMaterials.wing);
+            tailWing.position.set(0, 0.15, 1.4);
+            airplane.add(tailWing);
+
+            const finGeo = new THREE.BoxGeometry(0.12, 0.9, 0.65);
+            const fin = new THREE.Mesh(finGeo, planeMaterials.fin);
+            fin.position.set(0, 0.55, 1.35);
+            airplane.add(fin);
+
+            const propGeo = new THREE.BoxGeometry(1.8, 0.18, 0.06);
+            const propMat = new THREE.MeshStandardMaterial({ color: 0x334155 });
+            propeller = new THREE.Mesh(propGeo, propMat);
+            propeller.position.set(0, 0, -2.38);
+            airplane.add(propeller);
+
+            airplane.position.set(0, 0, 3);
+            scene.add(airplane);
+        }
+
+        // --- PEMBUATAN AWAN & BUKIT LOW-POLY ---
+        function createCloud() {
+            const cloud = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, flatShading: true });
+            const puffCount = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < puffCount; i++) {
+                const geo = new THREE.DodecahedronGeometry(1.1 + Math.random() * 0.9, 1);
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set((i - puffCount / 2) * 1.3, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.8);
+                cloud.add(mesh);
+            }
+            cloud.position.set((Math.random() - 0.5) * 42, (Math.random() - 0.3) * 18, -20 - Math.random() * 100);
+            scene.add(cloud);
+            clouds.push(cloud);
+        }
+
+        function createEnvironmentProps() {
+            for (let i = 0; i < 24; i++) {
+                createCloud();
+            }
+            const hillMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, flatShading: true });
+            for (let i = 0; i < 12; i++) {
+                const hillGeo = new THREE.ConeGeometry(4 + Math.random() * 4, 5 + Math.random() * 4, 5);
+                const hill = new THREE.Mesh(hillGeo, hillMat);
+                hill.position.set((Math.random() - 0.5) * 60, -9.5, -15 - i * 11);
+                scene.add(hill);
+                clouds.push(hill);
+            }
+        }
+
+        function spawnSmoke() {
+            if (!airplane) return;
+            const geo = new THREE.DodecahedronGeometry(0.28, 0);
+            const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 });
+            const puff = new THREE.Mesh(geo, mat);
+            puff.position.set(
+                airplane.position.x + (Math.random() - 0.5) * 0.2,
+                airplane.position.y + (Math.random() - 0.5) * 0.2,
+                airplane.position.z + 1.8
+            );
+            scene.add(puff);
+            smokeParticles.push({ mesh: puff, life: 1.0 });
+        }
+
+        // --- TEKSTUR PETI JAWABAN DINAMIS ---
+        function createAnswerTexture(label, text) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 384;
+            const ctx = canvas.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, 0, 384);
+            grad.addColorStop(0, '#fbbf24');
+            grad.addColorStop(1, '#b45309');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 512, 384);
+
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 26;
+            ctx.strokeRect(13, 13, 486, 358);
+
+            ctx.fillStyle = '#fef3c7';
+            ctx.beginPath();
+            ctx.roundRect(38, 38, 436, 308, 28);
+            ctx.fill();
+
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.roundRect(56, 54, 72, 64, 16);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 42px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, 92, 88);
+
+            ctx.fillStyle = '#1e293b';
+            let fontSize = 115;
+            if (text.length > 4) fontSize = 90;
+            if (text.length > 7) fontSize = 68;
+            ctx.font = `bold ${fontSize}px Fredoka, sans-serif`;
+            ctx.fillText(text, 265, 215);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function clearAnswerBoxes() {
+            while (answerBoxes.length > 0) {
+                const item = answerBoxes.pop();
+                scene.remove(item.mesh);
+                if (item.mesh.geometry) item.mesh.geometry.dispose();
+                if (item.mesh.material) item.mesh.material.dispose();
+            }
+        }
+
+        function spawnQuestionWave() {
+            clearAnswerBoxes();
+
+            if (state.currentQ >= QUIZ_DATA.length) {
+                endGame(true);
+                return;
+            }
+
+            const qData = QUIZ_DATA[state.currentQ];
+            document.getElementById('question-counter').textContent = `Soal ${state.currentQ + 1} / ${QUIZ_DATA.length}`;
+            document.getElementById('question-text').textContent = qData.question;
+
+            state.questionTimer = state.maxQuestionTime;
+
+            const isPortrait = window.innerWidth < 640;
+            const slots = isPortrait
+                ? [
+                    { x: -2.4, y: 1.8 },
+                    { x:  2.4, y: 1.8 },
+                    { x: -2.4, y: -1.5 },
+                    { x:  2.4, y: -1.5 }
+                  ]
+                : [
+                    { x: -6.3, y: 0.4 },
+                    { x: -2.1, y: 0.4 },
+                    { x:  2.1, y: 0.4 },
+                    { x:  6.3, y: 0.4 }
+                  ];
+
+            const labels = ['A', 'B', 'C', 'D'];
+            const boxGeo = new THREE.BoxGeometry(2.7, 2.05, 1.5);
+
+            qData.options.forEach((optText, idx) => {
+                const tex = createAnswerTexture(labels[idx], optText);
+                const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.35 });
+                const mesh = new THREE.Mesh(boxGeo, mat);
+                mesh.position.set(slots[idx].x, slots[idx].y, -65);
+                mesh.castShadow = true;
+                scene.add(mesh);
+
+                answerBoxes.push({
+                    mesh: mesh,
+                    isCorrect: idx === qData.answerIndex,
+                    hit: false,
+                    baseY: slots[idx].y
+                });
+            });
+        }
+
+        function showFeedback(isCorrect, customMsg) {
+            const banner = document.getElementById('feedback-banner');
+            const badge = document.getElementById('feedback-badge');
+
+            if (isCorrect) {
+                badge.textContent = customMsg || 'Benar! +10 ⭐';
+                badge.className = 'px-6 py-3 rounded-3xl font-bold text-2xl sm:text-3xl text-white shadow-2xl border-4 border-white bg-emerald-500 transform scale-105 transition-all';
+            } else {
+                badge.textContent = customMsg || 'Kurang Tepat! 💥';
+                badge.className = 'px-6 py-3 rounded-3xl font-bold text-2xl sm:text-3xl text-white shadow-2xl border-4 border-white bg-rose-500 transform scale-105 transition-all';
+            }
+
+            banner.style.opacity = '1';
+            setTimeout(() => {
+                banner.style.opacity = '0';
+            }, 1100);
+        }
+
+        function updateHUD() {
+            document.getElementById('score-display').textContent = state.score;
+            document.getElementById('lives-display').textContent = '❤️'.repeat(Math.max(0, state.lives)) + '🖤'.repeat(Math.max(0, 3 - state.lives));
+        }
+
+        function handleAnswerSelection(isCorrect) {
+            if (state.feedbackCooldown > 0) return;
+            state.feedbackCooldown = 0.8;
+
+            if (isCorrect) {
+                playSound('correct');
+                state.score += 10;
+                state.correctCount++;
+                showFeedback(true, 'Tepat Sekali! +10 ⭐');
+            } else {
+                playSound('wrong');
+                state.lives--;
+                showFeedback(false, 'Salah Jawaban! -1 ❤️');
+            }
+
+            updateHUD();
+            clearAnswerBoxes();
+
+            if (state.lives <= 0) {
+                setTimeout(() => endGame(false), 600);
+            } else {
+                state.currentQ++;
+                setTimeout(() => {
+                    if (state.status === 'PLAYING') spawnQuestionWave();
+                }, 650);
+            }
+        }
+
+        function startGame() {
+            playSound('click');
+            state.status = 'PLAYING';
+            state.currentQ = 0;
+            state.score = 0;
+            state.correctCount = 0;
+            state.lives = 3;
+            state.targetX = 0;
+            state.targetY = 0;
+            if (airplane) airplane.position.set(0, 0, 3);
+            state.feedbackCooldown = 0;
+
+            updateHUD();
+            document.getElementById('modal-overlay').classList.add('hidden');
+            spawnQuestionWave();
+        }
+
+        function endGame(isWin) {
+            state.status = 'GAMEOVER';
+            clearAnswerBoxes();
+            const overlay = document.getElementById('modal-overlay');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            const stats = document.getElementById('modal-stats');
+            const btnStart = document.getElementById('btn-start');
+            const pilot = PILOTS.find(p => p.id === state.selectedPilotId) || PILOTS[0];
+
+            overlay.classList.remove('hidden');
+            stats.classList.remove('hidden');
+            document.getElementById('final-score').textContent = state.score;
+            document.getElementById('final-correct').textContent = `${state.correctCount}/${QUIZ_DATA.length}`;
+
+            if (isWin) {
+                playSound('win');
+                icon.textContent = '🏆';
+                title.textContent = `Misi ${pilot.name} Selesai!`;
+                desc.textContent = `Hebat! Bersama pilot ${pilot.name} (${pilot.tagline}), kamu menaklukkan 25 soal perkalian.`;
+            } else {
+                icon.textContent = '💥';
+                title.textContent = 'Pesawat Kehabisan Nyawa';
+                desc.textContent = `Jangan menyerah! Pilih pilotmu lagi dan taklukkan tantangan perkalian.`;
+            }
+            btnStart.textContent = '🔄 Main Lagi';
+        }
+
+        function togglePause() {
+            if (state.status !== 'PLAYING' && state.status !== 'PAUSED') return;
+            playSound('click');
+            const overlay = document.getElementById('modal-overlay');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            const stats = document.getElementById('modal-stats');
+            const btnStart = document.getElementById('btn-start');
+
+            if (state.status === 'PLAYING') {
+                state.status = 'PAUSED';
+                overlay.classList.remove('hidden');
+                stats.classList.add('hidden');
+                icon.textContent = '⏸';
+                title.textContent = 'Permainan Dijeda';
+                desc.textContent = 'Kamu bisa mengganti pilot atau lanjut terbang menyelesaikan soal perkalian!';
+                btnStart.textContent = '▶️ Lanjut Terbang';
+            } else {
+                state.status = 'PLAYING';
+                overlay.classList.add('hidden');
+                lastTime = performance.now();
+            }
+        }
+
+        function setupEventListeners() {
+            window.addEventListener('keydown', (e) => {
+                if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+                if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') togglePause();
+            });
+            window.addEventListener('keyup', (e) => {
+                if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
+            });
+
+            document.querySelectorAll('.dpad-btn').forEach(btn => {
+                const dir = btn.dataset.dir;
+                const setDir = (val) => {
+                    if (dir === 'up') keys.ArrowUp = val;
+                    if (dir === 'down') keys.ArrowDown = val;
+                    if (dir === 'left') keys.ArrowLeft = val;
+                    if (dir === 'right') keys.ArrowRight = val;
+                };
+                btn.addEventListener('pointerdown', (e) => { e.preventDefault(); setDir(true); });
+                btn.addEventListener('pointerup', () => setDir(false));
+                btn.addEventListener('pointerleave', () => setDir(false));
+            });
+
+            const canvasEl = renderer.domElement;
+            let isDragging = false;
+            canvasEl.addEventListener('pointerdown', (e) => {
+                if (state.status !== 'PLAYING') return;
+                isDragging = true;
+                updateTargetFromPointer(e.clientX, e.clientY);
+            });
+            window.addEventListener('pointermove', (e) => {
+                if (!isDragging || state.status !== 'PLAYING') return;
+                updateTargetFromPointer(e.clientX, e.clientY);
+            });
+            window.addEventListener('pointerup', () => { isDragging = false; });
+
+            document.getElementById('btn-start').addEventListener('click', () => {
+                if (state.status === 'PAUSED') {
+                    togglePause();
+                } else {
+                    startGame();
+                }
+            });
+
+            document.getElementById('btn-pause').addEventListener('click', togglePause);
+
+            document.getElementById('btn-mute').addEventListener('click', (e) => {
+                state.muted = !state.muted;
+                e.currentTarget.textContent = state.muted ? '🔇' : '🔊';
+            });
+
+            window.addEventListener('resize', () => {
+                if (!camera || !renderer) return;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        function updateTargetFromPointer(clientX, clientY) {
+            const normX = (clientX / window.innerWidth) * 2 - 1;
+            const normY = -((clientY / window.innerHeight) * 2 - 1);
+            const maxX = window.innerWidth < 640 ? 3.5 : 7.0;
+            const maxY = 3.2;
+            state.targetX = Math.max(-maxX, Math.min(maxX, normX * (maxX + 1.5)));
+            state.targetY = Math.max(-maxY, Math.min(maxY, normY * (maxY + 1.0)));
+        }
+
+        // --- LOOP ANIMASI UTAMA ---
+        function animate(now) {
+            requestAnimationFrame(animate);
+
+            const dt = Math.min((now - lastTime) / 1000, 0.1);
+            lastTime = now;
+
+            if (propeller) propeller.rotation.z += 0.45;
+
+            if (state.status !== 'PAUSED') {
+                clouds.forEach(c => {
+                    c.position.z += 0.18;
+                    if (c.position.z > 15) {
+                        c.position.z = -120;
+                    }
+                });
+
+                smokeTimer += dt;
+                if (smokeTimer > 0.08) {
+                    spawnSmoke();
+                    smokeTimer = 0;
+                }
+                for (let i = smokeParticles.length - 1; i >= 0; i--) {
+                    const p = smokeParticles[i];
+                    p.life -= dt * 1.4;
+                    p.mesh.position.z += 0.15;
+                    p.mesh.scale.addScalar(dt * 1.2);
+                    p.mesh.material.opacity = Math.max(0, p.life * 0.7);
+                    if (p.life <= 0) {
+                        scene.remove(p.mesh);
+                        p.mesh.geometry.dispose();
+                        p.mesh.material.dispose();
+                        smokeParticles.splice(i, 1);
+                    }
+                }
+            }
+
+            if (state.status === 'PLAYING' && airplane) {
+                if (state.feedbackCooldown > 0) state.feedbackCooldown -= dt;
+
+                const moveSpeed = 9.5 * dt;
+                const maxX = window.innerWidth < 640 ? 3.6 : 7.2;
+                const maxY = 3.2;
+
+                if (keys.ArrowLeft || keys.a) state.targetX -= moveSpeed;
+                if (keys.ArrowRight || keys.d) state.targetX += moveSpeed;
+                if (keys.ArrowUp || keys.w) state.targetY += moveSpeed;
+                if (keys.ArrowDown || keys.s) state.targetY -= moveSpeed;
+
+                state.targetX = Math.max(-maxX, Math.min(maxX, state.targetX));
+                state.targetY = Math.max(-maxY, Math.min(maxY, state.targetY));
+
+                const prevX = airplane.position.x;
+                const prevY = airplane.position.y;
+                airplane.position.x += (state.targetX - airplane.position.x) * 0.14;
+                airplane.position.y += (state.targetY - airplane.position.y) * 0.14;
+
+                const vx = airplane.position.x - prevX;
+                const vy = airplane.position.y - prevY;
+                airplane.rotation.z = -vx * 2.4;
+                airplane.rotation.x = vy * 1.8;
+
+                if (answerBoxes.length > 0) {
+                    state.questionTimer -= dt;
+                    const ratio = Math.max(0, state.questionTimer / state.maxQuestionTime);
+                    document.getElementById('time-bar').style.width = `${ratio * 100}%`;
+                    document.getElementById('timer-display').textContent = `${Math.ceil(state.questionTimer)}d`;
+
+                    if (state.questionTimer <= 0) {
+                        handleAnswerSelection(false);
+                    }
+                }
+
+                const boxSpeed = (15 + state.currentQ * 0.45) * dt;
+                let missedAll = false;
+
+                for (let i = 0; i < answerBoxes.length; i++) {
+                    const box = answerBoxes[i];
+                    box.mesh.position.z += boxSpeed;
+                    box.mesh.position.y = box.baseY + Math.sin(now * 0.004 + i) * 0.18;
+
+                    const dx = Math.abs(airplane.position.x - box.mesh.position.x);
+                    const dy = Math.abs(airplane.position.y - box.mesh.position.y);
+                    const dz = Math.abs(airplane.position.z - box.mesh.position.z);
+
+                    if (dx < 2.1 && dy < 1.4 && dz < 1.5) {
+                        handleAnswerSelection(box.isCorrect);
+                        break;
+                    }
+
+                    if (box.mesh.position.z > 8.5) {
+                        missedAll = true;
+                    }
+                }
+
+                if (missedAll && answerBoxes.length > 0) {
+                    handleAnswerSelection(false);
+                }
+            } else if (airplane) {
+                airplane.position.y = Math.sin(now * 0.003) * 0.3;
+                airplane.rotation.z = Math.sin(now * 0.002) * 0.12;
+            }
+
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+
+        // --- INISIALISASI SAAT WINDOW SELESAI DIMUAT ---
+        window.onload = function () {
+            if (typeof THREE === 'undefined') {
+                console.error('Library Three.js gagal dimuat.');
+                return;
+            }
+
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0xeab308, 0.014);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 150);
+            camera.position.set(0, 2.2, 8.5);
+            camera.lookAt(0, 0.5, -10);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf59e0b, 0.95);
+            hemiLight.position.set(0, 30, 0);
+            scene.add(hemiLight);
+
+            const dirLight = new THREE.DirectionalLight(0xfffbeb, 0.85);
+            dirLight.position.set(10, 20, 10);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+
+            buildAirplane();
+            applyPilotTheme('bebi');
+            createEnvironmentProps();
+            setupEventListeners();
+
+            lastTime = performance.now();
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
