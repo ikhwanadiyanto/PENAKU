@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Baamboozle IPAS Kelas 6 Bab 4 - 4 Sahabat Robot</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --font-display: 'Fredoka', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            font-family: var(--font-body);
+            background-color: #eef5ff;
+        }
+
+        .font-display {
+            font-family: var(--font-display);
+        }
+
+        /* Animasi Mengambang Lembut untuk Maskot Robot */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float-0 { animation: floatSlow 3.0s ease-in-out infinite; }
+        .animate-float-1 { animation: floatSlow 3.2s ease-in-out 0.3s infinite; }
+        .animate-float-2 { animation: floatSlow 2.9s ease-in-out 0.6s infinite; }
+        .animate-float-3 { animation: floatSlow 3.3s ease-in-out 0.9s infinite; }
+
+        /* Animasi Pop-in Modal & Kartu */
+        @keyframes popIn {
+            0% { transform: scale(0.82); opacity: 0; }
+            75% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Animasi Denyut untuk Giliran Kelompok Aktif */
+        @keyframes activePulse {
+            0%, 100% { transform: translateY(-2px) scale(1.02); }
+            50% { transform: translateY(-5px) scale(1.04); }
+        }
+        .team-card-active {
+            animation: activePulse 1.8s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        /* Tombol 3D Tactile ala Baamboozle */
+        .btn-3d-blue {
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 5px 0 #1e3a8a, 0 10px 18px rgba(29, 78, 216, 0.28);
+            transition: all 0.12s ease;
+        }
+        .btn-3d-blue:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #1e3a8a, 0 4px 10px rgba(29, 78, 216, 0.22);
+        }
+
+        .btn-3d-green {
+            background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+            box-shadow: 0 5px 0 #14532d, 0 10px 16px rgba(21, 128, 61, 0.28);
+            transition: all 0.12s ease;
+        }
+        .btn-3d-green:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #14532d;
+        }
+
+        .btn-3d-red {
+            background: linear-gradient(180deg, #f43f5e 0%, #be123c 100%);
+            box-shadow: 0 5px 0 #881337, 0 10px 16px rgba(190, 18, 60, 0.28);
+            transition: all 0.12s ease;
+        }
+        .btn-3d-red:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #881337;
+        }
+
+        .btn-3d-amber {
+            background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+            box-shadow: 0 5px 0 #92400e, 0 10px 16px rgba(217, 119, 6, 0.28);
+            transition: all 0.12s ease;
+        }
+        .btn-3d-amber:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #92400e;
+        }
+
+        .btn-3d-white {
+            background: #ffffff;
+            box-shadow: 0 3px 0 #cbd5e1, 0 5px 12px rgba(15, 23, 42, 0.08);
+            transition: all 0.12s ease;
+        }
+        .btn-3d-white:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #cbd5e1;
+        }
+
+        /* Ubin Nomor Baamboozle */
+        .tile-closed {
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease;
+            cursor: pointer;
+        }
+        .tile-closed:hover {
+            transform: translateY(-3px) scale(1.03);
+        }
+        .tile-closed:active {
+            transform: translateY(3px) scale(0.97);
+        }
+        .tile-opened {
+            background: #e2e8f0;
+            color: #94a3b8;
+            box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.12);
+            border: 2px dashed #cbd5e1;
+            cursor: default;
+        }
+
+        /* Teks Responsif Adaptif Mobile & IFP */
+        .fluid-modal-question {
+            font-size: clamp(1.05rem, 2.7vw, 1.85rem);
+            line-height: 1.38;
+        }
+        .fluid-modal-answer {
+            font-size: clamp(1rem, 2.4vw, 1.65rem);
+            line-height: 1.35;
+        }
+
+        /* Kartu Pilihan Jawaban Interaktif (A, B, C, D) */
+        .option-btn {
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        .option-btn:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+        .option-locked {
+            border-color: #2563eb !important;
+            background-color: #eff6ff !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35);
+            transform: scale(1.015);
+        }
+        .option-correct-reveal {
+            border-color: #16a34a !important;
+            background-color: #dcfce7 !important;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.35);
+        }
+        .option-wrong-reveal {
+            border-color: #e11d48 !important;
+            background-color: #ffe4e6 !important;
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.3);
+        }
+
+        /* Animasi Tembakan Laser & Getaran Kapal/Robot saat Duel */
+        @keyframes shakeHit {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px) rotate(-2deg); }
+            40% { transform: translateX(8px) rotate(2deg); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+        .duel-hit-shake {
+            animation: shakeHit 0.38s ease-in-out;
+        }
+
+        @keyframes laserBeamPulse {
+            0% { opacity: 0.2; transform: scaleX(0.4); }
+            50% { opacity: 1; transform: scaleX(1.05); }
+            100% { opacity: 0; transform: scaleX(1); }
+        }
+        .duel-laser-fx {
+            animation: laserBeamPulse 0.45s ease-out forwards;
+        }
+
+        /* Watermark Keterangan Pembuat di Pojok Kanan Bawah */
+        .creator-watermark {
+            font-size: clamp(10px, 2.2vw, 12.5px);
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            pointer-events: none;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
+            max-width: calc(100vw - 16px);
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="w-full min-h-[100dvh] flex flex-col relative bg-gradient-to-b from-[#e8f1ff] via-[#eef5ff] to-[#dbeafe]">
+
+    <!-- Canvas Konfeti untuk Kemenangan & Kejutan -->
+    <canvas id="confetti-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-50"></canvas>
+
+    <!-- =====================================================================
+         1. LAYAR PEMBUKA (START SCREEN - 4 KELOMPOK SAHABAT ROBOT)
+    ====================================================================== -->
+    <div id="start-screen" class="w-full min-h-[100dvh] flex flex-col items-center justify-between px-3 pt-3 pb-2 sm:p-6 overflow-y-auto">
+        
+        <div class="w-full max-w-2xl bg-[#f4f8ff] rounded-[28px] sm:rounded-[34px] p-4 sm:p-7 shadow-[0_18px_45px_rgba(30,58,138,0.12)] border-2 border-white flex flex-col items-center text-center my-auto">
+            
+            <!-- Badge Kelas & Mata Pelajaran -->
+            <div class="bg-[#ffc11e] text-[#452700] font-extrabold text-[11px] sm:text-sm px-4 py-1 rounded-full shadow-sm tracking-wide uppercase mb-2.5 border border-amber-300">
+                IPAS KELAS 6 SD • SEMESTER 1 BAB 4
+            </div>
+
+            <!-- Judul Utama -->
+            <h1 class="font-display text-2xl sm:text-5xl font-bold text-[#1e293b] leading-tight tracking-tight">
+                Kuis Tim Baamboozle
+            </h1>
+            <h2 class="font-display text-lg sm:text-3xl font-bold text-[#2563eb] leading-tight mb-1.5">
+                Indonesia dan Masyarakat Dunia
+            </h2>
+
+            <!-- Subjudul -->
+            <p class="text-slate-600 font-semibold text-xs sm:text-base max-w-lg mb-4 px-1">
+                Adu Cepat & Strategi 4 Kelompok Sahabat Robot di Layar Kelas!
+            </p>
+
+            <!-- Kartu Showcase 4 Kelompok Robot -->
+            <div class="w-full bg-white rounded-[22px] sm:rounded-[26px] p-3 sm:p-5 shadow-[0_8px_25px_rgba(148,163,184,0.16)] border border-slate-100 mb-4">
+                <div class="text-[11px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">
+                    🤖 4 Kelompok Peserta Lomba:
+                </div>
+
+                <!-- Grid 4 Kelompok (2x2 di HP kecil, 4 kolom di tablet/IFP) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-3.5">
+                    
+                    <!-- KELOMPOK 1: BIMO (Biru Topi 6) -->
+                    <div class="rounded-2xl p-2 sm:p-2.5 bg-blue-50/80 border-2 border-blue-200 flex flex-col items-center">
+                        <span class="text-[10px] sm:text-[11px] font-extrabold text-blue-700 uppercase tracking-wide mb-1">Kelompok 1</span>
+                        <div class="w-16 h-20 sm:w-20 sm:h-24 animate-float-0 flex items-center justify-center" id="start-avatar-0"></div>
+                        <span class="mt-1 bg-[#2563eb] text-white font-display font-bold text-xs sm:text-sm px-3 py-0.5 rounded-full shadow-sm">
+                            BIMO
+                        </span>
+                        <span class="text-[10px] font-semibold text-slate-500 mt-0.5">Si Topi 6</span>
+                    </div>
+
+                    <!-- KELOMPOK 2: BEBI (Pink Pita Manis) -->
+                    <div class="rounded-2xl p-2 sm:p-2.5 bg-pink-50/80 border-2 border-pink-200 flex flex-col items-center">
+                        <span class="text-[10px] sm:text-[11px] font-extrabold text-pink-700 uppercase tracking-wide mb-1">Kelompok 2</span>
+                        <div class="w-16 h-20 sm:w-20 sm:h-24 animate-float-1 flex items-center justify-center" id="start-avatar-1"></div>
+                        <span class="mt-1 bg-[#ec4899] text-white font-display font-bold text-xs sm:text-sm px-3 py-0.5 rounded-full shadow-sm">
+                            BEBI
+                        </span>
+                        <span class="text-[10px] font-semibold text-slate-500 mt-0.5">Si Pita Manis</span>
+                    </div>
+
+                    <!-- KELOMPOK 3: BUBU (Oranye Kupluk Lucu) -->
+                    <div class="rounded-2xl p-2 sm:p-2.5 bg-orange-50/80 border-2 border-orange-200 flex flex-col items-center">
+                        <span class="text-[10px] sm:text-[11px] font-extrabold text-orange-700 uppercase tracking-wide mb-1">Kelompok 3</span>
+                        <div class="w-16 h-20 sm:w-20 sm:h-24 animate-float-2 flex items-center justify-center" id="start-avatar-2"></div>
+                        <span class="mt-1 bg-[#f97316] text-white font-display font-bold text-xs sm:text-sm px-3 py-0.5 rounded-full shadow-sm">
+                            BUBU
+                        </span>
+                        <span class="text-[10px] font-semibold text-slate-500 mt-0.5">Si Kupluk Lucu</span>
+                    </div>
+
+                    <!-- KELOMPOK 4: BELA (Ungu/Tosca Mahkota Bintang) -->
+                    <div class="rounded-2xl p-2 sm:p-2.5 bg-purple-50/80 border-2 border-purple-200 flex flex-col items-center">
+                        <span class="text-[10px] sm:text-[11px] font-extrabold text-purple-700 uppercase tracking-wide mb-1">Kelompok 4</span>
+                        <div class="w-16 h-20 sm:w-20 sm:h-24 animate-float-3 flex items-center justify-center" id="start-avatar-3"></div>
+                        <span class="mt-1 bg-[#7c3aed] text-white font-display font-bold text-xs sm:text-sm px-3 py-0.5 rounded-full shadow-sm">
+                            BELA
+                        </span>
+                        <span class="text-[10px] font-semibold text-slate-500 mt-0.5">Si Bintang Modis</span>
+                    </div>
+                </div>
+
+                <div class="h-px bg-slate-100 w-full my-2.5"></div>
+
+                <!-- Ringkasan Fitur Papan -->
+                <div class="grid grid-cols-3 gap-1 text-center pt-0.5">
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="flex items-center gap-1 font-extrabold text-slate-800 text-xs sm:text-base">
+                            <span>🔢</span>
+                            <span>30 Kotak</span>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-slate-500">Nomor Acak</span>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center border-x border-slate-100">
+                        <div class="flex items-center gap-1 font-extrabold text-slate-800 text-xs sm:text-base">
+                            <span>📚</span>
+                            <span>25 Soal</span>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-slate-500">IPAS Bab 4</span>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="flex items-center gap-1 font-extrabold text-slate-800 text-xs sm:text-base">
+                            <span>⏱️</span>
+                            <span>30 Detik</span>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold text-slate-500">Rebut Soal!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Mulai Bermain -->
+            <button onclick="startNewGame()" class="btn-3d-blue w-full py-3.5 sm:py-4 rounded-2xl text-white font-display font-bold text-lg sm:text-2xl tracking-wide flex items-center justify-center gap-2.5 mb-2 cursor-pointer">
+                <span>▶ MULAI PERMAINAN</span>
+            </button>
+
+            <!-- Tombol Mode Duel IFP (1 vs 1 Bar HP Antar Kelompok) -->
+            <button onclick="openDuelLobby()" class="btn-3d-amber w-full py-3 sm:py-3.5 rounded-2xl text-amber-950 font-display font-bold text-base sm:text-xl tracking-wide flex items-center justify-center gap-2 mb-2.5 cursor-pointer">
+                <span>⚔️ MODE DUEL IFP (1 VS 1 BAR HP)</span>
+            </button>
+
+            <!-- Tombol Toggle Efek Suara, Layar Penuh & Acak Giliran -->
+            <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <button id="sound-toggle-btn" onclick="toggleSound()" class="btn-3d-white w-full py-2.5 sm:py-3 rounded-2xl text-slate-700 font-extrabold text-xs sm:text-sm border border-slate-200 flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span id="sound-icon" class="text-base">🔊</span>
+                    <span id="sound-text">Efek Suara: AKTIF</span>
+                </button>
+                <button id="start-fullscreen-btn" onclick="toggleFullScreen()" class="btn-3d-white w-full py-2.5 sm:py-3 rounded-2xl text-blue-700 font-extrabold text-xs sm:text-sm border border-blue-200 flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span id="start-fs-icon" class="text-base">⛶</span>
+                    <span id="start-fs-text">Layar Penuh (IFP)</span>
+                </button>
+                <button id="start-shuffle-turn-btn" onclick="shuffleTurnOrder(true)" class="btn-3d-white w-full py-2.5 sm:py-3 rounded-2xl text-amber-700 font-extrabold text-xs sm:text-sm border border-amber-300 flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span class="text-base">🎲</span>
+                    <span id="start-turn-preview">Acak Giliran</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Keterangan Pembuat Aplikasi -->
+        <div class="w-full flex justify-center sm:justify-end mt-2">
+            <div class="creator-watermark bg-white/90 text-slate-700 border border-slate-300/80 shadow-sm">
+                Aplikasi ini dibuat oleh : Ikhwan Adi Yanto,S.Pd. tahun 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         2. LAYAR PAPAN KUIS BAAMBOOZLE (PAPAN SKOR DI ATAS + 30 KOTAK NOMOR)
+    ====================================================================== -->
+    <div id="game-screen" class="hidden w-full min-h-[100dvh] lg:h-[100dvh] lg:overflow-hidden flex flex-col justify-between px-2.5 pt-2 pb-1.5 sm:px-5 sm:pt-2.5 sm:pb-2 bg-gradient-to-b from-[#dbeafe] via-[#eff6ff] to-[#e0e7ff]">
+        
+        <!-- AREA ATAS: BAR KONTROL + PAPAN SKOR 4 KELOMPOK (BIMO, BEBI, BUBU, BELA) -->
+        <header class="w-full max-w-7xl mx-auto flex flex-col gap-1.5 sm:gap-2 shrink-0">
+            <div class="w-full flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
+                <div class="flex items-center gap-1.5">
+                    <button onclick="openConfirmReset()" class="btn-3d-white text-slate-700 font-extrabold text-xs sm:text-sm px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 flex items-center gap-1 cursor-pointer">
+                        <span>🏠</span>
+                        <span class="hidden sm:inline">Menu / Acak Ulang</span>
+                    </button>
+                    <div class="bg-blue-700 text-white font-display font-bold text-xs sm:text-base px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-1.5">
+                        <span>📦</span>
+                        <span>Sisa Kotak: <span id="remaining-tiles-count" class="bg-amber-400 text-amber-950 px-2 py-0.5 rounded-lg font-extrabold">30</span></span>
+                    </div>
+                </div>
+
+                <!-- Penanda Giliran Kelompok Saat Ini -->
+                <div id="turn-banner" class="bg-white border-2 border-blue-500 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+                    <span class="text-xs sm:text-sm font-bold text-slate-500">Giliran:</span>
+                    <span id="current-turn-label" class="font-display font-bold text-xs sm:text-base text-blue-700 uppercase">
+                        Kelompok 1 • Bimo
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                    <button onclick="shuffleTurnOrder(true)" id="game-shuffle-turn-btn" class="btn-3d-white text-amber-700 font-extrabold text-xs sm:text-sm px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-amber-300 flex items-center gap-1 cursor-pointer" title="Acak Giliran Kelompok">
+                        <span>🎲</span>
+                        <span class="hidden md:inline">Acak Giliran</span>
+                    </button>
+                    <button onclick="toggleFullScreen()" id="game-fullscreen-btn" class="btn-3d-white text-blue-700 font-extrabold text-xs sm:text-sm px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-blue-200 flex items-center gap-1 cursor-pointer" title="Layar Penuh">
+                        <span id="game-fs-icon">⛶</span>
+                        <span id="game-fs-text" class="hidden md:inline">Full Screen</span>
+                    </button>
+                    <button onclick="toggleSound()" id="game-sound-btn" class="btn-3d-white text-slate-700 font-bold text-xs sm:text-base px-2.5 py-1.5 rounded-xl border border-slate-200 cursor-pointer" title="Suara">
+                        🔊
+                    </button>
+                    <button onclick="showPodium()" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-display font-bold text-xs sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-amber-300 shadow-sm flex items-center gap-1 cursor-pointer active:scale-95 transition">
+                        <span>🏆</span>
+                        <span>Pemenang</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PAPAN SKOR 4 KELOMPOK DI BAGIAN ATAS -->
+            <div id="teams-scoreboard" class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+                <!-- 4 Kartu Skor Kelompok dirender lewat JS -->
+            </div>
+        </header>
+
+        <!-- AREA TENGAH: GRID 30 KOTAK NOMOR ALA BAAMBOOZLE -->
+        <main class="flex-1 w-full max-w-7xl mx-auto flex items-center justify-center my-1 min-h-0">
+            <div id="baamboozle-grid" class="w-full lg:h-full grid grid-cols-5 sm:grid-cols-6 lg:grid-rows-5 gap-1.5 sm:gap-2.5">
+                <!-- 30 Kotak Nomor 1 s.d. 30 dirender lewat JS -->
+            </div>
+        </main>
+
+        <!-- AREA BAWAH: WATERMARK KETERANGAN PEMBUAT -->
+        <footer class="w-full max-w-7xl mx-auto shrink-0">
+            <div class="w-full flex justify-center sm:justify-end">
+                <div class="creator-watermark bg-white/85 text-slate-700 border border-slate-300/80 shadow-sm">
+                    Aplikasi ini dibuat oleh : Ikhwan Adi Yanto,S.Pd. tahun 2026
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         3. MODAL KARTU SOAL BAAMBOOZLE (TIMER 15 DETIK, KUNCI A/B/C/D & REBUT)
+    ====================================================================== -->
+    <div id="question-modal" class="hidden fixed inset-0 z-40 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-5 overflow-y-auto">
+        <div class="animate-pop w-full max-w-3xl bg-white rounded-[26px] sm:rounded-[32px] p-4 sm:p-7 shadow-2xl border-4 border-blue-500 my-auto flex flex-col">
+            
+            <!-- Header Modal: Nomor Kotak, Kelompok Penjawab & Nilai Poin -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b-2 border-slate-100">
+                <div class="flex items-center gap-2">
+                    <span id="modal-tile-badge" class="bg-blue-600 text-white font-display font-bold text-sm sm:text-lg px-3.5 py-1 rounded-xl shadow-sm">
+                        Kotak #1
+                    </span>
+                    <span id="modal-topic-badge" class="bg-blue-50 text-blue-800 font-extrabold text-[11px] sm:text-xs px-3 py-1 rounded-full border border-blue-200">
+                        Materi IPAS Bab 4
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span id="modal-team-indicator" class="font-display font-bold text-xs sm:text-sm px-3 py-1 rounded-full bg-slate-100 text-slate-800">
+                        Giliran: Kelompok 1
+                    </span>
+                    <span id="modal-points-badge" class="bg-amber-400 text-amber-950 font-display font-extrabold text-sm sm:text-lg px-3.5 py-1 rounded-xl border border-amber-300 shadow-sm">
+                        +20 Poin
+                    </span>
+                </div>
+            </div>
+
+            <!-- Baris Timer Hitung Mundur 30 Detik -->
+            <div class="w-full mb-3 bg-slate-100 rounded-2xl p-2 sm:p-2.5 border border-slate-200">
+                <div class="flex items-center justify-between text-xs sm:text-sm font-extrabold mb-1.5 px-1">
+                    <span id="timer-status-label" class="text-slate-600 flex items-center gap-1.5">
+                        <span>⏱️</span>
+                        <span>Waktu Menjawab Kelompok:</span>
+                    </span>
+                    <span id="timer-seconds-text" class="font-display text-base sm:text-xl text-blue-700">
+                        30 Detik
+                    </span>
+                </div>
+                <div class="w-full h-2.5 sm:h-3 bg-slate-200 rounded-full overflow-hidden">
+                    <div id="timer-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full transition-all duration-200" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Teks Pertanyaan Utama -->
+            <div class="bg-slate-50 rounded-2xl p-3.5 sm:p-5 border border-slate-200 mb-3 text-center">
+                <p id="modal-question-text" class="text-slate-900 font-extrabold fluid-modal-question">
+                    Pertanyaan akan muncul di sini...
+                </p>
+            </div>
+
+            <!-- Grid Pilihan Jawaban A, B, C, D Interaktif (Siswa Sentuh untuk Mengunci) -->
+            <div id="mc-options-section" class="mb-3">
+                <div id="lock-status-banner" class="text-center text-xs sm:text-sm font-extrabold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl py-1.5 px-3 mb-2">
+                    👆 Sentuh tombol A, B, C, atau D untuk mengunci jawaban kelompok!
+                </div>
+                <div id="mc-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                    <!-- Tombol Opsi A-D dirender lewat JS -->
+                </div>
+            </div>
+
+            <!-- Banner Rebut Soal (Muncul Otomatis Jika Waktu 15 Detik Habis!) -->
+            <div id="steal-turn-box" class="hidden bg-rose-50 border-2 border-rose-400 rounded-2xl p-3.5 sm:p-4 mb-3 text-center animate-pop">
+                <div class="font-display font-bold text-base sm:text-xl text-rose-700 mb-1">
+                    ⏰ WAKTU HABIS! KESEMPATAN REBUT SOAL!
+                </div>
+                <p class="text-xs sm:text-sm font-bold text-slate-700 mb-2.5">
+                    Pilih kelompok lawan yang tercepat mengangkat tangan untuk merebut soal ini:
+                </p>
+                <div id="steal-teams-buttons" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+                    <!-- Tombol kelompok perebut dirender lewat JS -->
+                </div>
+                <button type="button" onclick="skipUnansweredQuestion()" class="text-xs font-extrabold text-slate-500 hover:text-slate-700 underline py-1 cursor-pointer">
+                    Tidak ada yang merebut → Buka Jawaban & Lewati
+                </button>
+            </div>
+
+            <!-- Kotak Hasil & Pembahasan (Muncul setelah Guru klik "Lihat Jawaban") -->
+            <div id="answer-reveal-box" class="hidden rounded-2xl p-3.5 sm:p-4 mb-3 text-center animate-pop border-2">
+                <div id="reveal-verdict-badge" class="font-display font-bold text-base sm:text-xl mb-1">
+                    ✅ JAWABAN BENAR! +20 POIN
+                </div>
+                <div id="modal-answer-text" class="font-display font-bold text-sm sm:text-lg text-slate-900 mb-1">
+                    Kunci Jawaban
+                </div>
+                <p id="modal-explanation-text" class="text-xs sm:text-sm font-semibold text-slate-700 bg-white/85 rounded-xl p-2">
+                    Penjelasan singkat.
+                </p>
+            </div>
+
+            <!-- Tombol Aksi Guru -->
+            <div id="step-check-wrapper" class="w-full">
+                <button id="reveal-answer-btn" onclick="revealAnswer()" class="btn-3d-amber w-full py-3 sm:py-3.5 rounded-2xl text-amber-950 font-display font-bold text-base sm:text-xl tracking-wide flex items-center justify-center gap-2 cursor-pointer">
+                    <span>👀 LIHAT JAWABAN</span>
+                </button>
+            </div>
+
+            <div id="step-next-wrapper" class="hidden w-full">
+                <button onclick="finishQuestionAndNextTurn()" class="btn-3d-blue w-full py-3 sm:py-3.5 rounded-2xl text-white font-display font-bold text-base sm:text-xl tracking-wide flex items-center justify-center gap-2 cursor-pointer">
+                    <span>LANJUT GILIRAN BERIKUTNYA ▶</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         4. MODAL KARTU KEJUTAN (POWER-UP ALA BAAMBOOZLE!)
+    ====================================================================== -->
+    <div id="powerup-modal" class="hidden fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+        <div id="powerup-card" class="animate-pop w-full max-w-lg bg-gradient-to-b from-amber-50 via-white to-amber-50 rounded-[28px] sm:rounded-[34px] p-5 sm:p-7 text-center shadow-2xl border-4 border-amber-400 my-auto">
+            
+            <div class="inline-block bg-amber-400 text-amber-950 font-extrabold text-xs sm:text-sm px-4 py-1 rounded-full uppercase tracking-wider mb-2 shadow-sm">
+                ⚡ KARTU KEJUTAN! ⚡
+            </div>
+
+            <div id="powerup-emoji" class="text-5xl sm:text-7xl my-2 animate-bounce">
+                🎁
+            </div>
+
+            <h3 id="powerup-title" class="font-display font-bold text-2xl sm:text-3xl text-slate-900 mb-1.5">
+                BONUS POIN GRATIS!
+            </h3>
+
+            <p id="powerup-desc" class="text-slate-600 font-bold text-xs sm:text-base mb-5 px-2">
+                Selamat! Kelompokmu mendapatkan tambahan +25 Poin secara cuma-cuma!
+            </p>
+
+            <!-- Area Pilihan Target Kelompok (Khusus Power-Up Curi Poin / Tukar Skor) -->
+            <div id="powerup-target-selector" class="hidden grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
+                <!-- Tombol target kelompok dirender lewat JS -->
+            </div>
+
+            <!-- Tombol Lanjutkan untuk Power-Up Langsung -->
+            <button id="powerup-continue-btn" onclick="applyDirectPowerUp()" class="btn-3d-blue w-full py-3.5 sm:py-4 rounded-2xl text-white font-display font-bold text-lg sm:text-xl tracking-wide cursor-pointer">
+                MANTAP! LANJUTKAN ▶
+            </button>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         5. MODAL KONFIRMASI KELUAR / ACAK ULANG PAPAN
+    ====================================================================== -->
+    <div id="confirm-reset-modal" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="animate-pop w-full max-w-sm bg-white rounded-3xl p-5 sm:p-6 text-center shadow-2xl border-4 border-blue-400">
+            <div class="text-4xl sm:text-5xl mb-2">🔄</div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl text-slate-800 mb-1.5">Atur Ulang Permainan?</h3>
+            <p class="text-slate-600 font-semibold text-xs sm:text-sm mb-5">
+                Pilih tindakan untuk papan kuis saat ini:
+            </p>
+            <div class="flex flex-col gap-2.5">
+                <button onclick="startNewGame(); closeConfirmReset();" class="btn-3d-blue py-3 rounded-xl font-display font-bold text-sm sm:text-base text-white">
+                    🎲 Acak Ulang 30 Kotak & Mulai Baru
+                </button>
+                <button onclick="returnToHome(); closeConfirmReset();" class="bg-amber-400 hover:bg-amber-500 text-amber-950 py-3 rounded-xl font-display font-bold text-sm sm:text-base shadow">
+                    🏠 Kembali ke Halaman Awal
+                </button>
+                <button onclick="closeConfirmReset()" class="btn-3d-white py-2.5 rounded-xl font-extrabold text-xs sm:text-sm text-slate-600 border border-slate-200">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         6. LAYAR PODIUM PEMENANG (JUARA 1, 2, 3, 4)
+    ====================================================================== -->
+    <div id="podium-screen" class="hidden w-full min-h-[100dvh] flex flex-col items-center justify-between px-3 py-4 sm:p-6 bg-gradient-to-b from-[#1e1b4b] via-[#172554] to-[#0f172a] overflow-y-auto">
+        <div class="animate-pop w-full max-w-2xl bg-white rounded-[28px] sm:rounded-[34px] p-5 sm:p-8 text-center shadow-2xl border-4 border-amber-400 my-auto">
+            
+            <div class="inline-block bg-amber-400 text-amber-950 font-extrabold text-xs sm:text-sm px-4 py-1 rounded-full uppercase tracking-wider mb-2">
+                🏆 HASIL AKHIR LOMBA BAAMBOOZLE 🏆
+            </div>
+
+            <h2 class="font-display font-bold text-2xl sm:text-4xl text-slate-800 mb-1">
+                Klasemen 4 Sahabat Robot!
+            </h2>
+            <p class="text-slate-600 font-semibold text-xs sm:text-base mb-5">
+                IPAS Kelas 6 SD Semester 1 • Bab 4: Indonesia dan Masyarakat Dunia
+            </p>
+
+            <!-- Daftar Peringkat Juara 1 s.d. 4 -->
+            <div id="podium-ranking-list" class="flex flex-col gap-2.5 sm:gap-3 mb-6">
+                <!-- Peringkat dirender lewat JS -->
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button onclick="startNewGame()" class="btn-3d-blue py-3.5 rounded-2xl text-white font-display font-bold text-base sm:text-xl tracking-wide flex items-center justify-center gap-2 cursor-pointer">
+                    <span>🔄 MAIN BABAK BARU</span>
+                </button>
+                <button onclick="resumeFromPodium()" id="resume-board-btn" class="btn-3d-white py-3.5 rounded-2xl text-slate-700 font-extrabold text-sm sm:text-base border border-slate-300 cursor-pointer">
+                    ◀ Kembali ke Papan Kotak
+                </button>
+            </div>
+        </div>
+
+        <!-- Keterangan Pembuat di Layar Podium -->
+        <div class="w-full flex justify-center sm:justify-end mt-3">
+            <div class="creator-watermark bg-slate-900/85 text-slate-200 border border-slate-700 shadow-md">
+                Aplikasi ini dibuat oleh : Ikhwan Adi Yanto,S.Pd. tahun 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         7. LAYAR LOBBY & ARENA DUEL IFP (1 VS 1 BAR HP ANTAR KELOMPOK)
+    ====================================================================== -->
+    <div id="duel-screen" class="hidden w-full min-h-[100dvh] flex flex-col justify-between px-2.5 pt-2 pb-1.5 sm:px-5 sm:pt-2.5 sm:pb-2 bg-gradient-to-b from-[#0f172a] via-[#1e1b4b] to-[#172554] text-white overflow-x-hidden">
+
+        <!-- Header Duel -->
+        <header class="w-full max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2 mb-2 shrink-0">
+            <div class="flex items-center gap-1.5">
+                <button type="button" onclick="exitDuelToHome()" class="btn-3d-white text-slate-800 font-extrabold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl border border-slate-200 flex items-center gap-1 cursor-pointer">
+                    <span>🏠</span>
+                    <span>Menu Utama</span>
+                </button>
+                <span class="bg-amber-400 text-amber-950 font-display font-bold text-xs sm:text-sm px-3 py-1.5 rounded-xl shadow-sm">
+                    ⚔️ ARENA DUEL IFP
+                </span>
+            </div>
+
+            <div id="duel-round-badge" class="hidden bg-indigo-900/90 border border-indigo-400/50 text-indigo-100 font-display font-bold text-xs sm:text-base px-3.5 py-1 rounded-full">
+                Ronde #<span id="duel-q-num">1</span> • <span id="duel-q-topic">IPAS Bab 4</span>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+                <button type="button" onclick="toggleFullScreen()" class="btn-3d-white text-blue-700 font-extrabold text-xs sm:text-sm px-2.5 py-1.5 rounded-xl border border-blue-200 flex items-center gap-1 cursor-pointer">
+                    <span>⛶</span>
+                    <span class="hidden sm:inline">Full Screen</span>
+                </button>
+                <button type="button" onclick="openDuelLobby()" class="bg-rose-600 hover:bg-rose-500 text-white font-display font-bold text-xs sm:text-sm px-3 py-1.5 rounded-xl shadow cursor-pointer">
+                    🔄 Ganti Petarung
+                </button>
+            </div>
+        </header>
+
+        <!-- PANEL PEMILIHAN 2 KELOMPOK DUEL (LOBBY) -->
+        <div id="duel-lobby-panel" class="w-full max-w-3xl mx-auto my-auto bg-white text-slate-900 rounded-[28px] p-4 sm:p-7 shadow-2xl border-4 border-amber-400">
+            <div class="text-center mb-4">
+                <span class="inline-block bg-amber-400 text-amber-950 font-extrabold text-xs px-3.5 py-1 rounded-full uppercase mb-1.5">
+                    ⚡ SIAPA CEPAT & TEPAT MENYERANG! ⚡
+                </span>
+                <h2 class="font-display font-bold text-2xl sm:text-4xl text-slate-900">
+                    Pilih 2 Kelompok Petarung
+                </h2>
+                <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
+                    Tiap kelompok punya <b>100 HP</b>. Jawaban benar meluncurkan serangan <b>-25 HP</b> ke lawan; salah terkena <b>-10 HP</b> sendiri!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
+                <!-- Petarung Kiri -->
+                <div class="bg-blue-50/90 border-2 border-blue-300 rounded-2xl p-3.5">
+                    <div class="text-xs font-extrabold text-blue-800 uppercase mb-1.5 text-center">
+                        🛡️ Petarung Kiri (Zona Sentuh Kiri)
+                    </div>
+                    <select id="duel-select-left" onchange="validateDuelSelections('left')" class="w-full p-2.5 rounded-xl border-2 border-blue-400 bg-white font-display font-bold text-slate-800 text-sm sm:text-base mb-2 cursor-pointer">
+                        <option value="0">Kelompok 1 • Bimo</option>
+                        <option value="1">Kelompok 2 • Bebi</option>
+                        <option value="2">Kelompok 3 • Bubu</option>
+                        <option value="3">Kelompok 4 • Bela</option>
+                    </select>
+                    <div class="h-16 flex items-center justify-center" id="duel-preview-left"></div>
+                </div>
+
+                <!-- Petarung Kanan -->
+                <div class="bg-rose-50/90 border-2 border-rose-300 rounded-2xl p-3.5">
+                    <div class="text-xs font-extrabold text-rose-800 uppercase mb-1.5 text-center">
+                        ⚔️ Petarung Kanan (Zona Sentuh Kanan)
+                    </div>
+                    <select id="duel-select-right" onchange="validateDuelSelections('right')" class="w-full p-2.5 rounded-xl border-2 border-rose-400 bg-white font-display font-bold text-slate-800 text-sm sm:text-base mb-2 cursor-pointer">
+                        <option value="0">Kelompok 1 • Bimo</option>
+                        <option value="1" selected>Kelompok 2 • Bebi</option>
+                        <option value="2">Kelompok 3 • Bubu</option>
+                        <option value="3">Kelompok 4 • Bela</option>
+                    </select>
+                    <div class="h-16 flex items-center justify-center" id="duel-preview-right"></div>
+                </div>
+            </div>
+
+            <button type="button" onclick="startDuelMatch()" class="btn-3d-blue w-full py-3.5 sm:py-4 rounded-2xl text-white font-display font-bold text-lg sm:text-2xl tracking-wide cursor-pointer">
+                ⚔️ MULAI DUEL SEKARANG!
+            </button>
+        </div>
+
+        <!-- PANEL ARENA PERTARUNGAN DUEL (BAR HP KIRI & KANAN + SOAL + TOMBOL A-D) -->
+        <div id="duel-arena-panel" class="hidden w-full max-w-6xl mx-auto flex-1 flex flex-col justify-between gap-2.5">
+            
+            <!-- Baris Bar HP 2 Kelompok -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4 relative">
+                
+                <!-- Kartu HP Kiri -->
+                <div id="duel-card-left" class="bg-slate-900/90 border-2 border-blue-400 rounded-2xl p-2.5 sm:p-3.5 shadow-lg">
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <div id="duel-avatar-left" class="w-10 h-12 sm:w-12 sm:h-14 shrink-0"></div>
+                            <div class="min-w-0">
+                                <div id="duel-group-left" class="text-[10px] sm:text-xs font-extrabold text-blue-300 uppercase truncate">Kelompok 1</div>
+                                <div id="duel-name-left" class="font-display font-bold text-base sm:text-xl text-white truncate">Bimo</div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span id="duel-hp-text-left" class="font-display font-bold text-xl sm:text-2xl text-emerald-400">100 HP</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-3.5 sm:h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="duel-hp-bar-left" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-300" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Kartu HP Kanan -->
+                <div id="duel-card-right" class="bg-slate-900/90 border-2 border-rose-400 rounded-2xl p-2.5 sm:p-3.5 shadow-lg">
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <div id="duel-avatar-right" class="w-10 h-12 sm:w-12 sm:h-14 shrink-0"></div>
+                            <div class="min-w-0">
+                                <div id="duel-group-right" class="text-[10px] sm:text-xs font-extrabold text-rose-300 uppercase truncate">Kelompok 2</div>
+                                <div id="duel-name-right" class="font-display font-bold text-base sm:text-xl text-white truncate">Bebi</div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span id="duel-hp-text-right" class="font-display font-bold text-xl sm:text-2xl text-emerald-400">100 HP</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-3.5 sm:h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="duel-hp-bar-right" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-300" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer Singkat Duel (20 Detik) -->
+            <div class="bg-slate-900/85 border border-slate-700 rounded-2xl px-3.5 py-2 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-amber-300">
+                    <span>⚡</span>
+                    <span id="duel-status-text">Ketuk jawaban A, B, C, atau D untuk menyerang lawan!</span>
+                </div>
+                <div id="duel-timer-text" class="font-display font-bold text-base sm:text-xl text-cyan-300 shrink-0">
+                    20s
+                </div>
+            </div>
+
+            <!-- Pertanyaan Duel -->
+            <div class="bg-white text-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl border-4 border-indigo-400 text-center">
+                <p id="duel-question-text" class="font-extrabold fluid-modal-question text-slate-900">
+                    Soal duel akan tampil di sini...
+                </p>
+            </div>
+
+            <!-- Zona Tombol Jawaban A, B, C, D untuk Kedua Petarung -->
+            <div id="duel-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                <!-- Tombol A-D dirender lewat JS -->
+            </div>
+
+            <!-- Panel Hasil Ronde & Tombol Soal Berikutnya -->
+            <div id="duel-round-result" class="hidden bg-slate-900 border-2 border-amber-400 rounded-2xl p-3.5 sm:p-4 text-center animate-pop">
+                <div id="duel-ko-banner" class="hidden inline-block bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-slate-950 font-display font-bold text-xl sm:text-3xl px-5 py-1.5 rounded-2xl shadow-lg mb-2 tracking-wide">
+                    KELOMPOK 2 - WIN
+                </div>
+                <div id="duel-result-title" class="font-display font-bold text-lg sm:text-2xl text-amber-300 mb-1">
+                    💥 SERANGAN MASUK!
+                </div>
+                <p id="duel-result-desc" class="text-xs sm:text-sm font-semibold text-slate-200 mb-3">
+                    Pembahasan singkat.
+                </p>
+                <button type="button" onclick="nextDuelQuestion()" class="btn-3d-blue px-6 py-3 rounded-xl text-white font-display font-bold text-sm sm:text-lg cursor-pointer">
+                    RONDE BERIKUTNYA ▶
+                </button>
+            </div>
+        </div>
+
+        <!-- Watermark Pembuat -->
+        <footer class="w-full max-w-6xl mx-auto mt-2 shrink-0">
+            <div class="w-full flex justify-center sm:justify-end">
+                <div class="creator-watermark bg-slate-900/85 text-slate-200 border border-slate-700 shadow-sm">
+                    Aplikasi ini dibuat oleh : Ikhwan Adi Yanto,S.Pd. tahun 2026
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         JAVASCRIPT LOGIKA BAAMBOOZLE, 4 KELOMPOK ROBOT, 25 SOAL & POWER-UPS
+    ====================================================================== -->
+    <script>
+        // =====================================================================
+        // 1. DATA 4 KELOMPOK & MASKOT ROBOT SVG (BIMO, BEBI, BUBU, BELA)
+        // =====================================================================
+        const teamsConfig = [
+            {
+                id: 0,
+                groupLabel: "Kelompok 1",
+                name: "Bimo",
+                subtitle: "Si Topi 6",
+                score: 0,
+                primaryHex: "#2563eb",
+                bgLight: "bg-blue-50",
+                borderActive: "border-blue-600 ring-4 ring-blue-400/50",
+                borderNormal: "border-blue-200",
+                badgeBg: "bg-[#2563eb]",
+                textAccent: "text-blue-700",
+                svg: `
+                    <svg viewBox="0 0 140 175" class="w-full h-full drop-shadow-sm">
+                        <path d="M32 52 C32 22, 108 22, 108 52 Z" fill="#1d4ed8"/>
+                        <path d="M36 48 C36 25, 104 25, 104 48 Z" fill="#2563eb"/>
+                        <path d="M26 50 Q70 42 114 50 Q116 58 70 55 Q24 58 26 50 Z" fill="#1e40af"/>
+                        <circle cx="70" cy="34" r="9" fill="#ffffff" opacity="0.25"/>
+                        <text x="70" y="39" text-anchor="middle" fill="#ffffff" font-family="Fredoka, sans-serif" font-weight="bold" font-size="14">6</text>
+                        <rect x="18" y="62" width="12" height="28" rx="6" fill="#1d4ed8"/>
+                        <rect x="110" y="62" width="12" height="28" rx="6" fill="#1d4ed8"/>
+                        <rect x="27" y="48" width="86" height="54" rx="26" fill="#2563eb" stroke="#1e40af" stroke-width="2.5"/>
+                        <rect x="35" y="55" width="70" height="40" rx="20" fill="#ffffff"/>
+                        <circle cx="53" cy="73" r="8.5" fill="#0f172a"/>
+                        <circle cx="53" cy="73" r="6.5" fill="#1d4ed8"/>
+                        <circle cx="50" cy="70" r="2.5" fill="#ffffff"/>
+                        <circle cx="87" cy="73" r="8.5" fill="#0f172a"/>
+                        <circle cx="87" cy="73" r="6.5" fill="#1d4ed8"/>
+                        <circle cx="84" cy="70" r="2.5" fill="#ffffff"/>
+                        <ellipse cx="43" cy="82" rx="4.5" ry="2.5" fill="#fda4af"/>
+                        <ellipse cx="97" cy="82" rx="4.5" ry="2.5" fill="#fda4af"/>
+                        <path d="M62 82 Q70 91 78 82 Z" fill="#ef4444"/>
+                        <rect x="60" y="101" width="20" height="7" rx="3" fill="#1e3a8a"/>
+                        <path d="M40 112 Q24 122 26 138" stroke="#2563eb" stroke-width="11" stroke-linecap="round" fill="none"/>
+                        <circle cx="26" cy="140" r="7" fill="#60a5fa" stroke="#1d4ed8" stroke-width="2"/>
+                        <path d="M100 112 Q118 104 122 86" stroke="#2563eb" stroke-width="11" stroke-linecap="round" fill="none"/>
+                        <circle cx="122" cy="84" r="7.5" fill="#60a5fa" stroke="#1d4ed8" stroke-width="2"/>
+                        <rect x="42" y="106" width="56" height="40" rx="16" fill="#2563eb" stroke="#1e40af" stroke-width="2.5"/>
+                        <rect x="43" y="131" width="54" height="6" fill="#1e3a8a"/>
+                        <path d="M70 111 L81 115 L79 126 L70 131 L61 126 L59 115 Z" fill="#f43f5e" stroke="#ffffff" stroke-width="2"/>
+                        <text x="70" y="124" text-anchor="middle" fill="#ffffff" font-family="Fredoka, sans-serif" font-weight="bold" font-size="11">6</text>
+                        <rect x="49" y="145" width="15" height="17" rx="6" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+                        <rect x="76" y="145" width="15" height="17" rx="6" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+                        <rect x="45" y="158" width="21" height="10" rx="5" fill="#1d4ed8"/>
+                        <rect x="74" y="158" width="21" height="10" rx="5" fill="#1d4ed8"/>
+                    </svg>`
+            },
+            {
+                id: 1,
+                groupLabel: "Kelompok 2",
+                name: "Bebi",
+                subtitle: "Si Pita Manis",
+                score: 0,
+                primaryHex: "#ec4899",
+                bgLight: "bg-pink-50",
+                borderActive: "border-pink-600 ring-4 ring-pink-400/50",
+                borderNormal: "border-pink-200",
+                badgeBg: "bg-[#ec4899]",
+                textAccent: "text-pink-700",
+                svg: `
+                    <svg viewBox="0 0 140 175" class="w-full h-full drop-shadow-sm">
+                        <path d="M70 36 L44 20 C38 28, 38 42, 46 46 Z" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+                        <path d="M70 36 L96 20 C102 28, 102 42, 94 46 Z" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+                        <circle cx="70" cy="36" r="7" fill="#f472b6" stroke="#be185d" stroke-width="2"/>
+                        <rect x="18" y="62" width="12" height="28" rx="6" fill="#db2777"/>
+                        <rect x="110" y="62" width="12" height="28" rx="6" fill="#db2777"/>
+                        <rect x="27" y="46" width="86" height="54" rx="27" fill="#ec4899" stroke="#be185d" stroke-width="2.5"/>
+                        <rect x="35" y="54" width="70" height="40" rx="20" fill="#ffffff"/>
+                        <circle cx="53" cy="72" r="8.5" fill="#0f172a"/>
+                        <circle cx="53" cy="72" r="6" fill="#db2777"/>
+                        <circle cx="50" cy="69" r="2.5" fill="#ffffff"/>
+                        <path d="M79 73 Q87 65 95 73" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                        <ellipse cx="43" cy="81" rx="4.5" ry="2.5" fill="#fbcfe8"/>
+                        <ellipse cx="97" cy="81" rx="4.5" ry="2.5" fill="#fbcfe8"/>
+                        <path d="M63 82 Q70 89 77 82" stroke="#be185d" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <rect x="61" y="100" width="18" height="7" rx="3" fill="#be185d"/>
+                        <path d="M42 112 L24 132" stroke="#ec4899" stroke-width="10" stroke-linecap="round"/>
+                        <circle cx="22" cy="134" r="6.5" fill="#f9a8d4" stroke="#be185d" stroke-width="2"/>
+                        <path d="M98 112 L116 132" stroke="#ec4899" stroke-width="10" stroke-linecap="round"/>
+                        <circle cx="118" cy="134" r="6.5" fill="#f9a8d4" stroke="#be185d" stroke-width="2"/>
+                        <rect x="45" y="106" width="50" height="30" rx="14" fill="#ec4899" stroke="#be185d" stroke-width="2.5"/>
+                        <path d="M43 132 L97 132 L103 144 L37 144 Z" fill="#db2777" stroke="#be185d" stroke-width="2"/>
+                        <path d="M70 126 C70 126 59 119 59 113 C59 109 64 108 70 113 C76 108 81 109 81 113 C81 119 70 126 70 126 Z" fill="#ffffff"/>
+                        <rect x="50" y="144" width="14" height="18" rx="6" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+                        <rect x="76" y="144" width="14" height="18" rx="6" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+                        <rect x="47" y="158" width="19" height="10" rx="5" fill="#db2777"/>
+                        <rect x="74" y="158" width="19" height="10" rx="5" fill="#db2777"/>
+                    </svg>`
+            },
+            {
+                id: 2,
+                groupLabel: "Kelompok 3",
+                name: "Bubu",
+                subtitle: "Si Kupluk Lucu",
+                score: 0,
+                primaryHex: "#f97316",
+                bgLight: "bg-orange-50",
+                borderActive: "border-orange-600 ring-4 ring-orange-400/50",
+                borderNormal: "border-orange-200",
+                badgeBg: "bg-[#f97316]",
+                textAccent: "text-orange-700",
+                svg: `
+                    <svg viewBox="0 0 140 175" class="w-full h-full drop-shadow-sm">
+                        <circle cx="70" cy="20" r="8" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
+                        <path d="M35 48 C35 24, 105 24, 105 48 Z" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
+                        <rect x="31" y="42" width="78" height="9" rx="4.5" fill="#0284c7" stroke="#0369a1" stroke-width="1.5"/>
+                        <rect x="18" y="62" width="12" height="28" rx="6" fill="#ea580c"/>
+                        <rect x="110" y="62" width="12" height="28" rx="6" fill="#ea580c"/>
+                        <rect x="27" y="49" width="86" height="53" rx="26" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                        <rect x="35" y="56" width="70" height="39" rx="19" fill="#ffffff"/>
+                        <circle cx="53" cy="74" r="8" fill="#0f172a"/>
+                        <circle cx="50" cy="71" r="2.8" fill="#ffffff"/>
+                        <path d="M79 75 Q87 67 95 75" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                        <ellipse cx="43" cy="83" rx="4.5" ry="2.5" fill="#fed7aa"/>
+                        <ellipse cx="97" cy="83" rx="4.5" ry="2.5" fill="#fed7aa"/>
+                        <path d="M63 83 Q70 90 77 83" stroke="#c2410c" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <rect x="60" y="101" width="20" height="7" rx="3" fill="#c2410c"/>
+                        <path d="M40 112 Q22 104 18 86" stroke="#f97316" stroke-width="11" stroke-linecap="round" fill="none"/>
+                        <circle cx="18" cy="84" r="7.5" fill="#fdba74" stroke="#c2410c" stroke-width="2"/>
+                        <path d="M100 112 Q116 122 114 138" stroke="#f97316" stroke-width="11" stroke-linecap="round" fill="none"/>
+                        <circle cx="114" cy="140" r="7" fill="#fdba74" stroke="#c2410c" stroke-width="2"/>
+                        <rect x="41" y="106" width="58" height="41" rx="18" fill="#f97316" stroke="#c2410c" stroke-width="2.5"/>
+                        <rect x="42" y="132" width="56" height="6" fill="#0284c7"/>
+                        <path d="M70 111 L81 115 L79 126 L70 131 L61 126 L59 115 Z" fill="#f43f5e" stroke="#ffffff" stroke-width="2"/>
+                        <text x="70" y="124" text-anchor="middle" fill="#ffffff" font-family="Fredoka, sans-serif" font-weight="bold" font-size="11">6</text>
+                        <rect x="48" y="146" width="15" height="16" rx="6" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
+                        <rect x="77" y="146" width="15" height="16" rx="6" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
+                        <rect x="44" y="158" width="21" height="10" rx="5" fill="#ea580c"/>
+                        <rect x="75" y="158" width="21" height="10" rx="5" fill="#ea580c"/>
+                    </svg>`
+            },
+            {
+                id: 3,
+                groupLabel: "Kelompok 4",
+                name: "Bela",
+                subtitle: "Si Bintang Modis",
+                score: 0,
+                primaryHex: "#7c3aed",
+                bgLight: "bg-purple-50",
+                borderActive: "border-purple-600 ring-4 ring-purple-400/50",
+                borderNormal: "border-purple-200",
+                badgeBg: "bg-[#7c3aed]",
+                textAccent: "text-purple-700",
+                svg: `
+                    <svg viewBox="0 0 140 175" class="w-full h-full drop-shadow-sm">
+                        <!-- Mahkota Bintang Emas di Atas Kepala Bela -->
+                        <polygon points="48,46 53,26 70,38 87,26 92,46" fill="#fbbf24" stroke="#d97706" stroke-width="2" stroke-linejoin="round"/>
+                        <circle cx="53" cy="24" r="3.5" fill="#38bdf8"/>
+                        <circle cx="70" cy="34" r="3.5" fill="#f43f5e"/>
+                        <circle cx="87" cy="24" r="3.5" fill="#38bdf8"/>
+                        <!-- Earphone Tosca -->
+                        <rect x="18" y="61" width="12" height="28" rx="6" fill="#0d9488"/>
+                        <rect x="110" y="61" width="12" height="28" rx="6" fill="#0d9488"/>
+                        <!-- Kepala Ungu Modis -->
+                        <rect x="27" y="46" width="86" height="54" rx="27" fill="#7c3aed" stroke="#5b21b6" stroke-width="2.5"/>
+                        <rect x="35" y="54" width="70" height="40" rx="20" fill="#ffffff"/>
+                        <!-- Mata Berbinar -->
+                        <circle cx="53" cy="72" r="8.5" fill="#0f172a"/>
+                        <circle cx="53" cy="72" r="6" fill="#7c3aed"/>
+                        <circle cx="50" cy="69" r="2.5" fill="#ffffff"/>
+                        <circle cx="87" cy="72" r="8.5" fill="#0f172a"/>
+                        <circle cx="87" cy="72" r="6" fill="#7c3aed"/>
+                        <circle cx="84" cy="69" r="2.5" fill="#ffffff"/>
+                        <!-- Pipi Merona & Senyum -->
+                        <ellipse cx="43" cy="81" rx="4.5" ry="2.5" fill="#ddd6fe"/>
+                        <ellipse cx="97" cy="81" rx="4.5" ry="2.5" fill="#ddd6fe"/>
+                        <path d="M63 82 Q70 90 77 82" stroke="#5b21b6" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <!-- Leher & Tangan -->
+                        <rect x="61" y="100" width="18" height="7" rx="3" fill="#5b21b6"/>
+                        <path d="M42 112 Q24 106 20 90" stroke="#7c3aed" stroke-width="10" stroke-linecap="round" fill="none"/>
+                        <circle cx="19" cy="88" r="6.5" fill="#5eead4" stroke="#0d9488" stroke-width="2"/>
+                        <path d="M98 112 Q116 106 120 90" stroke="#7c3aed" stroke-width="10" stroke-linecap="round" fill="none"/>
+                        <circle cx="121" cy="88" r="6.5" fill="#5eead4" stroke="#0d9488" stroke-width="2"/>
+                        <!-- Badan & Bintang Dada -->
+                        <rect x="44" y="106" width="52" height="36" rx="15" fill="#7c3aed" stroke="#5b21b6" stroke-width="2.5"/>
+                        <rect x="45" y="131" width="50" height="6" fill="#14b8a6"/>
+                        <polygon points="70,111 73,118 81,118 75,123 77,130 70,126 63,130 65,123 59,118 67,118" fill="#fbbf24" stroke="#ffffff" stroke-width="1.2"/>
+                        <!-- Kaki -->
+                        <rect x="49" y="142" width="14" height="19" rx="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="2"/>
+                        <rect x="77" y="142" width="14" height="19" rx="6" fill="#7c3aed" stroke="#5b21b6" stroke-width="2"/>
+                        <rect x="46" y="157" width="20" height="10" rx="5" fill="#0d9488"/>
+                        <rect x="74" y="157" width="20" height="10" rx="5" fill="#0d9488"/>
+                    </svg>`
+            }
+        ];
+
+        // =====================================================================
+        // 2. BANK 25 SOAL IPAS KELAS 6 SD SEMESTER 1 BAB 4
+        //    Materi: Indonesia dan Masyarakat Dunia
+        // =====================================================================
+        const ipasQuestions = [
+            {
+                topic: "Hubungan Antarnegara",
+                question: "Mengapa setiap negara di dunia perlu menjalin hubungan dan kerja sama dengan negara lain?",
+                options: [
+                    "Karena tidak ada negara yang mampu memenuhi seluruh kebutuhannya sendiri",
+                    "Karena ingin menguasai wilayah negara lain yang lebih kecil",
+                    "Untuk menghapuskan seluruh kebudayaan asli daerahnya",
+                    "Untuk menghindari penggunaan teknologi modern"
+                ],
+                correct: 0,
+                explanation: "Setiap negara memiliki keterbatasan sumber daya alam dan manusia, sehingga saling membutuhkan untuk memenuhi kebutuhan rakyatnya."
+            },
+            {
+                topic: "Bentuk Kerja Sama",
+                question: "Kerja sama yang dilakukan antara dua negara saja, misalnya antara Indonesia dan Jepang, disebut kerja sama ....",
+                options: ["Regional", "Multilateral", "Bilateral", "Unilateral"],
+                correct: 2,
+                explanation: "Kerja sama bilateral adalah kerja sama yang melibatkan dua negara untuk saling menguntungkan kedua belah pihak."
+            },
+            {
+                topic: "Kerja Sama Regional",
+                question: "Apa nama organisasi kerja sama negara-negara di kawasan Asia Tenggara yang berdiri pada 8 Agustus 1967?",
+                options: ["PBB", "ASEAN", "OPEC", "APEC"],
+                correct: 1,
+                explanation: "ASEAN (Association of Southeast Asian Nations) adalah organisasi kerja sama regional di kawasan Asia Tenggara."
+            },
+            {
+                topic: "Pendiri ASEAN",
+                question: "Siapa tokoh perwakilan Indonesia yang menandatangani Deklarasi Bangkok sebagai pendiri ASEAN?",
+                options: ["Tun Abdul Razak", "Thanat Khoman", "Adam Malik", "S. Rajaratnam"],
+                correct: 2,
+                explanation: "Adam Malik adalah Menteri Luar Negeri Indonesia yang menandatangani Deklarasi Bangkok pada 8 Agustus 1967."
+            },
+            {
+                topic: "Sekretariat ASEAN",
+                question: "Di kota manakah letak kantor pusat Sekretariat Jenderal ASEAN berada?",
+                options: ["Surabaya", "Bandung", "Jakarta", "Yogyakarta"],
+                correct: 2,
+                explanation: "Gedung Sekretariat ASEAN terletak di Jalan Sisingamangaraja, Kebayoran Baru, Jakarta Selatan."
+            },
+            {
+                topic: "Kerja Sama Multilateral",
+                question: "Kerja sama yang melibatkan banyak negara dari berbagai belahan dunia tanpa terikat batas wilayah tertentu disebut kerja sama ....",
+                options: ["Bilateral", "Regional", "Lokal", "Multilateral"],
+                correct: 3,
+                explanation: "Kerja sama multilateral melibatkan banyak negara di dunia, contohnya melalui organisasi PBB (Perserikatan Bangsa-Bangsa)."
+            },
+            {
+                topic: "Peran Indonesia di PBB",
+                question: "Apa nama pasukan perdamaian yang dikirim Indonesia bersama PBB untuk menjaga keamanan di daerah konflik dunia?",
+                options: [
+                    "Pasukan Garuda (Kontingen Garuda)",
+                    "Atlet bulu tangkis ke Olimpiade",
+                    "Tim kesenian angklung ke Eropa",
+                    "Duta mahasiswa pertukaran pelajar"
+                ],
+                correct: 0,
+                explanation: "Indonesia rutin mengirimkan Kontingen Garuda (Pasukan Pemelihara Perdamaian PBB) ke wilayah konflik dunia."
+            },
+            {
+                topic: "Pengertian Globalisasi",
+                question: "Proses mendunianya suatu hal sehingga batas-batas antarnegara seakan menjadi tidak terlihat disebut ....",
+                options: ["Urbanisasi", "Globalisasi", "Reboisasi", "Transmigrasi"],
+                correct: 1,
+                explanation: "Globalisasi membuat informasi, barang, budaya, dan teknologi dari seluruh dunia dapat menyebar dengan sangat cepat."
+            },
+            {
+                topic: "Pendorong Globalisasi",
+                question: "Sebutkan faktor utama yang mempercepat terjadinya globalisasi di berbagai bidang kehidupan saat ini!",
+                options: [
+                    "Senjata tradisional",
+                    "Pertanian tradisional",
+                    "Kemajuan teknologi informasi, komunikasi, dan transportasi",
+                    "Pertambangan batu bara"
+                ],
+                correct: 2,
+                explanation: "Perkembangan internet, telepon pintar, dan transportasi modern membuat hubungan antarnegara berlangsung hitungan detik."
+            },
+            {
+                topic: "Dampak Positif Globalisasi",
+                question: "Sebutkan salah satu contoh dampak positif globalisasi bagi pelajar di Indonesia!",
+                options: [
+                    "Mudah mengakses sumber belajar dan ilmu pengetahuan dari seluruh dunia",
+                    "Meniru gaya hidup boros dan konsumtif dari luar negeri",
+                    "Melupakan permainan tradisional dan bahasa daerah",
+                    "Lebih menyukai produk luar negeri daripada produk lokal"
+                ],
+                correct: 0,
+                explanation: "Globalisasi memudahkan pelajar mengakses perpustakaan digital, video edukasi, dan ilmu pengetahuan global."
+            },
+            {
+                topic: "Dampak Negatif Globalisasi",
+                question: "Sikap membeli barang-barang luar negeri secara berlebihan hanya demi gengsi disebut perilaku ....",
+                options: ["Nasionalis", "Konsumtif", "Produktif", "Kreatif"],
+                correct: 1,
+                explanation: "Perilaku konsumtif adalah salah satu dampak negatif globalisasi yang harus dihindari dengan mencintai produk dalam negeri."
+            },
+            {
+                topic: "Menyikapi Globalisasi",
+                question: "Bagaimana sikap yang tepat dalam menghadapi masuknya budaya asing ke Indonesia akibat globalisasi?",
+                options: [
+                    "Menolak semua teknologi dari luar negeri",
+                    "Meniru seluruh budaya asing tanpa terkecuali",
+                    "Menyaring budaya asing sesuai nilai-nilai Pancasila",
+                    "Mengganti pakaian adat dengan pakaian modern"
+                ],
+                correct: 2,
+                explanation: "Kita harus bersikap selektif dengan menyaring budaya asing menggunakan nilai-nilai Pancasila dan kepribadian bangsa."
+            },
+            {
+                topic: "Kegiatan Ekspor",
+                question: "Kegiatan menjual atau mengirimkan barang dan jasa dari dalam negeri ke luar negeri disebut ....",
+                options: ["Impor", "Ekspor", "Barter", "Distribusi"],
+                correct: 1,
+                explanation: "Ekspor adalah kegiatan menjual barang dari dalam negeri ke negara lain yang dapat menambah devisa negara."
+            },
+            {
+                topic: "Komoditas Ekspor",
+                question: "Sebutkan contoh komoditas unggulan ekspor Indonesia di bidang perkebunan dan pertanian!",
+                options: [
+                    "Pesawat jet dan satelit",
+                    "Kelapa sawit, kopi, karet, dan kakao",
+                    "Kereta cepat dan mobil listrik",
+                    "Gandum, kurma, dan buah apel"
+                ],
+                correct: 1,
+                explanation: "Indonesia terkenal sebagai penghasil dan pengekspor utama minyak kelapa sawit (CPO), kopi, karet, dan rempah-rempah."
+            },
+            {
+                topic: "Kegiatan Impor",
+                question: "Pelaku usaha atau negara yang mendatangkan barang dari luar negeri untuk memenuhi kebutuhan dalam negeri disebut ....",
+                options: ["Eksportir", "Importir", "Produsen", "Investor"],
+                correct: 1,
+                explanation: "Importir adalah pihak yang melakukan kegiatan pembelian dan pemasukan barang dari luar negeri ke dalam negeri."
+            },
+            {
+                topic: "Manfaat Ekspor",
+                question: "Apa manfaat utama kegiatan ekspor bagi perekonomian negara Indonesia?",
+                options: [
+                    "Menambah cadangan devisa negara dan membuka lapangan kerja",
+                    "Mengurangi jumlah produk buatan dalam negeri",
+                    "Membuat harga barang lokal menjadi sangat mahal",
+                    "Menghilangkan ketergantungan pada petani lokal"
+                ],
+                correct: 0,
+                explanation: "Ekspor mendatangkan devisa (mata uang asing) bagi negara serta mendorong pertumbuhan industri dan lapangan kerja."
+            },
+            {
+                topic: "Lembaga PBB",
+                question: "Apa nama badan PBB yang bertugas menetapkan dan melindungi warisan budaya serta alam dunia?",
+                options: ["WHO", "UNICEF", "UNESCO", "FAO"],
+                correct: 2,
+                explanation: "UNESCO (United Nations Educational, Scientific and Cultural Organization) mengakui berbagai warisan budaya Indonesia."
+            },
+            {
+                topic: "Warisan Budaya Takbenda",
+                question: "Kain tradisional Indonesia yang ditetapkan UNESCO sebagai Warisan Budaya Takbenda pada 2 Oktober 2009 adalah ....",
+                options: ["Kain Kimono", "Kain Batik", "Kain Hanbok", "Kain Sari"],
+                correct: 1,
+                explanation: "Batik Indonesia diakui UNESCO pada 2 Oktober 2009, sehingga tanggal tersebut diperingati sebagai Hari Batik Nasional."
+            },
+            {
+                topic: "Alat Musik Tradisional",
+                question: "Alat musik tradisional asal Jawa Barat yang terbuat dari bambu dan telah diakui UNESCO sebagai warisan budaya dunia adalah ....",
+                options: ["Sasando", "Tifa", "Angklung", "Kolintang"],
+                correct: 2,
+                explanation: "Angklung diakui UNESCO pada tahun 2010 dan sering dimainkan dalam konser kolosal di berbagai negara."
+            },
+            {
+                topic: "Seni Tari Daerah",
+                question: "Tarian tradisional asal Aceh yang terkenal dengan kekompakan gerakan tangan dan telah diakui UNESCO adalah ....",
+                options: ["Tari Kecak", "Tari Saman", "Tari Piring", "Tari Jaipong"],
+                correct: 1,
+                explanation: "Tari Saman dari suku Gayo, Aceh, ditetapkan UNESCO sebagai Warisan Budaya Takbenda pada tahun 2011."
+            },
+            {
+                topic: "Seni Bela Diri",
+                question: "Seni bela diri tradisional asli Nusantara yang diakui UNESCO dan dipertandingkan di SEA Games maupun Asian Games adalah ....",
+                options: ["Taekwondo", "Karate", "Pencak Silat", "Judo"],
+                correct: 2,
+                explanation: "Pencak Silat merupakan tradisi bela diri Nusantara yang telah ditetapkan UNESCO sebagai Warisan Budaya Takbenda."
+            },
+            {
+                topic: "Seni Pertunjukan",
+                question: "Pertunjukan boneka kulit tradisional Indonesia yang sarat nilai filosofi dan diakui UNESCO sejak 2003 adalah ....",
+                options: ["Wayang Kulit", "Lenong Betawi", "Ludruk", "Ketoprak"],
+                correct: 0,
+                explanation: "Wayang Kulit diakui UNESCO sebagai Masterpiece of Oral and Intangible Heritage of Humanity pada tahun 2003."
+            },
+            {
+                topic: "Politik Luar Negeri",
+                question: "Prinsip politik luar negeri Indonesia yang tidak memihak blok mana pun namun aktif menciptakan perdamaian dunia disebut ....",
+                options: ["Bebas Aktif", "Tertutup", "Isolasi", "Netral Pasif"],
+                correct: 0,
+                explanation: "Politik luar negeri Bebas Aktif berarti Indonesia bebas menentukan sikap dan aktif ikut menjaga ketertiban dunia."
+            },
+            {
+                topic: "Situs Warisan Dunia",
+                question: "Candi Buddha terbesar di dunia yang terletak di Magelang, Jawa Tengah dan menjadi Situs Warisan Dunia UNESCO adalah ....",
+                options: ["Candi Prambanan", "Candi Borobudur", "Candi Muara Takus", "Candi Mendut"],
+                correct: 1,
+                explanation: "Candi Borobudur di Jawa Tengah merupakan mahakarya arsitektur Buddha yang diakui UNESCO sebagai Situs Warisan Dunia."
+            },
+            {
+                topic: "Diplomasi Pelajar",
+                question: "Bagaimana cara sederhana yang dapat dilakukan siswa kelas 6 SD untuk mengenalkan budaya Indonesia ke dunia?",
+                options: [
+                    "Bangga memakai batik dan membagikan konten positif budaya lokal",
+                    "Mengejek kesenian daerah lain yang berbeda",
+                    "Hanya mempelajari bahasa dan lagu dari luar negeri",
+                    "Menyembunyikan makanan tradisional saat ada tamu asing"
+                ],
+                correct: 0,
+                explanation: "Bangga memakai produk lokal seperti batik dan mempromosikan budaya Indonesia secara positif adalah wujud diplomasi budaya pelajar."
+            }
+        ];
+
+        // =====================================================================
+        // 3. DAFTAR 5 KARTU KEJUTAN (POWER-UPS ALA BAAMBOOZLE)
+        // =====================================================================
+        const powerUpsList = [
+            {
+                code: "BOMB_RESET",
+                emoji: "💣",
+                title: "BOM BAAMBOOZLE! (POIN HANGUS)",
+                desc: "DUAAR!! Kelompokmu terkena Bom Antariksa! Seluruh poin kelompokmu saat ini kembali menjadi 0!",
+                needsTarget: false
+            },
+            {
+                code: "SWAP_SCORE",
+                emoji: "🔄",
+                title: "TUKAR POIN! (SWAP SCORE)",
+                desc: "Pilih salah satu kelompok lawan di bawah ini untuk bertukar total skor sekarang juga!",
+                needsTarget: true
+            },
+            {
+                code: "STEAL_20",
+                emoji: "🏴‍☠️",
+                title: "CURI 20 POIN LAWAN!",
+                desc: "Pilih salah satu kelompok lawan di bawah ini untuk diambil 20 poinnya!",
+                needsTarget: true
+            },
+            {
+                code: "BONUS_25",
+                emoji: "🎁",
+                title: "HADIAH GRATIS! (+25 Poin)",
+                desc: "Selamat! Tanpa perlu menjawab soal, kelompokmu langsung mendapatkan +25 Poin gratis!",
+                needsTarget: false
+            },
+            {
+                code: "DOUBLE_30",
+                emoji: "🚀",
+                title: "ROKET TURBO! (+30 Poin)",
+                desc: "Luar biasa! Kelompokmu melesat cepat dan meraih +30 Poin sekaligus!",
+                needsTarget: false
+            }
+        ];
+
+        // =====================================================================
+        // 4. STATE PERMAINAN BAAMBOOZLE
+        // =====================================================================
+        let soundEnabled = true;
+        let turnOrder = [0, 1, 2, 3]; // Urutan indeks kelompok (dapat diacak agar adil)
+        let turnPointer = 0;         // Penunjuk posisi giliran saat ini pada turnOrder
+        let currentTurnTeam = 0;     // 0: Bimo, 1: Bebi, 2: Bubu, 3: Bela
+        let answeringTeamIndex = 0;  // Kelompok yang sedang menjawab (bisa berubah saat rebut soal)
+        let boardTiles = [];         // 30 ubin (25 soal + 5 powerup)
+        let activeTileIndex = null;
+        let lockedOptionIndex = null;
+        let isAnswerRevealed = false;
+        let questionTimerInterval = null;
+        let timeLeftSeconds = 30;
+        const QUESTION_TIME_LIMIT = 30;
+
+        // State Mode Duel IFP (1 vs 1 Bar HP)
+        let duelLeftIdx = 0;
+        let duelRightIdx = 1;
+        let duelHpLeft = 100;
+        let duelHpRight = 100;
+        let duelQuestionPool = [];
+        let duelRoundCount = 0;
+        let currentDuelQuestion = null;
+        let duelTimerInterval = null;
+        let duelTimeLeft = 20;
+        const DUEL_TIME_LIMIT = 20;
+        let duelRoundResolved = false;
+
+        // =====================================================================
+        // 4B. FUNGSI ACAK GILIRAN KELOMPOK
+        // =====================================================================
+        function shuffleTurnOrder(playFx = true) {
+            if (playFx) playSound('click');
+
+            // Acak urutan 4 kelompok (0..3) dan pastikan giliran pertama tidak selalu sama
+            const prevFirst = turnOrder[turnPointer];
+            let candidate = shuffleArray([0, 1, 2, 3]);
+            if (candidate[0] === prevFirst) {
+                candidate.push(candidate.shift());
+            }
+
+            turnOrder = candidate;
+            turnPointer = 0;
+            currentTurnTeam = turnOrder[turnPointer];
+
+            const firstTeam = teamsConfig[currentTurnTeam];
+            const previewEl = document.getElementById('start-turn-preview');
+            if (previewEl) {
+                previewEl.textContent = `1st: ${firstTeam.name} (Acak)`;
+            }
+
+            const gameScreen = document.getElementById('game-screen');
+            if (gameScreen && !gameScreen.classList.contains('hidden')) {
+                renderScoreboard();
+            }
+        }
+
+        // =====================================================================
+        // 4C. SINTESIS EFEK SUARA (WEB AUDIO API)
+        // =====================================================================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(540, now);
+                    osc.frequency.exponentialRampToValueAtTime(820, now + 0.08);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } 
+                else if (type === 'lock') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(620, now);
+                    osc.frequency.setValueAtTime(930, now + 0.07);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.18);
+                }
+                else if (type === 'tick') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.005, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                }
+                else if (type === 'timeout') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(360, now);
+                    osc.frequency.linearRampToValueAtTime(180, now + 0.45);
+                    gain.gain.setValueAtTime(0.24, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                }
+                else if (type === 'bomb') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(42, now + 0.65);
+                    gain.gain.setValueAtTime(0.32, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.65);
+                }
+                else if (type === 'reveal') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(660, now + 0.09);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.22);
+                } 
+                else if (type === 'correct') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.09);
+                    osc.frequency.setValueAtTime(783.99, now + 0.18);
+                    osc.frequency.setValueAtTime(1046.50, now + 0.27);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.52);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.52);
+                } 
+                else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(210, now);
+                    osc.frequency.linearRampToValueAtTime(125, now + 0.35);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                }
+                else if (type === 'powerup') {
+                    const notes = [587.33, 739.99, 880, 1174.66];
+                    notes.forEach((freq, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                        gain.gain.setValueAtTime(0.22, now + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + i * 0.08);
+                        osc.stop(now + i * 0.08 + 0.25);
+                    });
+                }
+            } catch (e) {
+                console.warn("Audio tidak tersedia:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = soundEnabled ? '🔊' : '🔇';
+            const text = soundEnabled ? 'Efek Suara: AKTIF' : 'Efek Suara: NONAKTIF';
+
+            document.getElementById('sound-icon').textContent = icon;
+            document.getElementById('sound-text').textContent = text;
+            document.getElementById('game-sound-btn').textContent = icon;
+
+            if (soundEnabled) playSound('click');
+        }
+
+        // =====================================================================
+        // 5B. FUNGSI LAYAR PENUH (FULL SCREEN UNTUK IFP)
+        // =====================================================================
+        function toggleFullScreen() {
+            playSound('click');
+            const docEl = document.documentElement;
+            const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+
+            if (!isFs) {
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen().catch(() => {});
+                } else if (docEl.webkitRequestFullscreen) {
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.msRequestFullscreen) {
+                    docEl.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        function syncFullScreenUI() {
+            const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+            const startIcon = document.getElementById('start-fs-icon');
+            const startText = document.getElementById('start-fs-text');
+            const gameIcon = document.getElementById('game-fs-icon');
+            const gameText = document.getElementById('game-fs-text');
+
+            if (startIcon && startText) {
+                startIcon.textContent = isFs ? '🗗' : '⛶';
+                startText.textContent = isFs ? 'Keluar Layar Penuh' : 'Layar Penuh (IFP)';
+            }
+            if (gameIcon && gameText) {
+                gameIcon.textContent = isFs ? '🗗' : '⛶';
+                gameText.textContent = isFs ? 'Exit Full' : 'Full Screen';
+            }
+        }
+
+        document.addEventListener('fullscreenchange', syncFullScreenUI);
+        document.addEventListener('webkitfullscreenchange', syncFullScreenUI);
+
+        // =====================================================================
+        // 6. INISIALISASI PAPAN & ACAK 30 KOTAK (25 SOAL + 5 POWER-UPS)
+        // =====================================================================
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function buildShuffledBoard() {
+            const pointOptions = [15, 20, 25];
+            const items = [];
+
+            // Masukkan 25 Soal IPAS Bab 4
+            ipasQuestions.forEach((q, idx) => {
+                items.push({
+                    type: 'question',
+                    points: pointOptions[idx % pointOptions.length],
+                    data: q
+                });
+            });
+
+            // Masukkan 5 Kartu Kejutan (Power-Ups)
+            powerUpsList.forEach(p => {
+                items.push({
+                    type: 'powerup',
+                    data: p
+                });
+            });
+
+            // Acak posisi seluruh 30 kotak
+            const randomized = shuffleArray(items);
+            boardTiles = randomized.map((item, index) => ({
+                number: index + 1,
+                opened: false,
+                ...item
+            }));
+        }
+
+        function startNewGame() {
+            initAudio();
+            playSound('click');
+            stopQuestionTimer();
+
+            // Reset skor 4 kelompok
+            teamsConfig.forEach(t => t.score = 0);
+            if (!Array.isArray(turnOrder) || turnOrder.length !== 4) {
+                turnOrder = [0, 1, 2, 3];
+            }
+            turnPointer = 0;
+            currentTurnTeam = turnOrder[turnPointer];
+            answeringTeamIndex = currentTurnTeam;
+            activeTileIndex = null;
+            lockedOptionIndex = null;
+            isAnswerRevealed = false;
+
+            buildShuffledBoard();
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('podium-screen').classList.add('hidden');
+            document.getElementById('question-modal').classList.add('hidden');
+            document.getElementById('powerup-modal').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            window.scrollTo(0, 0);
+            renderBoard();
+            renderScoreboard();
+        }
+
+        function returnToHome() {
+            playSound('click');
+            stopQuestionTimer();
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('podium-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function openConfirmReset() {
+            playSound('click');
+            document.getElementById('confirm-reset-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmReset() {
+            playSound('click');
+            document.getElementById('confirm-reset-modal').classList.add('hidden');
+        }
+
+        // =====================================================================
+        // 7. RENDER PAPAN 30 KOTAK NOMOR & PAPAN SKOR 4 KELOMPOK
+        // =====================================================================
+        function renderBoard() {
+            const gridEl = document.getElementById('baamboozle-grid');
+            const remainingCount = boardTiles.filter(t => !t.opened).length;
+            document.getElementById('remaining-tiles-count').textContent = remainingCount;
+
+            const tileGradients = [
+                "from-blue-500 to-indigo-600 shadow-[0_4px_0_#1e3a8a]",
+                "from-sky-500 to-blue-600 shadow-[0_4px_0_#1d4ed8]",
+                "from-indigo-500 to-purple-600 shadow-[0_4px_0_#4c1d95]",
+                "from-cyan-500 to-teal-600 shadow-[0_4px_0_#115e59]",
+                "from-violet-500 to-fuchsia-600 shadow-[0_4px_0_#701a75]"
+            ];
+
+            gridEl.innerHTML = boardTiles.map((tile, idx) => {
+                if (tile.opened) {
+                    const openedBadge = tile.type === 'powerup' ? tile.data.emoji : '✓';
+                    return `
+                        <div class="tile-opened aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-full rounded-xl sm:rounded-2xl flex items-center justify-center font-display font-bold text-base sm:text-2xl lg:text-3xl">
+                            <span>${openedBadge}</span>
+                        </div>
+                    `;
+                }
+
+                const gradClass = tileGradients[idx % tileGradients.length];
+                return `
+                    <button type="button" onclick="selectTile(${idx})" class="tile-closed bg-gradient-to-b ${gradClass} aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-full rounded-xl sm:rounded-2xl border-2 border-white/40 flex items-center justify-center text-white font-display font-bold text-xl sm:text-3xl md:text-4xl tracking-tight">
+                        ${tile.number}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderScoreboard() {
+            const boardEl = document.getElementById('teams-scoreboard');
+            const activeTeam = teamsConfig[currentTurnTeam];
+
+            const turnBanner = document.getElementById('turn-banner');
+            const turnLabel = document.getElementById('current-turn-label');
+            turnLabel.textContent = `${activeTeam.groupLabel} • ${activeTeam.name}`;
+            turnLabel.style.color = activeTeam.primaryHex;
+            turnBanner.style.borderColor = activeTeam.primaryHex;
+
+            boardEl.innerHTML = teamsConfig.map((team, idx) => {
+                const isActive = (idx === currentTurnTeam);
+                const cardStateClass = isActive
+                    ? `${team.borderActive} team-card-active bg-white shadow-lg`
+                    : `${team.borderNormal} bg-white/90 opacity-90 shadow-sm`;
+
+                return `
+                    <div class="rounded-2xl p-2 sm:p-3 border-2 ${cardStateClass} flex items-center justify-between gap-1.5 transition-all">
+                        <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                            <div class="w-9 h-11 sm:w-12 sm:h-14 shrink-0">
+                                ${team.svg}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[9px] sm:text-[11px] font-extrabold ${team.textAccent} uppercase truncate">${team.groupLabel}</span>
+                                    ${isActive ? '<span class="bg-amber-400 text-amber-950 text-[8px] sm:text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">GILIRAN</span>' : ''}
+                                </div>
+                                <div class="font-display font-bold text-sm sm:text-lg text-slate-900 leading-tight truncate">${team.name}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-end shrink-0">
+                            <div class="font-display font-bold text-xl sm:text-3xl text-slate-900 leading-none mb-1">
+                                ${team.score}
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button type="button" onclick="adjustManualScore(${idx}, -5)" class="w-6 h-5 sm:w-7 sm:h-6 rounded-md bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-700 font-extrabold text-xs flex items-center justify-center border border-slate-200 cursor-pointer" title="Kurangi 5 Poin">-5</button>
+                                <button type="button" onclick="adjustManualScore(${idx}, 5)" class="w-6 h-5 sm:w-7 sm:h-6 rounded-md bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 font-extrabold text-xs flex items-center justify-center border border-slate-200 cursor-pointer" title="Tambah 5 Poin">+5</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function adjustManualScore(teamIdx, delta) {
+            playSound('click');
+            teamsConfig[teamIdx].score += delta;
+            renderScoreboard();
+        }
+
+        // =====================================================================
+        // 8. MEMILIH KOTAK & PERGANTIAN GILIRAN KELOMPOK
+        // =====================================================================
+        function selectTile(tileIdx) {
+            const tile = boardTiles[tileIdx];
+            if (!tile || tile.opened) return;
+
+            activeTileIndex = tileIdx;
+            tile.opened = true;
+            renderBoard();
+
+            if (tile.type === 'question') {
+                playSound('click');
+                showQuestionModal(tile);
+            } else {
+                playSound('powerup');
+                showPowerUpModal(tile);
+            }
+        }
+
+        function advanceToNextTurn() {
+            turnPointer = (turnPointer + 1) % turnOrder.length;
+            currentTurnTeam = turnOrder[turnPointer];
+            renderBoard();
+            renderScoreboard();
+
+            const allOpened = boardTiles.every(t => t.opened);
+            if (allOpened) {
+                setTimeout(() => {
+                    showPodium();
+                }, 400);
+            }
+        }
+
+        // =====================================================================
+        // 9. LOGIKA TIMER 15 DETIK, KUNCI JAWABAN A-D & REBUT SOAL
+        // =====================================================================
+        function stopQuestionTimer() {
+            if (questionTimerInterval) {
+                clearInterval(questionTimerInterval);
+                questionTimerInterval = null;
+            }
+        }
+
+        function startQuestionTimer() {
+            stopQuestionTimer();
+            timeLeftSeconds = QUESTION_TIME_LIMIT;
+            updateTimerDisplay();
+
+            questionTimerInterval = setInterval(() => {
+                timeLeftSeconds = Math.max(0, +(timeLeftSeconds - 0.1).toFixed(1));
+                updateTimerDisplay();
+
+                // Bunyi detak peringatan pada 5 detik terakhir
+                if (timeLeftSeconds <= 5 && timeLeftSeconds > 0 && Math.abs(timeLeftSeconds - Math.round(timeLeftSeconds)) < 0.06) {
+                    playSound('tick');
+                }
+
+                if (timeLeftSeconds <= 0) {
+                    stopQuestionTimer();
+                    handleTimeExpired();
+                }
+            }, 100);
+        }
+
+        function updateTimerDisplay() {
+            const pct = (timeLeftSeconds / QUESTION_TIME_LIMIT) * 100;
+            const bar = document.getElementById('timer-progress-bar');
+            const secText = document.getElementById('timer-seconds-text');
+
+            bar.style.width = `${pct}%`;
+            secText.textContent = `${Math.ceil(timeLeftSeconds)} Detik`;
+
+            if (timeLeftSeconds <= 5) {
+                bar.className = "h-full bg-gradient-to-r from-rose-500 to-red-600 rounded-full transition-all duration-150";
+                secText.className = "font-display text-base sm:text-xl text-rose-600 animate-pulse";
+            } else {
+                bar.className = "h-full bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full transition-all duration-150";
+                secText.className = "font-display text-base sm:text-xl text-blue-700";
+            }
+        }
+
+        function handleTimeExpired() {
+            // Jika jawaban sudah dikunci atau sudah dibuka guru, abaikan
+            if (lockedOptionIndex !== null || isAnswerRevealed) return;
+
+            playSound('timeout');
+            document.getElementById('timer-status-label').innerHTML = `<span>⏰</span><span class="text-rose-600">Waktu Habis! Menunggu Rebutan:</span>`;
+
+            // Nonaktifkan tombol A-D sementara sampai ada kelompok yang merebut
+            renderMultipleChoiceButtons(true);
+
+            const activeTeam = teamsConfig[answeringTeamIndex];
+            document.getElementById('lock-status-banner').innerHTML = `⛔ <span class="text-rose-700">${activeTeam.groupLabel} (${activeTeam.name}) kehabisan waktu!</span>`;
+
+            // Tampilkan panel rebut soal untuk 3 kelompok lawan
+            const stealBox = document.getElementById('steal-turn-box');
+            const stealBtns = document.getElementById('steal-teams-buttons');
+            stealBtns.innerHTML = teamsConfig
+                .filter((_, idx) => idx !== answeringTeamIndex)
+                .map(rival => `
+                    <button type="button" onclick="claimStolenQuestion(${rival.id})" class="p-2.5 rounded-xl border-2 ${rival.borderNormal} ${rival.bgLight} hover:scale-103 active:scale-95 transition flex flex-col items-center cursor-pointer shadow-xs">
+                        <span class="text-[10px] font-extrabold ${rival.textAccent} uppercase">${rival.groupLabel}</span>
+                        <span class="font-display font-bold text-sm sm:text-base text-slate-800">⚡ Rebut (${rival.name})</span>
+                    </button>
+                `).join('');
+
+            stealBox.classList.remove('hidden');
+        }
+
+        function claimStolenQuestion(stealerTeamIdx) {
+            playSound('lock');
+            answeringTeamIndex = stealerTeamIdx;
+            const stealer = teamsConfig[answeringTeamIndex];
+
+            document.getElementById('steal-turn-box').classList.add('hidden');
+            const teamBadge = document.getElementById('modal-team-indicator');
+            teamBadge.textContent = `⚡ Direbut: ${stealer.groupLabel} (${stealer.name})`;
+            teamBadge.style.color = stealer.primaryHex;
+
+            document.getElementById('timer-status-label').innerHTML = `<span>⚡</span><span class="text-amber-700">Waktu Rebutan (${stealer.name}):</span>`;
+            document.getElementById('lock-status-banner').innerHTML = `👆 <span class="text-blue-700">${stealer.groupLabel} (${stealer.name})</span> silakan sentuh A, B, C, atau D!`;
+
+            renderMultipleChoiceButtons(false);
+            startQuestionTimer();
+        }
+
+        function skipUnansweredQuestion() {
+            playSound('click');
+            document.getElementById('steal-turn-box').classList.add('hidden');
+            revealAnswer(true);
+        }
+
+        function showQuestionModal(tile) {
+            const q = tile.data;
+            answeringTeamIndex = currentTurnTeam;
+            lockedOptionIndex = null;
+            isAnswerRevealed = false;
+
+            const activeTeam = teamsConfig[answeringTeamIndex];
+
+            document.getElementById('modal-tile-badge').textContent = `Kotak #${tile.number}`;
+            document.getElementById('modal-topic-badge').textContent = q.topic;
+            const teamBadge = document.getElementById('modal-team-indicator');
+            teamBadge.textContent = `Giliran: ${activeTeam.groupLabel} (${activeTeam.name})`;
+            teamBadge.style.color = activeTeam.primaryHex;
+            document.getElementById('modal-points-badge').textContent = `+${tile.points} Poin`;
+
+            document.getElementById('modal-question-text').textContent = q.question;
+            document.getElementById('timer-status-label').innerHTML = `<span>⏱️</span><span>Waktu Menjawab (${activeTeam.name}):</span>`;
+            document.getElementById('lock-status-banner').innerHTML = `👆 Sentuh tombol <b>A, B, C, atau D</b> untuk mengunci jawaban!`;
+            document.getElementById('steal-turn-box').classList.add('hidden');
+
+            renderMultipleChoiceButtons(false);
+
+            // Siapkan Kunci Jawaban & Pembahasan (masih tersembunyi)
+            const letters = ["A", "B", "C", "D"];
+            const correctLetter = letters[q.correct];
+            const correctOption = q.options[q.correct];
+            document.getElementById('modal-answer-text').textContent = `Kunci Jawaban: (${correctLetter}) ${correctOption}`;
+            document.getElementById('modal-explanation-text').textContent = q.explanation;
+
+            document.getElementById('answer-reveal-box').classList.add('hidden');
+            document.getElementById('step-check-wrapper').classList.remove('hidden');
+            document.getElementById('step-next-wrapper').classList.add('hidden');
+
+            document.getElementById('question-modal').classList.remove('hidden');
+            startQuestionTimer();
+        }
+
+        function renderMultipleChoiceButtons(disableAll = false) {
+            const tile = boardTiles[activeTileIndex];
+            const q = tile.data;
+            const letters = ["A", "B", "C", "D"];
+            const mcGrid = document.getElementById('mc-options-grid');
+
+            mcGrid.innerHTML = q.options.map((opt, idx) => {
+                const isLocked = (lockedOptionIndex === idx);
+                let extraClass = "bg-white border-slate-200 hover:border-blue-400";
+                let badgeClass = "bg-blue-600 text-white";
+                let statusTag = "";
+
+                if (isAnswerRevealed) {
+                    if (idx === q.correct) {
+                        extraClass = "option-correct-reveal";
+                        badgeClass = "bg-emerald-600 text-white";
+                        statusTag = `<span class="ml-auto text-xs font-extrabold text-emerald-700 shrink-0">✅ BENAR</span>`;
+                    } else if (isLocked && idx !== q.correct) {
+                        extraClass = "option-wrong-reveal";
+                        badgeClass = "bg-rose-600 text-white";
+                        statusTag = `<span class="ml-auto text-xs font-extrabold text-rose-700 shrink-0">❌ PILIHANMU</span>`;
+                    }
+                } else if (isLocked) {
+                    extraClass = "option-locked";
+                    badgeClass = "bg-blue-700 text-white";
+                    statusTag = `<span class="ml-auto text-[11px] font-extrabold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full shrink-0">🔒 DIKUNCI</span>`;
+                }
+
+                const disabledAttr = (disableAll || lockedOptionIndex !== null || isAnswerRevealed) ? "disabled" : "";
+
+                return `
+                    <button type="button" ${disabledAttr} onclick="selectAndLockOption(${idx})" class="option-btn border-2 ${extraClass} rounded-xl p-2.5 sm:p-3 flex items-center gap-2.5 text-left cursor-pointer disabled:cursor-default">
+                        <span class="${badgeClass} font-display font-bold text-xs sm:text-base w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0">
+                            ${letters[idx]}
+                        </span>
+                        <span class="text-slate-800 font-bold text-xs sm:text-sm md:text-base leading-snug">${opt}</span>
+                        ${statusTag}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectAndLockOption(optIdx) {
+            if (lockedOptionIndex !== null || isAnswerRevealed) return;
+
+            lockedOptionIndex = optIdx;
+            stopQuestionTimer();
+            playSound('lock');
+
+            const letters = ["A", "B", "C", "D"];
+            const team = teamsConfig[answeringTeamIndex];
+
+            document.getElementById('steal-turn-box').classList.add('hidden');
+            document.getElementById('timer-status-label').innerHTML = `<span>🔒</span><span class="text-blue-700">Jawaban Dikunci! Guru silakan klik Lihat Jawaban:</span>`;
+            document.getElementById('lock-status-banner').innerHTML = `🔒 <span class="text-blue-700">${team.groupLabel} (${team.name})</span> mengunci jawaban <b>${letters[optIdx]}</b>!`;
+
+            renderMultipleChoiceButtons(true);
+        }
+
+        function revealAnswer(isSkipped = false) {
+            if (isAnswerRevealed) return;
+            stopQuestionTimer();
+            isAnswerRevealed = true;
+
+            const tile = boardTiles[activeTileIndex];
+            const q = tile.data;
+            const team = teamsConfig[answeringTeamIndex];
+            const revealBox = document.getElementById('answer-reveal-box');
+            const verdictBadge = document.getElementById('reveal-verdict-badge');
+
+            document.getElementById('steal-turn-box').classList.add('hidden');
+            renderMultipleChoiceButtons(true);
+
+            if (isSkipped || lockedOptionIndex === null) {
+                playSound('reveal');
+                revealBox.className = "rounded-2xl p-3.5 sm:p-4 mb-3 text-center animate-pop border-2 bg-slate-100 border-slate-300";
+                verdictBadge.className = "font-display font-bold text-base sm:text-xl mb-1 text-slate-700";
+                verdictBadge.textContent = "⚪ TIDAK ADA JAWABAN DIKUNCI (0 POIN)";
+            } else if (lockedOptionIndex === q.correct) {
+                playSound('correct');
+                team.score += tile.points;
+                renderScoreboard();
+                launchConfetti(50);
+
+                revealBox.className = "rounded-2xl p-3.5 sm:p-4 mb-3 text-center animate-pop border-2 bg-emerald-50 border-emerald-400";
+                verdictBadge.className = "font-display font-bold text-base sm:text-xl mb-1 text-emerald-700";
+                verdictBadge.textContent = `🎉 BENAR! ${team.groupLabel} (${team.name}) +${tile.points} POIN!`;
+            } else {
+                playSound('wrong');
+                revealBox.className = "rounded-2xl p-3.5 sm:p-4 mb-3 text-center animate-pop border-2 bg-rose-50 border-rose-400";
+                verdictBadge.className = "font-display font-bold text-base sm:text-xl mb-1 text-rose-700";
+                verdictBadge.textContent = `❌ KURANG TEPAT! ${team.groupLabel} (${team.name}) +0 POIN`;
+            }
+
+            revealBox.classList.remove('hidden');
+            document.getElementById('step-check-wrapper').classList.add('hidden');
+            document.getElementById('step-next-wrapper').classList.remove('hidden');
+        }
+
+        function finishQuestionAndNextTurn() {
+            playSound('click');
+            document.getElementById('question-modal').classList.add('hidden');
+            advanceToNextTurn();
+        }
+
+        // =====================================================================
+        // 10. LOGIKA KARTU KEJUTAN (POWER-UPS ALA BAAMBOOZLE)
+        // =====================================================================
+        function showPowerUpModal(tile) {
+            const p = tile.data;
+            const activeTeam = teamsConfig[currentTurnTeam];
+
+            if (p.code === 'BOMB_RESET') {
+                playSound('bomb');
+            }
+
+            document.getElementById('powerup-emoji').textContent = p.emoji;
+            document.getElementById('powerup-title').textContent = p.title;
+            document.getElementById('powerup-desc').innerHTML = `<span class="font-extrabold text-blue-700">${activeTeam.groupLabel} (${activeTeam.name}):</span> ${p.desc}`;
+
+            const targetBox = document.getElementById('powerup-target-selector');
+            const continueBtn = document.getElementById('powerup-continue-btn');
+
+            if (p.needsTarget) {
+                targetBox.classList.remove('hidden');
+                targetBox.classList.add('grid');
+                continueBtn.classList.add('hidden');
+
+                // Tampilkan 3 kelompok lawan sebagai target
+                targetBox.innerHTML = teamsConfig
+                    .filter((_, idx) => idx !== currentTurnTeam)
+                    .map(targetTeam => `
+                        <button type="button" onclick="applyTargetedPowerUp(${targetTeam.id})" class="p-3 rounded-2xl border-2 ${targetTeam.borderNormal} ${targetTeam.bgLight} hover:scale-105 active:scale-95 transition flex flex-col items-center cursor-pointer shadow-sm">
+                            <span class="text-[10px] font-extrabold ${targetTeam.textAccent} uppercase">${targetTeam.groupLabel}</span>
+                            <span class="font-display font-bold text-base text-slate-800">${targetTeam.name}</span>
+                            <span class="text-xs font-extrabold text-slate-600 mt-0.5">Skor: ${targetTeam.score}</span>
+                        </button>
+                    `).join('');
+            } else {
+                targetBox.classList.add('hidden');
+                targetBox.classList.remove('grid');
+                continueBtn.classList.remove('hidden');
+                if (p.code !== 'BOMB_RESET') launchConfetti(55);
+            }
+
+            document.getElementById('powerup-modal').classList.remove('hidden');
+        }
+
+        function applyDirectPowerUp() {
+            const tile = boardTiles[activeTileIndex];
+            const code = tile.data.code;
+
+            if (code === 'BONUS_25') {
+                teamsConfig[currentTurnTeam].score += 25;
+                playSound('correct');
+            } else if (code === 'DOUBLE_30') {
+                teamsConfig[currentTurnTeam].score += 30;
+                playSound('correct');
+            } else if (code === 'BOMB_RESET') {
+                teamsConfig[currentTurnTeam].score = 0;
+                playSound('wrong');
+            }
+
+            document.getElementById('powerup-modal').classList.add('hidden');
+            advanceToNextTurn();
+        }
+
+        function applyTargetedPowerUp(targetTeamIdx) {
+            const tile = boardTiles[activeTileIndex];
+            const code = tile.data.code;
+
+            if (code === 'STEAL_20') {
+                teamsConfig[targetTeamIdx].score -= 20;
+                teamsConfig[currentTurnTeam].score += 20;
+                playSound('correct');
+                launchConfetti(50);
+            } else if (code === 'SWAP_SCORE') {
+                const tempScore = teamsConfig[currentTurnTeam].score;
+                teamsConfig[currentTurnTeam].score = teamsConfig[targetTeamIdx].score;
+                teamsConfig[targetTeamIdx].score = tempScore;
+                playSound('correct');
+                launchConfetti(50);
+            }
+
+            document.getElementById('powerup-modal').classList.add('hidden');
+            advanceToNextTurn();
+        }
+
+        // =====================================================================
+        // 11. PODIUM PEMENANG (JUARA 1, 2, 3, 4)
+        // =====================================================================
+        function showPodium() {
+            playSound('correct');
+            launchConfetti(110);
+
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('podium-screen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            // Urutkan kelompok berdasarkan skor tertinggi
+            const sortedTeams = [...teamsConfig].sort((a, b) => b.score - a.score);
+            const medals = ["🥇 JUARA 1", "🥈 JUARA 2", "🥉 JUARA 3", "🏅 HARAPAN"];
+            const rowStyles = [
+                "bg-gradient-to-r from-amber-100 via-yellow-50 to-amber-100 border-amber-400 scale-[1.02] shadow-md",
+                "bg-slate-100 border-slate-300",
+                "bg-orange-50/80 border-orange-300",
+                "bg-white border-slate-200"
+            ];
+
+            const listEl = document.getElementById('podium-ranking-list');
+            listEl.innerHTML = sortedTeams.map((team, rankIdx) => `
+                <div class="rounded-2xl p-3 sm:p-4 border-2 ${rowStyles[rankIdx]} flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 sm:gap-3.5">
+                        <span class="font-display font-bold text-xs sm:text-sm px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-xs shrink-0">
+                            ${medals[rankIdx]}
+                        </span>
+                        <div class="w-10 h-12 sm:w-12 sm:h-14 shrink-0">
+                            ${team.svg}
+                        </div>
+                        <div class="text-left">
+                            <div class="text-[10px] sm:text-xs font-extrabold ${team.textAccent} uppercase">${team.groupLabel}</div>
+                            <div class="font-display font-bold text-base sm:text-xl text-slate-900 leading-tight">${team.name}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-display font-bold text-2xl sm:text-3xl text-blue-700 leading-none">${team.score}</div>
+                        <div class="text-[10px] font-bold text-slate-500 uppercase">Poin</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Sembunyikan tombol kembali ke papan jika semua 30 kotak sudah habis
+            const allOpened = boardTiles.every(t => t.opened);
+            const resumeBtn = document.getElementById('resume-board-btn');
+            if (allOpened) {
+                resumeBtn.classList.add('hidden');
+            } else {
+                resumeBtn.classList.remove('hidden');
+            }
+        }
+
+        function resumeFromPodium() {
+            playSound('click');
+            document.getElementById('podium-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+        }
+
+        // =====================================================================
+        // 11B. LOGIKA MODE DUEL IFP (1 VS 1 BAR HP ANTAR KELOMPOK)
+        // =====================================================================
+        function stopDuelTimer() {
+            if (duelTimerInterval) {
+                clearInterval(duelTimerInterval);
+                duelTimerInterval = null;
+            }
+        }
+
+        function openDuelLobby() {
+            playSound('click');
+            stopQuestionTimer();
+            stopDuelTimer();
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('podium-screen').classList.add('hidden');
+            document.getElementById('duel-screen').classList.remove('hidden');
+            document.getElementById('duel-lobby-panel').classList.remove('hidden');
+            document.getElementById('duel-arena-panel').classList.add('hidden');
+            document.getElementById('duel-round-badge').classList.add('hidden');
+
+            document.getElementById('duel-select-left').value = String(duelLeftIdx);
+            document.getElementById('duel-select-right').value = String(duelRightIdx);
+            updateDuelLobbyPreviews();
+            window.scrollTo(0, 0);
+        }
+
+        function validateDuelSelections(changedSide) {
+            playSound('click');
+            const leftSel = document.getElementById('duel-select-left');
+            const rightSel = document.getElementById('duel-select-right');
+
+            if (leftSel.value === rightSel.value) {
+                const sameVal = Number(leftSel.value);
+                const fallback = (sameVal + 1) % teamsConfig.length;
+                if (changedSide === 'left') {
+                    rightSel.value = String(fallback);
+                } else {
+                    leftSel.value = String(fallback);
+                }
+            }
+
+            duelLeftIdx = Number(leftSel.value);
+            duelRightIdx = Number(rightSel.value);
+            updateDuelLobbyPreviews();
+        }
+
+        function updateDuelLobbyPreviews() {
+            const leftTeam = teamsConfig[duelLeftIdx];
+            const rightTeam = teamsConfig[duelRightIdx];
+            document.getElementById('duel-preview-left').innerHTML = leftTeam.svg;
+            document.getElementById('duel-preview-right').innerHTML = rightTeam.svg;
+        }
+
+        function startDuelMatch() {
+            initAudio();
+            playSound('powerup');
+
+            duelLeftIdx = Number(document.getElementById('duel-select-left').value);
+            duelRightIdx = Number(document.getElementById('duel-select-right').value);
+            if (duelLeftIdx === duelRightIdx) {
+                duelRightIdx = (duelLeftIdx + 1) % teamsConfig.length;
+            }
+
+            duelHpLeft = 100;
+            duelHpRight = 100;
+            duelRoundCount = 0;
+            duelQuestionPool = shuffleArray(ipasQuestions);
+
+            const leftTeam = teamsConfig[duelLeftIdx];
+            const rightTeam = teamsConfig[duelRightIdx];
+
+            document.getElementById('duel-group-left').textContent = leftTeam.groupLabel;
+            document.getElementById('duel-name-left').textContent = leftTeam.name;
+            document.getElementById('duel-avatar-left').innerHTML = leftTeam.svg;
+
+            document.getElementById('duel-group-right').textContent = rightTeam.groupLabel;
+            document.getElementById('duel-name-right').textContent = rightTeam.name;
+            document.getElementById('duel-avatar-right').innerHTML = rightTeam.svg;
+
+            updateDuelHpBars();
+
+            document.getElementById('duel-lobby-panel').classList.add('hidden');
+            document.getElementById('duel-arena-panel').classList.remove('hidden');
+            document.getElementById('duel-round-badge').classList.remove('hidden');
+
+            loadNextDuelQuestion();
+        }
+
+        function updateDuelHpBars() {
+            duelHpLeft = Math.max(0, Math.min(100, duelHpLeft));
+            duelHpRight = Math.max(0, Math.min(100, duelHpRight));
+
+            const leftBar = document.getElementById('duel-hp-bar-left');
+            const leftTxt = document.getElementById('duel-hp-text-left');
+            leftBar.style.width = `${duelHpLeft}%`;
+            leftTxt.textContent = `${duelHpLeft} HP`;
+            leftBar.className = `h-full transition-all duration-300 ${duelHpLeft <= 30 ? 'bg-gradient-to-r from-rose-500 to-red-500' : 'bg-gradient-to-r from-emerald-400 to-cyan-400'}`;
+            leftTxt.className = `font-display font-bold text-xl sm:text-2xl ${duelHpLeft <= 30 ? 'text-rose-400' : 'text-emerald-400'}`;
+
+            const rightBar = document.getElementById('duel-hp-bar-right');
+            const rightTxt = document.getElementById('duel-hp-text-right');
+            rightBar.style.width = `${duelHpRight}%`;
+            rightTxt.textContent = `${duelHpRight} HP`;
+            rightBar.className = `h-full transition-all duration-300 ${duelHpRight <= 30 ? 'bg-gradient-to-r from-rose-500 to-red-500' : 'bg-gradient-to-r from-emerald-400 to-cyan-400'}`;
+            rightTxt.className = `font-display font-bold text-xl sm:text-2xl ${duelHpRight <= 30 ? 'text-rose-400' : 'text-emerald-400'}`;
+        }
+
+        function loadNextDuelQuestion() {
+            stopDuelTimer();
+            duelRoundResolved = false;
+
+            if (duelQuestionPool.length === 0) {
+                duelQuestionPool = shuffleArray(ipasQuestions);
+            }
+
+            currentDuelQuestion = duelQuestionPool.pop();
+            duelRoundCount += 1;
+
+            document.getElementById('duel-q-num').textContent = duelRoundCount;
+            document.getElementById('duel-q-topic').textContent = currentDuelQuestion.topic;
+            document.getElementById('duel-question-text').textContent = currentDuelQuestion.question;
+            document.getElementById('duel-status-text').textContent = "Ketuk jawaban A, B, C, atau D untuk menyerang lawan!";
+            document.getElementById('duel-ko-banner').classList.add('hidden');
+            document.getElementById('duel-round-result').classList.add('hidden');
+
+            renderDuelOptions(false);
+            startDuelTimer();
+        }
+
+        function startDuelTimer() {
+            stopDuelTimer();
+            duelTimeLeft = DUEL_TIME_LIMIT;
+            document.getElementById('duel-timer-text').textContent = `${duelTimeLeft}s`;
+
+            duelTimerInterval = setInterval(() => {
+                duelTimeLeft -= 1;
+                document.getElementById('duel-timer-text').textContent = `${Math.max(0, duelTimeLeft)}s`;
+
+                if (duelTimeLeft <= 5 && duelTimeLeft > 0) {
+                    playSound('tick');
+                }
+
+                if (duelTimeLeft <= 0) {
+                    stopDuelTimer();
+                    if (!duelRoundResolved) {
+                        duelRoundResolved = true;
+                        playSound('timeout');
+                        renderDuelOptions(true);
+                        const letters = ["A", "B", "C", "D"];
+                        const ansText = `(${letters[currentDuelQuestion.correct]}) ${currentDuelQuestion.options[currentDuelQuestion.correct]}`;
+                        document.getElementById('duel-result-title').textContent = "⏰ WAKTU HABIS! TIDAK ADA SERANGAN";
+                        document.getElementById('duel-result-desc').textContent = `Jawaban benar: ${ansText}. ${currentDuelQuestion.explanation}`;
+                        document.getElementById('duel-round-result').classList.remove('hidden');
+                    }
+                }
+            }, 1000);
+        }
+
+        function renderDuelOptions(revealCorrect) {
+            const letters = ["A", "B", "C", "D"];
+            const gridEl = document.getElementById('duel-options-grid');
+            const leftTeam = teamsConfig[duelLeftIdx];
+            const rightTeam = teamsConfig[duelRightIdx];
+
+            gridEl.innerHTML = currentDuelQuestion.options.map((opt, idx) => {
+                const isCorrect = idx === currentDuelQuestion.correct;
+                const cardStyle = revealCorrect && isCorrect
+                    ? "bg-emerald-100 border-emerald-500 text-slate-900"
+                    : "bg-white border-slate-200 text-slate-900";
+                const disabledAttr = duelRoundResolved ? "disabled" : "";
+
+                return `
+                    <div class="rounded-2xl border-2 ${cardStyle} p-2.5 sm:p-3 flex flex-col justify-between gap-2 shadow-md">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-indigo-600 text-white font-display font-bold text-xs sm:text-sm w-7 h-7 rounded-lg flex items-center justify-center shrink-0">
+                                ${letters[idx]}
+                            </span>
+                            <span class="font-bold text-xs sm:text-sm md:text-base leading-snug">${opt}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-100">
+                            <button type="button" ${disabledAttr} onclick="submitDuelAnswer('left', ${idx})" class="py-1.5 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-display font-bold text-[11px] sm:text-xs cursor-pointer active:scale-95 transition truncate">
+                                ⚔️ ${leftTeam.name}
+                            </button>
+                            <button type="button" ${disabledAttr} onclick="submitDuelAnswer('right', ${idx})" class="py-1.5 px-2 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-display font-bold text-[11px] sm:text-xs cursor-pointer active:scale-95 transition truncate">
+                                ⚔️ ${rightTeam.name}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function submitDuelAnswer(side, chosenIdx) {
+            if (duelRoundResolved) return;
+            duelRoundResolved = true;
+            stopDuelTimer();
+
+            const attacker = side === 'left' ? teamsConfig[duelLeftIdx] : teamsConfig[duelRightIdx];
+            const defender = side === 'left' ? teamsConfig[duelRightIdx] : teamsConfig[duelLeftIdx];
+            const isCorrect = chosenIdx === currentDuelQuestion.correct;
+
+            const leftCard = document.getElementById('duel-card-left');
+            const rightCard = document.getElementById('duel-card-right');
+            leftCard.classList.remove('duel-hit-shake');
+            rightCard.classList.remove('duel-hit-shake');
+            void leftCard.offsetWidth;
+
+            const koBanner = document.getElementById('duel-ko-banner');
+            koBanner.classList.add('hidden');
+            const resultTitle = document.getElementById('duel-result-title');
+            const resultDesc = document.getElementById('duel-result-desc');
+
+            if (isCorrect) {
+                playSound('correct');
+                launchConfetti(45);
+                if (side === 'left') {
+                    duelHpRight -= 25;
+                    rightCard.classList.add('duel-hit-shake');
+                } else {
+                    duelHpLeft -= 25;
+                    leftCard.classList.add('duel-hit-shake');
+                }
+                updateDuelHpBars();
+                resultTitle.textContent = `💥 LASER ${attacker.name.toUpperCase()} MENGENAI ${defender.name.toUpperCase()} (-25 HP)!`;
+                resultDesc.textContent = currentDuelQuestion.explanation;
+            } else {
+                playSound('wrong');
+                if (side === 'left') {
+                    duelHpLeft -= 10;
+                    leftCard.classList.add('duel-hit-shake');
+                } else {
+                    duelHpRight -= 10;
+                    rightCard.classList.add('duel-hit-shake');
+                }
+                updateDuelHpBars();
+                resultTitle.textContent = `⚠️ JAWABAN ${attacker.name.toUpperCase()} KURANG TEPAT! BACKFIRE (-10 HP)!`;
+                resultDesc.textContent = currentDuelQuestion.explanation;
+            }
+
+            renderDuelOptions(true);
+
+            // Cek jika salah satu HP habis (0)
+            if (duelHpLeft <= 0 || duelHpRight <= 0) {
+                const winner = duelHpLeft > 0 ? teamsConfig[duelLeftIdx] : teamsConfig[duelRightIdx];
+                const loser = duelHpLeft > 0 ? teamsConfig[duelRightIdx] : teamsConfig[duelLeftIdx];
+                playSound('powerup');
+                launchConfetti(100);
+                koBanner.textContent = `${winner.groupLabel.toUpperCase()} - WIN`;
+                koBanner.classList.remove('hidden');
+                resultTitle.textContent = `🏆 ${winner.groupLabel.toUpperCase()} (${winner.name.toUpperCase()}) MENANG DUEL!`;
+                resultDesc.textContent = `${winner.groupLabel} (${winner.name}) berhasil mengalahkan ${loser.groupLabel} (${loser.name})! Klik Ronde Berikutnya untuk tanding ulang.`;
+            }
+
+            document.getElementById('duel-round-result').classList.remove('hidden');
+        }
+
+        function nextDuelQuestion() {
+            playSound('click');
+            if (duelHpLeft <= 0 || duelHpRight <= 0) {
+                duelHpLeft = 100;
+                duelHpRight = 100;
+                duelRoundCount = 0;
+                updateDuelHpBars();
+            }
+            loadNextDuelQuestion();
+        }
+
+        function exitDuelToHome() {
+            playSound('click');
+            stopDuelTimer();
+            document.getElementById('duel-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // =====================================================================
+        // 12. EFEK KONFETI CANVAS RINGAN & HALUS
+        // =====================================================================
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const cCtx = confettiCanvas.getContext('2d');
+        let confettiPieces = [];
+
+        function resizeConfettiCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        function launchConfetti(amount = 60) {
+            const colors = ['#2563eb', '#ec4899', '#f97316', '#7c3aed', '#fbbf24', '#10b981'];
+            for (let i = 0; i < amount; i++) {
+                confettiPieces.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: -20 - Math.random() * 120,
+                    w: Math.random() * 9 + 5,
+                    h: Math.random() * 6 + 4,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: Math.random() * 4 + 2.5,
+                    rot: Math.random() * 360,
+                    vRot: (Math.random() - 0.5) * 10,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+        }
+
+        function animateConfetti() {
+            cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            for (let i = confettiPieces.length - 1; i >= 0; i--) {
+                const p = confettiPieces[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.rot += p.vRot;
+
+                if (p.y > confettiCanvas.height + 20) {
+                    confettiPieces.splice(i, 1);
+                    continue;
+                }
+
+                cCtx.save();
+                cCtx.translate(p.x, p.y);
+                cCtx.rotate((p.rot * Math.PI) / 180);
+                cCtx.fillStyle = p.color;
+                cCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                cCtx.restore();
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+
+        // Render avatar pada halaman pembuka saat pertama kali dimuat
+        window.addEventListener('resize', resizeConfettiCanvas);
+        window.onload = function() {
+            resizeConfettiCanvas();
+            animateConfetti();
+            shuffleTurnOrder(false);
+            teamsConfig.forEach((t, idx) => {
+                const slot = document.getElementById(`start-avatar-${idx}`);
+                if (slot) slot.innerHTML = t.svg;
+            });
+        };
+    </script>
+</body>
+</html>
